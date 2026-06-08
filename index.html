@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Tracker Calisthenics</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #222222;
+    --border: #2e2e2e;
+    --border2: #3a3a3a;
+    --text: #f0ede8;
+    --muted: #888580;
+    --muted2: #555250;
+    --accent: #c8f060;
+    --accent2: #8fb840;
+    --teal: #4dd9a0;
+    --coral: #f07060;
+    --amber: #f0b840;
+    --purple: #a090f0;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+
+  /* HEADER */
+  .app-header { padding: 20px 16px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .app-title { font-family: var(--mono); font-size: 13px; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; }
+  .name-badge { font-size: 12px; color: var(--muted); font-family: var(--mono); cursor: pointer; border: 1px solid var(--border2); border-radius: 20px; padding: 4px 10px; }
+  .name-badge:active { background: var(--surface); }
+
+  /* TABS */
+  .tabs { display: flex; border-bottom: 1px solid var(--border); }
+  .tab { flex: 1; padding: 12px 4px; text-align: center; font-size: 12px; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; letter-spacing: .03em; }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* PAGES */
+  .page { display: none; padding: 16px; }
+  .page.active { display: block; }
+
+  /* SESSION SELECTOR */
+  .sess-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .sess-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .sess-nav { display: flex; align-items: center; gap: 12px; }
+  .sess-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border2); background: var(--surface); color: var(--text); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .sess-btn:active { background: var(--surface2); }
+  .sess-num { font-family: var(--mono); font-size: 18px; font-weight: 500; color: var(--accent); min-width: 32px; text-align: center; }
+  .sess-date { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: 2px; text-align: center; }
+
+  /* SECTION CARD */
+  .section { margin-bottom: 16px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+  .section-head { padding: 10px 14px; display: flex; align-items: center; gap: 8px; }
+  .section-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .section-name { font-size: 13px; font-weight: 500; letter-spacing: .02em; }
+  .section-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-left: auto; }
+
+  /* SKILL (verticale) */
+  .skill-head { background: #1e1a2e; }
+  .skill-dot { background: var(--purple); }
+  .skill-name { color: var(--purple); }
+  .skill-fields { padding: 12px 14px; background: var(--surface); display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+  .field-input { background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 12px; font-size: 20px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; width: 100%; -moz-appearance: textfield; }
+  .field-input::-webkit-inner-spin-button, .field-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .field-input:focus { outline: none; border-color: var(--purple); }
+  .field-unit { font-size: 10px; color: var(--muted2); font-family: var(--mono); text-align: center; margin-top: 1px; }
+
+  /* CIRCUIT */
+  .circuit-head { background: #162018; }
+  .circuit-dot { background: var(--teal); }
+  .circuit-name { color: var(--teal); }
+  .station-row { padding: 10px 14px; background: var(--surface); border-top: 1px solid var(--border); }
+  .station-row:first-of-type { border-top: none; }
+  .station-label { font-size: 12px; font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .station-tag { font-size: 10px; font-family: var(--mono); color: var(--muted); background: var(--surface2); border-radius: 4px; padding: 2px 6px; }
+  .r1r2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .r-field { display: flex; flex-direction: column; gap: 3px; }
+  .r-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; text-align: center; }
+  .r-input { background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; padding: 8px; font-size: 22px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; width: 100%; -moz-appearance: textfield; }
+  .r-input::-webkit-inner-spin-button, .r-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .r-input:focus { outline: none; }
+  #s1-r1:focus, #s1-r2:focus { border-color: var(--teal); }
+  #s3-r1:focus, #s3-r2:focus { border-color: var(--coral); }
+  #s5-r1:focus, #s5-r2:focus { border-color: var(--teal); }
+  #s7-r1:focus, #s7-r2:focus { border-color: var(--amber); }
+  .s3-head { background: #201616; }
+  .s3-dot { background: var(--coral); }
+  .s5-head { }
+  .s7-head { background: #201e10; }
+  .s7-dot { background: var(--amber); }
+  .s7-name { color: var(--amber); }
+
+  /* SAVE BTN */
+  .save-btn { width: 100%; padding: 14px; background: var(--accent); color: #0f0f0f; border: none; border-radius: 10px; font-size: 14px; font-weight: 500; font-family: var(--sans); letter-spacing: .04em; cursor: pointer; margin-top: 8px; transition: background .15s, transform .1s; }
+  .save-btn:active { background: var(--accent2); transform: scale(0.98); }
+  .saved-toast { text-align: center; font-size: 12px; color: var(--accent); font-family: var(--mono); margin-top: 8px; height: 16px; opacity: 0; transition: opacity .3s; }
+  .saved-toast.show { opacity: 1; }
+
+  /* HISTORY PAGE */
+  .history-empty { text-align: center; padding: 48px 16px; color: var(--muted); font-size: 13px; line-height: 1.8; }
+  .history-sess { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+  .history-head { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); cursor: pointer; }
+  .history-sess-num { font-family: var(--mono); font-size: 13px; color: var(--accent); }
+  .history-date { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .history-body { padding: 12px 14px; display: none; }
+  .history-body.open { display: block; }
+  .history-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .history-row:last-child { border-bottom: none; }
+  .history-key { color: var(--muted); font-family: var(--mono); font-size: 11px; }
+  .history-val { font-family: var(--mono); font-weight: 500; font-size: 13px; }
+  .delta-pos { color: var(--teal); font-size: 10px; margin-left: 6px; }
+  .delta-neg { color: var(--coral); font-size: 10px; margin-left: 6px; }
+  .delete-btn { background: none; border: 1px solid var(--border2); border-radius: 6px; color: var(--muted); font-size: 11px; padding: 3px 7px; cursor: pointer; line-height: 1; flex-shrink: 0; }
+  .delete-btn:active { background: var(--coral); color: #0f0f0f; border-color: var(--coral); }
+
+  /* PROGRESS PAGE */
+  .prog-section { margin-bottom: 20px; }
+  .prog-title { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+  .prog-chart { height: 80px; position: relative; display: flex; align-items: flex-end; gap: 4px; }
+  .prog-bar { flex: 1; border-radius: 4px 4px 0 0; min-height: 4px; position: relative; transition: height .4s; }
+  .prog-bar-label { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: 9px; color: var(--muted); font-family: var(--mono); }
+  .prog-val { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 9px; font-family: var(--mono); font-weight: 500; white-space: nowrap; }
+  .prog-chart-wrap { padding-bottom: 24px; }
+  .prog-stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+  .prog-stat { background: var(--surface); border-radius: 8px; padding: 10px; text-align: center; }
+  .prog-stat-val { font-family: var(--mono); font-size: 18px; font-weight: 500; }
+  .prog-stat-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  /* NAME MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 24px; display: none; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; padding: 24px; width: 100%; max-width: 320px; }
+  .modal-title { font-size: 15px; font-weight: 500; margin-bottom: 16px; }
+  .modal-input { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; padding: 12px; font-size: 16px; color: var(--text); font-family: var(--sans); }
+  .modal-input:focus { outline: none; border-color: var(--accent); }
+  .modal-btn { width: 100%; margin-top: 12px; padding: 12px; background: var(--accent); color: #0f0f0f; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: var(--sans); }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="app-title">Cali Tracker</div>
+  <div class="name-badge" id="name-badge" onclick="openNameModal()">— imposta nome</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('log')">Inserisci</div>
+  <div class="tab" onclick="switchTab('history')">Storico</div>
+  <div class="tab" onclick="switchTab('progress')">Progressi</div>
+</div>
+
+<!-- LOG PAGE -->
+<div class="page active" id="page-log">
+  <div class="sess-header">
+    <div class="sess-label">Sessione</div>
+    <div>
+      <div class="sess-nav">
+        <button class="sess-btn" onclick="changeSess(-1)">‹</button>
+        <div class="sess-num" id="sess-num">1</div>
+        <button class="sess-btn" onclick="changeSess(1)">›</button>
+      </div>
+      <div class="sess-date" id="sess-date">—</div>
+    </div>
+  </div>
+
+  <!-- VERTICALE -->
+  <div class="section">
+    <div class="section-head skill-head">
+      <div class="section-dot skill-dot"></div>
+      <div class="section-name skill-name">Verticale</div>
+      <div class="section-sub">blocco skill</div>
+    </div>
+    <div class="skill-fields">
+      <div class="field">
+        <div class="field-label">Wall walk</div>
+        <input class="field-input" id="ww" type="number" inputmode="numeric" min="0" max="20" placeholder="—">
+        <div class="field-unit">passi mani-muro</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Hold a muro</div>
+        <input class="field-input" id="hold" type="number" inputmode="numeric" min="0" max="120" placeholder="—">
+        <div class="field-unit">secondi</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S1 -->
+  <div class="section">
+    <div class="section-head circuit-head">
+      <div class="section-dot circuit-dot"></div>
+      <div class="section-name circuit-name">S1 — Ring row</div>
+      <div class="section-sub">tiraggio orizz.</div>
+    </div>
+    <div class="station-row">
+      <div class="r1r2">
+        <div class="r-field"><div class="r-label">Round 1</div><input class="r-input" id="s1-r1" type="number" inputmode="numeric" min="0" placeholder="—"></div>
+        <div class="r-field"><div class="r-label">Round 2</div><input class="r-input" id="s1-r2" type="number" inputmode="numeric" min="0" placeholder="—"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section">
+    <div class="section-head s3-head">
+      <div class="section-dot" style="background:var(--coral)"></div>
+      <div class="section-name" style="color:var(--coral)">S3 — Scapular / hang</div>
+      <div class="section-sub">tiraggio vert.</div>
+    </div>
+    <div class="station-row">
+      <div class="r1r2">
+        <div class="r-field"><div class="r-label">Round 1</div><input class="r-input" id="s3-r1" type="number" inputmode="numeric" min="0" placeholder="—"></div>
+        <div class="r-field"><div class="r-label">Round 2</div><input class="r-input" id="s3-r2" type="number" inputmode="numeric" min="0" placeholder="—"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section">
+    <div class="section-head circuit-head">
+      <div class="section-dot circuit-dot"></div>
+      <div class="section-name circuit-name">S5 — Pushup</div>
+      <div class="section-sub">spinta orizz.</div>
+    </div>
+    <div class="station-row">
+      <div class="r1r2">
+        <div class="r-field"><div class="r-label">Round 1</div><input class="r-input" id="s5-r1" type="number" inputmode="numeric" min="0" placeholder="—"></div>
+        <div class="r-field"><div class="r-label">Round 2</div><input class="r-input" id="s5-r2" type="number" inputmode="numeric" min="0" placeholder="—"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section">
+    <div class="section-head s7-head">
+      <div class="section-dot s7-dot"></div>
+      <div class="section-name s7-name">S7 — Support hold</div>
+      <div class="section-sub">sec. totali</div>
+    </div>
+    <div class="station-row">
+      <div class="r1r2">
+        <div class="r-field"><div class="r-label">Round 1</div><input class="r-input" id="s7-r1" type="number" inputmode="numeric" min="0" placeholder="—"></div>
+        <div class="r-field"><div class="r-label">Round 2</div><input class="r-input" id="s7-r2" type="number" inputmode="numeric" min="0" placeholder="—"></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="save-btn" onclick="saveSession()">Salva sessione</button>
+  <div class="saved-toast" id="toast">✓ Salvato</div>
+</div>
+
+<!-- HISTORY PAGE -->
+<div class="page" id="page-history">
+  <div id="history-list"><div class="history-empty">Nessuna sessione ancora.<br>Inserisci i dati nella tab "Inserisci".</div></div>
+</div>
+
+<!-- PROGRESS PAGE -->
+<div class="page" id="page-progress">
+  <div id="progress-content"><div class="history-empty">Inserisci almeno 2 sessioni<br>per vedere i progressi.</div></div>
+</div>
+
+<!-- NAME MODAL -->
+<div class="modal-overlay" id="name-modal">
+  <div class="modal">
+    <div class="modal-title">Come ti chiami?</div>
+    <input class="modal-input" id="name-input" type="text" placeholder="Il tuo nome" maxlength="30">
+    <button class="modal-btn" onclick="saveName()">Salva</button>
+  </div>
+</div>
+
+<script>
+const KEYS = { sessions: 'cali_sessions', name: 'cali_name' };
+let currentSess = 1;
+
+function getData() { try { return JSON.parse(localStorage.getItem(KEYS.sessions)) || {}; } catch(e) { return {}; } }
+function saveData(d) { localStorage.setItem(KEYS.sessions, JSON.stringify(d)); }
+function getName() { return localStorage.getItem(KEYS.name) || ''; }
+
+function init() {
+  const name = getName();
+  if (!name) { openNameModal(); }
+  else { document.getElementById('name-badge').textContent = name; }
+  const data = getData();
+  const sessNums = Object.keys(data).map(Number).filter(n => !isNaN(n));
+  if (sessNums.length > 0) {
+    currentSess = Math.max(...sessNums);
+  }
+  loadSession(currentSess);
+  renderHistory();
+  renderProgress();
+}
+
+function openNameModal() { document.getElementById('name-modal').classList.add('open'); setTimeout(() => document.getElementById('name-input').focus(), 100); }
+function saveName() {
+  const v = document.getElementById('name-input').value.trim();
+  if (!v) return;
+  localStorage.setItem(KEYS.name, v);
+  document.getElementById('name-badge').textContent = v;
+  document.getElementById('name-modal').classList.remove('open');
+}
+document.getElementById('name-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
+
+function changeSess(d) {
+  const next = currentSess + d;
+  if (next < 1 || next > 8) return;
+  currentSess = next;
+  loadSession(currentSess);
+}
+
+function loadSession(n) {
+  document.getElementById('sess-num').textContent = n;
+  const data = getData();
+  const s = data[n] || {};
+  document.getElementById('sess-date').textContent = s.date || '—';
+  ['ww','hold','s1-r1','s1-r2','s3-r1','s3-r2','s5-r1','s5-r2','s7-r1','s7-r2'].forEach(id => {
+    const key = id.replace('-','_');
+    document.getElementById(id).value = s[key] !== undefined ? s[key] : '';
+  });
+}
+
+function saveSession() {
+  const data = getData();
+  const today = new Date().toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: '2-digit' });
+  const s = { date: today };
+  ['ww','hold','s1-r1','s1-r2','s3-r1','s3-r2','s5-r1','s5-r2','s7-r1','s7-r2'].forEach(id => {
+    const v = document.getElementById(id).value;
+    const key = id.replace('-','_');
+    if (v !== '') s[key] = parseInt(v);
+  });
+  data[currentSess] = s;
+  saveData(data);
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+  renderHistory();
+  renderProgress();
+}
+
+function switchTab(t) {
+  document.querySelectorAll('.tab').forEach((el, i) => {
+    const tabs = ['log','history','progress'];
+    el.classList.toggle('active', tabs[i] === t);
+  });
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + t).classList.add('active');
+  if (t === 'history') renderHistory();
+  if (t === 'progress') renderProgress();
+}
+
+function renderHistory() {
+  const data = getData();
+  const list = document.getElementById('history-list');
+  const sessions = Object.keys(data).map(Number).filter(n => !isNaN(n)).sort((a,b) => b-a);
+  if (sessions.length === 0) {
+    list.innerHTML = '<div class="history-empty">Nessuna sessione ancora.<br>Inserisci i dati nella tab "Inserisci".</div>';
+    return;
+  }
+  const labels = { ww:'Wall walk (passi)', hold:'Hold (sec)', s1_r1:'S1 R1', s1_r2:'S1 R2', s3_r1:'S3 R1', s3_r2:'S3 R2', s5_r1:'S5 R1', s5_r2:'S5 R2', s7_r1:'S7 R1', s7_r2:'S7 R2' };
+  list.innerHTML = sessions.map(n => {
+    const s = data[n];
+    const prev = data[n+1];
+    const rows = Object.keys(labels).filter(k => s[k] !== undefined).map(k => {
+      let delta = '';
+      if (prev && prev[k] !== undefined) {
+        const d = s[k] - prev[k];
+        if (k === 'ww') {
+          if (d < 0) delta = `<span class="delta-pos">▲ ${Math.abs(d)}</span>`;
+          else if (d > 0) delta = `<span class="delta-neg">▼ ${d}</span>`;
+        } else {
+          if (d > 0) delta = `<span class="delta-pos">+${d}</span>`;
+          else if (d < 0) delta = `<span class="delta-neg">${d}</span>`;
+        }
+      }
+      return `<div class="history-row"><span class="history-key">${labels[k]}</span><span class="history-val">${s[k]}${delta}</span></div>`;
+    }).join('');
+    return `<div class="history-sess">
+      <div class="history-head" onclick="toggleHistory(this)">
+        <span class="history-sess-num">Sessione ${n}</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="history-date">${s.date || '—'}</span>
+          <button class="delete-btn" onclick="deleteSession(event, ${n})">✕</button>
+        </div>
+      </div>
+      <div class="history-body">${rows || '<div style="font-size:12px;color:var(--muted);padding:8px 0">Nessun dato</div>'}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleHistory(el) { el.nextElementSibling.classList.toggle('open'); }
+
+function deleteSession(e, n) {
+  e.stopPropagation();
+  if (!confirm(`Cancellare la sessione ${n}?`)) return;
+  const data = getData();
+  delete data[n];
+  saveData(data);
+  renderHistory();
+  renderProgress();
+}
+
+function renderProgress() {
+  const data = getData();
+  const sessions = Object.keys(data).map(Number).filter(n => !isNaN(n)).sort((a,b) => a-b);
+  const cont = document.getElementById('progress-content');
+  if (sessions.length < 2) {
+    cont.innerHTML = '<div class="history-empty">Inserisci almeno 2 sessioni<br>per vedere i progressi.</div>';
+    return;
+  }
+
+  // invertTrend: true = meno è meglio (es. wall walk: meno passi = più vicino al muro = più forte)
+  function chartHTML(title, key, color, unit, invertTrend) {
+    const vals = sessions.map(n => data[n][key]).filter(v => v !== undefined);
+    if (vals.length < 1) return '';
+    const max = Math.max(...vals);
+    const min = Math.min(...vals);
+    const first = vals[0], last = vals[vals.length-1];
+    let trend = last - first;
+    let trendLabel = trend === 0 ? '=' : (trend > 0 ? '+' + trend : '' + trend);
+    let trendColor = trend > 0 ? 'var(--teal)' : trend < 0 ? 'var(--coral)' : 'var(--muted)';
+    if (invertTrend) { trendColor = trend < 0 ? 'var(--teal)' : trend > 0 ? 'var(--coral)' : 'var(--muted)'; }
+    const bars = sessions.map((n, i) => {
+      const v = data[n][key];
+      if (v === undefined) return `<div class="prog-bar" style="background:var(--border);height:4px"><div class="prog-bar-label">S${n}</div></div>`;
+      const h = max === min ? 60 : ((v - min) / (max - min)) * 60 + 10;
+      return `<div class="prog-bar" style="background:${color};height:${h}px">
+        <div class="prog-val" style="color:${color}">${v}</div>
+        <div class="prog-bar-label">S${n}</div>
+      </div>`;
+    }).join('');
+    return `<div class="prog-section">
+      <div class="prog-title">${title}</div>
+      <div class="prog-chart-wrap"><div class="prog-chart">${bars}</div></div>
+      <div class="prog-stat-row">
+        <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${first}</div><div class="prog-stat-lbl">inizio</div></div>
+        <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${last}</div><div class="prog-stat-lbl">attuale</div></div>
+        <div class="prog-stat"><div class="prog-stat-val" style="color:${trendColor}">${trendLabel}</div><div class="prog-stat-lbl">trend</div></div>
+      </div>
+    </div>`;
+  }
+
+  cont.innerHTML = [
+    chartHTML('Wall walk — passi mani-muro', 'ww', 'var(--purple)', 'passi', false),
+    chartHTML('Hold a muro — secondi', 'hold', 'var(--purple)', 'sec', false),
+    chartHTML('S1 Ring row — R1', 's1_r1', 'var(--teal)', 'rep', false),
+    chartHTML('S3 Scapular — R1', 's3_r1', 'var(--coral)', 'rep', false),
+    chartHTML('S5 Pushup — R1', 's5_r1', 'var(--teal)', 'rep', false),
+    chartHTML('S7 Support hold — R1', 's7_r1', 'var(--amber)', 'sec', false),
+  ].filter(Boolean).join('') || '<div class="history-empty">Dati insufficienti per i grafici.</div>';
+}
+
+init();
+</script>
+</body>
+</html>
