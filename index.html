@@ -273,12 +273,13 @@
 </div>
 
 <script>
-const KEYS = { sessions: 'cali_sessions', name: 'cali_name' };
+const KEY_NAME = 'cali_name';
 let currentSess = 1;
 
-function getData() { try { return JSON.parse(localStorage.getItem(KEYS.sessions)) || {}; } catch(e) { return {}; } }
-function saveData(d) { localStorage.setItem(KEYS.sessions, JSON.stringify(d)); }
-function getName() { return localStorage.getItem(KEYS.name) || ''; }
+function sessKey() { return 'cali_sessions_' + (getName().toLowerCase().replace(/\s+/g,'_') || 'default'); }
+function getData() { try { return JSON.parse(localStorage.getItem(sessKey())) || {}; } catch(e) { return {}; } }
+function saveData(d) { localStorage.setItem(sessKey(), JSON.stringify(d)); }
+function getName() { return localStorage.getItem(KEY_NAME) || ''; }
 
 function init() {
   const name = getName();
@@ -296,11 +297,15 @@ function init() {
 
 function openNameModal() { document.getElementById('name-modal').classList.add('open'); setTimeout(() => document.getElementById('name-input').focus(), 100); }
 function saveName() {
+  const prev = getName();
   const v = document.getElementById('name-input').value.trim();
   if (!v) return;
-  localStorage.setItem(KEYS.name, v);
+  localStorage.setItem(KEY_NAME, v);
   document.getElementById('name-badge').textContent = v;
   document.getElementById('name-modal').classList.remove('open');
+  currentSess = 1;
+  const d = getData(); const s = Object.keys(d).map(Number).filter(n => !isNaN(n)); if (s.length > 0) currentSess = Math.max(...s);
+  loadSession(currentSess); renderHistory(); renderProgress();
 }
 document.getElementById('name-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
 
