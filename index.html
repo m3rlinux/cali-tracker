@@ -27,10 +27,10 @@
   --r: 10px;
   /* pair colors */
   --p0: #b090f0;
-  --p1: #ee412a;
-  --p2: #47d2eb;
-  --p3: #df60f0;
-  --p4: #f09138;
+  --p1: #f07060;
+  --p2: #4dd9a0;
+  --p3: #60a8f0;
+  --p4: #f0b840;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; }
@@ -137,7 +137,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .si-lbl { font-size: 9px; color: var(--muted2); font-family: var(--mono); text-align: center; text-transform: uppercase; letter-spacing: .04em; }
 .si-input { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 9px 4px; font-size: 22px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; }
 .si-input::-webkit-inner-spin-button, .si-input::-webkit-outer-spin-button { -webkit-appearance: none; }
-.si-input.reps:focus { border-color: var(--teal); }
+.si-input.filate:focus { border-color: var(--teal); }
 .si-input.cluster:focus { border-color: var(--amber); }
 .set-prev { font-family: var(--mono); font-size: 10px; color: var(--muted2); white-space: nowrap; min-width: 44px; text-align: right; }
 .cluster-hint { font-size: 10px; color: var(--amber); font-family: var(--mono); text-align: center; padding: 6px 12px 10px; opacity: .7; }
@@ -274,7 +274,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '2.2';
+const VERSION = '2.3';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
@@ -326,8 +326,14 @@ function buildSteps() {
 
 function getMetric(stationKey, variant) {
   const group = Object.values(EXERCISES).find(g => g.station === stationKey);
-  if (!group || !variant) return 'reps';
-  return group.metrics?.[variant] || 'reps';
+  if (!group) return 'reps';
+  if (variant) return group.metrics?.[variant] || 'reps';
+  // No variant selected: check if ALL variants are time → default to time
+  if (group.metrics && group.variants) {
+    const allTime = group.variants.every(v => group.metrics[v] === 'time');
+    if (allTime) return 'time';
+  }
+  return 'reps';
 }
 
 function getVariants(stationKey) {
@@ -540,8 +546,8 @@ function repsSetsHTML(stationKey, exData, prevExData, numSets) {
       <div class="set-label">S${i+1}</div>
       <div class="set-inputs">
         <div class="si-wrap">
-          <div class="si-lbl">reps</div>
-          <input class="si-input reps" data-ex="${stationKey}" data-set="${i}" data-type="f" type="number" inputmode="numeric" min="0" placeholder="—" value="${f}">
+          <div class="si-lbl">filate</div>
+          <input class="si-input filate" data-ex="${stationKey}" data-set="${i}" data-type="f" type="number" inputmode="numeric" min="0" placeholder="—" value="${f}">
         </div>
         <div class="si-wrap">
           <div class="si-lbl">cluster</div>
@@ -753,7 +759,7 @@ function renderProgress() {
   const cont = document.getElementById('progress-content');
   if (sessions.length < 2) { cont.innerHTML = '<div class="history-empty">Inserisci almeno 2 sessioni<br>per vedere i progressi.</div>'; return; }
 
-  function chartHTML(title, color, valFn, invertTrend, variantFn) {
+  function chartHTML(title, color, valFn, invertTrend, variantFn, stationKeyForArrow) {
     const vals = sessions.map(n => valFn(data[n]));
     const variants = variantFn ? sessions.map(n => variantFn(data[n])) : null;
     if (vals.every(v => v == null)) return '';
@@ -776,11 +782,20 @@ function renderProgress() {
       const v = vals[i];
       if (v == null) return `<div class="prog-bar" style="background:var(--border);height:4px"><div class="prog-bar-label">S${n}</div></div>`;
       const h = maxV === minV ? 50 : ((v - minV) / (maxV - minV)) * 60 + 10;
-      // variant change: no color change, no arrow — just normal bar
-      return `<div class="prog-bar" style="background:${color};height:${h}px"><div class="prog-val" style="color:${color}">${v}</div><div class="prog-bar-label">S${n}</div></div>`;
+      const variantChanged = stationKeyForArrow && variants && i > 0
+        && variants[i] != null && variants[i-1] != null && variants[i] !== variants[i-1];
+      let arrowLabel = `${v}`, valColor = color;
+      if (variantChanged) {
+        const allVars = getGroupVariants(stationKeyForArrow);
+        const ci = allVars.indexOf(variants[i]);
+        const pi = allVars.indexOf(variants[i-1]);
+        const isAdvance = ci > pi;
+        arrowLabel = (isAdvance ? '↑' : '↓') + v;
+        valColor = isAdvance ? 'var(--teal)' : 'var(--coral)';
+      }
+      return `<div class="prog-bar" style="background:${color};height:${h}px"><div class="prog-val" style="color:${valColor}">${arrowLabel}</div><div class="prog-bar-label">S${n}</div></div>`;
     }).join('');
 
-    // variant progression arrows: only within same-station variant changes
     const currentVariant = lastVariant
       ? `<span style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-left:6px">${lastVariant}</span>`
       : '';
@@ -806,7 +821,10 @@ function renderProgress() {
   function stationVal(s, stationKey) {
     const e = s[stationKey]; if (!e?.sets) return null;
     const metric = getMetric(stationKey, e.variant || '');
-    if (metric === 'time') return e.sets.reduce((a,[t]) => a+(t||0), 0);
+    if (metric === 'time') {
+      const tot = e.sets.reduce((a,[t]) => a+(t||0), 0);
+      return tot > 0 ? tot : null;
+    }
     const r = e.sets[0]; return r ? (r[0]||0)+(r[1]||0) : null;
   }
 
@@ -819,13 +837,15 @@ function renderProgress() {
     const charts = [];
     step.stations.forEach(({stationKey}) => {
       const label = getGroupLabel(stationKey);
-      const metric = getMetric(stationKey, Object.values(getData()).find(s => s[stationKey]?.variant)?.[stationKey]?.variant || '');
+      // Determine metric: use last known variant, fallback to group default
+      const lastKnownVariant = [...sessions].reverse().map(n => getData()[n]?.[stationKey]?.variant).find(v => v) || '';
+      const metric = getMetric(stationKey, lastKnownVariant);
       if (metric === 'time') {
-        charts.push(chartHTML(`${label} — PR`, color, s => stationPR(s, stationKey), false, s => s[stationKey]?.variant ?? null));
-        charts.push(chartHTML(`${label} — tot.`, color, s => stationVal(s, stationKey), false, s => s[stationKey]?.variant ?? null));
+        charts.push(chartHTML(`${label} — PR`, color, s => stationPR(s, stationKey), false, s => s[stationKey]?.variant ?? null, stationKey));
+        charts.push(chartHTML(`${label} — tot.`, color, s => stationVal(s, stationKey), false, s => s[stationKey]?.variant ?? null, stationKey));
       } else {
-        charts.push(chartHTML(`${label} — rep`, color, s => stationVal(s, stationKey), false, s => s[stationKey]?.variant ?? null));
-        charts.push(chartHTML(`${label} — cluster %`, color, s => clPct(s, stationKey), true, s => s[stationKey]?.variant ?? null));
+        charts.push(chartHTML(`${label} — rep`, color, s => stationVal(s, stationKey), false, s => s[stationKey]?.variant ?? null, stationKey));
+        charts.push(chartHTML(`${label} — cluster %`, color, s => clPct(s, stationKey), true, s => s[stationKey]?.variant ?? null, stationKey));
       }
     });
     const rendered = charts.filter(Boolean);
