@@ -35,7 +35,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .name-badge { font-size: 12px; color: var(--muted); font-family: var(--mono); cursor: pointer; border: 1px solid var(--border2); border-radius: 20px; padding: 4px 10px; }
 
 .tabs { display: flex; border-bottom: 1px solid var(--border); }
-.tab { flex: 1; padding: 11px 4px; text-align: center; font-size: 12px; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; letter-spacing: .03em; }
+.tab { flex: 1; padding: 11px 4px; text-align: center; font-size: 12px; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; }
 .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
 .page { display: none; }
@@ -58,7 +58,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .step-dot.active { background: var(--accent); }
 .step-dot.done { background: var(--muted2); }
 
-.step-nav { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px 14px; gap: 10px; }
+.step-nav { display: flex; align-items: center; padding: 10px 16px 14px; gap: 10px; }
 .nav-btn { flex: 1; padding: 11px; border: 1px solid var(--border2); background: var(--surface); color: var(--text); border-radius: var(--r); font-size: 13px; font-family: var(--sans); cursor: pointer; }
 .nav-btn:active { background: var(--surface2); }
 .nav-btn:disabled { opacity: .3; cursor: default; }
@@ -67,8 +67,20 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 
 .step-content { padding: 14px 16px 0; }
 
+/* VARIANT CHIPS */
+.variant-section { margin-bottom: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 10px 12px; }
+.variant-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+.variant-prev-hint { font-size: 10px; color: var(--muted2); font-family: var(--mono); margin-bottom: 7px; }
+.variant-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.variant-chip { padding: 6px 11px; border: 1px solid var(--border2); border-radius: 20px; font-size: 12px; color: var(--muted); cursor: pointer; background: var(--bg); white-space: nowrap; transition: all .15s; }
+.variant-chip.sel-purple { border-color: var(--purple); color: var(--purple); background: #1a1428; }
+.variant-chip.sel-teal   { border-color: var(--teal);   color: var(--teal);   background: #0e2420; }
+.variant-chip.sel-coral  { border-color: var(--coral);  color: var(--coral);  background: #281414; }
+.variant-chip.sel-blue   { border-color: var(--blue);   color: var(--blue);   background: #0e1c28; }
+.variant-chip.sel-amber  { border-color: var(--amber);  color: var(--amber);  background: #201c0e; }
+
 /* VERTICALE */
-.vert-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.vert-max-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 .vert-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 12px; }
 .vc-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
 .vc-input { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 8px; font-size: 26px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; }
@@ -77,13 +89,21 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .vc-unit { font-size: 10px; color: var(--muted2); font-family: var(--mono); text-align: center; margin-top: 4px; }
 .vc-prev { font-size: 10px; color: var(--muted); font-family: var(--mono); text-align: center; margin-top: 3px; }
 
-/* VARIANT SELECTOR */
-.variant-row { margin-bottom: 8px; }
-.variant-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; }
-.variant-prev { font-size: 10px; color: var(--muted2); font-family: var(--mono); margin-bottom: 5px; }
-.variant-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.variant-chip { padding: 5px 10px; border: 1px solid var(--border2); border-radius: 20px; font-size: 12px; color: var(--muted); cursor: pointer; transition: all .15s; background: var(--surface); white-space: nowrap; }
-.variant-chip.selected { border-color: currentColor; color: var(--text); background: var(--surface2); }
+.vert-work-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 4px; }
+.vert-work-head { padding: 9px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.vert-work-title { font-size: 12px; font-weight: 500; color: var(--purple); }
+.vert-target-badge { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.vert-sets { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.vert-set-row { display: flex; align-items: center; gap: 8px; }
+.vert-set-label { font-family: var(--mono); font-size: 10px; color: var(--muted); width: 28px; flex-shrink: 0; }
+.vert-set-input { flex: 1; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 9px 4px; font-size: 22px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; }
+.vert-set-input::-webkit-inner-spin-button, .vert-set-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.vert-set-input:focus { outline: none; border-color: var(--purple); }
+.vert-set-unit { font-size: 11px; color: var(--muted2); font-family: var(--mono); width: 20px; }
+.vert-total-bar { padding: 10px 12px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.vert-total-label { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+.vert-total-val { font-family: var(--mono); font-size: 14px; font-weight: 500; }
+.vert-total-target { font-size: 10px; color: var(--muted2); font-family: var(--mono); }
 
 /* PAIR */
 .pair-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
@@ -93,11 +113,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 
 .ex-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 10px; overflow: hidden; }
 .ex-head { padding: 9px 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); }
-.ex-color { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.ex-color-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 .ex-name { font-size: 12px; font-weight: 500; }
 .ex-tag { font-size: 10px; font-family: var(--mono); color: var(--muted); background: var(--surface2); border-radius: 4px; padding: 2px 6px; margin-left: auto; }
-
-.ex-variant { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.ex-variant-area { padding: 8px 12px; border-bottom: 1px solid var(--border); }
 
 .sets-grid { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
 .set-row { display: flex; align-items: center; gap: 8px; }
@@ -124,7 +143,6 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .delete-btn:active { background: var(--coral); color: #0c0c0c; border-color: var(--coral); }
 .history-body { padding: 10px 14px; display: none; border-top: 1px solid var(--border); }
 .history-body.open { display: block; }
-.h-section-title { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; margin: 8px 0 4px; }
 .history-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
 .history-row:last-child { border-bottom: none; }
 .history-key { color: var(--muted); font-family: var(--mono); font-size: 11px; }
@@ -157,7 +175,6 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 
 .toast { text-align: center; font-size: 12px; color: var(--accent); font-family: var(--mono); padding: 8px; opacity: 0; transition: opacity .3s; }
 .toast.show { opacity: 1; }
-.loading { text-align: center; padding: 40px 16px; color: var(--muted); font-family: var(--mono); font-size: 12px; }
 </style>
 </head>
 <body>
@@ -188,7 +205,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
     <div class="step-label" id="step-label">Verticale</div>
     <div class="step-dots" id="step-dots"></div>
   </div>
-  <div class="step-content" id="step-content"><div class="loading">Caricamento esercizi…</div></div>
+  <div class="step-content" id="step-content"></div>
   <div class="step-nav">
     <button class="nav-btn" id="btn-prev" onclick="goStep(-1)">‹ Indietro</button>
     <button class="nav-btn" id="btn-next" onclick="goStep(1)">Avanti ›</button>
@@ -217,18 +234,19 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 // ── DATA MODEL ──
 // session: {
 //   date,
-//   hold_max, hold_work,
-//   s_vert_variant,           ← variante esercizio verticale
-//   p1: {
-//     s5: { variant: "Ring pushup", sets: [[f,c],[f,c],[f,c]] },
-//     s1: { variant: "Ring row",    sets: [[f,c],[f,c],[f,c]] }
-//   },
+//   s_vert_variant, hold_max,
+//   hold_sets: [sec, sec, ...],   ← set di lavoro verticale
+//   p1: { s5: { variant, sets:[[f,c],...] }, s1: { variant, sets } },
 //   p2: { s7: { variant, sets }, s3: { variant, sets } },
 //   p3: { s6: { variant, sets }, s8: { variant, sets } },
 //   p4: { s4: { variant, sets }, s2: { variant, sets } }
 // }
 
 const KEY_NAME = 'cali_name';
+const MAX_VERT_SETS = 6;
+const VERT_TARGET_LOW = 50;
+const VERT_TARGET_HIGH = 60;
+
 function sessKey() { return 'cali_sessions_' + (getName().toLowerCase().replace(/\s+/g,'_') || 'default'); }
 function getData() { try { return JSON.parse(localStorage.getItem(sessKey())) || {}; } catch(e) { return {}; } }
 function saveData(d) { localStorage.setItem(sessKey(), JSON.stringify(d)); }
@@ -238,7 +256,15 @@ let currentSess = 1;
 let currentStep = 0;
 const TOTAL_STEPS = 5;
 
-// Mappa stazione → categoria del JSON
+// color token → CSS class suffix (no commas in onclick attributes)
+const COLOR_CLASS = {
+  'purple': 'purple',
+  'teal':   'teal',
+  'coral':  'coral',
+  'blue':   'blue',
+  'amber':  'amber',
+};
+
 const STATION_CATEGORY = {
   s_vert: 'spinta_verticale',
   s5: 'spinta_orizzontale',
@@ -248,34 +274,36 @@ const STATION_CATEGORY = {
   s8: 'gamba_posteriore',
   s4: 'core',
   s2: 'catena_posteriore',
-  s7: null  // support hold: nessuna variante, solo secondi
+  s7: null
 };
 
 const PAIRS = [
   null,
-  { id:'p1', label:'P1', color:'var(--teal)', sets:3, exercises:[
-    { key:'s5', name:'S5 — Spinta orizzontale', color:'var(--teal)', tag:'spinta orizz.' },
-    { key:'s1', name:'S1 — Tirata orizzontale', color:'var(--teal)', tag:'tiraggio orizz.' }
+  { id:'p1', label:'P1', colorToken:'teal', sets:3, exercises:[
+    { key:'s5', name:'S5 — Spinta orizzontale', colorToken:'teal', tag:'spinta orizz.' },
+    { key:'s1', name:'S1 — Tirata orizzontale', colorToken:'teal', tag:'tiraggio orizz.' }
   ]},
-  { id:'p2', label:'P2', color:'var(--coral)', sets:3, exercises:[
-    { key:'s7', name:'S7 — Support hold', color:'var(--amber)', tag:'sec. per set' },
-    { key:'s3', name:'S3 — Tirata verticale', color:'var(--coral)', tag:'tiraggio vert.' }
+  { id:'p2', label:'P2', colorToken:'coral', sets:3, exercises:[
+    { key:'s7', name:'S7 — Support hold', colorToken:'amber', tag:'sec. per set' },
+    { key:'s3', name:'S3 — Tirata verticale', colorToken:'coral', tag:'tiraggio vert.' }
   ]},
-  { id:'p3', label:'P3', color:'var(--blue)', sets:2, exercises:[
-    { key:'s6', name:'S6 — Gamba anteriore', color:'var(--blue)', tag:'unilaterale' },
-    { key:'s8', name:'S8 — Gamba posteriore', color:'var(--blue)', tag:'catena post.' }
+  { id:'p3', label:'P3', colorToken:'blue', sets:2, exercises:[
+    { key:'s6', name:'S6 — Gamba anteriore', colorToken:'blue', tag:'unilaterale' },
+    { key:'s8', name:'S8 — Gamba posteriore', colorToken:'blue', tag:'catena post.' }
   ]},
-  { id:'p4', label:'P4', color:'var(--purple)', sets:2, exercises:[
-    { key:'s4', name:'S4 — Core', color:'var(--purple)', tag:'core' },
-    { key:'s2', name:'S2 — Catena posteriore', color:'var(--purple)', tag:'catena post.' }
+  { id:'p4', label:'P4', colorToken:'purple', sets:2, exercises:[
+    { key:'s4', name:'S4 — Core', colorToken:'purple', tag:'core' },
+    { key:'s2', name:'S2 — Catena posteriore', colorToken:'purple', tag:'catena post.' }
   ]}
 ];
 
-let EXERCISES = null; // loaded from exercises.json
+function cssVar(token) { return `var(--${token})`; }
+
+let EXERCISES = {};
 
 function getVariants(stationKey) {
   const cat = STATION_CATEGORY[stationKey];
-  if (!cat || !EXERCISES || !EXERCISES[cat]) return [];
+  if (!cat || !EXERCISES[cat]) return [];
   return EXERCISES[cat].variants || [];
 }
 
@@ -283,10 +311,10 @@ function getVariants(stationKey) {
 async function loadExercises() {
   try {
     const res = await fetch('exercises.json');
-    if (!res.ok) throw new Error('not found');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     EXERCISES = await res.json();
   } catch(e) {
-    console.warn('exercises.json non trovato, varianti non disponibili');
+    console.warn('exercises.json:', e.message);
     EXERCISES = {};
   }
 }
@@ -296,12 +324,10 @@ async function init() {
   const name = getName();
   if (!name) openNameModal();
   else document.getElementById('name-badge').textContent = name;
-
   await loadExercises();
-
   const data = getData();
   const nums = Object.keys(data).map(Number).filter(n => !isNaN(n));
-  if (nums.length > 0) currentSess = Math.max(...nums);
+  if (nums.length) currentSess = Math.max(...nums);
   renderStepDots();
   renderStep();
   renderHistory();
@@ -321,9 +347,8 @@ function changeSess(d) {
 
 // ── STEP NAV ──
 function renderStepDots() {
-  const cont = document.getElementById('step-dots');
-  cont.innerHTML = Array.from({length: TOTAL_STEPS}, (_, i) => {
-    const cls = i === currentStep ? 'active' : (i < currentStep ? 'done' : '');
+  document.getElementById('step-dots').innerHTML = Array.from({length: TOTAL_STEPS}, (_, i) => {
+    const cls = i === currentStep ? 'active' : i < currentStep ? 'done' : '';
     return `<div class="step-dot ${cls}"></div>`;
   }).join('');
 }
@@ -341,51 +366,119 @@ function renderStep() {
   document.getElementById('btn-prev').disabled = currentStep === 0;
   document.getElementById('btn-next').style.display = currentStep < TOTAL_STEPS - 1 ? '' : 'none';
   document.getElementById('btn-save').style.display = currentStep === TOTAL_STEPS - 1 ? '' : 'none';
-
   const data = getData();
   const s = data[currentSess] || {};
   const prev = data[currentSess - 1] || {};
   document.getElementById('sess-num').textContent = currentSess;
   document.getElementById('sess-date').textContent = s.date || '—';
-
   if (currentStep === 0) renderVertStep(s, prev);
   else renderPairStep(currentStep, s, prev);
 }
 
+// ── VARIANT CHIPS HTML ──
+function variantChipsHTML(stationKey, selectedVariant, prevVariant, colorToken) {
+  const variants = getVariants(stationKey);
+  if (!variants.length) return '';
+  const selClass = colorToken ? `sel-${colorToken}` : 'sel-purple';
+  const chips = variants.map(v => {
+    const sel = selectedVariant === v ? selClass : '';
+    return `<div class="variant-chip ${sel}" data-station="${stationKey}" data-color="${colorToken||'purple'}" onclick="selectVariant(this)">${v}</div>`;
+  }).join('');
+  return `<div class="variant-section">
+    <div class="variant-label">Esercizio</div>
+    ${prevVariant ? `<div class="variant-prev-hint">sessione prec.: ${prevVariant}</div>` : ''}
+    <div class="variant-chips">${chips}</div>
+  </div>`;
+}
+
+function selectVariant(el) {
+  const station = el.dataset.station;
+  const color = el.dataset.color;
+  const selClass = `sel-${color}`;
+  document.querySelectorAll(`.variant-chip[data-station="${station}"]`).forEach(c => {
+    c.classList.remove('sel-purple','sel-teal','sel-coral','sel-blue','sel-amber');
+  });
+  el.classList.add(selClass);
+  // live update totale verticale se necessario
+  if (station === 's_vert') updateVertTotal();
+}
+
 // ── VERTICALE STEP ──
 function renderVertStep(s, prev) {
-  const pm = prev.hold_max !== undefined ? `prec. ${prev.hold_max}"` : '';
-  const pw = prev.hold_work !== undefined ? `prec. ${prev.hold_work}"` : '';
-  const variants = getVariants('s_vert');
-  const selectedVariant = s.s_vert_variant || '';
-  const prevVariant = prev.s_vert_variant || '';
+  const holdMax = s.hold_max ?? '';
+  const prevMax = prev.hold_max != null ? `prec. ${prev.hold_max}"` : '';
+  const holdSets = s.hold_sets || [];
+  const prevHoldSets = prev.hold_sets || [];
 
-  const variantHTML = variants.length ? `
-    <div class="variant-row">
-      <div class="variant-label">Esercizio</div>
-      ${prevVariant ? `<div class="variant-prev">sessione prec.: ${prevVariant}</div>` : ''}
-      <div class="variant-chips" id="chips-s_vert">
-        ${variants.map(v => `<div class="variant-chip ${selectedVariant === v ? 'selected' : ''}" onclick="selectVariant('s_vert', this)">${v}</div>`).join('')}
-      </div>
-    </div>` : '';
+  // Calcola target per set (65% del max, arrotondato)
+  const targetPerSet = holdMax !== '' ? Math.round(holdMax * 0.65) : null;
+  const targetBadge = targetPerSet ? `target ~${targetPerSet}" per set` : 'inserisci hold max';
+
+  const setRows = Array.from({length: MAX_VERT_SETS}, (_, i) => {
+    const val = holdSets[i] ?? '';
+    const prevVal = prevHoldSets[i] != null ? `${prevHoldSets[i]}"` : '';
+    return `<div class="vert-set-row">
+      <div class="vert-set-label">S${i+1}</div>
+      <input class="vert-set-input" id="vset-${i}" type="number" inputmode="numeric" min="0" placeholder="—" value="${val}" oninput="updateVertTotal()">
+      <div class="vert-set-unit">"</div>
+      <div class="set-prev" style="min-width:32px;text-align:right;font-size:10px;color:var(--muted2);font-family:var(--mono)">${prevVal ? `↑${prevVal}` : ''}</div>
+    </div>`;
+  }).join('');
+
+  const currentTotal = holdSets.reduce((a, v) => a + (v || 0), 0);
+  const totalColor = currentTotal >= VERT_TARGET_LOW ? 'var(--teal)' : 'var(--amber)';
 
   document.getElementById('step-content').innerHTML = `
-    ${variantHTML}
-    <div class="vert-grid">
+    ${variantChipsHTML('s_vert', s.s_vert_variant || '', prev.s_vert_variant || '', 'purple')}
+    <div class="vert-max-row">
       <div class="vert-card">
-        <div class="vc-label">Hold max</div>
-        <input class="vc-input" id="hold_max" type="number" inputmode="numeric" min="0" placeholder="—" value="${s.hold_max ?? ''}">
+        <div class="vc-label">Hold max (PR)</div>
+        <input class="vc-input" id="hold_max" type="number" inputmode="numeric" min="0" placeholder="—" value="${holdMax}" oninput="updateVertTarget()">
         <div class="vc-unit">secondi</div>
-        ${pm ? `<div class="vc-prev">${pm}</div>` : ''}
+        ${prevMax ? `<div class="vc-prev">${prevMax}</div>` : ''}
       </div>
-      <div class="vert-card">
-        <div class="vc-label">Lavoro 60–70%</div>
-        <input class="vc-input" id="hold_work" type="number" inputmode="numeric" min="0" placeholder="—" value="${s.hold_work ?? ''}">
-        <div class="vc-unit">secondi effettivi</div>
-        ${pw ? `<div class="vc-prev">${pw}</div>` : ''}
+      <div class="vert-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px">
+        <div class="vc-label">Target per set</div>
+        <div id="target-display" style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--purple)">${targetPerSet ? targetPerSet + '"' : '—'}</div>
+        <div class="vc-unit">65% del max</div>
+      </div>
+    </div>
+    <div class="vert-work-block">
+      <div class="vert-work-head">
+        <div class="vert-work-title">Set di lavoro</div>
+        <div class="vert-target-badge" id="target-badge">${targetBadge}</div>
+      </div>
+      <div class="vert-sets" id="vert-sets-grid">${setRows}</div>
+      <div class="vert-total-bar">
+        <div class="vert-total-label">Totale</div>
+        <div>
+          <span class="vert-total-val" id="vert-total" style="color:${totalColor}">${currentTotal}"</span>
+          <span class="vert-total-target"> / ${VERT_TARGET_LOW}–${VERT_TARGET_HIGH}"</span>
+        </div>
       </div>
     </div>
   `;
+}
+
+function updateVertTarget() {
+  const max = parseInt(document.getElementById('hold_max')?.value) || 0;
+  const target = max > 0 ? Math.round(max * 0.65) : null;
+  const disp = document.getElementById('target-display');
+  const badge = document.getElementById('target-badge');
+  if (disp) disp.textContent = target ? target + '"' : '—';
+  if (badge) badge.textContent = target ? `target ~${target}" per set` : 'inserisci hold max';
+}
+
+function updateVertTotal() {
+  let total = 0;
+  for (let i = 0; i < MAX_VERT_SETS; i++) {
+    const v = parseInt(document.getElementById(`vset-${i}`)?.value) || 0;
+    total += v;
+  }
+  const el = document.getElementById('vert-total');
+  if (!el) return;
+  el.textContent = total + '"';
+  el.style.color = total >= VERT_TARGET_LOW ? 'var(--teal)' : 'var(--amber)';
 }
 
 // ── PAIR STEP ──
@@ -399,24 +492,14 @@ function renderPairStep(step, s, prev) {
     const prevExData = prevPair[ex.key] || {};
     const sets = exData.sets || [];
     const prevSets = prevExData.sets || [];
-    const selectedVariant = exData.variant || '';
-    const prevVariant = prevExData.variant || '';
-    const variants = getVariants(ex.key);
-
-    const variantHTML = variants.length ? `
-      <div class="ex-variant">
-        ${prevVariant ? `<div class="variant-prev" style="margin-bottom:5px">sessione prec.: ${prevVariant}</div>` : ''}
-        <div class="variant-chips" id="chips-${ex.key}">
-          ${variants.map(v => `<div class="variant-chip ${selectedVariant === v ? 'selected' : ''}" style="border-color:${selectedVariant === v ? ex.color : ''};color:${selectedVariant === v ? ex.color : ''}" onclick="selectVariant('${ex.key}', this, '${ex.color}')">${v}</div>`).join('')}
-        </div>
-      </div>` : '';
+    const variantsHTML = variantChipsHTML(ex.key, exData.variant || '', prevExData.variant || '', ex.colorToken);
 
     const setRows = Array.from({length: pair.sets}, (_, i) => {
       const f = sets[i]?.[0] ?? '';
       const c = sets[i]?.[1] ?? '';
       const pf = prevSets[i]?.[0];
       const pc = prevSets[i]?.[1];
-      const prevStr = pf !== undefined ? (pc ? `${pf}+${pc}` : `${pf}`) : '';
+      const prevStr = pf != null ? (pc ? `${pf}+${pc}` : `${pf}`) : '';
       return `<div class="set-row">
         <div class="set-label">S${i+1}</div>
         <div class="set-inputs">
@@ -435,11 +518,11 @@ function renderPairStep(step, s, prev) {
 
     return `<div class="ex-block">
       <div class="ex-head">
-        <div class="ex-color" style="background:${ex.color}"></div>
+        <div class="ex-color-dot" style="background:${cssVar(ex.colorToken)}"></div>
         <div class="ex-name">${ex.name}</div>
         <div class="ex-tag">${ex.tag}</div>
       </div>
-      ${variantHTML}
+      ${variantsHTML ? `<div class="ex-variant-area">${variantsHTML.replace('<div class="variant-section">','<div>').replace('</div>','</div>')}</div>` : ''}
       <div class="sets-grid">${setRows}</div>
       <div class="cluster-hint">cluster dopo 5"–8" di riposo</div>
     </div>`;
@@ -447,23 +530,12 @@ function renderPairStep(step, s, prev) {
 
   document.getElementById('step-content').innerHTML = `
     <div class="pair-header">
-      <div class="pair-dot" style="background:${pair.color}"></div>
-      <div class="pair-title" style="color:${pair.color}">${pair.label}</div>
+      <div class="pair-dot" style="background:${cssVar(pair.colorToken)}"></div>
+      <div class="pair-title" style="color:${cssVar(pair.colorToken)}">${pair.label}</div>
       <div class="pair-sub">${pair.sets} set · 30"</div>
     </div>
     ${exHTML}
   `;
-}
-
-function selectVariant(stationKey, el, color) {
-  const container = document.getElementById('chips-' + stationKey);
-  container.querySelectorAll('.variant-chip').forEach(c => {
-    c.classList.remove('selected');
-    c.style.borderColor = '';
-    c.style.color = '';
-  });
-  el.classList.add('selected');
-  if (color) { el.style.borderColor = color; el.style.color = color; }
 }
 
 // ── COLLECT ──
@@ -474,21 +546,27 @@ function collectStep(step) {
 
   if (step === 0) {
     const hm = document.getElementById('hold_max')?.value;
-    const hw = document.getElementById('hold_work')?.value;
     if (hm !== '' && hm != null) s.hold_max = parseInt(hm) || 0;
-    if (hw !== '' && hw != null) s.hold_work = parseInt(hw) || 0;
-    // variant
-    const selChip = document.querySelector('#chips-s_vert .variant-chip.selected');
-    if (selChip) s.s_vert_variant = selChip.textContent;
+    // set di lavoro verticale
+    const holdSets = [];
+    for (let i = 0; i < MAX_VERT_SETS; i++) {
+      const v = document.getElementById(`vset-${i}`)?.value;
+      holdSets.push(v !== '' && v != null ? parseInt(v) || 0 : null);
+    }
+    s.hold_sets = holdSets;
+    // variante
+    const selChip = document.querySelector('.variant-chip[data-station="s_vert"].sel-purple, .variant-chip[data-station="s_vert"].sel-teal, .variant-chip[data-station="s_vert"].sel-coral, .variant-chip[data-station="s_vert"].sel-blue, .variant-chip[data-station="s_vert"].sel-amber');
+    if (selChip) s.s_vert_variant = selChip.textContent.trim();
   } else {
     const pair = PAIRS[step];
     if (!s[pair.id]) s[pair.id] = {};
     pair.exercises.forEach(ex => {
       if (!s[pair.id][ex.key]) s[pair.id][ex.key] = {};
       const exObj = s[pair.id][ex.key];
-      // variant
-      const selChip = document.querySelector(`#chips-${ex.key} .variant-chip.selected`);
-      if (selChip) exObj.variant = selChip.textContent;
+      // variante
+      const selClasses = ['sel-purple','sel-teal','sel-coral','sel-blue','sel-amber'].map(c => `.variant-chip[data-station="${ex.key}"].${c}`).join(',');
+      const selChip = document.querySelector(selClasses);
+      if (selChip) exObj.variant = selChip.textContent.trim();
       // sets
       const sets = [];
       for (let i = 0; i < pair.sets; i++) {
@@ -502,8 +580,7 @@ function collectStep(step) {
     });
   }
   saveData(data);
-  const d = getData();
-  document.getElementById('sess-date').textContent = d[currentSess]?.date || '—';
+  document.getElementById('sess-date').textContent = getData()[currentSess]?.date || '—';
 }
 
 function saveSession() {
@@ -525,7 +602,7 @@ function renderHistory() {
   const data = getData();
   const list = document.getElementById('history-list');
   const sessions = Object.keys(data).map(Number).filter(n => !isNaN(n)).sort((a,b) => b-a);
-  if (!sessions.length) { list.innerHTML = '<div class="history-empty">Nessuna sessione ancora.<br>Inserisci i dati nella tab "Inserisci".</div>'; return; }
+  if (!sessions.length) { list.innerHTML = '<div class="history-empty">Nessuna sessione ancora.</div>'; return; }
 
   function delta(val, prevVal, invertPositive) {
     if (val == null || prevVal == null) return '';
@@ -534,34 +611,28 @@ function renderHistory() {
     const better = invertPositive ? d < 0 : d > 0;
     return `<span class="${better ? 'delta-pos' : 'delta-neg'}">${d > 0 ? '+' : ''}${d}</span>`;
   }
-  function totSets(exObj) {
-    if (!exObj?.sets) return null;
-    return exObj.sets.reduce((a,[f,c]) => a+(f||0)+(c||0), 0);
-  }
-  function clusterSets(exObj) {
-    if (!exObj?.sets) return null;
-    return exObj.sets.reduce((a,[f,c]) => a+(c||0), 0);
-  }
+  function totEx(exObj) { return exObj?.sets?.reduce((a,[f,c]) => a+(f||0)+(c||0), 0) ?? null; }
+  function clEx(exObj) { return exObj?.sets?.reduce((a,[f,c]) => a+(c||0), 0) ?? null; }
 
   list.innerHTML = sessions.map(n => {
-    const s = data[n];
-    const prev = data[n-1] || {};
+    const s = data[n], prev = data[n-1] || {};
     const rows = [];
 
     if (s.hold_max != null) rows.push(`<div class="history-row"><span class="history-key">Hold max</span><span class="history-val">${s.hold_max}" ${delta(s.hold_max, prev.hold_max, false)}</span></div>`);
-    if (s.hold_work != null) rows.push(`<div class="history-row"><span class="history-key">Hold lavoro</span><span class="history-val">${s.hold_work}" ${delta(s.hold_work, prev.hold_work, false)}</span></div>`);
     if (s.s_vert_variant) rows.push(`<div class="history-row"><span class="history-key">Verticale</span><span class="history-val">${s.s_vert_variant}</span></div>`);
+    if (s.hold_sets) {
+      const tot = s.hold_sets.filter(v => v != null).reduce((a,v) => a+(v||0), 0);
+      const prevTot = prev.hold_sets ? prev.hold_sets.filter(v => v != null).reduce((a,v) => a+(v||0), 0) : null;
+      if (tot > 0) rows.push(`<div class="history-row"><span class="history-key">Hold lavoro tot.</span><span class="history-val">${tot}" ${delta(tot, prevTot, false)}</span></div>`);
+    }
 
     [['p1','s5'],['p1','s1'],['p2','s7'],['p2','s3'],['p3','s6'],['p3','s8'],['p4','s4'],['p4','s2']].forEach(([p,k]) => {
-      const exObj = s[p]?.[k];
-      const prevExObj = prev[p]?.[k];
+      const exObj = s[p]?.[k], prevExObj = prev[p]?.[k];
       if (!exObj?.sets) return;
-      const tot = totSets(exObj);
-      const cl = clusterSets(exObj);
-      const prevTot = totSets(prevExObj);
-      const prevCl = clusterSets(prevExObj);
-      const variantLabel = exObj.variant ? ` (${exObj.variant})` : '';
-      rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${variantLabel}</span><span class="history-val">${tot} rep ${delta(tot, prevTot, false)}</span></div>`);
+      const tot = totEx(exObj), cl = clEx(exObj);
+      const prevTot = totEx(prevExObj), prevCl = clEx(prevExObj);
+      const vLabel = exObj.variant ? ` (${exObj.variant})` : '';
+      rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${vLabel}</span><span class="history-val">${tot} rep ${delta(tot, prevTot, false)}</span></div>`);
       if (cl > 0 || (prevCl != null && prevCl > 0)) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} cluster</span><span class="history-val">${cl} ${delta(cl, prevCl, true)}</span></div>`);
     });
 
@@ -569,11 +640,11 @@ function renderHistory() {
       <div class="history-head" onclick="toggleHistory(this)">
         <span class="history-sess-num">Sessione ${n}</span>
         <div class="history-meta">
-          <span class="history-date">${s.date || '—'}</span>
+          <span class="history-date">${s.date||'—'}</span>
           <button class="delete-btn" onclick="deleteSession(event,${n})">✕</button>
         </div>
       </div>
-      <div class="history-body">${rows.join('') || '<div style="font-size:12px;color:var(--muted);padding:4px 0">Nessun dato</div>'}</div>
+      <div class="history-body">${rows.join('')||'<div style="font-size:12px;color:var(--muted);padding:4px 0">Nessun dato</div>'}</div>
     </div>`;
   }).join('');
 }
@@ -600,8 +671,8 @@ function renderProgress() {
     const max = Math.max(...defined), min = Math.min(...defined);
     const first = defined[0], last = defined[defined.length-1];
     const trend = last - first;
-    const trendLabel = trend === 0 ? '=' : (trend > 0 ? '+'+trend : ''+trend);
-    const trendColor = trend === 0 ? 'var(--muted)' : (invertTrend ? (trend < 0 ? 'var(--teal)' : 'var(--coral)') : (trend > 0 ? 'var(--teal)' : 'var(--coral)'));
+    const tLabel = trend === 0 ? '=' : (trend > 0 ? '+'+trend : ''+trend);
+    const tColor = trend === 0 ? 'var(--muted)' : (invertTrend ? (trend < 0 ? 'var(--teal)' : 'var(--coral)') : (trend > 0 ? 'var(--teal)' : 'var(--coral)'));
     const bars = sessions.map((n,i) => {
       const v = vals[i];
       if (v == null) return `<div class="prog-bar" style="background:var(--border);height:4px"><div class="prog-bar-label">S${n}</div></div>`;
@@ -614,27 +685,29 @@ function renderProgress() {
       <div class="prog-stat-row">
         <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${first}</div><div class="prog-stat-lbl">inizio</div></div>
         <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${last}</div><div class="prog-stat-lbl">attuale</div></div>
-        <div class="prog-stat"><div class="prog-stat-val" style="color:${trendColor}">${trendLabel}</div><div class="prog-stat-lbl">trend</div></div>
+        <div class="prog-stat"><div class="prog-stat-val" style="color:${tColor}">${tLabel}</div><div class="prog-stat-lbl">trend</div></div>
       </div>
     </div>`;
   }
 
-  function totEx(s, p, k) { const e = s[p]?.[k]; return e?.sets ? e.sets.reduce((a,[f,c])=>a+(f||0)+(c||0),0) : null; }
+  function totEx(s, p, k) { return s[p]?.[k]?.sets?.reduce((a,[f,c])=>a+(f||0)+(c||0),0) ?? null; }
   function clPct(s, p, k) {
     const e = s[p]?.[k]; if (!e?.sets) return null;
     const tot = e.sets.reduce((a,[f,c])=>a+(f||0)+(c||0),0);
     const cl = e.sets.reduce((a,[f,c])=>a+(c||0),0);
     return tot > 0 ? Math.round(cl/tot*100) : 0;
   }
+  function holdTot(s) { return s.hold_sets ? s.hold_sets.filter(v=>v!=null).reduce((a,v)=>a+(v||0),0) : null; }
 
   cont.innerHTML = [
-    chartHTML('Hold max — verticale', 'var(--purple)', s => s.hold_max ?? null, false),
-    chartHTML('S5 Spinta orizz. — rep totali (S1)', 'var(--teal)', s => { const r = s.p1?.s5?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
-    chartHTML('S1 Tirata orizz. — rep totali (S1)', 'var(--teal)', s => { const r = s.p1?.s1?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
-    chartHTML('S7 Support hold — rep totali (S1)', 'var(--amber)', s => { const r = s.p2?.s7?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
-    chartHTML('S3 Tirata vert. — rep totali (S1)', 'var(--coral)', s => { const r = s.p2?.s3?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
-    chartHTML('S5 cluster % — trend verso zero', 'var(--amber)', s => clPct(s,'p1','s5'), true),
-    chartHTML('S1 cluster % — trend verso zero', 'var(--amber)', s => clPct(s,'p1','s1'), true),
+    chartHTML('Hold max — PR verticale', 'var(--purple)', s => s.hold_max ?? null, false),
+    chartHTML('Hold lavoro — totale sessione', 'var(--purple)', holdTot, false),
+    chartHTML('S5 Spinta orizz. — rep S1', 'var(--teal)', s => { const r = s.p1?.s5?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
+    chartHTML('S1 Tirata orizz. — rep S1', 'var(--teal)', s => { const r = s.p1?.s1?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
+    chartHTML('S7 Support hold — rep S1', 'var(--amber)', s => { const r = s.p2?.s7?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
+    chartHTML('S3 Tirata vert. — rep S1', 'var(--coral)', s => { const r = s.p2?.s3?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
+    chartHTML('S5 cluster % — trend →0', 'var(--amber)', s => clPct(s,'p1','s5'), true),
+    chartHTML('S1 cluster % — trend →0', 'var(--amber)', s => clPct(s,'p1','s1'), true),
   ].filter(Boolean).join('') || '<div class="history-empty">Dati insufficienti.</div>';
 }
 
@@ -647,15 +720,14 @@ function saveName() {
   document.getElementById('name-badge').textContent = v;
   document.getElementById('name-modal').classList.remove('open');
   currentSess = 1; currentStep = 0;
-  const d = getData();
-  const nums = Object.keys(d).map(Number).filter(n => !isNaN(n));
+  const nums = Object.keys(getData()).map(Number).filter(n => !isNaN(n));
   if (nums.length) currentSess = Math.max(...nums);
   renderStepDots(); renderStep(); renderHistory(); renderProgress();
 }
 document.getElementById('name-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
 
 function switchTab(t) {
-  document.querySelectorAll('.tab').forEach((el,i) => { el.classList.toggle('active', ['log','history','progress'][i] === t); });
+  document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active', ['log','history','progress'][i] === t));
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
   document.getElementById('page-'+t).classList.add('active');
   if (t === 'history') renderHistory();
