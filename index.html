@@ -148,7 +148,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .si-lbl { font-size: 9px; color: var(--muted2); font-family: var(--mono); text-align: center; text-transform: uppercase; letter-spacing: .04em; }
 .si-input { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 9px 4px; font-size: 22px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; }
 .si-input::-webkit-inner-spin-button, .si-input::-webkit-outer-spin-button { -webkit-appearance: none; }
-.si-input.reps:focus { border-color: var(--teal); }
+.si-input.filate:focus { border-color: var(--teal); }
 .si-input.cluster:focus { border-color: var(--amber); }
 .set-prev { font-family: var(--mono); font-size: 10px; color: var(--muted2); white-space: nowrap; min-width: 44px; text-align: right; }
 .cluster-hint { font-size: 10px; color: var(--amber); font-family: var(--mono); text-align: center; padding: 6px 12px 10px; opacity: .7; }
@@ -253,7 +253,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '1.9';
+const VERSION = '1.10';
 const KEY_NAME = 'cali_name';
 const MAX_VERT_SETS = 6;
 const VERT_TARGET_LOW = 50;
@@ -595,8 +595,8 @@ function repsSetsHTML(ex, exData, prevExData, numSets) {
       <div class="set-label">S${i+1}</div>
       <div class="set-inputs">
         <div class="si-wrap">
-          <div class="si-lbl">reps</div>
-          <input class="si-input reps" data-ex="${ex.key}" data-set="${i}" data-type="f" type="number" inputmode="numeric" min="0" placeholder="—" value="${f}">
+          <div class="si-lbl">filate</div>
+          <input class="si-input filate" data-ex="${ex.key}" data-set="${i}" data-type="f" type="number" inputmode="numeric" min="0" placeholder="—" value="${f}">
         </div>
         <div class="si-wrap">
           <div class="si-lbl">cluster</div>
@@ -797,27 +797,49 @@ function renderProgress() {
   const cont = document.getElementById('progress-content');
   if (sessions.length < 2) { cont.innerHTML = '<div class="history-empty">Inserisci almeno 2 sessioni<br>per vedere i progressi.</div>'; return; }
 
-  function chartHTML(title, color, valFn, invertTrend) {
+  // variantFn(session) → string|null — se fornita, barre con cambio variante
+  // vengono colorate --purple e il trend è calcolato solo sulle sessioni
+  // con la stessa variante dell'ultima sessione disponibile.
+  function chartHTML(title, color, valFn, invertTrend, variantFn) {
     const vals = sessions.map(n => valFn(data[n]));
+    const variants = variantFn ? sessions.map(n => variantFn(data[n])) : null;
     if (vals.every(v => v == null)) return '';
     const defined = vals.filter(v => v != null);
     const max = Math.max(...defined), min = Math.min(...defined);
-    const first = defined[0], last = defined[defined.length-1];
-    const trend = last - first;
-    const tLabel = trend === 0 ? '=' : (trend > 0 ? '+'+trend : ''+trend);
-    const tColor = trend === 0 ? 'var(--muted)' : (invertTrend ? (trend < 0 ? 'var(--teal)' : 'var(--coral)') : (trend > 0 ? 'var(--teal)' : 'var(--coral)'));
+
+    // Ultima variante definita
+    const lastVariant = variants ? [...variants].reverse().find(v => v != null) : null;
+
+    // Trend: solo sessioni con stessa variante dell'ultima
+    const sameVariantVals = variants
+      ? sessions.map((n,i) => (variants[i] === lastVariant && vals[i] != null) ? vals[i] : null).filter(v => v != null)
+      : defined;
+    const trendFirst = sameVariantVals[0] ?? defined[0];
+    const trendLast  = sameVariantVals[sameVariantVals.length-1] ?? defined[defined.length-1];
+    const trend = trendLast - trendFirst;
+    const tLabel = sameVariantVals.length < 2 ? '—' : (trend === 0 ? '=' : (trend > 0 ? '+'+trend : ''+trend));
+    const tColor = sameVariantVals.length < 2 ? 'var(--muted)' :
+      trend === 0 ? 'var(--muted)' :
+      (invertTrend ? (trend < 0 ? 'var(--teal)' : 'var(--coral)') : (trend > 0 ? 'var(--teal)' : 'var(--coral)'));
+
     const bars = sessions.map((n,i) => {
       const v = vals[i];
       if (v == null) return `<div class="prog-bar" style="background:var(--border);height:4px"><div class="prog-bar-label">S${n}</div></div>`;
       const h = max === min ? 50 : ((v - min) / (max - min)) * 60 + 10;
-      return `<div class="prog-bar" style="background:${color};height:${h}px"><div class="prog-val" style="color:${color}">${v}</div><div class="prog-bar-label">S${n}</div></div>`;
+      const variantChanged = variants && i > 0 && variants[i] != null && variants[i-1] != null && variants[i] !== variants[i-1];
+      const barColor = variantChanged ? 'var(--purple)' : color;
+      const valLabel = variantChanged ? `↑${v}` : `${v}`;
+      return `<div class="prog-bar" style="background:${barColor};height:${h}px"><div class="prog-val" style="color:${barColor}">${valLabel}</div><div class="prog-bar-label">S${n}</div></div>`;
     }).join('');
+
+    const currentVariant = lastVariant ? `<span style="font-size:10px;color:var(--purple);font-family:var(--mono);margin-left:6px">${lastVariant}</span>` : '';
+
     return `<div class="prog-section">
-      <div class="prog-title">${title}</div>
+      <div class="prog-title" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">${title}${currentVariant}</div>
       <div class="prog-chart-wrap"><div class="prog-chart">${bars}</div></div>
       <div class="prog-stat-row">
-        <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${first}</div><div class="prog-stat-lbl">inizio</div></div>
-        <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${last}</div><div class="prog-stat-lbl">attuale</div></div>
+        <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${defined[0]}</div><div class="prog-stat-lbl">inizio</div></div>
+        <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${defined[defined.length-1]}</div><div class="prog-stat-lbl">attuale</div></div>
         <div class="prog-stat"><div class="prog-stat-val" style="color:${tColor}">${tLabel}</div><div class="prog-stat-lbl">trend</div></div>
       </div>
     </div>`;
@@ -836,11 +858,11 @@ function renderProgress() {
   cont.innerHTML = [
     chartHTML('Hold max — PR verticale', 'var(--purple)', s => s.hold_max ?? null, false),
     chartHTML('Hold lavoro — totale sessione', 'var(--purple)', holdTot, false),
-    chartHTML('S5 Spinta orizz. — rep S1', 'var(--teal)', s => { const r = s.p1?.s5?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
-    chartHTML('S1 Tirata orizz. — rep S1', 'var(--teal)', s => { const r = s.p1?.s1?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
-    chartHTML('S7 Spinta vert. — PR"', 'var(--amber)', s => s.p2?.s7?.hold_max ?? null, false),
-    chartHTML('S7 Spinta vert. — tot."', 'var(--amber)', s => totExTime(s,'p2','s7'), false),
-    chartHTML('S3 Tirata vert. — rep S1', 'var(--coral)', s => { const r = s.p2?.s3?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
+    chartHTML('S5 Spinta orizz.', 'var(--teal)', s => { const r = s.p1?.s5?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p1?.s5?.variant ?? null),
+    chartHTML('S1 Tirata orizz.', 'var(--teal)', s => { const r = s.p1?.s1?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p1?.s1?.variant ?? null),
+    chartHTML('S7 Spinta vert. — PR', 'var(--amber)', s => s.p2?.s7?.hold_max ?? null, false, s => s.p2?.s7?.variant ?? null),
+    chartHTML('S7 Spinta vert. — tot.', 'var(--amber)', s => totExTime(s,'p2','s7'), false, s => s.p2?.s7?.variant ?? null),
+    chartHTML('S3 Tirata vert.', 'var(--coral)', s => { const r = s.p2?.s3?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p2?.s3?.variant ?? null),
     chartHTML('S5 cluster % — trend →0', 'var(--amber)', s => clPct(s,'p1','s5'), true),
     chartHTML('S1 cluster % — trend →0', 'var(--amber)', s => clPct(s,'p1','s1'), true),
   ].filter(Boolean).join('') || '<div class="history-empty">Dati insufficienti.</div>';
