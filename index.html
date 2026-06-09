@@ -180,7 +180,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v1.0</span></div>
+  <div class="app-title">Cali Tracker <span style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v1.2</span></div>
   <div class="name-badge" id="name-badge" onclick="openNameModal()">— imposta nome</div>
 </div>
 
@@ -299,7 +299,8 @@ const PAIRS = [
 
 function cssVar(token) { return `var(--${token})`; }
 
-let EXERCISES = {};
+const EXERCISES_FALLBACK = {"spinta_verticale":{"variants":["Pike pushup","Box pike","Wall walk","Hold a muro","Shoulder shrug","Pushup"]},"spinta_orizzontale":{"variants":["Pushup inclinato","Eccentrica","Su rialzo","Diamond","Ring pushup"]},"tirata_orizzontale":{"variants":["Ring row"]},"tirata_verticale":{"variants":["Dead hang","Scapular pull up","Active hang","Eccentrica","Pull up"]},"gamba_anteriore":{"variants":["Step up","Bulgarian","Shrimp squat assisted","Shrimp squat","Pistol squat assisted","Pistol squat"]},"gamba_posteriore":{"variants":["Glute bridge","Arch armstring iso","Arch armstring march"]},"core":{"variants":["Hollow","Plank"]},"catena_posteriore":{"variants":["Jefferson curl","Superman hold","WY back"]}};
+let EXERCISES = EXERCISES_FALLBACK;
 
 function getVariants(stationKey) {
   const cat = STATION_CATEGORY[stationKey];
@@ -309,12 +310,16 @@ function getVariants(stationKey) {
 
 // ── LOAD EXERCISES ──
 async function loadExercises() {
+  document.getElementById("step-content").innerHTML = "<div style=\"padding:12px;font-family:var(--mono);font-size:11px;color:var(--muted)\">Caricamento exercises.json…</div>";
   try {
     const res = await fetch('exercises.json');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     EXERCISES = await res.json();
+    document.getElementById("step-content").innerHTML += "<div style=\"padding:4px 12px;font-family:var(--mono);font-size:10px;color:var(--teal)\">✓ JSON: " + Object.keys(EXERCISES).join(", ") + "</div>";
+    console.log("exercises.json caricato:", Object.keys(EXERCISES));
   } catch(e) {
-    console.warn('exercises.json:', e.message);
+    console.warn("exercises.json fetch failed:", e.message);
+    document.title = "ERR: " + e.message;
     EXERCISES = {};
   }
 }
