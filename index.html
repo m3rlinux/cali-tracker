@@ -253,7 +253,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '1.12';
+const VERSION = '1.13';
 const KEY_NAME = 'cali_name';
 const MAX_VERT_SETS = 6;
 const VERT_TARGET_LOW = 50;
@@ -739,36 +739,60 @@ function renderHistory() {
   function totExTime(exObj) { return exObj?.sets?.reduce((a,[t]) => a+(t||0), 0) ?? null; }
   function clEx(exObj) { return exObj?.sets?.reduce((a,[f,c]) => a+(c||0), 0) ?? null; }
 
+  // Freccia variante: confronta indice nella lista variants del gruppo
+  function variantArrow(stationKey, currentVariant, prevVariant) {
+    if (!currentVariant || !prevVariant || currentVariant === prevVariant) return '';
+    const cat = STATION_CATEGORY[stationKey];
+    const variants = EXERCISES[cat]?.variants || [];
+    const ci = variants.indexOf(currentVariant);
+    const pi = variants.indexOf(prevVariant);
+    if (ci === -1 || pi === -1) return '';
+    return ci > pi
+      ? `<span class="delta-pos" style="font-size:11px">↑</span>`
+      : `<span class="delta-neg" style="font-size:11px">↓</span>`;
+  }
+
   list.innerHTML = sessions.map(n => {
     const s = data[n], prev = data[n-1] || {};
     const rows = [];
 
+    // ── Verticale: riga unica con 2 colonne max | tot ──
     const sameVertVariant = s.s_vert_variant === prev.s_vert_variant;
-    if (s.hold_max != null) rows.push(`<div class="history-row"><span class="history-key">Hold max</span><span class="history-val">${s.hold_max}" ${delta(s.hold_max, sameVertVariant ? prev.hold_max : null, false)}</span></div>`);
-    if (s.s_vert_variant) rows.push(`<div class="history-row"><span class="history-key">Verticale</span><span class="history-val">${s.s_vert_variant}</span></div>`);
-    if (s.hold_sets) {
-      const tot = s.hold_sets.filter(v => v != null).reduce((a,v) => a+(v||0), 0);
+    const vertArrow = variantArrow('s_vert', s.s_vert_variant, prev.s_vert_variant);
+    if (s.s_vert_variant || s.hold_max != null) {
+      const holdMax = s.hold_max != null ? `${s.hold_max}"` : '—';
+      const holdMaxDelta = delta(s.hold_max, sameVertVariant ? prev.hold_max : null, false);
+      const tot = s.hold_sets ? s.hold_sets.filter(v => v != null).reduce((a,v) => a+(v||0), 0) : null;
       const prevTot = sameVertVariant && prev.hold_sets ? prev.hold_sets.filter(v => v != null).reduce((a,v) => a+(v||0), 0) : null;
-      if (tot > 0) rows.push(`<div class="history-row"><span class="history-key">Hold lavoro tot.</span><span class="history-val">${tot}" ${delta(tot, prevTot, false)}</span></div>`);
+      const totDisplay = tot != null && tot > 0 ? `${tot}"` : '—';
+      const totDelta = tot != null && tot > 0 ? delta(tot, prevTot, false) : '';
+      const vLabel = s.s_vert_variant ? ` · ${s.s_vert_variant}` : '';
+      rows.push(`<div class="history-row">
+        <span class="history-key">Verticale${vLabel} ${vertArrow}</span>
+        <span class="history-val" style="display:flex;gap:12px">
+          <span><span style="color:var(--muted);font-size:10px">max </span>${holdMax} ${holdMaxDelta}</span>
+          <span><span style="color:var(--muted);font-size:10px">tot </span>${totDisplay} ${totDelta}</span>
+        </span>
+      </div>`);
     }
 
     [['p1','s5'],['p1','s1'],['p2','s7'],['p2','s3'],['p3','s6'],['p3','s8'],['p4','s4'],['p4','s2']].forEach(([p,k]) => {
       const exObj = s[p]?.[k], prevExObj = prev[p]?.[k];
       if (!exObj?.sets) return;
       const metric = getMetric(k, exObj.variant || '');
+      const arrow = variantArrow(k, exObj.variant, prevExObj?.variant);
       const vLabel = exObj.variant ? ` (${exObj.variant})` : '';
       const sameVariant = exObj.variant === prevExObj?.variant;
       if (metric === 'time') {
         const tot = totExTime(exObj);
         const prevTot = sameVariant ? totExTime(prevExObj) : null;
         const prevPR = sameVariant ? prevExObj?.hold_max : null;
-        if (exObj.hold_max != null) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} PR${vLabel}</span><span class="history-val">${exObj.hold_max}" ${delta(exObj.hold_max, prevPR, false)}</span></div>`);
-        if (tot != null && tot > 0) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} tot.</span><span class="history-val">${tot}" ${delta(tot, prevTot, false)}</span></div>`);
+        if (exObj.hold_max != null) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${vLabel} ${arrow}</span><span class="history-val">${exObj.hold_max}" max ${delta(exObj.hold_max, prevPR, false)} · ${tot != null && tot > 0 ? tot+'"' : '—'} tot ${delta(tot, prevTot, false)}</span></div>`);
       } else {
         const tot = totExReps(exObj), cl = clEx(exObj);
         const prevTot = sameVariant ? totExReps(prevExObj) : null;
         const prevCl = sameVariant ? clEx(prevExObj) : null;
-        rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${vLabel}</span><span class="history-val">${tot} rep ${delta(tot, prevTot, false)}</span></div>`);
+        rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${vLabel} ${arrow}</span><span class="history-val">${tot} rep ${delta(tot, prevTot, false)}</span></div>`);
         if (cl > 0 || (prevCl != null && prevCl > 0)) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} cluster</span><span class="history-val">${cl} ${delta(cl, prevCl, true)}</span></div>`);
       }
     });
