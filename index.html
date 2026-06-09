@@ -68,16 +68,28 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .step-content { padding: 14px 16px 0; }
 
 /* VARIANT CHIPS */
-.variant-section { margin-bottom: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 10px 12px; }
-.variant-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
-.variant-prev-hint { font-size: 10px; color: var(--muted2); font-family: var(--mono); margin-bottom: 7px; }
-.variant-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.variant-chip { padding: 6px 11px; border: 1px solid var(--border2); border-radius: 20px; font-size: 12px; color: var(--muted); cursor: pointer; background: var(--bg); white-space: nowrap; transition: all .15s; }
-.variant-chip.sel-purple { border-color: var(--purple); color: var(--purple); background: #1a1428; }
-.variant-chip.sel-teal   { border-color: var(--teal);   color: var(--teal);   background: #0e2420; }
-.variant-chip.sel-coral  { border-color: var(--coral);  color: var(--coral);  background: #281414; }
-.variant-chip.sel-blue   { border-color: var(--blue);   color: var(--blue);   background: #0e1c28; }
-.variant-chip.sel-amber  { border-color: var(--amber);  color: var(--amber);  background: #201c0e; }
+
+
+
+
+
+
+
+
+
+
+
+/* VARIANT SELECT */
+.variant-row { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.variant-select-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; flex-shrink: 0; }
+.variant-select { flex: 1; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 8px 10px; font-size: 13px; font-family: var(--sans); color: var(--text); cursor: pointer; appearance: none; -webkit-appearance: none; }
+.variant-select:focus { outline: none; }
+.variant-select.col-purple { border-color: var(--purple); color: var(--purple); }
+.variant-select.col-teal   { border-color: var(--teal);   color: var(--teal);   }
+.variant-select.col-coral  { border-color: var(--coral);  color: var(--coral);  }
+.variant-select.col-blue   { border-color: var(--blue);   color: var(--blue);   }
+.variant-select.col-amber  { border-color: var(--amber);  color: var(--amber);  }
+.variant-prev-sm { font-size: 10px; color: var(--muted2); font-family: var(--mono); flex-shrink: 0; }
 
 /* VERTICALE */
 .vert-max-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
@@ -180,7 +192,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v1.2</span></div>
+  <div class="app-title">Cali Tracker <span style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v1.3</span></div>
   <div class="name-badge" id="name-badge" onclick="openNameModal()">— imposta nome</div>
 </div>
 
@@ -299,8 +311,7 @@ const PAIRS = [
 
 function cssVar(token) { return `var(--${token})`; }
 
-const EXERCISES_FALLBACK = {"spinta_verticale":{"variants":["Pike pushup","Box pike","Wall walk","Hold a muro","Shoulder shrug","Pushup"]},"spinta_orizzontale":{"variants":["Pushup inclinato","Eccentrica","Su rialzo","Diamond","Ring pushup"]},"tirata_orizzontale":{"variants":["Ring row"]},"tirata_verticale":{"variants":["Dead hang","Scapular pull up","Active hang","Eccentrica","Pull up"]},"gamba_anteriore":{"variants":["Step up","Bulgarian","Shrimp squat assisted","Shrimp squat","Pistol squat assisted","Pistol squat"]},"gamba_posteriore":{"variants":["Glute bridge","Arch armstring iso","Arch armstring march"]},"core":{"variants":["Hollow","Plank"]},"catena_posteriore":{"variants":["Jefferson curl","Superman hold","WY back"]}};
-let EXERCISES = EXERCISES_FALLBACK;
+let EXERCISES = {};
 
 function getVariants(stationKey) {
   const cat = STATION_CATEGORY[stationKey];
@@ -315,8 +326,6 @@ async function loadExercises() {
     const res = await fetch('exercises.json');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     EXERCISES = await res.json();
-    document.getElementById("step-content").innerHTML += "<div style=\"padding:4px 12px;font-family:var(--mono);font-size:10px;color:var(--teal)\">✓ JSON: " + Object.keys(EXERCISES).join(", ") + "</div>";
-    console.log("exercises.json caricato:", Object.keys(EXERCISES));
   } catch(e) {
     console.warn("exercises.json fetch failed:", e.message);
     document.title = "ERR: " + e.message;
@@ -380,32 +389,27 @@ function renderStep() {
   else renderPairStep(currentStep, s, prev);
 }
 
-// ── VARIANT CHIPS HTML ──
+// ── VARIANT SELECT HTML ──
 function variantChipsHTML(stationKey, selectedVariant, prevVariant, colorToken) {
   const variants = getVariants(stationKey);
   if (!variants.length) return '';
-  const selClass = colorToken ? `sel-${colorToken}` : 'sel-purple';
-  const chips = variants.map(v => {
-    const sel = selectedVariant === v ? selClass : '';
-    return `<div class="variant-chip ${sel}" data-station="${stationKey}" data-color="${colorToken||'purple'}" onclick="selectVariant(this)">${v}</div>`;
-  }).join('');
-  return `<div class="variant-section">
-    <div class="variant-label">Esercizio</div>
-    ${prevVariant ? `<div class="variant-prev-hint">sessione prec.: ${prevVariant}</div>` : ''}
-    <div class="variant-chips">${chips}</div>
+  const colClass = colorToken ? `col-${colorToken}` : 'col-purple';
+  const hasSelection = selectedVariant && variants.includes(selectedVariant);
+  const options = [`<option value="">— scegli —</option>`]
+    .concat(variants.map(v => `<option value="${v}" ${selectedVariant === v ? 'selected' : ''}>${v}</option>`))
+    .join('');
+  return `<div class="variant-row">
+    <div class="variant-select-label">Eserc.</div>
+    <select class="variant-select ${hasSelection ? colClass : ''}" data-station="${stationKey}" data-color="${colorToken||'purple'}" onchange="onVariantChange(this)">
+      ${options}
+    </select>
+    ${prevVariant ? `<div class="variant-prev-sm">↑${prevVariant}</div>` : ''}
   </div>`;
 }
 
-function selectVariant(el) {
-  const station = el.dataset.station;
+function onVariantChange(el) {
   const color = el.dataset.color;
-  const selClass = `sel-${color}`;
-  document.querySelectorAll(`.variant-chip[data-station="${station}"]`).forEach(c => {
-    c.classList.remove('sel-purple','sel-teal','sel-coral','sel-blue','sel-amber');
-  });
-  el.classList.add(selClass);
-  // live update totale verticale se necessario
-  if (station === 's_vert') updateVertTotal();
+  el.className = `variant-select${el.value ? ' col-'+color : ''}`;
 }
 
 // ── VERTICALE STEP ──
@@ -527,7 +531,7 @@ function renderPairStep(step, s, prev) {
         <div class="ex-name">${ex.name}</div>
         <div class="ex-tag">${ex.tag}</div>
       </div>
-      ${variantsHTML ? `<div class="ex-variant-area">${variantsHTML}</div>` : ''}
+      ${variantsHTML || ''}
       <div class="sets-grid">${setRows}</div>
       <div class="cluster-hint">cluster dopo 5"–8" di riposo</div>
     </div>`;
@@ -560,8 +564,8 @@ function collectStep(step) {
     }
     s.hold_sets = holdSets;
     // variante
-    const selChip = document.querySelector('.variant-chip[data-station="s_vert"].sel-purple, .variant-chip[data-station="s_vert"].sel-teal, .variant-chip[data-station="s_vert"].sel-coral, .variant-chip[data-station="s_vert"].sel-blue, .variant-chip[data-station="s_vert"].sel-amber');
-    if (selChip) s.s_vert_variant = selChip.textContent.trim();
+    const selVariant = document.querySelector('.variant-select[data-station="s_vert"]');
+    if (selVariant?.value) s.s_vert_variant = selVariant.value;
   } else {
     const pair = PAIRS[step];
     if (!s[pair.id]) s[pair.id] = {};
@@ -569,9 +573,8 @@ function collectStep(step) {
       if (!s[pair.id][ex.key]) s[pair.id][ex.key] = {};
       const exObj = s[pair.id][ex.key];
       // variante
-      const selClasses = ['sel-purple','sel-teal','sel-coral','sel-blue','sel-amber'].map(c => `.variant-chip[data-station="${ex.key}"].${c}`).join(',');
-      const selChip = document.querySelector(selClasses);
-      if (selChip) exObj.variant = selChip.textContent.trim();
+      const selVariant = document.querySelector(`.variant-select[data-station="${ex.key}"]`);
+      if (selVariant?.value) exObj.variant = selVariant.value;
       // sets
       const sets = [];
       for (let i = 0; i < pair.sets; i++) {
