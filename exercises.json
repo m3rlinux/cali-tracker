@@ -12,7 +12,7 @@
   "tirata_orizzontale": {
     "label": "Tirata orizzontale",
     "stations": ["s1"],
-    "variants": ["Ring row"]
+    "variants": ["Row eccentrica", "Row", "Row piedi su rialzo", "Row archer", "Row wide one arm eccentrica", "Row one arm"]
   },
   "tirata_verticale": {
     "label": "Tirata verticale",
