@@ -165,6 +165,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .delete-btn:active { background: var(--coral); color: #0c0c0c; border-color: var(--coral); }
 .history-body { padding: 10px 14px; display: none; border-top: 1px solid var(--border); }
 .history-body.open { display: block; }
+.history-pair-header { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; padding: 8px 0 4px; border-top: 1px solid var(--border); margin-top: 4px; }
+.history-pair-header:first-child { border-top: none; margin-top: 0; }
 .history-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
 .history-row:last-child { border-bottom: none; }
 .history-key { color: var(--muted); font-family: var(--mono); font-size: 11px; }
@@ -185,6 +187,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .prog-stat { background: var(--surface); border-radius: 8px; padding: 10px; text-align: center; }
 .prog-stat-val { font-family: var(--mono); font-size: 18px; font-weight: 500; }
 .prog-stat-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.prog-pair-header { font-family: var(--mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; padding: 14px 0 6px; border-top: 1px solid var(--border); margin-top: 4px; }
 
 /* MODAL */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); display: none; align-items: center; justify-content: center; z-index: 100; padding: 24px; }
@@ -253,7 +256,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '1.13';
+const VERSION = '1.14';
 const KEY_NAME = 'cali_name';
 const MAX_VERT_SETS = 6;
 const VERT_TARGET_LOW = 50;
@@ -776,24 +779,38 @@ function renderHistory() {
       </div>`);
     }
 
-    [['p1','s5'],['p1','s1'],['p2','s7'],['p2','s3'],['p3','s6'],['p3','s8'],['p4','s4'],['p4','s2']].forEach(([p,k]) => {
-      const exObj = s[p]?.[k], prevExObj = prev[p]?.[k];
-      if (!exObj?.sets) return;
-      const metric = getMetric(k, exObj.variant || '');
-      const arrow = variantArrow(k, exObj.variant, prevExObj?.variant);
-      const vLabel = exObj.variant ? ` (${exObj.variant})` : '';
-      const sameVariant = exObj.variant === prevExObj?.variant;
-      if (metric === 'time') {
-        const tot = totExTime(exObj);
-        const prevTot = sameVariant ? totExTime(prevExObj) : null;
-        const prevPR = sameVariant ? prevExObj?.hold_max : null;
-        if (exObj.hold_max != null) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${vLabel} ${arrow}</span><span class="history-val">${exObj.hold_max}" max ${delta(exObj.hold_max, prevPR, false)} · ${tot != null && tot > 0 ? tot+'"' : '—'} tot ${delta(tot, prevTot, false)}</span></div>`);
-      } else {
-        const tot = totExReps(exObj), cl = clEx(exObj);
-        const prevTot = sameVariant ? totExReps(prevExObj) : null;
-        const prevCl = sameVariant ? clEx(prevExObj) : null;
-        rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${vLabel} ${arrow}</span><span class="history-val">${tot} rep ${delta(tot, prevTot, false)}</span></div>`);
-        if (cl > 0 || (prevCl != null && prevCl > 0)) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} cluster</span><span class="history-val">${cl} ${delta(cl, prevCl, true)}</span></div>`);
+    const PAIR_GROUPS = [
+      { label: 'P1 — Spinta + Tirata orizz.', stations: [['p1','s5'],['p1','s1']] },
+      { label: 'P2 — Spinta vert. + Tirata vert.', stations: [['p2','s7'],['p2','s3']] },
+      { label: 'P3 — Gambe', stations: [['p3','s6'],['p3','s8']] },
+      { label: 'P4 — Core + Catena post.', stations: [['p4','s4'],['p4','s2']] },
+    ];
+
+    PAIR_GROUPS.forEach(group => {
+      const groupRows = [];
+      group.stations.forEach(([p,k]) => {
+        const exObj = s[p]?.[k], prevExObj = prev[p]?.[k];
+        if (!exObj?.sets) return;
+        const metric = getMetric(k, exObj.variant || '');
+        const arrow = variantArrow(k, exObj.variant, prevExObj?.variant);
+        const vLabel = exObj.variant ? ` (${exObj.variant})` : '';
+        const sameVariant = exObj.variant === prevExObj?.variant;
+        if (metric === 'time') {
+          const tot = totExTime(exObj);
+          const prevTot = sameVariant ? totExTime(prevExObj) : null;
+          const prevPR = sameVariant ? prevExObj?.hold_max : null;
+          if (exObj.hold_max != null) groupRows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${vLabel} ${arrow}</span><span class="history-val">${exObj.hold_max}" max ${delta(exObj.hold_max, prevPR, false)} · ${tot != null && tot > 0 ? tot+'"' : '—'} tot ${delta(tot, prevTot, false)}</span></div>`);
+        } else {
+          const tot = totExReps(exObj), cl = clEx(exObj);
+          const prevTot = sameVariant ? totExReps(prevExObj) : null;
+          const prevCl = sameVariant ? clEx(prevExObj) : null;
+          groupRows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${vLabel} ${arrow}</span><span class="history-val">${tot} rep ${delta(tot, prevTot, false)}</span></div>`);
+          if (cl > 0 || (prevCl != null && prevCl > 0)) groupRows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} cluster</span><span class="history-val">${cl} ${delta(cl, prevCl, true)}</span></div>`);
+        }
+      });
+      if (groupRows.length) {
+        rows.push(`<div class="history-pair-header">${group.label}</div>`);
+        rows.push(...groupRows);
       }
     });
 
@@ -883,25 +900,38 @@ function renderProgress() {
   }
   function holdTot(s) { return s.hold_sets ? s.hold_sets.filter(v=>v!=null).reduce((a,v)=>a+(v||0),0) : null; }
 
+  function pairSection(label, color, charts) {
+    const rendered = charts.filter(Boolean);
+    if (!rendered.length) return '';
+    return `<div class="prog-pair-header" style="color:${color}">${label}</div>` + rendered.join('');
+  }
+
+  const vertCharts = [
+    chartHTML('Hold max — PR', 'var(--purple)', s => s.hold_max ?? null, false, s => s.s_vert_variant ?? null),
+    chartHTML('Hold lavoro — tot.', 'var(--purple)', holdTot, false),
+  ].filter(Boolean);
+
   cont.innerHTML = [
-    // Verticale
-    chartHTML('Hold max — PR verticale', 'var(--purple)', s => s.hold_max ?? null, false, s => s.s_vert_variant ?? null),
-    chartHTML('Hold lavoro — totale sessione', 'var(--purple)', holdTot, false),
-    // P1
-    chartHTML('S5 Spinta orizz. — rep', 'var(--teal)', s => { const r = s.p1?.s5?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p1?.s5?.variant ?? null),
-    chartHTML('S5 Spinta orizz. — cluster %', 'var(--amber)', s => clPct(s,'p1','s5'), true, s => s.p1?.s5?.variant ?? null),
-    chartHTML('S1 Tirata orizz. — rep', 'var(--teal)', s => { const r = s.p1?.s1?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p1?.s1?.variant ?? null),
-    chartHTML('S1 Tirata orizz. — cluster %', 'var(--amber)', s => clPct(s,'p1','s1'), true, s => s.p1?.s1?.variant ?? null),
-    // P2
-    chartHTML('S7 Spinta vert. — PR', 'var(--amber)', s => s.p2?.s7?.hold_max ?? null, false, s => s.p2?.s7?.variant ?? null),
-    chartHTML('S7 Spinta vert. — tot.', 'var(--amber)', s => totExTime(s,'p2','s7'), false, s => s.p2?.s7?.variant ?? null),
-    chartHTML('S3 Tirata vert. — rep', 'var(--coral)', s => { const r = s.p2?.s3?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p2?.s3?.variant ?? null),
-    // P3
-    chartHTML('S6 Gamba ant. — rep', 'var(--blue)', s => { const r = s.p3?.s6?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p3?.s6?.variant ?? null),
-    chartHTML('S8 Gamba post. — rep', 'var(--blue)', s => { const r = s.p3?.s8?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p3?.s8?.variant ?? null),
-    // P4
-    chartHTML('S4 Core — rep/sec', 'var(--purple)', s => { const e = s.p4?.s4; if (!e?.sets) return null; const m = getMetric('s4', e.variant||''); return m==='time' ? e.sets.reduce((a,[t])=>a+(t||0),0) : e.sets.reduce((a,[f,c])=>a+(f||0)+(c||0),0); }, false, s => s.p4?.s4?.variant ?? null),
-    chartHTML('S2 Catena post. — rep/sec', 'var(--purple)', s => { const e = s.p4?.s2; if (!e?.sets) return null; const m = getMetric('s2', e.variant||''); return m==='time' ? e.sets.reduce((a,[t])=>a+(t||0),0) : e.sets.reduce((a,[f,c])=>a+(f||0)+(c||0),0); }, false, s => s.p4?.s2?.variant ?? null),
+    vertCharts.length ? '<div class="prog-pair-header" style="color:var(--purple)">Verticale</div>' + vertCharts.join('') : '',
+    pairSection('P1 — Spinta + Tirata orizz.', 'var(--teal)', [
+      chartHTML('S5 Spinta orizz. — rep', 'var(--teal)', s => { const r = s.p1?.s5?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p1?.s5?.variant ?? null),
+      chartHTML('S5 Spinta orizz. — cluster %', 'var(--teal)', s => clPct(s,'p1','s5'), true, s => s.p1?.s5?.variant ?? null),
+      chartHTML('S1 Tirata orizz. — rep', 'var(--teal)', s => { const r = s.p1?.s1?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p1?.s1?.variant ?? null),
+      chartHTML('S1 Tirata orizz. — cluster %', 'var(--teal)', s => clPct(s,'p1','s1'), true, s => s.p1?.s1?.variant ?? null),
+    ]),
+    pairSection('P2 — Spinta vert. + Tirata vert.', 'var(--coral)', [
+      chartHTML('S7 Spinta vert. — PR', 'var(--amber)', s => s.p2?.s7?.hold_max ?? null, false, s => s.p2?.s7?.variant ?? null),
+      chartHTML('S7 Spinta vert. — tot.', 'var(--amber)', s => totExTime(s,'p2','s7'), false, s => s.p2?.s7?.variant ?? null),
+      chartHTML('S3 Tirata vert. — rep', 'var(--coral)', s => { const r = s.p2?.s3?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p2?.s3?.variant ?? null),
+    ]),
+    pairSection('P3 — Gambe', 'var(--blue)', [
+      chartHTML('S6 Gamba ant. — rep', 'var(--blue)', s => { const r = s.p3?.s6?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p3?.s6?.variant ?? null),
+      chartHTML('S8 Gamba post. — rep', 'var(--blue)', s => { const r = s.p3?.s8?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p3?.s8?.variant ?? null),
+    ]),
+    pairSection('P4 — Core + Catena post.', 'var(--purple)', [
+      chartHTML('S4 Core — rep/sec', 'var(--purple)', s => { const e = s.p4?.s4; if (!e?.sets) return null; const m = getMetric('s4', e.variant||''); return m==='time' ? e.sets.reduce((a,[t])=>a+(t||0),0) : e.sets.reduce((a,[f,c])=>a+(f||0)+(c||0),0); }, false, s => s.p4?.s4?.variant ?? null),
+      chartHTML('S2 Catena post. — rep/sec', 'var(--purple)', s => { const e = s.p4?.s2; if (!e?.sets) return null; const m = getMetric('s2', e.variant||''); return m==='time' ? e.sets.reduce((a,[t])=>a+(t||0),0) : e.sets.reduce((a,[f,c])=>a+(f||0)+(c||0),0); }, false, s => s.p4?.s2?.variant ?? null),
+    ]),
   ].filter(Boolean).join('') || '<div class="history-empty">Dati insufficienti.</div>';
 }
 
