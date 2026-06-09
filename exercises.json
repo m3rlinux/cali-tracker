@@ -1,57 +1,39 @@
 {
-  "handstand": {
+  "handstand_skill": {
     "label": "Skill Handstand",
-    "stations": ["s_vert"],
+    "station": "p0s1",
     "variants": [
-      "Pike",
       "Pike shrug",
-      "Box pike",
       "Box pike shrug",
       "Wall walk",
-      "Hold chest to wall",
       "Wall shrug",
+      "Wall press to HS (straddle)",
+      "Press to HS (straddle)"
+    ]
+  },
+  "handstand_hold": {
+    "label": "Hold Handstand",
+    "station": "p0s2",
+    "variants": [
+      "Pike hold",
+      "Box pike hold",
+      "Hold chest to wall",
       "Wall one-leg alternato",
       "Wall handstand",
-      "Wall press straddle",
-      "Handstand one-leg alternato",
       "Handstand"
     ],
     "metrics": {
-      "Pike": "time",
-      "Box pike": "time",
+      "Pike hold": "time",
+      "Box pike hold": "time",
       "Hold chest to wall": "time",
+      "Wall one-leg alternato": "time",
       "Wall handstand": "time",
       "Handstand": "time"
     }
   },
-  "spinta_orizzontale": {
-    "label": "Spinta orizzontale",
-    "stations": ["s5"],
-    "variants": [
-      "Pushup inclinato",
-      "Pushup eccentrica",
-      "Pushup",
-      "Pushup piedi su rialzo",
-      "Diamond pushup",
-      "Ring pushup",
-      "RTO pushup"
-    ]
-  },
-  "tirata_orizzontale": {
-    "label": "Tirata orizzontale",
-    "stations": ["s1"],
-    "variants": [
-      "Row eccentrica",
-      "Row",
-      "Row piedi su rialzo",
-      "Row archer",
-      "Row wide one arm eccentrica",
-      "Row one arm"
-    ]
-  },
   "tirata_verticale": {
     "label": "Tirata verticale",
-    "stations": ["s3"],
+    "station": "p1s1",
     "variants": [
       "Dead hang",
       "Scapular pull up",
@@ -67,32 +49,9 @@
       "Active hang": "time"
     }
   },
-  "spinta_verticale": {
-    "label": "Spinta verticale",
-    "stations": ["s7"],
-    "variants": [
-      "Support hold assistito",
-      "Support hold",
-      "Dip negativo",
-      "Dip",
-      "Dip profondo",
-      "Ring support hold",
-      "Ring support hold RTO",
-      "Ring dip negativo",
-      "Ring dip",
-      "Ring dip RTO finale",
-      "Ring dip RTO"
-    ],
-    "metrics": {
-      "Support hold assistito": "time",
-      "Support hold": "time",
-      "Ring support hold": "time",
-      "Ring support hold RTO": "time"
-    }
-  },
-  "gamba_anteriore": {
-    "label": "Gamba anteriore",
-    "stations": ["s6"],
+  "gambe_anteriore": {
+    "label": "Gambe anteriore",
+    "station": "p1s2",
     "variants": [
       "Squat",
       "Step up",
@@ -102,21 +61,22 @@
       "Pistol squat"
     ]
   },
-  "gamba_posteriore": {
-    "label": "Gamba posteriore",
-    "stations": ["s8"],
+  "spinta_orizzontale": {
+    "label": "Spinta orizzontale",
+    "station": "p2s1",
     "variants": [
-      "Glute bridge",
-      "Arch hamstring isometric",
-      "Arch hamstring march"
-    ],
-    "metrics": {
-      "Arch hamstring isometric": "time"
-    }
+      "Pushup inclinato",
+      "Pushup eccentrica",
+      "Pushup",
+      "Pushup piedi su rialzo",
+      "Diamond pushup",
+      "Ring pushup",
+      "RTO pushup"
+    ]
   },
   "core": {
     "label": "Core",
-    "stations": ["s4"],
+    "station": "p2s2",
     "variants": [
       "Dead Bug",
       "Hollow",
@@ -133,9 +93,9 @@
       "Front lever"
     ],
     "metrics": {
+      "Dead Bug": "time",
       "Hollow": "time",
       "L-sit": "time",
-      "V-sit": "time",
       "Front lever tuck": "time",
       "Front lever advanced tuck": "time",
       "Front lever one leg": "time",
@@ -143,9 +103,60 @@
       "Front lever": "time"
     }
   },
+  "tirata_orizzontale": {
+    "label": "Tirata orizzontale",
+    "station": "p3s1",
+    "variants": [
+      "Row eccentrica",
+      "Row",
+      "Row piedi su rialzo",
+      "Row archer",
+      "Row wide one arm eccentrica",
+      "Row one arm"
+    ]
+  },
+  "gambe_posteriore": {
+    "label": "Gambe posteriore",
+    "station": "p3s2",
+    "variants": [
+      "Glute bridge",
+      "Arch hamstring isometric",
+      "Arch hamstring march"
+    ],
+    "metrics": {
+      "Arch hamstring isometric": "time"
+    }
+  },
+  "spinta_verticale": {
+    "label": "Spinta verticale",
+    "station": "p4s1",
+    "variants": [
+      "Support hold assistito",
+      "Support hold",
+      "Dip negativo",
+      "Dip",
+      "Dip profondo",
+      "Ring support hold",
+      "Ring support hold RTO",
+      "Ring dip negativo",
+      "Ring dip",
+      "Ring dip RTO finale",
+      "Ring dip RTO",
+      "Pike pushup",
+      "Wall HSPU negativo",
+      "Wall HSPU",
+      "HSPU"
+    ],
+    "metrics": {
+      "Support hold assistito": "time",
+      "Support hold": "time",
+      "Ring support hold": "time",
+      "Ring support hold RTO": "time"
+    }
+  },
   "catena_posteriore": {
     "label": "Catena posteriore",
-    "stations": ["s2"],
+    "station": "p4s2",
     "variants": [
       "Superman hold",
       "Jefferson curl",

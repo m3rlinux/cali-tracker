@@ -25,6 +25,12 @@
   --mono: 'DM Mono', monospace;
   --sans: 'DM Sans', sans-serif;
   --r: 10px;
+  /* pair colors */
+  --p0: #b090f0;
+  --p1: #f07060;
+  --p2: #4dd9a0;
+  --p3: #60a8f0;
+  --p4: #f0b840;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; }
@@ -32,7 +38,15 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 
 .app-header { padding: 18px 16px 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
 .app-title { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; }
-.name-badge { font-size: 12px; color: var(--muted); font-family: var(--mono); cursor: pointer; border: 1px solid var(--border2); border-radius: 20px; padding: 4px 10px; }
+
+/* USER MENU */
+.user-menu-wrap { position: relative; }
+.name-badge { font-size: 12px; color: var(--muted); font-family: var(--mono); cursor: pointer; border: 1px solid var(--border2); border-radius: 20px; padding: 4px 10px; user-select: none; }
+.user-menu { position: absolute; right: 0; top: calc(100% + 6px); background: var(--surface); border: 1px solid var(--border2); border-radius: var(--r); min-width: 160px; z-index: 50; overflow: hidden; display: none; }
+.user-menu.open { display: block; }
+.user-menu-item { padding: 11px 14px; font-size: 13px; font-family: var(--sans); color: var(--text); cursor: pointer; border-bottom: 1px solid var(--border); }
+.user-menu-item:last-child { border-bottom: none; }
+.user-menu-item:active { background: var(--surface2); }
 
 .tabs { display: flex; border-bottom: 1px solid var(--border); }
 .tab { flex: 1; padding: 11px 4px; text-align: center; font-size: 12px; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; }
@@ -72,52 +86,26 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .variant-select-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; flex-shrink: 0; }
 .variant-select { flex: 1; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 8px 10px; font-size: 13px; font-family: var(--sans); color: var(--text); cursor: pointer; appearance: none; -webkit-appearance: none; }
 .variant-select:focus { outline: none; }
-.variant-select.col-purple { border-color: var(--purple); color: var(--purple); }
-.variant-select.col-teal   { border-color: var(--teal);   color: var(--teal);   }
-.variant-select.col-coral  { border-color: var(--coral);  color: var(--coral);  }
-.variant-select.col-blue   { border-color: var(--blue);   color: var(--blue);   }
-.variant-select.col-amber  { border-color: var(--amber);  color: var(--amber);  }
+.variant-select.col-p0 { border-color: var(--p0); color: var(--p0); }
+.variant-select.col-p1 { border-color: var(--p1); color: var(--p1); }
+.variant-select.col-p2 { border-color: var(--p2); color: var(--p2); }
+.variant-select.col-p3 { border-color: var(--p3); color: var(--p3); }
+.variant-select.col-p4 { border-color: var(--p4); color: var(--p4); }
 .variant-prev-sm { font-size: 10px; color: var(--muted2); font-family: var(--mono); flex-shrink: 0; }
 
-/* VERTICALE */
-.vert-max-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-.vert-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 12px; }
-.vc-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
-.vc-input { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 8px; font-size: 26px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; }
-.vc-input::-webkit-inner-spin-button, .vc-input::-webkit-outer-spin-button { -webkit-appearance: none; }
-.vc-input:focus { outline: none; border-color: var(--purple); }
-.vc-unit { font-size: 10px; color: var(--muted2); font-family: var(--mono); text-align: center; margin-top: 4px; }
-.vc-prev { font-size: 10px; color: var(--muted); font-family: var(--mono); text-align: center; margin-top: 3px; }
-
-.vert-work-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 4px; }
-.vert-work-head { padding: 9px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.vert-work-title { font-size: 12px; font-weight: 500; color: var(--purple); }
-.vert-target-badge { font-family: var(--mono); font-size: 10px; color: var(--muted); }
-.vert-sets { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
-.vert-set-row { display: flex; align-items: center; gap: 8px; }
-.vert-set-label { font-family: var(--mono); font-size: 10px; color: var(--muted); width: 28px; flex-shrink: 0; }
-.vert-set-input { flex: 1; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 9px 4px; font-size: 22px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; }
-.vert-set-input::-webkit-inner-spin-button, .vert-set-input::-webkit-outer-spin-button { -webkit-appearance: none; }
-.vert-set-input:focus { outline: none; border-color: var(--purple); }
-.vert-set-unit { font-size: 11px; color: var(--muted2); font-family: var(--mono); width: 20px; }
-.vert-total-bar { padding: 10px 12px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.vert-total-label { font-size: 11px; color: var(--muted); font-family: var(--mono); }
-.vert-total-val { font-family: var(--mono); font-size: 14px; font-weight: 500; }
-.vert-total-target { font-size: 10px; color: var(--muted2); font-family: var(--mono); }
-
-/* PAIR */
+/* PAIR HEADER */
 .pair-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
 .pair-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .pair-title { font-size: 14px; font-weight: 600; }
 .pair-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-left: auto; }
 
+/* EX BLOCK */
 .ex-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 10px; overflow: hidden; }
 .ex-head { padding: 9px 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); }
 .ex-color-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 .ex-name { font-size: 12px; font-weight: 500; }
-.ex-tag { font-size: 10px; font-family: var(--mono); color: var(--muted); background: var(--surface2); border-radius: 4px; padding: 2px 6px; margin-left: auto; }
 
-/* TIME BLOCK — hold max + target dentro ex-block */
+/* TIME BLOCK */
 .ex-time-pr { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
 .ex-vc-card { background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; padding: 10px; }
 .ex-vc-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
@@ -140,6 +128,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .time-total-val { font-family: var(--mono); font-size: 14px; font-weight: 500; }
 .time-total-target { font-size: 10px; color: var(--muted2); font-family: var(--mono); }
 
+/* REPS SETS */
 .sets-grid { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
 .set-row { display: flex; align-items: center; gap: 8px; }
 .set-label { font-family: var(--mono); font-size: 10px; color: var(--muted); width: 28px; flex-shrink: 0; }
@@ -177,7 +166,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 /* PROGRESS */
 #page-progress { padding: 16px; }
 .prog-section { margin-bottom: 24px; }
-.prog-title { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+.prog-title { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
 .prog-chart-wrap { padding-bottom: 22px; }
 .prog-chart { height: 80px; display: flex; align-items: flex-end; gap: 4px; }
 .prog-bar { flex: 1; border-radius: 4px 4px 0 0; min-height: 4px; position: relative; }
@@ -197,19 +186,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .modal-input { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; padding: 12px; font-size: 16px; color: var(--text); font-family: var(--sans); }
 .modal-input:focus { outline: none; border-color: var(--accent); }
 .modal-btn { width: 100%; margin-top: 12px; padding: 12px; background: var(--accent); color: #0c0c0c; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--sans); }
+.modal-btn-ghost { width: 100%; margin-top: 8px; padding: 12px; background: var(--surface); color: var(--text); border: 1px solid var(--border2); border-radius: 8px; font-size: 14px; cursor: pointer; font-family: var(--sans); }
 
 .toast { text-align: center; font-size: 12px; color: var(--accent); font-family: var(--mono); padding: 8px; opacity: 0; transition: opacity .3s; }
 .toast.show { opacity: 1; }
-
-/* USER MENU */
-.user-menu-wrap { position: relative; }
-.name-badge { font-size: 12px; color: var(--muted); font-family: var(--mono); cursor: pointer; border: 1px solid var(--border2); border-radius: 20px; padding: 4px 10px; user-select: none; }
-.user-menu { position: absolute; right: 0; top: calc(100% + 6px); background: var(--surface); border: 1px solid var(--border2); border-radius: var(--r); min-width: 160px; z-index: 50; overflow: hidden; display: none; }
-.user-menu.open { display: block; }
-.user-menu-item { padding: 11px 14px; font-size: 13px; font-family: var(--sans); color: var(--text); cursor: pointer; border-bottom: 1px solid var(--border); }
-.user-menu-item:last-child { border-bottom: none; }
-.user-menu-item:active { background: var(--surface2); }
-.user-menu-item.danger { color: var(--coral); }
 </style>
 </head>
 <body>
@@ -245,7 +225,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
     </div>
   </div>
   <div class="step-bar">
-    <div class="step-label" id="step-label">Verticale</div>
+    <div class="step-label" id="step-label"></div>
     <div class="step-dots" id="step-dots"></div>
   </div>
   <div class="step-content" id="step-content"></div>
@@ -265,6 +245,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
   <div id="progress-content"><div class="history-empty">Inserisci almeno 2 sessioni<br>per vedere i progressi.</div></div>
 </div>
 
+<!-- MODALS -->
 <div class="modal-overlay" id="name-modal">
   <div class="modal">
     <div class="modal-title">Come ti chiami?</div>
@@ -278,29 +259,26 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
     <div class="modal-title">Rinomina utente</div>
     <input class="modal-input" id="rename-input" type="text" placeholder="Nuovo nome" maxlength="30">
     <div id="rename-hint" style="font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;line-height:1.5"></div>
-    <button class="modal-btn" id="rename-btn-carry" onclick="saveRename(true)" style="margin-top:12px">Rinomina e porta i dati</button>
-    <button class="modal-btn" onclick="saveRename(false)" style="background:var(--surface);color:var(--text);border:1px solid var(--border2);margin-top:8px">Rinomina senza dati</button>
+    <button class="modal-btn" id="rename-btn-carry" onclick="saveRename(true)">Rinomina e porta i dati</button>
+    <button class="modal-btn-ghost" onclick="saveRename(false)">Rinomina senza dati</button>
   </div>
 </div>
 
 <div class="modal-overlay" id="import-modal">
   <div class="modal">
-    <div class="modal-title" id="import-modal-title">Importa dati</div>
-    <div id="import-modal-body" style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px"></div>
+    <div class="modal-title">Importa dati</div>
+    <div id="import-modal-body" style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:4px"></div>
     <button class="modal-btn" id="import-confirm-btn">Conferma importazione</button>
-    <button class="modal-btn" onclick="document.getElementById('import-modal').classList.remove('open')" style="background:var(--surface);color:var(--text);border:1px solid var(--border2);margin-top:8px">Annulla</button>
+    <button class="modal-btn-ghost" onclick="document.getElementById('import-modal').classList.remove('open')">Annulla</button>
   </div>
 </div>
 
 <script>
-const VERSION = '1.15';
+const VERSION = '2.0';
 const KEY_NAME = 'cali_name';
-const MAX_VERT_SETS = 6;
-const VERT_TARGET_LOW = 50;
-const VERT_TARGET_HIGH = 60;
+const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
 const TIME_TARGET_HIGH = 60;
-const TIME_SETS = 3; // set di lavoro per esercizi isometrici nelle coppie
 
 function sessKey() { return 'cali_sessions_' + (getName().toLowerCase().replace(/\s+/g,'_') || 'default'); }
 function getData() { try { return JSON.parse(localStorage.getItem(sessKey())) || {}; } catch(e) { return {}; } }
@@ -309,66 +287,76 @@ function getName() { return localStorage.getItem(KEY_NAME) || ''; }
 
 let currentSess = 1;
 let currentStep = 0;
-const TOTAL_STEPS = 5;
+let STEPS = []; // built dynamically from EXERCISES
 
-const STATION_CATEGORY = {
-  s_vert: 'handstand',
-  s5: 'spinta_orizzontale',
-  s1: 'tirata_orizzontale',
-  s3: 'tirata_verticale',
-  s6: 'gamba_anteriore',
-  s8: 'gamba_posteriore',
-  s4: 'core',
-  s2: 'catena_posteriore',
-  s7: 'spinta_verticale'
-};
-
-const PAIRS = [
-  null,
-  { id:'p1', label:'P1', colorToken:'teal', sets:3, exercises:[
-    { key:'s5', name:'S5 — Spinta orizzontale', colorToken:'teal', tag:'spinta orizz.' },
-    { key:'s1', name:'S1 — Tirata orizzontale', colorToken:'teal', tag:'tirata orizz.' }
-  ]},
-  { id:'p2', label:'P2', colorToken:'coral', sets:3, exercises:[
-    { key:'s7', name:'S7 — Spinta verticale', colorToken:'amber', tag:'spinta vert.' },
-    { key:'s3', name:'S3 — Tirata verticale', colorToken:'coral', tag:'tirata vert.' }
-  ]},
-  { id:'p3', label:'P3', colorToken:'blue', sets:2, exercises:[
-    { key:'s6', name:'S6 — Gamba anteriore', colorToken:'blue', tag:'unilaterale' },
-    { key:'s8', name:'S8 — Gamba posteriore', colorToken:'blue', tag:'catena post.' }
-  ]},
-  { id:'p4', label:'P4', colorToken:'purple', sets:2, exercises:[
-    { key:'s4', name:'S4 — Core', colorToken:'purple', tag:'core' },
-    { key:'s2', name:'S2 — Catena posteriore', colorToken:'purple', tag:'catena post.' }
-  ]}
-];
-
-function cssVar(token) { return `var(--${token})`; }
-
+// ── EXERCISES (loaded from JSON) ──
 let EXERCISES = {};
 
-function getVariants(stationKey) {
-  const cat = STATION_CATEGORY[stationKey];
-  if (!cat || !EXERCISES[cat]) return [];
-  return EXERCISES[cat].variants || [];
+// pair color map
+const PAIR_COLORS = { p0:'--p0', p1:'--p1', p2:'--p2', p3:'--p3', p4:'--p4' };
+const PAIR_LABELS = {
+  p0: 'Handstand',
+  p1: 'Tirata verticale + Gambe anteriori',
+  p2: 'Spinta orizzontale + Core',
+  p3: 'Tirata orizzontale + Gambe posteriori',
+  p4: 'Spinta verticale + Catena posteriore'
+};
+
+function pairColor(pKey) { return `var(${PAIR_COLORS[pKey] || '--muted'})`; }
+
+// ── BUILD STEPS from EXERCISES ──
+// Groups exercises by pX prefix, orders by pX then sY
+function buildSteps() {
+  const groups = {}; // { p0: [{stationKey:'p0s1', group}, ...], p1: [...], ... }
+  Object.entries(EXERCISES).forEach(([groupKey, group]) => {
+    const st = group.station; // e.g. "p0s1"
+    const m = st.match(/^(p\d+)(s\d+)$/);
+    if (!m) return;
+    const [, px, sy] = m;
+    if (!groups[px]) groups[px] = [];
+    groups[px].push({ stationKey: st, px, sy, groupKey, group });
+  });
+  // sort each pair by sY, then sort pairs by pX
+  const sortedPairs = Object.keys(groups).sort();
+  STEPS = sortedPairs.map(px => {
+    const stations = groups[px].sort((a,b) => a.sy.localeCompare(b.sy));
+    return { px, label: PAIR_LABELS[px] || px.toUpperCase(), stations };
+  });
 }
 
 function getMetric(stationKey, variant) {
-  const cat = STATION_CATEGORY[stationKey];
-  if (!cat || !EXERCISES[cat] || !variant) return 'reps';
-  return EXERCISES[cat].metrics?.[variant] || 'reps';
+  const group = Object.values(EXERCISES).find(g => g.station === stationKey);
+  if (!group || !variant) return 'reps';
+  return group.metrics?.[variant] || 'reps';
+}
+
+function getVariants(stationKey) {
+  const group = Object.values(EXERCISES).find(g => g.station === stationKey);
+  return group?.variants || [];
+}
+
+function getGroupLabel(stationKey) {
+  const group = Object.values(EXERCISES).find(g => g.station === stationKey);
+  return group?.label || stationKey;
+}
+
+function getGroupVariants(stationKey) {
+  const group = Object.values(EXERCISES).find(g => g.station === stationKey);
+  return group?.variants || [];
 }
 
 // ── LOAD EXERCISES ──
 async function loadExercises() {
-  document.getElementById("step-content").innerHTML = "<div style=\"padding:12px;font-family:var(--mono);font-size:11px;color:var(--muted)\">Caricamento exercises.json…</div>";
+  document.getElementById('step-content').innerHTML = '<div style="padding:12px;font-family:var(--mono);font-size:11px;color:var(--muted)">Caricamento…</div>';
   try {
     const res = await fetch('exercises.json');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     EXERCISES = await res.json();
+    buildSteps();
   } catch(e) {
-    console.warn("exercises.json fetch failed:", e.message);
+    console.warn('exercises.json fetch failed:', e.message);
     EXERCISES = {};
+    STEPS = [];
   }
 }
 
@@ -401,7 +389,7 @@ function changeSess(d) {
 
 // ── STEP NAV ──
 function renderStepDots() {
-  document.getElementById('step-dots').innerHTML = Array.from({length: TOTAL_STEPS}, (_, i) => {
+  document.getElementById('step-dots').innerHTML = Array.from({length: STEPS.length}, (_, i) => {
     const cls = i === currentStep ? 'active' : i < currentStep ? 'done' : '';
     return `<div class="step-dot ${cls}"></div>`;
   }).join('');
@@ -409,38 +397,38 @@ function renderStepDots() {
 
 function goStep(d) {
   collectStep(currentStep);
-  currentStep = Math.max(0, Math.min(TOTAL_STEPS - 1, currentStep + d));
+  currentStep = Math.max(0, Math.min(STEPS.length - 1, currentStep + d));
   renderStepDots();
   renderStep();
 }
 
 function renderStep() {
-  const labels = ['Verticale', 'P1 — Spinta + Tirata orizz.', 'P2 — Spinta vert. + Tirata vert.', 'P3 — Gambe', 'P4 — Core + Catena post.'];
-  document.getElementById('step-label').textContent = labels[currentStep];
+  if (!STEPS.length) return;
+  const step = STEPS[currentStep];
+  document.getElementById('step-label').textContent = step.label;
   document.getElementById('btn-prev').disabled = currentStep === 0;
-  document.getElementById('btn-next').style.display = currentStep < TOTAL_STEPS - 1 ? '' : 'none';
-  document.getElementById('btn-save').style.display = currentStep === TOTAL_STEPS - 1 ? '' : 'none';
+  document.getElementById('btn-next').style.display = currentStep < STEPS.length - 1 ? '' : 'none';
+  document.getElementById('btn-save').style.display = currentStep === STEPS.length - 1 ? '' : 'none';
   const data = getData();
   const s = data[currentSess] || {};
   const prev = data[currentSess - 1] || {};
   document.getElementById('sess-num').textContent = currentSess;
   document.getElementById('sess-date').textContent = s.date || '—';
-  if (currentStep === 0) renderVertStep(s, prev);
-  else renderPairStep(currentStep, s, prev);
+  renderPairStep(currentStep, s, prev);
 }
 
-// ── VARIANT SELECT HTML ──
-function variantChipsHTML(stationKey, selectedVariant, prevVariant, colorToken) {
+// ── VARIANT SELECT ──
+function variantSelectHTML(stationKey, selectedVariant, prevVariant, px) {
   const variants = getVariants(stationKey);
   if (!variants.length) return '';
-  const colClass = colorToken ? `col-${colorToken}` : 'col-purple';
+  const colClass = `col-${px}`;
   const hasSelection = selectedVariant && variants.includes(selectedVariant);
-  const options = [`<option value="">— scegli —</option>`]
+  const options = ['<option value="">— scegli —</option>']
     .concat(variants.map(v => `<option value="${v}" ${selectedVariant === v ? 'selected' : ''}>${v}</option>`))
     .join('');
   return `<div class="variant-row">
     <div class="variant-select-label">Eserc.</div>
-    <select class="variant-select ${hasSelection ? colClass : ''}" data-station="${stationKey}" data-color="${colorToken||'purple'}" onchange="onVariantChange(this)">
+    <select class="variant-select ${hasSelection ? colClass : ''}" data-station="${stationKey}" data-px="${px}" onchange="onVariantChange(this)">
       ${options}
     </select>
     ${prevVariant ? `<div class="variant-prev-sm">↑${prevVariant}</div>` : ''}
@@ -448,9 +436,7 @@ function variantChipsHTML(stationKey, selectedVariant, prevVariant, colorToken) 
 }
 
 function onVariantChange(el) {
-  const color = el.dataset.color;
-  el.className = `variant-select${el.value ? ' col-'+color : ''}`;
-  // re-render the sets block below this variant select
+  el.className = `variant-select${el.value ? ' col-' + el.dataset.px : ''}`;
   const stationKey = el.dataset.station;
   const metric = getMetric(stationKey, el.value);
   const exBlock = el.closest('.ex-block');
@@ -458,105 +444,24 @@ function onVariantChange(el) {
   const data = getData();
   const s = data[currentSess] || {};
   const prev = data[currentSess - 1] || {};
-  const pair = PAIRS[currentStep];
-  if (!pair) return;
-  const ex = pair.exercises.find(e => e.key === stationKey);
-  if (!ex) return;
-  const exData = s[pair.id]?.[ex.key] || {};
-  const prevExData = prev[pair.id]?.[ex.key] || {};
-  // replace sets + totale inside the ex-block
-  const oldPr = exBlock.querySelector('.ex-time-pr');
-  const oldSets = exBlock.querySelector('.time-sets, .sets-grid');
-  const oldTotal = exBlock.querySelector('.time-total-bar');
-  const oldCluster = exBlock.querySelector('.cluster-hint');
-  if (oldPr) oldPr.remove();
-  if (oldSets) oldSets.remove();
-  if (oldTotal) oldTotal.remove();
-  if (oldCluster) oldCluster.remove();
-  const fragment = document.createElement('div');
-  if (metric === 'time') {
-    fragment.innerHTML = timeSetsHTML(stationKey, ex, exData, prevExData, pair.sets);
-  } else {
-    fragment.innerHTML = repsSetsHTML(ex, exData, prevExData, pair.sets);
-  }
-  while (fragment.firstChild) exBlock.appendChild(fragment.firstChild);
+  const step = STEPS[currentStep];
+  const stationEntry = step.stations.find(st => st.stationKey === stationKey);
+  if (!stationEntry) return;
+  const exData = s[stationKey] || {};
+  const prevExData = prev[stationKey] || {};
+  const numSets = metric === 'time' ? MAX_SETS : (step.stations.length <= 2 ? 3 : 2);
+  ['ex-time-pr','time-sets','time-total-bar','sets-grid','cluster-hint'].forEach(cls => {
+    exBlock.querySelector('.' + cls)?.remove();
+  });
+  const frag = document.createElement('div');
+  frag.innerHTML = metric === 'time'
+    ? timeSetsHTML(stationKey, exData, prevExData, numSets, stationEntry.px)
+    : repsSetsHTML(stationKey, exData, prevExData, numSets);
+  while (frag.firstChild) exBlock.appendChild(frag.firstChild);
 }
 
-// ── VERTICALE STEP ──
-function renderVertStep(s, prev) {
-  const holdMax = s.hold_max ?? '';
-  const prevMax = prev.hold_max != null ? `prec. ${prev.hold_max}"` : '';
-  const holdSets = s.hold_sets || [];
-  const prevHoldSets = prev.hold_sets || [];
-  const targetPerSet = holdMax !== '' ? Math.round(holdMax * 0.65) : null;
-  const targetBadge = targetPerSet ? `target ~${targetPerSet}" per set` : 'inserisci hold max';
-  const setRows = Array.from({length: MAX_VERT_SETS}, (_, i) => {
-    const val = holdSets[i] ?? '';
-    const prevVal = prevHoldSets[i] != null ? `${prevHoldSets[i]}"` : '';
-    return `<div class="vert-set-row">
-      <div class="vert-set-label">S${i+1}</div>
-      <input class="vert-set-input" id="vset-${i}" type="number" inputmode="numeric" min="0" placeholder="—" value="${val}" oninput="updateVertTotal()">
-      <div class="vert-set-unit">"</div>
-      <div class="set-prev" style="min-width:32px;text-align:right;font-size:10px;color:var(--muted2);font-family:var(--mono)">${prevVal ? `↑${prevVal}` : ''}</div>
-    </div>`;
-  }).join('');
-  const currentTotal = holdSets.reduce((a, v) => a + (v || 0), 0);
-  const totalColor = currentTotal >= VERT_TARGET_LOW ? 'var(--teal)' : 'var(--amber)';
-  document.getElementById('step-content').innerHTML = `
-    ${variantChipsHTML('s_vert', s.s_vert_variant || '', prev.s_vert_variant || '', 'purple')}
-    <div class="vert-max-row">
-      <div class="vert-card">
-        <div class="vc-label">Hold max (PR)</div>
-        <input class="vc-input" id="hold_max" type="number" inputmode="numeric" min="0" placeholder="—" value="${holdMax}" oninput="updateVertTarget()">
-        <div class="vc-unit">secondi</div>
-        ${prevMax ? `<div class="vc-prev">${prevMax}</div>` : ''}
-      </div>
-      <div class="vert-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px">
-        <div class="vc-label">Target per set</div>
-        <div id="target-display" style="font-family:var(--mono);font-size:22px;font-weight:500;color:var(--purple)">${targetPerSet ? targetPerSet + '"' : '—'}</div>
-        <div class="vc-unit">65% del max</div>
-      </div>
-    </div>
-    <div class="vert-work-block">
-      <div class="vert-work-head">
-        <div class="vert-work-title">Set di lavoro</div>
-        <div class="vert-target-badge" id="target-badge">${targetBadge}</div>
-      </div>
-      <div class="vert-sets" id="vert-sets-grid">${setRows}</div>
-      <div class="vert-total-bar">
-        <div class="vert-total-label">Totale</div>
-        <div>
-          <span class="vert-total-val" id="vert-total" style="color:${totalColor}">${currentTotal}"</span>
-          <span class="vert-total-target"> / ${VERT_TARGET_LOW}–${VERT_TARGET_HIGH}"</span>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function updateVertTarget() {
-  const max = parseInt(document.getElementById('hold_max')?.value) || 0;
-  const target = max > 0 ? Math.round(max * 0.65) : null;
-  const disp = document.getElementById('target-display');
-  const badge = document.getElementById('target-badge');
-  if (disp) disp.textContent = target ? target + '"' : '—';
-  if (badge) badge.textContent = target ? `target ~${target}" per set` : 'inserisci hold max';
-}
-
-function updateVertTotal() {
-  let total = 0;
-  for (let i = 0; i < MAX_VERT_SETS; i++) {
-    const v = parseInt(document.getElementById(`vset-${i}`)?.value) || 0;
-    total += v;
-  }
-  const el = document.getElementById('vert-total');
-  if (!el) return;
-  el.textContent = total + '"';
-  el.style.color = total >= VERT_TARGET_LOW ? 'var(--teal)' : 'var(--amber)';
-}
-
-// ── TIME SETS HTML (per esercizi isometrici nelle coppie) ──
-function timeSetsHTML(stationKey, ex, exData, prevExData, numSets) {
+// ── TIME SETS HTML ──
+function timeSetsHTML(stationKey, exData, prevExData, numSets, px) {
   const holdMax = exData.hold_max ?? '';
   const prevMax = prevExData.hold_max != null ? `prec. ${prevExData.hold_max}"` : '';
   const targetPerSet = holdMax !== '' ? Math.round(Number(holdMax) * 0.65) : null;
@@ -564,6 +469,7 @@ function timeSetsHTML(stationKey, ex, exData, prevExData, numSets) {
   const prevSets = prevExData.sets || [];
   const currentTotal = sets.reduce((a, v) => a + (v?.[0] || 0), 0);
   const totalColor = currentTotal >= TIME_TARGET_LOW ? 'var(--teal)' : 'var(--amber)';
+  const accentColor = `var(${PAIR_COLORS[px] || '--muted'})`;
 
   const prBlock = `<div class="ex-time-pr">
     <div class="ex-vc-card">
@@ -574,12 +480,12 @@ function timeSetsHTML(stationKey, ex, exData, prevExData, numSets) {
     </div>
     <div class="ex-vc-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px">
       <div class="ex-vc-label">Target per set</div>
-      <div id="time-target-${stationKey}" class="ex-vc-target-val" style="color:var(--purple)">${targetPerSet ? targetPerSet + '"' : '—'}</div>
+      <div id="time-target-${stationKey}" class="ex-vc-target-val" style="color:${accentColor}">${targetPerSet ? targetPerSet + '"' : '—'}</div>
       <div class="ex-vc-unit">65% del max</div>
     </div>
   </div>`;
 
-  const setRows = Array.from({length: MAX_VERT_SETS}, (_, i) => {
+  const setRows = Array.from({length: MAX_SETS}, (_, i) => {
     const val = sets[i]?.[0] ?? '';
     const prevVal = prevSets[i]?.[0] != null ? `${prevSets[i][0]}"` : '';
     return `<div class="time-set-row">
@@ -591,8 +497,8 @@ function timeSetsHTML(stationKey, ex, exData, prevExData, numSets) {
   }).join('');
 
   return `${prBlock}
-  <div class="time-sets" id="time-sets-${stationKey}">${setRows}</div>
-  <div class="time-total-bar" id="time-total-bar-${stationKey}">
+  <div class="time-sets">${setRows}</div>
+  <div class="time-total-bar">
     <div class="time-total-label">Totale</div>
     <div>
       <span class="time-total-val" id="time-total-${stationKey}" style="color:${totalColor}">${currentTotal}"</span>
@@ -611,9 +517,8 @@ function updateTimeTarget(stationKey) {
 
 function updateTimeTotal(stationKey) {
   let total = 0;
-  for (let i = 0; i < MAX_VERT_SETS; i++) {
-    const v = parseInt(document.querySelector(`.time-set-input[data-ex="${stationKey}"][data-set="${i}"]`)?.value) || 0;
-    total += v;
+  for (let i = 0; i < MAX_SETS; i++) {
+    total += parseInt(document.querySelector(`.time-set-input[data-ex="${stationKey}"][data-set="${i}"]`)?.value) || 0;
   }
   const el = document.getElementById(`time-total-${stationKey}`);
   if (!el) return;
@@ -622,7 +527,7 @@ function updateTimeTotal(stationKey) {
 }
 
 // ── REPS SETS HTML ──
-function repsSetsHTML(ex, exData, prevExData, numSets) {
+function repsSetsHTML(stationKey, exData, prevExData, numSets) {
   const sets = exData.sets || [];
   const prevSets = prevExData.sets || [];
   const setRows = Array.from({length: numSets}, (_, i) => {
@@ -636,11 +541,11 @@ function repsSetsHTML(ex, exData, prevExData, numSets) {
       <div class="set-inputs">
         <div class="si-wrap">
           <div class="si-lbl">filate</div>
-          <input class="si-input filate" data-ex="${ex.key}" data-set="${i}" data-type="f" type="number" inputmode="numeric" min="0" placeholder="—" value="${f}">
+          <input class="si-input filate" data-ex="${stationKey}" data-set="${i}" data-type="f" type="number" inputmode="numeric" min="0" placeholder="—" value="${f}">
         </div>
         <div class="si-wrap">
           <div class="si-lbl">cluster</div>
-          <input class="si-input cluster" data-ex="${ex.key}" data-set="${i}" data-type="c" type="number" inputmode="numeric" min="0" placeholder="—" value="${c}">
+          <input class="si-input cluster" data-ex="${stationKey}" data-set="${i}" data-type="c" type="number" inputmode="numeric" min="0" placeholder="—" value="${c}">
         </div>
       </div>
       <div class="set-prev">${prevStr ? `↑${prevStr}` : ''}</div>
@@ -650,42 +555,42 @@ function repsSetsHTML(ex, exData, prevExData, numSets) {
   <div class="cluster-hint">cluster dopo 5"–8" di riposo</div>`;
 }
 
-// ── PAIR STEP ──
-function renderPairStep(step, s, prev) {
-  const pair = PAIRS[step];
-  const pairData = s[pair.id] || {};
-  const prevPair = prev[pair.id] || {};
+// ── PAIR STEP RENDER ──
+function renderPairStep(stepIdx, s, prev) {
+  const step = STEPS[stepIdx];
+  const color = pairColor(step.px);
+  // numSets: time stations always MAX_SETS, reps stations 3
+  const numSets = 3;
 
-  const exHTML = pair.exercises.map(ex => {
-    const exData = pairData[ex.key] || {};
-    const prevExData = prevPair[ex.key] || {};
-    const variantsHTML = variantChipsHTML(ex.key, exData.variant || '', prevExData.variant || '', ex.colorToken);
-    const metric = getMetric(ex.key, exData.variant || '');
+  const exHTML = step.stations.map(({stationKey, px}) => {
+    const exData = s[stationKey] || {};
+    const prevExData = prev[stationKey] || {};
+    const metric = getMetric(stationKey, exData.variant || '');
+    const varHTML = variantSelectHTML(stationKey, exData.variant || '', prevExData.variant || '', px);
     const setsHTML = metric === 'time'
-      ? timeSetsHTML(ex.key, ex, exData, prevExData, pair.sets)
-      : repsSetsHTML(ex, exData, prevExData, pair.sets);
+      ? timeSetsHTML(stationKey, exData, prevExData, MAX_SETS, px)
+      : repsSetsHTML(stationKey, exData, prevExData, numSets);
 
     return `<div class="ex-block">
       <div class="ex-head">
-        <div class="ex-color-dot" style="background:${cssVar(ex.colorToken)}"></div>
-        <div class="ex-name">${ex.name}</div>
+        <div class="ex-color-dot" style="background:${pairColor(px)}"></div>
+        <div class="ex-name">${getGroupLabel(stationKey)}</div>
       </div>
-      ${variantsHTML || ''}
+      ${varHTML}
       ${setsHTML}
     </div>`;
   }).join('');
 
-  const hasTimeEx = pair.exercises.some(ex => {
-    const cat = STATION_CATEGORY[ex.key];
-    const variant = s[pair.id]?.[ex.key]?.variant || '';
-    return getMetric(ex.key, variant) === 'time';
+  const hasTimeEx = step.stations.some(({stationKey}) => {
+    const exData = s[stationKey] || {};
+    return getMetric(stationKey, exData.variant || '') === 'time';
   });
-  const setsLabel = hasTimeEx ? MAX_VERT_SETS : pair.sets;
+  const setsLabel = hasTimeEx ? MAX_SETS : numSets;
 
   document.getElementById('step-content').innerHTML = `
     <div class="pair-header">
-      <div class="pair-dot" style="background:${cssVar(pair.colorToken)}"></div>
-      <div class="pair-title" style="color:${cssVar(pair.colorToken)}">${pair.label}</div>
+      <div class="pair-dot" style="background:${color}"></div>
+      <div class="pair-title" style="color:${color}">${step.px.toUpperCase()}</div>
       <div class="pair-sub">${setsLabel} set · 30"</div>
     </div>
     ${exHTML}
@@ -693,56 +598,37 @@ function renderPairStep(step, s, prev) {
 }
 
 // ── COLLECT ──
-function collectStep(step) {
+function collectStep(stepIdx) {
+  if (!STEPS.length) return;
   const data = getData();
   if (!data[currentSess]) data[currentSess] = {};
   const s = data[currentSess];
+  const step = STEPS[stepIdx];
 
-  if (step === 0) {
-    const hm = document.getElementById('hold_max')?.value;
-    if (hm !== '' && hm != null) s.hold_max = parseInt(hm) || 0;
-    const holdSets = [];
-    for (let i = 0; i < MAX_VERT_SETS; i++) {
-      const v = document.getElementById(`vset-${i}`)?.value;
-      holdSets.push(v !== '' && v != null ? parseInt(v) || 0 : null);
-    }
-    s.hold_sets = holdSets;
-    const selVariant = document.querySelector('.variant-select[data-station="s_vert"]');
-    if (selVariant?.value) s.s_vert_variant = selVariant.value;
-  } else {
-    const pair = PAIRS[step];
-    if (!s[pair.id]) s[pair.id] = {};
-    pair.exercises.forEach(ex => {
-      if (!s[pair.id][ex.key]) s[pair.id][ex.key] = {};
-      const exObj = s[pair.id][ex.key];
-      const selVariant = document.querySelector(`.variant-select[data-station="${ex.key}"]`);
-      if (selVariant?.value) exObj.variant = selVariant.value;
-
-      const metric = getMetric(ex.key, exObj.variant || '');
-      const sets = [];
-
-      if (metric === 'time') {
-        // salva hold_max PR
-        const prInput = document.querySelector(`[data-pr="${ex.key}"]`);
-        if (prInput?.value !== '') exObj.hold_max = parseInt(prInput.value) || 0;
-        // salva sets come [secondi, null] — sempre MAX_VERT_SETS slot
-        for (let i = 0; i < MAX_VERT_SETS; i++) {
-          const ti = document.querySelector(`.time-set-input[data-ex="${ex.key}"][data-set="${i}"]`);
-          const t = ti?.value !== '' ? parseInt(ti.value) : null;
-          sets.push([t, null]);
-        }
-      } else {
-        for (let i = 0; i < pair.sets; i++) {
-          const fi = document.querySelector(`[data-ex="${ex.key}"][data-set="${i}"][data-type="f"]`);
-          const ci = document.querySelector(`[data-ex="${ex.key}"][data-set="${i}"][data-type="c"]`);
-          const f = fi?.value !== '' ? parseInt(fi.value) : null;
-          const c = ci?.value !== '' ? parseInt(ci.value) : null;
-          sets.push([f, c]);
-        }
+  step.stations.forEach(({stationKey}) => {
+    if (!s[stationKey]) s[stationKey] = {};
+    const exObj = s[stationKey];
+    const selVariant = document.querySelector(`.variant-select[data-station="${stationKey}"]`);
+    if (selVariant?.value) exObj.variant = selVariant.value;
+    const metric = getMetric(stationKey, exObj.variant || '');
+    const sets = [];
+    if (metric === 'time') {
+      const prInput = document.querySelector(`[data-pr="${stationKey}"]`);
+      if (prInput?.value !== '') exObj.hold_max = parseInt(prInput.value) || 0;
+      for (let i = 0; i < MAX_SETS; i++) {
+        const ti = document.querySelector(`.time-set-input[data-ex="${stationKey}"][data-set="${i}"]`);
+        sets.push([ti?.value !== '' ? parseInt(ti.value) : null, null]);
       }
-      exObj.sets = sets;
-    });
-  }
+    } else {
+      for (let i = 0; i < 3; i++) {
+        const fi = document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="f"]`);
+        const ci = document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="c"]`);
+        sets.push([fi?.value !== '' ? parseInt(fi.value) : null, ci?.value !== '' ? parseInt(ci.value) : null]);
+      }
+    }
+    exObj.sets = sets;
+  });
+
   saveData(data);
   document.getElementById('sess-date').textContent = getData()[currentSess]?.date || '—';
 }
@@ -755,6 +641,7 @@ function saveSession() {
   saveData(data);
   document.getElementById('sess-date').textContent = data[currentSess].date;
   const toast = document.getElementById('toast');
+  toast.textContent = '✓ Sessione salvata';
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2000);
   renderHistory();
@@ -762,6 +649,17 @@ function saveSession() {
 }
 
 // ── HISTORY ──
+function variantArrow(stationKey, currentVariant, prevVariant) {
+  if (!currentVariant || !prevVariant || currentVariant === prevVariant) return '';
+  const variants = getGroupVariants(stationKey);
+  const ci = variants.indexOf(currentVariant);
+  const pi = variants.indexOf(prevVariant);
+  if (ci === -1 || pi === -1) return '';
+  return ci > pi
+    ? `<span class="delta-pos" style="font-size:11px">↑</span>`
+    : `<span class="delta-neg" style="font-size:11px">↓</span>`;
+}
+
 function renderHistory() {
   const data = getData();
   const list = document.getElementById('history-list');
@@ -775,78 +673,54 @@ function renderHistory() {
     const better = invertPositive ? d < 0 : d > 0;
     return `<span class="${better ? 'delta-pos' : 'delta-neg'}">${d > 0 ? '+' : ''}${d}</span>`;
   }
-  function totExReps(exObj) { return exObj?.sets?.reduce((a,[f,c]) => a+(f||0)+(c||0), 0) ?? null; }
-  function totExTime(exObj) { return exObj?.sets?.reduce((a,[t]) => a+(t||0), 0) ?? null; }
-  function clEx(exObj) { return exObj?.sets?.reduce((a,[f,c]) => a+(c||0), 0) ?? null; }
-
-  // Freccia variante: confronta indice nella lista variants del gruppo
-  function variantArrow(stationKey, currentVariant, prevVariant) {
-    if (!currentVariant || !prevVariant || currentVariant === prevVariant) return '';
-    const cat = STATION_CATEGORY[stationKey];
-    const variants = EXERCISES[cat]?.variants || [];
-    const ci = variants.indexOf(currentVariant);
-    const pi = variants.indexOf(prevVariant);
-    if (ci === -1 || pi === -1) return '';
-    return ci > pi
-      ? `<span class="delta-pos" style="font-size:11px">↑</span>`
-      : `<span class="delta-neg" style="font-size:11px">↓</span>`;
-  }
 
   list.innerHTML = sessions.map(n => {
     const s = data[n], prev = data[n-1] || {};
     const rows = [];
 
-    // ── Verticale: riga unica con 2 colonne max | tot ──
-    const sameVertVariant = s.s_vert_variant === prev.s_vert_variant;
-    const vertArrow = variantArrow('s_vert', s.s_vert_variant, prev.s_vert_variant);
-    if (s.s_vert_variant || s.hold_max != null) {
-      const holdMax = s.hold_max != null ? `${s.hold_max}"` : '—';
-      const holdMaxDelta = delta(s.hold_max, sameVertVariant ? prev.hold_max : null, false);
-      const tot = s.hold_sets ? s.hold_sets.filter(v => v != null).reduce((a,v) => a+(v||0), 0) : null;
-      const prevTot = sameVertVariant && prev.hold_sets ? prev.hold_sets.filter(v => v != null).reduce((a,v) => a+(v||0), 0) : null;
-      const totDisplay = tot != null && tot > 0 ? `${tot}"` : '—';
-      const totDelta = tot != null && tot > 0 ? delta(tot, prevTot, false) : '';
-      const vLabel = s.s_vert_variant ? ` · ${s.s_vert_variant}` : '';
-      rows.push(`<div class="history-row">
-        <span class="history-key">Verticale${vLabel} ${vertArrow}</span>
-        <span class="history-val" style="display:flex;gap:12px">
-          <span><span style="color:var(--muted);font-size:10px">max </span>${holdMax} ${holdMaxDelta}</span>
-          <span><span style="color:var(--muted);font-size:10px">tot </span>${totDisplay} ${totDelta}</span>
-        </span>
-      </div>`);
-    }
-
-    const PAIR_GROUPS = [
-      { label: 'P1 — Spinta + Tirata orizz.', stations: [['p1','s5'],['p1','s1']] },
-      { label: 'P2 — Spinta vert. + Tirata vert.', stations: [['p2','s7'],['p2','s3']] },
-      { label: 'P3 — Gambe', stations: [['p3','s6'],['p3','s8']] },
-      { label: 'P4 — Core + Catena post.', stations: [['p4','s4'],['p4','s2']] },
-    ];
-
-    PAIR_GROUPS.forEach(group => {
+    STEPS.forEach(step => {
       const groupRows = [];
-      group.stations.forEach(([p,k]) => {
-        const exObj = s[p]?.[k], prevExObj = prev[p]?.[k];
+      step.stations.forEach(({stationKey}) => {
+        const exObj = s[stationKey], prevExObj = prev[stationKey];
         if (!exObj?.sets) return;
-        const metric = getMetric(k, exObj.variant || '');
-        const arrow = variantArrow(k, exObj.variant, prevExObj?.variant);
-        const vLabel = exObj.variant ? ` (${exObj.variant})` : '';
+        const metric = getMetric(stationKey, exObj.variant || '');
         const sameVariant = exObj.variant === prevExObj?.variant;
+        const arrow = variantArrow(stationKey, exObj.variant, prevExObj?.variant);
+        const vLabel = exObj.variant ? ` (${exObj.variant})` : '';
+
         if (metric === 'time') {
-          const tot = totExTime(exObj);
-          const prevTot = sameVariant ? totExTime(prevExObj) : null;
-          const prevPR = sameVariant ? prevExObj?.hold_max : null;
-          if (exObj.hold_max != null) groupRows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${vLabel} ${arrow}</span><span class="history-val">${exObj.hold_max}" max ${delta(exObj.hold_max, prevPR, false)} · ${tot != null && tot > 0 ? tot+'"' : '—'} tot ${delta(tot, prevTot, false)}</span></div>`);
+          const tot = exObj.sets.reduce((a,[t]) => a+(t||0), 0);
+          const prevTot = sameVariant ? prevExObj?.sets?.reduce((a,[t]) => a+(t||0), 0) ?? null : null;
+          const prevPR = sameVariant ? prevExObj?.hold_max ?? null : null;
+          if (exObj.hold_max != null || tot > 0) {
+            groupRows.push(`<div class="history-row">
+              <span class="history-key">${getGroupLabel(stationKey)}${vLabel} ${arrow}</span>
+              <span class="history-val">
+                ${exObj.hold_max != null ? `<span><span style="color:var(--muted);font-size:10px">max </span>${exObj.hold_max}" ${delta(exObj.hold_max, prevPR, false)}</span>` : ''}
+                ${tot > 0 ? `<span><span style="color:var(--muted);font-size:10px">tot </span>${tot}" ${delta(tot, prevTot, false)}</span>` : ''}
+              </span>
+            </div>`);
+          }
         } else {
-          const tot = totExReps(exObj), cl = clEx(exObj);
-          const prevTot = sameVariant ? totExReps(prevExObj) : null;
-          const prevCl = sameVariant ? clEx(prevExObj) : null;
-          groupRows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${vLabel} ${arrow}</span><span class="history-val">${tot} rep ${delta(tot, prevTot, false)}</span></div>`);
-          if (cl > 0 || (prevCl != null && prevCl > 0)) groupRows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} cluster</span><span class="history-val">${cl} ${delta(cl, prevCl, true)}</span></div>`);
+          const tot = exObj.sets.reduce((a,[f,c]) => a+(f||0)+(c||0), 0);
+          const cl = exObj.sets.reduce((a,[f,c]) => a+(c||0), 0);
+          const prevTot = sameVariant ? prevExObj?.sets?.reduce((a,[f,c]) => a+(f||0)+(c||0), 0) ?? null : null;
+          const prevCl = sameVariant ? prevExObj?.sets?.reduce((a,[f,c]) => a+(c||0), 0) ?? null : null;
+          groupRows.push(`<div class="history-row">
+            <span class="history-key">${getGroupLabel(stationKey)}${vLabel} ${arrow}</span>
+            <span class="history-val">${tot} rep ${delta(tot, prevTot, false)}</span>
+          </div>`);
+          if (cl > 0 || (prevCl != null && prevCl > 0)) {
+            groupRows.push(`<div class="history-row">
+              <span class="history-key">${getGroupLabel(stationKey)} cluster</span>
+              <span class="history-val">${cl} ${delta(cl, prevCl, true)}</span>
+            </div>`);
+          }
         }
       });
       if (groupRows.length) {
-        rows.push(`<div class="history-pair-header">${group.label}</div>`);
+        const pColor = pairColor(step.px);
+        rows.push(`<div class="history-pair-header" style="color:${pColor}">${step.px.toUpperCase()} — ${step.label}</div>`);
         rows.push(...groupRows);
       }
     });
@@ -879,45 +753,40 @@ function renderProgress() {
   const cont = document.getElementById('progress-content');
   if (sessions.length < 2) { cont.innerHTML = '<div class="history-empty">Inserisci almeno 2 sessioni<br>per vedere i progressi.</div>'; return; }
 
-  // variantFn(session) → string|null — se fornita, barre con cambio variante
-  // vengono colorate --purple e il trend è calcolato solo sulle sessioni
-  // con la stessa variante dell'ultima sessione disponibile.
   function chartHTML(title, color, valFn, invertTrend, variantFn) {
     const vals = sessions.map(n => valFn(data[n]));
     const variants = variantFn ? sessions.map(n => variantFn(data[n])) : null;
     if (vals.every(v => v == null)) return '';
     const defined = vals.filter(v => v != null);
-    const max = Math.max(...defined), min = Math.min(...defined);
-
-    // Ultima variante definita
+    const maxV = Math.max(...defined), minV = Math.min(...defined);
+    // trend: only sessions with same variant as last
     const lastVariant = variants ? [...variants].reverse().find(v => v != null) : null;
-
-    // Trend: solo sessioni con stessa variante dell'ultima
-    const sameVariantVals = variants
-      ? sessions.map((n,i) => (variants[i] === lastVariant && vals[i] != null) ? vals[i] : null).filter(v => v != null)
+    const sameVals = variants
+      ? sessions.map((n,i) => variants[i] === lastVariant && vals[i] != null ? vals[i] : null).filter(v => v != null)
       : defined;
-    const trendFirst = sameVariantVals[0] ?? defined[0];
-    const trendLast  = sameVariantVals[sameVariantVals.length-1] ?? defined[defined.length-1];
-    const trend = trendLast - trendFirst;
-    const tLabel = sameVariantVals.length < 2 ? '—' : (trend === 0 ? '=' : (trend > 0 ? '+'+trend : ''+trend));
-    const tColor = sameVariantVals.length < 2 ? 'var(--muted)' :
+    const tFirst = sameVals[0] ?? defined[0];
+    const tLast = sameVals[sameVals.length-1] ?? defined[defined.length-1];
+    const trend = tLast - tFirst;
+    const tLabel = sameVals.length < 2 ? '—' : (trend === 0 ? '=' : (trend > 0 ? '+'+trend : ''+trend));
+    const tColor = sameVals.length < 2 ? 'var(--muted)' :
       trend === 0 ? 'var(--muted)' :
       (invertTrend ? (trend < 0 ? 'var(--teal)' : 'var(--coral)') : (trend > 0 ? 'var(--teal)' : 'var(--coral)'));
 
     const bars = sessions.map((n,i) => {
       const v = vals[i];
       if (v == null) return `<div class="prog-bar" style="background:var(--border);height:4px"><div class="prog-bar-label">S${n}</div></div>`;
-      const h = max === min ? 50 : ((v - min) / (max - min)) * 60 + 10;
-      const variantChanged = variants && i > 0 && variants[i] != null && variants[i-1] != null && variants[i] !== variants[i-1];
-      const barColor = variantChanged ? 'var(--purple)' : color;
-      const valLabel = variantChanged ? `↑${v}` : `${v}`;
-      return `<div class="prog-bar" style="background:${barColor};height:${h}px"><div class="prog-val" style="color:${barColor}">${valLabel}</div><div class="prog-bar-label">S${n}</div></div>`;
+      const h = maxV === minV ? 50 : ((v - minV) / (maxV - minV)) * 60 + 10;
+      // variant change: no color change, no arrow — just normal bar
+      return `<div class="prog-bar" style="background:${color};height:${h}px"><div class="prog-val" style="color:${color}">${v}</div><div class="prog-bar-label">S${n}</div></div>`;
     }).join('');
 
-    const currentVariant = lastVariant ? `<span style="font-size:10px;color:var(--purple);font-family:var(--mono);margin-left:6px">${lastVariant}</span>` : '';
+    // variant progression arrows: only within same-station variant changes
+    const currentVariant = lastVariant
+      ? `<span style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-left:6px">${lastVariant}</span>`
+      : '';
 
     return `<div class="prog-section">
-      <div class="prog-title" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">${title}${currentVariant}</div>
+      <div class="prog-title">${title}${currentVariant}</div>
       <div class="prog-chart-wrap"><div class="prog-chart">${bars}</div></div>
       <div class="prog-stat-row">
         <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${defined[0]}</div><div class="prog-stat-lbl">inizio</div></div>
@@ -927,52 +796,61 @@ function renderProgress() {
     </div>`;
   }
 
-  function totExReps(s, p, k) { return s[p]?.[k]?.sets?.reduce((a,[f,c])=>a+(f||0)+(c||0),0) ?? null; }
-  function totExTime(s, p, k) { return s[p]?.[k]?.sets?.reduce((a,[t])=>a+(t||0),0) ?? null; }
-  function clPct(s, p, k) {
-    const e = s[p]?.[k]; if (!e?.sets) return null;
-    const tot = e.sets.reduce((a,[f,c])=>a+(f||0)+(c||0),0);
-    const cl = e.sets.reduce((a,[f,c])=>a+(c||0),0);
-    return tot > 0 ? Math.round(cl/tot*100) : 0;
+  function clPct(s, stationKey) {
+    const e = s[stationKey]; if (!e?.sets) return null;
+    const tot = e.sets.reduce((a,[f,c]) => a+(f||0)+(c||0), 0);
+    const cl = e.sets.reduce((a,[f,c]) => a+(c||0), 0);
+    return tot > 0 ? Math.round(cl/tot*100) : null;
   }
-  function holdTot(s) { return s.hold_sets ? s.hold_sets.filter(v=>v!=null).reduce((a,v)=>a+(v||0),0) : null; }
 
-  function pairSection(label, color, charts) {
+  function stationVal(s, stationKey) {
+    const e = s[stationKey]; if (!e?.sets) return null;
+    const metric = getMetric(stationKey, e.variant || '');
+    if (metric === 'time') return e.sets.reduce((a,[t]) => a+(t||0), 0);
+    const r = e.sets[0]; return r ? (r[0]||0)+(r[1]||0) : null;
+  }
+
+  function stationPR(s, stationKey) {
+    return s[stationKey]?.hold_max ?? null;
+  }
+
+  const sections = STEPS.map(step => {
+    const color = pairColor(step.px);
+    const charts = [];
+    step.stations.forEach(({stationKey}) => {
+      const label = getGroupLabel(stationKey);
+      const metric = getMetric(stationKey, Object.values(getData()).find(s => s[stationKey]?.variant)?.[stationKey]?.variant || '');
+      if (metric === 'time') {
+        charts.push(chartHTML(`${label} — PR`, color, s => stationPR(s, stationKey), false, s => s[stationKey]?.variant ?? null));
+        charts.push(chartHTML(`${label} — tot.`, color, s => stationVal(s, stationKey), false, s => s[stationKey]?.variant ?? null));
+      } else {
+        charts.push(chartHTML(`${label} — rep`, color, s => stationVal(s, stationKey), false, s => s[stationKey]?.variant ?? null));
+        charts.push(chartHTML(`${label} — cluster %`, color, s => clPct(s, stationKey), true, s => s[stationKey]?.variant ?? null));
+      }
+    });
     const rendered = charts.filter(Boolean);
     if (!rendered.length) return '';
-    return `<div class="prog-pair-header" style="color:${color}">${label}</div>` + rendered.join('');
-  }
+    return `<div class="prog-pair-header" style="color:${color}">${step.px.toUpperCase()} — ${step.label}</div>` + rendered.join('');
+  }).filter(Boolean);
 
-  const vertCharts = [
-    chartHTML('Hold max — PR', 'var(--purple)', s => s.hold_max ?? null, false, s => s.s_vert_variant ?? null),
-    chartHTML('Hold lavoro — tot.', 'var(--purple)', holdTot, false),
-  ].filter(Boolean);
-
-  cont.innerHTML = [
-    vertCharts.length ? '<div class="prog-pair-header" style="color:var(--purple)">Verticale</div>' + vertCharts.join('') : '',
-    pairSection('P1 — Spinta + Tirata orizz.', 'var(--teal)', [
-      chartHTML('S5 Spinta orizz. — rep', 'var(--teal)', s => { const r = s.p1?.s5?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p1?.s5?.variant ?? null),
-      chartHTML('S5 Spinta orizz. — cluster %', 'var(--teal)', s => clPct(s,'p1','s5'), true, s => s.p1?.s5?.variant ?? null),
-      chartHTML('S1 Tirata orizz. — rep', 'var(--teal)', s => { const r = s.p1?.s1?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p1?.s1?.variant ?? null),
-      chartHTML('S1 Tirata orizz. — cluster %', 'var(--teal)', s => clPct(s,'p1','s1'), true, s => s.p1?.s1?.variant ?? null),
-    ]),
-    pairSection('P2 — Spinta vert. + Tirata vert.', 'var(--coral)', [
-      chartHTML('S7 Spinta vert. — PR', 'var(--amber)', s => s.p2?.s7?.hold_max ?? null, false, s => s.p2?.s7?.variant ?? null),
-      chartHTML('S7 Spinta vert. — tot.', 'var(--amber)', s => totExTime(s,'p2','s7'), false, s => s.p2?.s7?.variant ?? null),
-      chartHTML('S3 Tirata vert. — rep', 'var(--coral)', s => { const r = s.p2?.s3?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p2?.s3?.variant ?? null),
-    ]),
-    pairSection('P3 — Gambe', 'var(--blue)', [
-      chartHTML('S6 Gamba ant. — rep', 'var(--blue)', s => { const r = s.p3?.s6?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p3?.s6?.variant ?? null),
-      chartHTML('S8 Gamba post. — rep', 'var(--blue)', s => { const r = s.p3?.s8?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p3?.s8?.variant ?? null),
-    ]),
-    pairSection('P4 — Core + Catena post.', 'var(--purple)', [
-      chartHTML('S4 Core — rep/sec', 'var(--purple)', s => { const e = s.p4?.s4; if (!e?.sets) return null; const m = getMetric('s4', e.variant||''); return m==='time' ? e.sets.reduce((a,[t])=>a+(t||0),0) : e.sets.reduce((a,[f,c])=>a+(f||0)+(c||0),0); }, false, s => s.p4?.s4?.variant ?? null),
-      chartHTML('S2 Catena post. — rep/sec', 'var(--purple)', s => { const e = s.p4?.s2; if (!e?.sets) return null; const m = getMetric('s2', e.variant||''); return m==='time' ? e.sets.reduce((a,[t])=>a+(t||0),0) : e.sets.reduce((a,[f,c])=>a+(f||0)+(c||0),0); }, false, s => s.p4?.s2?.variant ?? null),
-    ]),
-  ].filter(Boolean).join('') || '<div class="history-empty">Dati insufficienti.</div>';
+  cont.innerHTML = sections.join('') || '<div class="history-empty">Dati insufficienti.</div>';
 }
 
-// ── NAME / TABS ──
+// ── USER MENU ──
+function toggleUserMenu() {
+  const menu = document.getElementById('user-menu');
+  menu.classList.toggle('open');
+  if (menu.classList.contains('open')) {
+    setTimeout(() => document.addEventListener('click', closeUserMenuOutside, { once: true }), 0);
+  }
+}
+function closeUserMenuOutside(e) {
+  const wrap = document.querySelector('.user-menu-wrap');
+  if (!wrap.contains(e.target)) document.getElementById('user-menu').classList.remove('open');
+}
+function closeUserMenu() { document.getElementById('user-menu').classList.remove('open'); }
+
+// ── NAME MODAL ──
 function openNameModal() { document.getElementById('name-modal').classList.add('open'); setTimeout(() => document.getElementById('name-input').focus(), 100); }
 function saveName() {
   const v = document.getElementById('name-input').value.trim();
@@ -987,43 +865,26 @@ function saveName() {
 }
 document.getElementById('name-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
 
-// ── USER MENU ──
-function toggleUserMenu() {
-  const menu = document.getElementById('user-menu');
-  menu.classList.toggle('open');
-  // close on outside click
-  if (menu.classList.contains('open')) {
-    setTimeout(() => document.addEventListener('click', closeUserMenuOutside, { once: true }), 0);
-  }
-}
-function closeUserMenuOutside(e) {
-  const wrap = document.querySelector('.user-menu-wrap');
-  if (!wrap.contains(e.target)) document.getElementById('user-menu').classList.remove('open');
-}
-function closeUserMenu() { document.getElementById('user-menu').classList.remove('open'); }
-
 // ── RENAME ──
 function openRenameModal() {
   closeUserMenu();
   const current = getName();
-  const input = document.getElementById('rename-input');
-  input.value = current;
-  const hint = document.getElementById('rename-hint');
+  document.getElementById('rename-input').value = current;
   const hasData = Object.keys(getData()).some(k => !isNaN(Number(k)));
-  hint.textContent = hasData
-    ? `Hai ${Object.keys(getData()).filter(k => !isNaN(Number(k))).length} sessioni salvate come "${current}".`
+  const count = Object.keys(getData()).filter(k => !isNaN(Number(k))).length;
+  document.getElementById('rename-hint').textContent = hasData
+    ? `Hai ${count} sessioni salvate come "${current}".`
     : `Nessun dato salvato come "${current}".`;
   document.getElementById('rename-btn-carry').style.display = hasData ? '' : 'none';
   document.getElementById('rename-modal').classList.add('open');
-  setTimeout(() => input.focus(), 100);
+  setTimeout(() => document.getElementById('rename-input').focus(), 100);
 }
 function saveRename(carryData) {
   const newName = document.getElementById('rename-input').value.trim();
   if (!newName) return;
   const oldName = getName();
-  if (newName === oldName) { document.getElementById('rename-modal').classList.remove('open'); return; }
-  if (carryData) {
-    const oldData = getData(); // reads from old key
+  if (newName !== oldName && carryData) {
+    const oldData = getData();
     const newKey = 'cali_sessions_' + newName.toLowerCase().replace(/\s+/g,'_');
     localStorage.setItem(newKey, JSON.stringify(oldData));
     localStorage.removeItem('cali_sessions_' + oldName.toLowerCase().replace(/\s+/g,'_'));
@@ -1042,8 +903,7 @@ document.getElementById('rename-input').addEventListener('keydown', e => { if (e
 function exportData() {
   closeUserMenu();
   const name = getName();
-  const data = getData();
-  const payload = { name, sessions: data, exported: new Date().toISOString() };
+  const payload = { name, sessions: getData(), exported: new Date().toISOString() };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1065,18 +925,14 @@ function importData(e) {
       const payload = JSON.parse(ev.target.result);
       if (!payload.sessions || typeof payload.sessions !== 'object') throw new Error('Formato non valido');
       _importPayload = payload;
-      const sessionCount = Object.keys(payload.sessions).filter(k => !isNaN(Number(k))).length;
-      const exportedDate = payload.exported ? new Date(payload.exported).toLocaleDateString('it-IT') : '—';
-      const currentName = getName();
-      const body = document.getElementById('import-modal-body');
-      body.innerHTML = `File: <b>${file.name}</b><br>Utente: <b>${payload.name || '—'}</b><br>Sessioni: <b>${sessionCount}</b><br>Esportato il: <b>${exportedDate}</b><br><br>` +
-        `I dati verranno importati come utente <b>${currentName}</b>.<br>` +
-        `<span style="color:var(--coral)">I dati esistenti di ${currentName} verranno sovrascritti.</span>`;
+      const count = Object.keys(payload.sessions).filter(k => !isNaN(Number(k))).length;
+      const exported = payload.exported ? new Date(payload.exported).toLocaleDateString('it-IT') : '—';
+      document.getElementById('import-modal-body').innerHTML =
+        `File: <b>${file.name}</b><br>Utente: <b>${payload.name || '—'}</b><br>Sessioni: <b>${count}</b><br>Esportato il: <b>${exported}</b><br><br>` +
+        `Verranno importati come <b>${getName()}</b>.<br><span style="color:var(--coral)">I dati esistenti verranno sovrascritti.</span>`;
       document.getElementById('import-confirm-btn').onclick = confirmImport;
       document.getElementById('import-modal').classList.add('open');
-    } catch(err) {
-      alert('File non valido: ' + err.message);
-    }
+    } catch(err) { alert('File non valido: ' + err.message); }
   };
   reader.readAsText(file);
 }
@@ -1095,6 +951,7 @@ function confirmImport() {
   setTimeout(() => { toast.classList.remove('show'); toast.textContent = '✓ Sessione salvata'; }, 2500);
 }
 
+// ── TABS ──
 function switchTab(t) {
   document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active', ['log','history','progress'][i] === t));
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
