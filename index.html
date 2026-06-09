@@ -253,7 +253,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '1.11';
+const VERSION = '1.12';
 const KEY_NAME = 'cali_name';
 const MAX_VERT_SETS = 6;
 const VERT_TARGET_LOW = 50;
@@ -743,11 +743,12 @@ function renderHistory() {
     const s = data[n], prev = data[n-1] || {};
     const rows = [];
 
-    if (s.hold_max != null) rows.push(`<div class="history-row"><span class="history-key">Hold max</span><span class="history-val">${s.hold_max}" ${delta(s.hold_max, prev.hold_max, false)}</span></div>`);
+    const sameVertVariant = s.s_vert_variant === prev.s_vert_variant;
+    if (s.hold_max != null) rows.push(`<div class="history-row"><span class="history-key">Hold max</span><span class="history-val">${s.hold_max}" ${delta(s.hold_max, sameVertVariant ? prev.hold_max : null, false)}</span></div>`);
     if (s.s_vert_variant) rows.push(`<div class="history-row"><span class="history-key">Verticale</span><span class="history-val">${s.s_vert_variant}</span></div>`);
     if (s.hold_sets) {
       const tot = s.hold_sets.filter(v => v != null).reduce((a,v) => a+(v||0), 0);
-      const prevTot = prev.hold_sets ? prev.hold_sets.filter(v => v != null).reduce((a,v) => a+(v||0), 0) : null;
+      const prevTot = sameVertVariant && prev.hold_sets ? prev.hold_sets.filter(v => v != null).reduce((a,v) => a+(v||0), 0) : null;
       if (tot > 0) rows.push(`<div class="history-row"><span class="history-key">Hold lavoro tot.</span><span class="history-val">${tot}" ${delta(tot, prevTot, false)}</span></div>`);
     }
 
