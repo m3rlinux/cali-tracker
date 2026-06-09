@@ -253,7 +253,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '1.7';
+const VERSION = '1.8';
 const KEY_NAME = 'cali_name';
 const MAX_VERT_SETS = 6;
 const VERT_TARGET_LOW = 50;
@@ -539,12 +539,12 @@ function timeSetsHTML(stationKey, ex, exData, prevExData, numSets) {
     </div>
   </div>`;
 
-  const setRows = Array.from({length: numSets}, (_, i) => {
+  const setRows = Array.from({length: MAX_VERT_SETS}, (_, i) => {
     const val = sets[i]?.[0] ?? '';
     const prevVal = prevSets[i]?.[0] != null ? `${prevSets[i][0]}"` : '';
     return `<div class="time-set-row">
       <div class="time-set-label">S${i+1}</div>
-      <input class="time-set-input" data-ex="${stationKey}" data-set="${i}" type="number" inputmode="numeric" min="0" placeholder="—" value="${val}" oninput="updateTimeTotal('${stationKey}', ${numSets})">
+      <input class="time-set-input" data-ex="${stationKey}" data-set="${i}" type="number" inputmode="numeric" min="0" placeholder="—" value="${val}" oninput="updateTimeTotal('${stationKey}')">
       <div class="time-set-unit">"</div>
       <div class="set-prev" style="min-width:32px;text-align:right;font-size:10px;color:var(--muted2);font-family:var(--mono)">${prevVal ? `↑${prevVal}` : ''}</div>
     </div>`;
@@ -569,9 +569,9 @@ function updateTimeTarget(stationKey) {
   if (el) el.textContent = target ? target + '"' : '—';
 }
 
-function updateTimeTotal(stationKey, numSets) {
+function updateTimeTotal(stationKey) {
   let total = 0;
-  for (let i = 0; i < numSets; i++) {
+  for (let i = 0; i < MAX_VERT_SETS; i++) {
     const v = parseInt(document.querySelector(`.time-set-input[data-ex="${stationKey}"][data-set="${i}"]`)?.value) || 0;
     total += v;
   }
@@ -629,18 +629,24 @@ function renderPairStep(step, s, prev) {
       <div class="ex-head">
         <div class="ex-color-dot" style="background:${cssVar(ex.colorToken)}"></div>
         <div class="ex-name">${ex.name}</div>
-        <div class="ex-tag">${ex.tag}</div>
       </div>
       ${variantsHTML || ''}
       ${setsHTML}
     </div>`;
   }).join('');
 
+  const hasTimeEx = pair.exercises.some(ex => {
+    const cat = STATION_CATEGORY[ex.key];
+    const variant = s[pair.id]?.[ex.key]?.variant || '';
+    return getMetric(ex.key, variant) === 'time';
+  });
+  const setsLabel = hasTimeEx ? MAX_VERT_SETS : pair.sets;
+
   document.getElementById('step-content').innerHTML = `
     <div class="pair-header">
       <div class="pair-dot" style="background:${cssVar(pair.colorToken)}"></div>
       <div class="pair-title" style="color:${cssVar(pair.colorToken)}">${pair.label}</div>
-      <div class="pair-sub">${pair.sets} set · 30"</div>
+      <div class="pair-sub">${setsLabel} set · 30"</div>
     </div>
     ${exHTML}
   `;
@@ -679,8 +685,8 @@ function collectStep(step) {
         // salva hold_max PR
         const prInput = document.querySelector(`[data-pr="${ex.key}"]`);
         if (prInput?.value !== '') exObj.hold_max = parseInt(prInput.value) || 0;
-        // salva sets come [secondi, null]
-        for (let i = 0; i < pair.sets; i++) {
+        // salva sets come [secondi, null] — sempre MAX_VERT_SETS slot
+        for (let i = 0; i < MAX_VERT_SETS; i++) {
           const ti = document.querySelector(`.time-set-input[data-ex="${ex.key}"][data-set="${i}"]`);
           const t = ti?.value !== '' ? parseInt(ti.value) : null;
           sets.push([t, null]);
