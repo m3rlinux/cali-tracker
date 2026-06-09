@@ -30,24 +30,18 @@
 html, body { height: 100%; }
 body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; max-width: 480px; margin: 0 auto; }
 
-/* HEADER */
 .app-header { padding: 18px 16px 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
 .app-title { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; }
 .name-badge { font-size: 12px; color: var(--muted); font-family: var(--mono); cursor: pointer; border: 1px solid var(--border2); border-radius: 20px; padding: 4px 10px; }
 
-/* TABS */
 .tabs { display: flex; border-bottom: 1px solid var(--border); }
 .tab { flex: 1; padding: 11px 4px; text-align: center; font-size: 12px; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; letter-spacing: .03em; }
 .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-/* PAGES */
 .page { display: none; }
 .page.active { display: block; }
 
-/* ── LOG PAGE ── */
-#page-log { padding: 0; }
-
-/* session bar */
+/* SESSION BAR */
 .sess-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); }
 .sess-info { display: flex; align-items: baseline; gap: 8px; }
 .sess-num-big { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--accent); }
@@ -56,7 +50,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .sess-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border2); background: var(--surface); color: var(--text); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .sess-btn:active { background: var(--surface2); }
 
-/* step wizard */
+/* STEP */
 .step-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px 0; }
 .step-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
 .step-dots { display: flex; gap: 5px; }
@@ -73,7 +67,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 
 .step-content { padding: 14px 16px 0; }
 
-/* VERTICALE STEP */
+/* VERTICALE */
 .vert-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 .vert-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 12px; }
 .vc-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
@@ -83,12 +77,15 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .vc-unit { font-size: 10px; color: var(--muted2); font-family: var(--mono); text-align: center; margin-top: 4px; }
 .vc-prev { font-size: 10px; color: var(--muted); font-family: var(--mono); text-align: center; margin-top: 3px; }
 
-.ab-row { display: flex; gap: 8px; margin-bottom: 4px; }
-.ab-btn { flex: 1; padding: 10px; border: 1px solid var(--border2); background: var(--surface); color: var(--muted); border-radius: var(--r); font-size: 13px; font-weight: 500; font-family: var(--sans); cursor: pointer; text-align: center; transition: all .15s; }
-.ab-btn.selected { border-color: var(--amber); color: var(--amber); background: #201e10; }
-.ab-hint { font-size: 10px; color: var(--muted2); font-family: var(--mono); text-align: center; margin-bottom: 10px; }
+/* VARIANT SELECTOR */
+.variant-row { margin-bottom: 8px; }
+.variant-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; }
+.variant-prev { font-size: 10px; color: var(--muted2); font-family: var(--mono); margin-bottom: 5px; }
+.variant-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.variant-chip { padding: 5px 10px; border: 1px solid var(--border2); border-radius: 20px; font-size: 12px; color: var(--muted); cursor: pointer; transition: all .15s; background: var(--surface); white-space: nowrap; }
+.variant-chip.selected { border-color: currentColor; color: var(--text); background: var(--surface2); }
 
-/* PAIR STEP */
+/* PAIR */
 .pair-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
 .pair-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .pair-title { font-size: 14px; font-weight: 600; }
@@ -99,6 +96,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .ex-color { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 .ex-name { font-size: 12px; font-weight: 500; }
 .ex-tag { font-size: 10px; font-family: var(--mono); color: var(--muted); background: var(--surface2); border-radius: 4px; padding: 2px 6px; margin-left: auto; }
+
+.ex-variant { padding: 8px 12px; border-bottom: 1px solid var(--border); }
 
 .sets-grid { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
 .set-row { display: flex; align-items: center; gap: 8px; }
@@ -111,10 +110,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .si-input.filate:focus { border-color: var(--teal); }
 .si-input.cluster:focus { border-color: var(--amber); }
 .set-prev { font-family: var(--mono); font-size: 10px; color: var(--muted2); white-space: nowrap; min-width: 44px; text-align: right; }
-
 .cluster-hint { font-size: 10px; color: var(--amber); font-family: var(--mono); text-align: center; padding: 6px 12px 10px; opacity: .7; }
 
-/* ── HISTORY PAGE ── */
+/* HISTORY */
 #page-history { padding: 16px; }
 .history-empty { text-align: center; padding: 48px 16px; color: var(--muted); font-size: 13px; line-height: 1.9; }
 .history-sess { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; }
@@ -126,8 +124,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .delete-btn:active { background: var(--coral); color: #0c0c0c; border-color: var(--coral); }
 .history-body { padding: 10px 14px; display: none; border-top: 1px solid var(--border); }
 .history-body.open { display: block; }
-.h-section { margin-bottom: 10px; }
-.h-section-title { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+.h-section-title { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; margin: 8px 0 4px; }
 .history-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
 .history-row:last-child { border-bottom: none; }
 .history-key { color: var(--muted); font-family: var(--mono); font-size: 11px; }
@@ -135,7 +132,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .delta-pos { color: var(--teal); font-size: 10px; }
 .delta-neg { color: var(--coral); font-size: 10px; }
 
-/* ── PROGRESS PAGE ── */
+/* PROGRESS */
 #page-progress { padding: 16px; }
 .prog-section { margin-bottom: 24px; }
 .prog-title { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
@@ -160,6 +157,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 
 .toast { text-align: center; font-size: 12px; color: var(--accent); font-family: var(--mono); padding: 8px; opacity: 0; transition: opacity .3s; }
 .toast.show { opacity: 1; }
+.loading { text-align: center; padding: 40px 16px; color: var(--muted); font-family: var(--mono); font-size: 12px; }
 </style>
 </head>
 <body>
@@ -175,7 +173,6 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
   <div class="tab" onclick="switchTab('progress')">Progressi</div>
 </div>
 
-<!-- LOG PAGE -->
 <div class="page active" id="page-log">
   <div class="sess-bar">
     <div class="sess-info">
@@ -187,14 +184,11 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <button class="sess-btn" onclick="changeSess(1)">›</button>
     </div>
   </div>
-
   <div class="step-bar">
     <div class="step-label" id="step-label">Verticale</div>
     <div class="step-dots" id="step-dots"></div>
   </div>
-
-  <div class="step-content" id="step-content"></div>
-
+  <div class="step-content" id="step-content"><div class="loading">Caricamento esercizi…</div></div>
   <div class="step-nav">
     <button class="nav-btn" id="btn-prev" onclick="goStep(-1)">‹ Indietro</button>
     <button class="nav-btn" id="btn-next" onclick="goStep(1)">Avanti ›</button>
@@ -203,17 +197,14 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
   <div class="toast" id="toast">✓ Sessione salvata</div>
 </div>
 
-<!-- HISTORY PAGE -->
 <div class="page" id="page-history">
   <div id="history-list"><div class="history-empty">Nessuna sessione ancora.</div></div>
 </div>
 
-<!-- PROGRESS PAGE -->
 <div class="page" id="page-progress">
   <div id="progress-content"><div class="history-empty">Inserisci almeno 2 sessioni<br>per vedere i progressi.</div></div>
 </div>
 
-<!-- NAME MODAL -->
 <div class="modal-overlay" id="name-modal">
   <div class="modal">
     <div class="modal-title">Come ti chiami?</div>
@@ -225,12 +216,16 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <script>
 // ── DATA MODEL ──
 // session: {
-//   date, ab,
+//   date,
 //   hold_max, hold_work,
-//   p1: { s5: [[f,c],[f,c],[f,c]], s1: [[f,c],[f,c],[f,c]] },
-//   p2: { s7: [[f,c],[f,c],[f,c]], s3: [[f,c],[f,c],[f,c]] },
-//   p3: { s6: [[f,c],[f,c]], s8: [[f,c],[f,c]] },
-//   p4: { s4: [[f,c],[f,c]], s2: [[f,c],[f,c]] },
+//   s_vert_variant,           ← variante esercizio verticale
+//   p1: {
+//     s5: { variant: "Ring pushup", sets: [[f,c],[f,c],[f,c]] },
+//     s1: { variant: "Ring row",    sets: [[f,c],[f,c],[f,c]] }
+//   },
+//   p2: { s7: { variant, sets }, s3: { variant, sets } },
+//   p3: { s6: { variant, sets }, s8: { variant, sets } },
+//   p4: { s4: { variant, sets }, s2: { variant, sets } }
 // }
 
 const KEY_NAME = 'cali_name';
@@ -241,33 +236,69 @@ function getName() { return localStorage.getItem(KEY_NAME) || ''; }
 
 let currentSess = 1;
 let currentStep = 0;
-const TOTAL_STEPS = 5; // 0=verticale, 1=P1, 2=P2, 3=P3, 4=P4
+const TOTAL_STEPS = 5;
+
+// Mappa stazione → categoria del JSON
+const STATION_CATEGORY = {
+  s_vert: 'spinta_verticale',
+  s5: 'spinta_orizzontale',
+  s1: 'tirata_orizzontale',
+  s3: 'tirata_verticale',
+  s6: 'gamba_anteriore',
+  s8: 'gamba_posteriore',
+  s4: 'core',
+  s2: 'catena_posteriore',
+  s7: null  // support hold: nessuna variante, solo secondi
+};
 
 const PAIRS = [
-  null, // step 0 = verticale
+  null,
   { id:'p1', label:'P1', color:'var(--teal)', sets:3, exercises:[
-    { key:'s5', name:'S5 — Pushup', color:'var(--teal)', tag:'spinta orizz.' },
-    { key:'s1', name:'S1 — Ring row', color:'var(--teal)', tag:'tiraggio orizz.' }
+    { key:'s5', name:'S5 — Spinta orizzontale', color:'var(--teal)', tag:'spinta orizz.' },
+    { key:'s1', name:'S1 — Tirata orizzontale', color:'var(--teal)', tag:'tiraggio orizz.' }
   ]},
   { id:'p2', label:'P2', color:'var(--coral)', sets:3, exercises:[
     { key:'s7', name:'S7 — Support hold', color:'var(--amber)', tag:'sec. per set' },
-    { key:'s3', name:'S3 — Scapular/hang', color:'var(--coral)', tag:'tiraggio vert.' }
+    { key:'s3', name:'S3 — Tirata verticale', color:'var(--coral)', tag:'tiraggio vert.' }
   ]},
   { id:'p3', label:'P3', color:'var(--blue)', sets:2, exercises:[
-    { key:'s6', name:'S6 — Pistol/shrimp', color:'var(--blue)', tag:'gamba unilat.' },
-    { key:'s8', name:'S8 — Bulgarian/step', color:'var(--blue)', tag:'gamba poster.' }
+    { key:'s6', name:'S6 — Gamba anteriore', color:'var(--blue)', tag:'unilaterale' },
+    { key:'s8', name:'S8 — Gamba posteriore', color:'var(--blue)', tag:'catena post.' }
   ]},
   { id:'p4', label:'P4', color:'var(--purple)', sets:2, exercises:[
-    { key:'s4', name:'S4 — Dragon flag/hollow', color:'var(--purple)', tag:'core' },
-    { key:'s2', name:'S2 — Catena post.', color:'var(--purple)', tag:'jefferson/superman' }
+    { key:'s4', name:'S4 — Core', color:'var(--purple)', tag:'core' },
+    { key:'s2', name:'S2 — Catena posteriore', color:'var(--purple)', tag:'catena post.' }
   ]}
 ];
 
+let EXERCISES = null; // loaded from exercises.json
+
+function getVariants(stationKey) {
+  const cat = STATION_CATEGORY[stationKey];
+  if (!cat || !EXERCISES || !EXERCISES[cat]) return [];
+  return EXERCISES[cat].variants || [];
+}
+
+// ── LOAD EXERCISES ──
+async function loadExercises() {
+  try {
+    const res = await fetch('exercises.json');
+    if (!res.ok) throw new Error('not found');
+    EXERCISES = await res.json();
+  } catch(e) {
+    console.warn('exercises.json non trovato, varianti non disponibili');
+    EXERCISES = {};
+  }
+}
+
 // ── INIT ──
-function init() {
+async function init() {
   const name = getName();
   if (!name) openNameModal();
   else document.getElementById('name-badge').textContent = name;
+
+  await loadExercises();
+
   const data = getData();
   const nums = Object.keys(data).map(Number).filter(n => !isNaN(n));
   if (nums.length > 0) currentSess = Math.max(...nums);
@@ -279,23 +310,20 @@ function init() {
 
 // ── SESSION NAV ──
 function changeSess(d) {
+  collectStep(currentStep);
   const next = currentSess + d;
-  if (next < 1 || next > 20) return;
+  if (next < 1 || next > 30) return;
   currentSess = next;
   currentStep = 0;
   renderStepDots();
   renderStep();
-  const data = getData();
-  const s = data[currentSess] || {};
-  document.getElementById('sess-num').textContent = currentSess;
-  document.getElementById('sess-date').textContent = s.date || '—';
 }
 
-// ── STEP ──
+// ── STEP NAV ──
 function renderStepDots() {
   const cont = document.getElementById('step-dots');
   cont.innerHTML = Array.from({length: TOTAL_STEPS}, (_, i) => {
-    let cls = i === currentStep ? 'active' : (i < currentStep ? 'done' : '');
+    const cls = i === currentStep ? 'active' : (i < currentStep ? 'done' : '');
     return `<div class="step-dot ${cls}"></div>`;
   }).join('');
 }
@@ -308,7 +336,7 @@ function goStep(d) {
 }
 
 function renderStep() {
-  const labels = ['Verticale', 'P1 — Pushup + Ring row', 'P2 — Support hold + Scapular', 'P3 — Pistol + Bulgarian', 'P4 — Dragon flag + Catena post.'];
+  const labels = ['Verticale', 'P1 — Spinta + Tirata orizz.', 'P2 — Support hold + Tirata vert.', 'P3 — Gambe', 'P4 — Core + Catena post.'];
   document.getElementById('step-label').textContent = labels[currentStep];
   document.getElementById('btn-prev').disabled = currentStep === 0;
   document.getElementById('btn-next').style.display = currentStep < TOTAL_STEPS - 1 ? '' : 'none';
@@ -324,10 +352,25 @@ function renderStep() {
   else renderPairStep(currentStep, s, prev);
 }
 
+// ── VERTICALE STEP ──
 function renderVertStep(s, prev) {
   const pm = prev.hold_max !== undefined ? `prec. ${prev.hold_max}"` : '';
   const pw = prev.hold_work !== undefined ? `prec. ${prev.hold_work}"` : '';
+  const variants = getVariants('s_vert');
+  const selectedVariant = s.s_vert_variant || '';
+  const prevVariant = prev.s_vert_variant || '';
+
+  const variantHTML = variants.length ? `
+    <div class="variant-row">
+      <div class="variant-label">Esercizio</div>
+      ${prevVariant ? `<div class="variant-prev">sessione prec.: ${prevVariant}</div>` : ''}
+      <div class="variant-chips" id="chips-s_vert">
+        ${variants.map(v => `<div class="variant-chip ${selectedVariant === v ? 'selected' : ''}" onclick="selectVariant('s_vert', this)">${v}</div>`).join('')}
+      </div>
+    </div>` : '';
+
   document.getElementById('step-content').innerHTML = `
+    ${variantHTML}
     <div class="vert-grid">
       <div class="vert-card">
         <div class="vc-label">Hold max</div>
@@ -342,38 +385,38 @@ function renderVertStep(s, prev) {
         ${pw ? `<div class="vc-prev">${pw}</div>` : ''}
       </div>
     </div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:10px;text-align:center">Sessione A / B — S2 Catena posteriore</div>
-    <div class="ab-row">
-      <div class="ab-btn ${s.ab === 'A' ? 'selected' : ''}" onclick="selectAB('A')">A — Jefferson curl</div>
-      <div class="ab-btn ${s.ab === 'B' ? 'selected' : ''}" onclick="selectAB('B')">B — Superman hold</div>
-    </div>
-    ${prev.ab ? `<div class="ab-hint">sessione prec.: ${prev.ab}</div>` : '<div class="ab-hint"></div>'}
   `;
 }
 
-let _selectedAB = null;
-function selectAB(v) {
-  _selectedAB = v;
-  document.querySelectorAll('.ab-btn').forEach(b => b.classList.toggle('selected', b.textContent.startsWith(v)));
-}
-
+// ── PAIR STEP ──
 function renderPairStep(step, s, prev) {
   const pair = PAIRS[step];
   const pairData = s[pair.id] || {};
   const prevPair = prev[pair.id] || {};
 
   const exHTML = pair.exercises.map(ex => {
-    const sets = pairData[ex.key] || [];
-    const prevSets = prevPair[ex.key] || [];
+    const exData = pairData[ex.key] || {};
+    const prevExData = prevPair[ex.key] || {};
+    const sets = exData.sets || [];
+    const prevSets = prevExData.sets || [];
+    const selectedVariant = exData.variant || '';
+    const prevVariant = prevExData.variant || '';
+    const variants = getVariants(ex.key);
+
+    const variantHTML = variants.length ? `
+      <div class="ex-variant">
+        ${prevVariant ? `<div class="variant-prev" style="margin-bottom:5px">sessione prec.: ${prevVariant}</div>` : ''}
+        <div class="variant-chips" id="chips-${ex.key}">
+          ${variants.map(v => `<div class="variant-chip ${selectedVariant === v ? 'selected' : ''}" style="border-color:${selectedVariant === v ? ex.color : ''};color:${selectedVariant === v ? ex.color : ''}" onclick="selectVariant('${ex.key}', this, '${ex.color}')">${v}</div>`).join('')}
+        </div>
+      </div>` : '';
+
     const setRows = Array.from({length: pair.sets}, (_, i) => {
       const f = sets[i]?.[0] ?? '';
       const c = sets[i]?.[1] ?? '';
       const pf = prevSets[i]?.[0];
       const pc = prevSets[i]?.[1];
-      let prevStr = '';
-      if (pf !== undefined) {
-        prevStr = pc ? `${pf}+${pc}` : `${pf}`;
-      }
+      const prevStr = pf !== undefined ? (pc ? `${pf}+${pc}` : `${pf}`) : '';
       return `<div class="set-row">
         <div class="set-label">S${i+1}</div>
         <div class="set-inputs">
@@ -389,12 +432,14 @@ function renderPairStep(step, s, prev) {
         <div class="set-prev">${prevStr ? `↑${prevStr}` : ''}</div>
       </div>`;
     }).join('');
+
     return `<div class="ex-block">
       <div class="ex-head">
         <div class="ex-color" style="background:${ex.color}"></div>
         <div class="ex-name">${ex.name}</div>
         <div class="ex-tag">${ex.tag}</div>
       </div>
+      ${variantHTML}
       <div class="sets-grid">${setRows}</div>
       <div class="cluster-hint">cluster dopo 5"–8" di riposo</div>
     </div>`;
@@ -410,6 +455,17 @@ function renderPairStep(step, s, prev) {
   `;
 }
 
+function selectVariant(stationKey, el, color) {
+  const container = document.getElementById('chips-' + stationKey);
+  container.querySelectorAll('.variant-chip').forEach(c => {
+    c.classList.remove('selected');
+    c.style.borderColor = '';
+    c.style.color = '';
+  });
+  el.classList.add('selected');
+  if (color) { el.style.borderColor = color; el.style.color = color; }
+}
+
 // ── COLLECT ──
 function collectStep(step) {
   const data = getData();
@@ -419,16 +475,21 @@ function collectStep(step) {
   if (step === 0) {
     const hm = document.getElementById('hold_max')?.value;
     const hw = document.getElementById('hold_work')?.value;
-    if (hm !== '' && hm !== null && hm !== undefined) s.hold_max = parseInt(hm) || undefined;
-    if (hw !== '' && hw !== null && hw !== undefined) s.hold_work = parseInt(hw) || undefined;
-    if (_selectedAB) s.ab = _selectedAB;
-    else if (s.ab) _selectedAB = s.ab;
+    if (hm !== '' && hm != null) s.hold_max = parseInt(hm) || 0;
+    if (hw !== '' && hw != null) s.hold_work = parseInt(hw) || 0;
+    // variant
+    const selChip = document.querySelector('#chips-s_vert .variant-chip.selected');
+    if (selChip) s.s_vert_variant = selChip.textContent;
   } else {
     const pair = PAIRS[step];
     if (!s[pair.id]) s[pair.id] = {};
     pair.exercises.forEach(ex => {
-      const inputs = document.querySelectorAll(`[data-ex="${ex.key}"]`);
-      if (!inputs.length) return;
+      if (!s[pair.id][ex.key]) s[pair.id][ex.key] = {};
+      const exObj = s[pair.id][ex.key];
+      // variant
+      const selChip = document.querySelector(`#chips-${ex.key} .variant-chip.selected`);
+      if (selChip) exObj.variant = selChip.textContent;
+      // sets
       const sets = [];
       for (let i = 0; i < pair.sets; i++) {
         const fi = document.querySelector(`[data-ex="${ex.key}"][data-set="${i}"][data-type="f"]`);
@@ -437,7 +498,7 @@ function collectStep(step) {
         const c = ci?.value !== '' ? parseInt(ci.value) : null;
         sets.push([f, c]);
       }
-      s[pair.id][ex.key] = sets;
+      exObj.sets = sets;
     });
   }
   saveData(data);
@@ -466,43 +527,42 @@ function renderHistory() {
   const sessions = Object.keys(data).map(Number).filter(n => !isNaN(n)).sort((a,b) => b-a);
   if (!sessions.length) { list.innerHTML = '<div class="history-empty">Nessuna sessione ancora.<br>Inserisci i dati nella tab "Inserisci".</div>'; return; }
 
+  function delta(val, prevVal, invertPositive) {
+    if (val == null || prevVal == null) return '';
+    const d = val - prevVal;
+    if (d === 0) return '';
+    const better = invertPositive ? d < 0 : d > 0;
+    return `<span class="${better ? 'delta-pos' : 'delta-neg'}">${d > 0 ? '+' : ''}${d}</span>`;
+  }
+  function totSets(exObj) {
+    if (!exObj?.sets) return null;
+    return exObj.sets.reduce((a,[f,c]) => a+(f||0)+(c||0), 0);
+  }
+  function clusterSets(exObj) {
+    if (!exObj?.sets) return null;
+    return exObj.sets.reduce((a,[f,c]) => a+(c||0), 0);
+  }
+
   list.innerHTML = sessions.map(n => {
     const s = data[n];
     const prev = data[n-1] || {};
-
-    function deltaHTML(val, prevVal, invertPositive) {
-      if (val === undefined || val === null || prevVal === undefined || prevVal === null) return '';
-      const d = val - prevVal;
-      if (d === 0) return '';
-      const better = invertPositive ? d < 0 : d > 0;
-      const cls = better ? 'delta-pos' : 'delta-neg';
-      return `<span class="${cls}">${d > 0 ? '+' : ''}${d}</span>`;
-    }
-
-    function totalReps(sets) {
-      if (!sets) return null;
-      return sets.reduce((acc, [f,c]) => acc + (f||0) + (c||0), 0);
-    }
-    function clusterReps(sets) {
-      if (!sets) return null;
-      return sets.reduce((acc, [f,c]) => acc + (c||0), 0);
-    }
-
     const rows = [];
-    if (s.hold_max !== undefined) rows.push(`<div class="history-row"><span class="history-key">Hold max</span><span class="history-val">${s.hold_max}" ${deltaHTML(s.hold_max, prev.hold_max, false)}</span></div>`);
-    if (s.hold_work !== undefined) rows.push(`<div class="history-row"><span class="history-key">Hold lavoro</span><span class="history-val">${s.hold_work}" ${deltaHTML(s.hold_work, prev.hold_work, false)}</span></div>`);
-    if (s.ab) rows.push(`<div class="history-row"><span class="history-key">Sessione S2</span><span class="history-val">${s.ab}</span></div>`);
 
-    [['p1','S5','s5'],['p1','S1','s1'],['p2','S7','s7'],['p2','S3','s3'],['p3','S6','s6'],['p3','S8','s8'],['p4','S4','s4'],['p4','S2','s2']].forEach(([p,label,k]) => {
-      const sets = s[p]?.[k];
-      const prevSets = prev[p]?.[k];
-      if (!sets) return;
-      const tot = totalReps(sets);
-      const cl = clusterReps(sets);
-      const prevTot = prevSets ? totalReps(prevSets) : null;
-      const prevCl = prevSets ? clusterReps(prevSets) : null;
-      rows.push(`<div class="history-row"><span class="history-key">${label} tot</span><span class="history-val">${tot} ${deltaHTML(tot, prevTot, false)}</span></div>`);
-      if (cl > 0 || (prevCl !== null && prevCl > 0)) rows.push(`<div class="history-row"><span class="history-key">${label} cluster</span><span class="history-val">${cl} ${deltaHTML(cl, prevCl, true)}</span></div>`);
+    if (s.hold_max != null) rows.push(`<div class="history-row"><span class="history-key">Hold max</span><span class="history-val">${s.hold_max}" ${delta(s.hold_max, prev.hold_max, false)}</span></div>`);
+    if (s.hold_work != null) rows.push(`<div class="history-row"><span class="history-key">Hold lavoro</span><span class="history-val">${s.hold_work}" ${delta(s.hold_work, prev.hold_work, false)}</span></div>`);
+    if (s.s_vert_variant) rows.push(`<div class="history-row"><span class="history-key">Verticale</span><span class="history-val">${s.s_vert_variant}</span></div>`);
+
+    [['p1','s5'],['p1','s1'],['p2','s7'],['p2','s3'],['p3','s6'],['p3','s8'],['p4','s4'],['p4','s2']].forEach(([p,k]) => {
+      const exObj = s[p]?.[k];
+      const prevExObj = prev[p]?.[k];
+      if (!exObj?.sets) return;
+      const tot = totSets(exObj);
+      const cl = clusterSets(exObj);
+      const prevTot = totSets(prevExObj);
+      const prevCl = clusterSets(prevExObj);
+      const variantLabel = exObj.variant ? ` (${exObj.variant})` : '';
+      rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${variantLabel}</span><span class="history-val">${tot} rep ${delta(tot, prevTot, false)}</span></div>`);
+      if (cl > 0 || (prevCl != null && prevCl > 0)) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} cluster</span><span class="history-val">${cl} ${delta(cl, prevCl, true)}</span></div>`);
     });
 
     return `<div class="history-sess">
@@ -535,8 +595,8 @@ function renderProgress() {
 
   function chartHTML(title, color, valFn, invertTrend) {
     const vals = sessions.map(n => valFn(data[n]));
-    if (vals.every(v => v === null || v === undefined)) return '';
-    const defined = vals.filter(v => v !== null && v !== undefined);
+    if (vals.every(v => v == null)) return '';
+    const defined = vals.filter(v => v != null);
     const max = Math.max(...defined), min = Math.min(...defined);
     const first = defined[0], last = defined[defined.length-1];
     const trend = last - first;
@@ -544,7 +604,7 @@ function renderProgress() {
     const trendColor = trend === 0 ? 'var(--muted)' : (invertTrend ? (trend < 0 ? 'var(--teal)' : 'var(--coral)') : (trend > 0 ? 'var(--teal)' : 'var(--coral)'));
     const bars = sessions.map((n,i) => {
       const v = vals[i];
-      if (v === null || v === undefined) return `<div class="prog-bar" style="background:var(--border);height:4px"><div class="prog-bar-label">S${n}</div></div>`;
+      if (v == null) return `<div class="prog-bar" style="background:var(--border);height:4px"><div class="prog-bar-label">S${n}</div></div>`;
       const h = max === min ? 50 : ((v - min) / (max - min)) * 60 + 10;
       return `<div class="prog-bar" style="background:${color};height:${h}px"><div class="prog-val" style="color:${color}">${v}</div><div class="prog-bar-label">S${n}</div></div>`;
     }).join('');
@@ -559,22 +619,22 @@ function renderProgress() {
     </div>`;
   }
 
-  function totReps(s, p, k) { const sets = s[p]?.[k]; return sets ? sets.reduce((a,[f,c]) => a+(f||0)+(c||0), 0) : null; }
+  function totEx(s, p, k) { const e = s[p]?.[k]; return e?.sets ? e.sets.reduce((a,[f,c])=>a+(f||0)+(c||0),0) : null; }
   function clPct(s, p, k) {
-    const sets = s[p]?.[k]; if (!sets) return null;
-    const tot = sets.reduce((a,[f,c]) => a+(f||0)+(c||0), 0);
-    const cl = sets.reduce((a,[f,c]) => a+(c||0), 0);
+    const e = s[p]?.[k]; if (!e?.sets) return null;
+    const tot = e.sets.reduce((a,[f,c])=>a+(f||0)+(c||0),0);
+    const cl = e.sets.reduce((a,[f,c])=>a+(c||0),0);
     return tot > 0 ? Math.round(cl/tot*100) : 0;
   }
 
   cont.innerHTML = [
     chartHTML('Hold max — verticale', 'var(--purple)', s => s.hold_max ?? null, false),
-    chartHTML('S5 Pushup — rep totali (set 1)', 'var(--teal)', s => { const r = s.p1?.s5?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
-    chartHTML('S1 Ring row — rep totali (set 1)', 'var(--teal)', s => { const r = s.p1?.s1?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
-    chartHTML('S7 Support hold — rep totali (set 1)', 'var(--amber)', s => { const r = s.p2?.s7?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
-    chartHTML('S3 Scapular — rep totali (set 1)', 'var(--coral)', s => { const r = s.p2?.s3?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
-    chartHTML('S5 cluster % — verso zero', 'var(--amber)', s => clPct(s,'p1','s5'), true),
-    chartHTML('S1 cluster % — verso zero', 'var(--amber)', s => clPct(s,'p1','s1'), true),
+    chartHTML('S5 Spinta orizz. — rep totali (S1)', 'var(--teal)', s => { const r = s.p1?.s5?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
+    chartHTML('S1 Tirata orizz. — rep totali (S1)', 'var(--teal)', s => { const r = s.p1?.s1?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
+    chartHTML('S7 Support hold — rep totali (S1)', 'var(--amber)', s => { const r = s.p2?.s7?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
+    chartHTML('S3 Tirata vert. — rep totali (S1)', 'var(--coral)', s => { const r = s.p2?.s3?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
+    chartHTML('S5 cluster % — trend verso zero', 'var(--amber)', s => clPct(s,'p1','s5'), true),
+    chartHTML('S1 cluster % — trend verso zero', 'var(--amber)', s => clPct(s,'p1','s1'), true),
   ].filter(Boolean).join('') || '<div class="history-empty">Dati insufficienti.</div>';
 }
 
@@ -586,11 +646,11 @@ function saveName() {
   localStorage.setItem(KEY_NAME, v);
   document.getElementById('name-badge').textContent = v;
   document.getElementById('name-modal').classList.remove('open');
-  currentSess = 1; _selectedAB = null;
+  currentSess = 1; currentStep = 0;
   const d = getData();
   const nums = Object.keys(d).map(Number).filter(n => !isNaN(n));
   if (nums.length) currentSess = Math.max(...nums);
-  renderStep(); renderHistory(); renderProgress();
+  renderStepDots(); renderStep(); renderHistory(); renderProgress();
 }
 document.getElementById('name-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
 
