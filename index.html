@@ -195,7 +195,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.4</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.5</span></div>
   <div class="user-menu-wrap">
     <div class="name-badge" id="name-badge" onclick="toggleUserMenu()">— imposta nome</div>
     <div class="user-menu" id="user-menu">
@@ -230,8 +230,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
   </div>
   <div class="step-content" id="step-content"></div>
   <div class="step-nav">
-    <button class="nav-btn" id="btn-prev" onclick="goStep(-1)">‹ Indietro</button>
-    <button class="nav-btn" id="btn-next" onclick="goStep(1)">Avanti ›</button>
+    <button class="nav-btn" id="btn-prev" onclick="goStep(-1)" style="display:none">‹ Indietro</button>
+    <button class="nav-btn" id="btn-next" onclick="goStep(1)" style="display:none">Avanti ›</button>
     <button class="save-btn" id="btn-save" onclick="saveSession()" style="display:none">Salva ✓</button>
   </div>
   <div class="toast" id="toast">✓ Sessione salvata</div>
@@ -274,7 +274,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '2.4';
+const VERSION = '2.5';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
@@ -412,8 +412,8 @@ function renderStep() {
   if (!STEPS.length) return;
   const step = STEPS[currentStep];
   document.getElementById('step-label').textContent = step.label;
-  document.getElementById('btn-prev').disabled = currentStep === 0;
-  document.getElementById('btn-next').style.display = currentStep < STEPS.length - 1 ? '' : 'none';
+  document.getElementById('btn-prev').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'none';
   document.getElementById('btn-save').style.display = currentStep === STEPS.length - 1 ? '' : 'none';
   const data = getData();
   const s = data[currentSess] || {};
@@ -982,6 +982,23 @@ function switchTab(t) {
   if (t === 'history') renderHistory();
   if (t === 'progress') renderProgress();
 }
+
+// ── SWIPE ──
+(function() {
+  let startX = 0, startY = 0;
+  const el = document.getElementById('page-log');
+  el.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  el.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    if (dx < 0) goStep(1);   // swipe left → next
+    else goStep(-1);          // swipe right → prev
+  }, { passive: true });
+})();
 
 init();
 </script>
