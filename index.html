@@ -253,7 +253,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '1.10';
+const VERSION = '1.11';
 const KEY_NAME = 'cali_name';
 const MAX_VERT_SETS = 6;
 const VERT_TARGET_LOW = 50;
@@ -756,14 +756,17 @@ function renderHistory() {
       if (!exObj?.sets) return;
       const metric = getMetric(k, exObj.variant || '');
       const vLabel = exObj.variant ? ` (${exObj.variant})` : '';
+      const sameVariant = exObj.variant === prevExObj?.variant;
       if (metric === 'time') {
         const tot = totExTime(exObj);
-        const prevTot = totExTime(prevExObj);
-        if (exObj.hold_max != null) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} PR${vLabel}</span><span class="history-val">${exObj.hold_max}" ${delta(exObj.hold_max, prevExObj?.hold_max, false)}</span></div>`);
+        const prevTot = sameVariant ? totExTime(prevExObj) : null;
+        const prevPR = sameVariant ? prevExObj?.hold_max : null;
+        if (exObj.hold_max != null) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} PR${vLabel}</span><span class="history-val">${exObj.hold_max}" ${delta(exObj.hold_max, prevPR, false)}</span></div>`);
         if (tot != null && tot > 0) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} tot.</span><span class="history-val">${tot}" ${delta(tot, prevTot, false)}</span></div>`);
       } else {
         const tot = totExReps(exObj), cl = clEx(exObj);
-        const prevTot = totExReps(prevExObj), prevCl = clEx(prevExObj);
+        const prevTot = sameVariant ? totExReps(prevExObj) : null;
+        const prevCl = sameVariant ? clEx(prevExObj) : null;
         rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${vLabel}</span><span class="history-val">${tot} rep ${delta(tot, prevTot, false)}</span></div>`);
         if (cl > 0 || (prevCl != null && prevCl > 0)) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} cluster</span><span class="history-val">${cl} ${delta(cl, prevCl, true)}</span></div>`);
       }
@@ -856,15 +859,24 @@ function renderProgress() {
   function holdTot(s) { return s.hold_sets ? s.hold_sets.filter(v=>v!=null).reduce((a,v)=>a+(v||0),0) : null; }
 
   cont.innerHTML = [
-    chartHTML('Hold max — PR verticale', 'var(--purple)', s => s.hold_max ?? null, false),
+    // Verticale
+    chartHTML('Hold max — PR verticale', 'var(--purple)', s => s.hold_max ?? null, false, s => s.s_vert_variant ?? null),
     chartHTML('Hold lavoro — totale sessione', 'var(--purple)', holdTot, false),
-    chartHTML('S5 Spinta orizz.', 'var(--teal)', s => { const r = s.p1?.s5?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p1?.s5?.variant ?? null),
-    chartHTML('S1 Tirata orizz.', 'var(--teal)', s => { const r = s.p1?.s1?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p1?.s1?.variant ?? null),
+    // P1
+    chartHTML('S5 Spinta orizz. — rep', 'var(--teal)', s => { const r = s.p1?.s5?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p1?.s5?.variant ?? null),
+    chartHTML('S5 Spinta orizz. — cluster %', 'var(--amber)', s => clPct(s,'p1','s5'), true, s => s.p1?.s5?.variant ?? null),
+    chartHTML('S1 Tirata orizz. — rep', 'var(--teal)', s => { const r = s.p1?.s1?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p1?.s1?.variant ?? null),
+    chartHTML('S1 Tirata orizz. — cluster %', 'var(--amber)', s => clPct(s,'p1','s1'), true, s => s.p1?.s1?.variant ?? null),
+    // P2
     chartHTML('S7 Spinta vert. — PR', 'var(--amber)', s => s.p2?.s7?.hold_max ?? null, false, s => s.p2?.s7?.variant ?? null),
     chartHTML('S7 Spinta vert. — tot.', 'var(--amber)', s => totExTime(s,'p2','s7'), false, s => s.p2?.s7?.variant ?? null),
-    chartHTML('S3 Tirata vert.', 'var(--coral)', s => { const r = s.p2?.s3?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p2?.s3?.variant ?? null),
-    chartHTML('S5 cluster % — trend →0', 'var(--amber)', s => clPct(s,'p1','s5'), true),
-    chartHTML('S1 cluster % — trend →0', 'var(--amber)', s => clPct(s,'p1','s1'), true),
+    chartHTML('S3 Tirata vert. — rep', 'var(--coral)', s => { const r = s.p2?.s3?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p2?.s3?.variant ?? null),
+    // P3
+    chartHTML('S6 Gamba ant. — rep', 'var(--blue)', s => { const r = s.p3?.s6?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p3?.s6?.variant ?? null),
+    chartHTML('S8 Gamba post. — rep', 'var(--blue)', s => { const r = s.p3?.s8?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false, s => s.p3?.s8?.variant ?? null),
+    // P4
+    chartHTML('S4 Core — rep/sec', 'var(--purple)', s => { const e = s.p4?.s4; if (!e?.sets) return null; const m = getMetric('s4', e.variant||''); return m==='time' ? e.sets.reduce((a,[t])=>a+(t||0),0) : e.sets.reduce((a,[f,c])=>a+(f||0)+(c||0),0); }, false, s => s.p4?.s4?.variant ?? null),
+    chartHTML('S2 Catena post. — rep/sec', 'var(--purple)', s => { const e = s.p4?.s2; if (!e?.sets) return null; const m = getMetric('s2', e.variant||''); return m==='time' ? e.sets.reduce((a,[t])=>a+(t||0),0) : e.sets.reduce((a,[f,c])=>a+(f||0)+(c||0),0); }, false, s => s.p4?.s2?.variant ?? null),
   ].filter(Boolean).join('') || '<div class="history-empty">Dati insufficienti.</div>';
 }
 
