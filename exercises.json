@@ -12,13 +12,14 @@
       "Wall shrug",
       "Wall one-leg alternato",
       "Wall handstand",
+      "Wall press straddle",
+      "Handstand one-leg alternato",
       "Handstand"
     ],
     "metrics": {
       "Pike": "time",
       "Box pike": "time",
       "Hold chest to wall": "time",
-      "Wall one-leg alternato": "time",
       "Wall handstand": "time",
       "Handstand": "time"
     }
