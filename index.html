@@ -116,7 +116,29 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .ex-color-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 .ex-name { font-size: 12px; font-weight: 500; }
 .ex-tag { font-size: 10px; font-family: var(--mono); color: var(--muted); background: var(--surface2); border-radius: 4px; padding: 2px 6px; margin-left: auto; }
-.ex-variant-area { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+
+/* TIME BLOCK — hold max + target dentro ex-block */
+.ex-time-pr { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.ex-vc-card { background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; padding: 10px; }
+.ex-vc-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+.ex-vc-input { width: 100%; background: transparent; border: none; font-size: 22px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; outline: none; }
+.ex-vc-input::-webkit-inner-spin-button, .ex-vc-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.ex-vc-unit { font-size: 10px; color: var(--muted2); font-family: var(--mono); text-align: center; margin-top: 2px; }
+.ex-vc-prev { font-size: 10px; color: var(--muted); font-family: var(--mono); text-align: center; margin-top: 2px; }
+.ex-vc-target-val { font-size: 22px; font-family: var(--mono); font-weight: 500; text-align: center; }
+
+/* TIME SETS */
+.time-sets { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.time-set-row { display: flex; align-items: center; gap: 8px; }
+.time-set-label { font-family: var(--mono); font-size: 10px; color: var(--muted); width: 28px; flex-shrink: 0; }
+.time-set-input { flex: 1; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 9px 4px; font-size: 22px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; }
+.time-set-input::-webkit-inner-spin-button, .time-set-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.time-set-input:focus { outline: none; border-color: var(--purple); }
+.time-set-unit { font-size: 11px; color: var(--muted2); font-family: var(--mono); width: 20px; }
+.time-total-bar { padding: 10px 12px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.time-total-label { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+.time-total-val { font-family: var(--mono); font-size: 14px; font-weight: 500; }
+.time-total-target { font-size: 10px; color: var(--muted2); font-family: var(--mono); }
 
 .sets-grid { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
 .set-row { display: flex; align-items: center; gap: 8px; }
@@ -180,7 +202,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v1.5</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v1.7</span></div>
   <div class="name-badge" id="name-badge" onclick="openNameModal()">— imposta nome</div>
 </div>
 
@@ -231,22 +253,14 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-// ── DATA MODEL ──
-// session: {
-//   date,
-//   s_vert_variant, hold_max,
-//   hold_sets: [sec, sec, ...],
-//   p1: { s5: { variant, sets:[[f,c],...] }, s1: { variant, sets } },
-//   p2: { s7: { variant, sets }, s3: { variant, sets } },
-//   p3: { s6: { variant, sets }, s8: { variant, sets } },
-//   p4: { s4: { variant, sets }, s2: { variant, sets } }
-// }
-
-const VERSION = '1.6';
+const VERSION = '1.7';
 const KEY_NAME = 'cali_name';
 const MAX_VERT_SETS = 6;
 const VERT_TARGET_LOW = 50;
 const VERT_TARGET_HIGH = 60;
+const TIME_TARGET_LOW = 50;
+const TIME_TARGET_HIGH = 60;
+const TIME_SETS = 3; // set di lavoro per esercizi isometrici nelle coppie
 
 function sessKey() { return 'cali_sessions_' + (getName().toLowerCase().replace(/\s+/g,'_') || 'default'); }
 function getData() { try { return JSON.parse(localStorage.getItem(sessKey())) || {}; } catch(e) { return {}; } }
@@ -299,6 +313,12 @@ function getVariants(stationKey) {
   return EXERCISES[cat].variants || [];
 }
 
+function getMetric(stationKey, variant) {
+  const cat = STATION_CATEGORY[stationKey];
+  if (!cat || !EXERCISES[cat] || !variant) return 'reps';
+  return EXERCISES[cat].metrics?.[variant] || 'reps';
+}
+
 // ── LOAD EXERCISES ──
 async function loadExercises() {
   document.getElementById("step-content").innerHTML = "<div style=\"padding:12px;font-family:var(--mono);font-size:11px;color:var(--muted)\">Caricamento exercises.json…</div>";
@@ -308,7 +328,6 @@ async function loadExercises() {
     EXERCISES = await res.json();
   } catch(e) {
     console.warn("exercises.json fetch failed:", e.message);
-    document.title = "ERR: " + e.message;
     EXERCISES = {};
   }
 }
@@ -391,6 +410,36 @@ function variantChipsHTML(stationKey, selectedVariant, prevVariant, colorToken) 
 function onVariantChange(el) {
   const color = el.dataset.color;
   el.className = `variant-select${el.value ? ' col-'+color : ''}`;
+  // re-render the sets block below this variant select
+  const stationKey = el.dataset.station;
+  const metric = getMetric(stationKey, el.value);
+  const exBlock = el.closest('.ex-block');
+  if (!exBlock) return;
+  const data = getData();
+  const s = data[currentSess] || {};
+  const prev = data[currentSess - 1] || {};
+  const pair = PAIRS[currentStep];
+  if (!pair) return;
+  const ex = pair.exercises.find(e => e.key === stationKey);
+  if (!ex) return;
+  const exData = s[pair.id]?.[ex.key] || {};
+  const prevExData = prev[pair.id]?.[ex.key] || {};
+  // replace sets + totale inside the ex-block
+  const oldPr = exBlock.querySelector('.ex-time-pr');
+  const oldSets = exBlock.querySelector('.time-sets, .sets-grid');
+  const oldTotal = exBlock.querySelector('.time-total-bar');
+  const oldCluster = exBlock.querySelector('.cluster-hint');
+  if (oldPr) oldPr.remove();
+  if (oldSets) oldSets.remove();
+  if (oldTotal) oldTotal.remove();
+  if (oldCluster) oldCluster.remove();
+  const fragment = document.createElement('div');
+  if (metric === 'time') {
+    fragment.innerHTML = timeSetsHTML(stationKey, ex, exData, prevExData, pair.sets);
+  } else {
+    fragment.innerHTML = repsSetsHTML(ex, exData, prevExData, pair.sets);
+  }
+  while (fragment.firstChild) exBlock.appendChild(fragment.firstChild);
 }
 
 // ── VERTICALE STEP ──
@@ -399,10 +448,8 @@ function renderVertStep(s, prev) {
   const prevMax = prev.hold_max != null ? `prec. ${prev.hold_max}"` : '';
   const holdSets = s.hold_sets || [];
   const prevHoldSets = prev.hold_sets || [];
-
   const targetPerSet = holdMax !== '' ? Math.round(holdMax * 0.65) : null;
   const targetBadge = targetPerSet ? `target ~${targetPerSet}" per set` : 'inserisci hold max';
-
   const setRows = Array.from({length: MAX_VERT_SETS}, (_, i) => {
     const val = holdSets[i] ?? '';
     const prevVal = prevHoldSets[i] != null ? `${prevHoldSets[i]}"` : '';
@@ -413,10 +460,8 @@ function renderVertStep(s, prev) {
       <div class="set-prev" style="min-width:32px;text-align:right;font-size:10px;color:var(--muted2);font-family:var(--mono)">${prevVal ? `↑${prevVal}` : ''}</div>
     </div>`;
   }).join('');
-
   const currentTotal = holdSets.reduce((a, v) => a + (v || 0), 0);
   const totalColor = currentTotal >= VERT_TARGET_LOW ? 'var(--teal)' : 'var(--amber)';
-
   document.getElementById('step-content').innerHTML = `
     ${variantChipsHTML('s_vert', s.s_vert_variant || '', prev.s_vert_variant || '', 'purple')}
     <div class="vert-max-row">
@@ -470,6 +515,101 @@ function updateVertTotal() {
   el.style.color = total >= VERT_TARGET_LOW ? 'var(--teal)' : 'var(--amber)';
 }
 
+// ── TIME SETS HTML (per esercizi isometrici nelle coppie) ──
+function timeSetsHTML(stationKey, ex, exData, prevExData, numSets) {
+  const holdMax = exData.hold_max ?? '';
+  const prevMax = prevExData.hold_max != null ? `prec. ${prevExData.hold_max}"` : '';
+  const targetPerSet = holdMax !== '' ? Math.round(Number(holdMax) * 0.65) : null;
+  const sets = exData.sets || [];
+  const prevSets = prevExData.sets || [];
+  const currentTotal = sets.reduce((a, v) => a + (v?.[0] || 0), 0);
+  const totalColor = currentTotal >= TIME_TARGET_LOW ? 'var(--teal)' : 'var(--amber)';
+
+  const prBlock = `<div class="ex-time-pr">
+    <div class="ex-vc-card">
+      <div class="ex-vc-label">Hold max (PR)</div>
+      <input class="ex-vc-input" data-pr="${stationKey}" type="number" inputmode="numeric" min="0" placeholder="—" value="${holdMax}" oninput="updateTimeTarget('${stationKey}')">
+      <div class="ex-vc-unit">secondi</div>
+      ${prevMax ? `<div class="ex-vc-prev">${prevMax}</div>` : ''}
+    </div>
+    <div class="ex-vc-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px">
+      <div class="ex-vc-label">Target per set</div>
+      <div id="time-target-${stationKey}" class="ex-vc-target-val" style="color:var(--purple)">${targetPerSet ? targetPerSet + '"' : '—'}</div>
+      <div class="ex-vc-unit">65% del max</div>
+    </div>
+  </div>`;
+
+  const setRows = Array.from({length: numSets}, (_, i) => {
+    const val = sets[i]?.[0] ?? '';
+    const prevVal = prevSets[i]?.[0] != null ? `${prevSets[i][0]}"` : '';
+    return `<div class="time-set-row">
+      <div class="time-set-label">S${i+1}</div>
+      <input class="time-set-input" data-ex="${stationKey}" data-set="${i}" type="number" inputmode="numeric" min="0" placeholder="—" value="${val}" oninput="updateTimeTotal('${stationKey}', ${numSets})">
+      <div class="time-set-unit">"</div>
+      <div class="set-prev" style="min-width:32px;text-align:right;font-size:10px;color:var(--muted2);font-family:var(--mono)">${prevVal ? `↑${prevVal}` : ''}</div>
+    </div>`;
+  }).join('');
+
+  return `${prBlock}
+  <div class="time-sets" id="time-sets-${stationKey}">${setRows}</div>
+  <div class="time-total-bar" id="time-total-bar-${stationKey}">
+    <div class="time-total-label">Totale</div>
+    <div>
+      <span class="time-total-val" id="time-total-${stationKey}" style="color:${totalColor}">${currentTotal}"</span>
+      <span class="time-total-target"> / ${TIME_TARGET_LOW}–${TIME_TARGET_HIGH}"</span>
+    </div>
+  </div>`;
+}
+
+function updateTimeTarget(stationKey) {
+  const input = document.querySelector(`[data-pr="${stationKey}"]`);
+  const max = parseInt(input?.value) || 0;
+  const target = max > 0 ? Math.round(max * 0.65) : null;
+  const el = document.getElementById(`time-target-${stationKey}`);
+  if (el) el.textContent = target ? target + '"' : '—';
+}
+
+function updateTimeTotal(stationKey, numSets) {
+  let total = 0;
+  for (let i = 0; i < numSets; i++) {
+    const v = parseInt(document.querySelector(`.time-set-input[data-ex="${stationKey}"][data-set="${i}"]`)?.value) || 0;
+    total += v;
+  }
+  const el = document.getElementById(`time-total-${stationKey}`);
+  if (!el) return;
+  el.textContent = total + '"';
+  el.style.color = total >= TIME_TARGET_LOW ? 'var(--teal)' : 'var(--amber)';
+}
+
+// ── REPS SETS HTML ──
+function repsSetsHTML(ex, exData, prevExData, numSets) {
+  const sets = exData.sets || [];
+  const prevSets = prevExData.sets || [];
+  const setRows = Array.from({length: numSets}, (_, i) => {
+    const f = sets[i]?.[0] ?? '';
+    const c = sets[i]?.[1] ?? '';
+    const pf = prevSets[i]?.[0];
+    const pc = prevSets[i]?.[1];
+    const prevStr = pf != null ? (pc ? `${pf}+${pc}` : `${pf}`) : '';
+    return `<div class="set-row">
+      <div class="set-label">S${i+1}</div>
+      <div class="set-inputs">
+        <div class="si-wrap">
+          <div class="si-lbl">filate</div>
+          <input class="si-input filate" data-ex="${ex.key}" data-set="${i}" data-type="f" type="number" inputmode="numeric" min="0" placeholder="—" value="${f}">
+        </div>
+        <div class="si-wrap">
+          <div class="si-lbl">cluster</div>
+          <input class="si-input cluster" data-ex="${ex.key}" data-set="${i}" data-type="c" type="number" inputmode="numeric" min="0" placeholder="—" value="${c}">
+        </div>
+      </div>
+      <div class="set-prev">${prevStr ? `↑${prevStr}` : ''}</div>
+    </div>`;
+  }).join('');
+  return `<div class="sets-grid">${setRows}</div>
+  <div class="cluster-hint">cluster dopo 5"–8" di riposo</div>`;
+}
+
 // ── PAIR STEP ──
 function renderPairStep(step, s, prev) {
   const pair = PAIRS[step];
@@ -479,31 +619,11 @@ function renderPairStep(step, s, prev) {
   const exHTML = pair.exercises.map(ex => {
     const exData = pairData[ex.key] || {};
     const prevExData = prevPair[ex.key] || {};
-    const sets = exData.sets || [];
-    const prevSets = prevExData.sets || [];
     const variantsHTML = variantChipsHTML(ex.key, exData.variant || '', prevExData.variant || '', ex.colorToken);
-
-    const setRows = Array.from({length: pair.sets}, (_, i) => {
-      const f = sets[i]?.[0] ?? '';
-      const c = sets[i]?.[1] ?? '';
-      const pf = prevSets[i]?.[0];
-      const pc = prevSets[i]?.[1];
-      const prevStr = pf != null ? (pc ? `${pf}+${pc}` : `${pf}`) : '';
-      return `<div class="set-row">
-        <div class="set-label">S${i+1}</div>
-        <div class="set-inputs">
-          <div class="si-wrap">
-            <div class="si-lbl">filate</div>
-            <input class="si-input filate" data-ex="${ex.key}" data-set="${i}" data-type="f" type="number" inputmode="numeric" min="0" placeholder="—" value="${f}">
-          </div>
-          <div class="si-wrap">
-            <div class="si-lbl">cluster</div>
-            <input class="si-input cluster" data-ex="${ex.key}" data-set="${i}" data-type="c" type="number" inputmode="numeric" min="0" placeholder="—" value="${c}">
-          </div>
-        </div>
-        <div class="set-prev">${prevStr ? `↑${prevStr}` : ''}</div>
-      </div>`;
-    }).join('');
+    const metric = getMetric(ex.key, exData.variant || '');
+    const setsHTML = metric === 'time'
+      ? timeSetsHTML(ex.key, ex, exData, prevExData, pair.sets)
+      : repsSetsHTML(ex, exData, prevExData, pair.sets);
 
     return `<div class="ex-block">
       <div class="ex-head">
@@ -512,8 +632,7 @@ function renderPairStep(step, s, prev) {
         <div class="ex-tag">${ex.tag}</div>
       </div>
       ${variantsHTML || ''}
-      <div class="sets-grid">${setRows}</div>
-      <div class="cluster-hint">cluster dopo 5"–8" di riposo</div>
+      ${setsHTML}
     </div>`;
   }).join('');
 
@@ -552,13 +671,28 @@ function collectStep(step) {
       const exObj = s[pair.id][ex.key];
       const selVariant = document.querySelector(`.variant-select[data-station="${ex.key}"]`);
       if (selVariant?.value) exObj.variant = selVariant.value;
+
+      const metric = getMetric(ex.key, exObj.variant || '');
       const sets = [];
-      for (let i = 0; i < pair.sets; i++) {
-        const fi = document.querySelector(`[data-ex="${ex.key}"][data-set="${i}"][data-type="f"]`);
-        const ci = document.querySelector(`[data-ex="${ex.key}"][data-set="${i}"][data-type="c"]`);
-        const f = fi?.value !== '' ? parseInt(fi.value) : null;
-        const c = ci?.value !== '' ? parseInt(ci.value) : null;
-        sets.push([f, c]);
+
+      if (metric === 'time') {
+        // salva hold_max PR
+        const prInput = document.querySelector(`[data-pr="${ex.key}"]`);
+        if (prInput?.value !== '') exObj.hold_max = parseInt(prInput.value) || 0;
+        // salva sets come [secondi, null]
+        for (let i = 0; i < pair.sets; i++) {
+          const ti = document.querySelector(`.time-set-input[data-ex="${ex.key}"][data-set="${i}"]`);
+          const t = ti?.value !== '' ? parseInt(ti.value) : null;
+          sets.push([t, null]);
+        }
+      } else {
+        for (let i = 0; i < pair.sets; i++) {
+          const fi = document.querySelector(`[data-ex="${ex.key}"][data-set="${i}"][data-type="f"]`);
+          const ci = document.querySelector(`[data-ex="${ex.key}"][data-set="${i}"][data-type="c"]`);
+          const f = fi?.value !== '' ? parseInt(fi.value) : null;
+          const c = ci?.value !== '' ? parseInt(ci.value) : null;
+          sets.push([f, c]);
+        }
       }
       exObj.sets = sets;
     });
@@ -595,7 +729,8 @@ function renderHistory() {
     const better = invertPositive ? d < 0 : d > 0;
     return `<span class="${better ? 'delta-pos' : 'delta-neg'}">${d > 0 ? '+' : ''}${d}</span>`;
   }
-  function totEx(exObj) { return exObj?.sets?.reduce((a,[f,c]) => a+(f||0)+(c||0), 0) ?? null; }
+  function totExReps(exObj) { return exObj?.sets?.reduce((a,[f,c]) => a+(f||0)+(c||0), 0) ?? null; }
+  function totExTime(exObj) { return exObj?.sets?.reduce((a,[t]) => a+(t||0), 0) ?? null; }
   function clEx(exObj) { return exObj?.sets?.reduce((a,[f,c]) => a+(c||0), 0) ?? null; }
 
   list.innerHTML = sessions.map(n => {
@@ -613,11 +748,19 @@ function renderHistory() {
     [['p1','s5'],['p1','s1'],['p2','s7'],['p2','s3'],['p3','s6'],['p3','s8'],['p4','s4'],['p4','s2']].forEach(([p,k]) => {
       const exObj = s[p]?.[k], prevExObj = prev[p]?.[k];
       if (!exObj?.sets) return;
-      const tot = totEx(exObj), cl = clEx(exObj);
-      const prevTot = totEx(prevExObj), prevCl = clEx(prevExObj);
+      const metric = getMetric(k, exObj.variant || '');
       const vLabel = exObj.variant ? ` (${exObj.variant})` : '';
-      rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${vLabel}</span><span class="history-val">${tot} rep ${delta(tot, prevTot, false)}</span></div>`);
-      if (cl > 0 || (prevCl != null && prevCl > 0)) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} cluster</span><span class="history-val">${cl} ${delta(cl, prevCl, true)}</span></div>`);
+      if (metric === 'time') {
+        const tot = totExTime(exObj);
+        const prevTot = totExTime(prevExObj);
+        if (exObj.hold_max != null) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} PR${vLabel}</span><span class="history-val">${exObj.hold_max}" ${delta(exObj.hold_max, prevExObj?.hold_max, false)}</span></div>`);
+        if (tot != null && tot > 0) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} tot.</span><span class="history-val">${tot}" ${delta(tot, prevTot, false)}</span></div>`);
+      } else {
+        const tot = totExReps(exObj), cl = clEx(exObj);
+        const prevTot = totExReps(prevExObj), prevCl = clEx(prevExObj);
+        rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()}${vLabel}</span><span class="history-val">${tot} rep ${delta(tot, prevTot, false)}</span></div>`);
+        if (cl > 0 || (prevCl != null && prevCl > 0)) rows.push(`<div class="history-row"><span class="history-key">${k.toUpperCase()} cluster</span><span class="history-val">${cl} ${delta(cl, prevCl, true)}</span></div>`);
+      }
     });
 
     return `<div class="history-sess">
@@ -674,7 +817,8 @@ function renderProgress() {
     </div>`;
   }
 
-  function totEx(s, p, k) { return s[p]?.[k]?.sets?.reduce((a,[f,c])=>a+(f||0)+(c||0),0) ?? null; }
+  function totExReps(s, p, k) { return s[p]?.[k]?.sets?.reduce((a,[f,c])=>a+(f||0)+(c||0),0) ?? null; }
+  function totExTime(s, p, k) { return s[p]?.[k]?.sets?.reduce((a,[t])=>a+(t||0),0) ?? null; }
   function clPct(s, p, k) {
     const e = s[p]?.[k]; if (!e?.sets) return null;
     const tot = e.sets.reduce((a,[f,c])=>a+(f||0)+(c||0),0);
@@ -688,7 +832,8 @@ function renderProgress() {
     chartHTML('Hold lavoro — totale sessione', 'var(--purple)', holdTot, false),
     chartHTML('S5 Spinta orizz. — rep S1', 'var(--teal)', s => { const r = s.p1?.s5?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
     chartHTML('S1 Tirata orizz. — rep S1', 'var(--teal)', s => { const r = s.p1?.s1?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
-    chartHTML('S7 Spinta vert. — rep S1', 'var(--amber)', s => { const r = s.p2?.s7?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
+    chartHTML('S7 Spinta vert. — PR"', 'var(--amber)', s => s.p2?.s7?.hold_max ?? null, false),
+    chartHTML('S7 Spinta vert. — tot."', 'var(--amber)', s => totExTime(s,'p2','s7'), false),
     chartHTML('S3 Tirata vert. — rep S1', 'var(--coral)', s => { const r = s.p2?.s3?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
     chartHTML('S5 cluster % — trend →0', 'var(--amber)', s => clPct(s,'p1','s5'), true),
     chartHTML('S1 cluster % — trend →0', 'var(--amber)', s => clPct(s,'p1','s1'), true),
