@@ -200,13 +200,31 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 
 .toast { text-align: center; font-size: 12px; color: var(--accent); font-family: var(--mono); padding: 8px; opacity: 0; transition: opacity .3s; }
 .toast.show { opacity: 1; }
+
+/* USER MENU */
+.user-menu-wrap { position: relative; }
+.name-badge { font-size: 12px; color: var(--muted); font-family: var(--mono); cursor: pointer; border: 1px solid var(--border2); border-radius: 20px; padding: 4px 10px; user-select: none; }
+.user-menu { position: absolute; right: 0; top: calc(100% + 6px); background: var(--surface); border: 1px solid var(--border2); border-radius: var(--r); min-width: 160px; z-index: 50; overflow: hidden; display: none; }
+.user-menu.open { display: block; }
+.user-menu-item { padding: 11px 14px; font-size: 13px; font-family: var(--sans); color: var(--text); cursor: pointer; border-bottom: 1px solid var(--border); }
+.user-menu-item:last-child { border-bottom: none; }
+.user-menu-item:active { background: var(--surface2); }
+.user-menu-item.danger { color: var(--coral); }
 </style>
 </head>
 <body>
 
 <div class="app-header">
   <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em"></span></div>
-  <div class="name-badge" id="name-badge" onclick="openNameModal()">— imposta nome</div>
+  <div class="user-menu-wrap">
+    <div class="name-badge" id="name-badge" onclick="toggleUserMenu()">— imposta nome</div>
+    <div class="user-menu" id="user-menu">
+      <div class="user-menu-item" onclick="openRenameModal()">✎ Rinomina</div>
+      <div class="user-menu-item" onclick="exportData()">↓ Esporta dati</div>
+      <div class="user-menu-item" onclick="document.getElementById('import-file').click()">↑ Importa dati</div>
+    </div>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+  </div>
 </div>
 
 <div class="tabs">
@@ -255,8 +273,27 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
   </div>
 </div>
 
+<div class="modal-overlay" id="rename-modal">
+  <div class="modal">
+    <div class="modal-title">Rinomina utente</div>
+    <input class="modal-input" id="rename-input" type="text" placeholder="Nuovo nome" maxlength="30">
+    <div id="rename-hint" style="font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;line-height:1.5"></div>
+    <button class="modal-btn" id="rename-btn-carry" onclick="saveRename(true)" style="margin-top:12px">Rinomina e porta i dati</button>
+    <button class="modal-btn" onclick="saveRename(false)" style="background:var(--surface);color:var(--text);border:1px solid var(--border2);margin-top:8px">Rinomina senza dati</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="import-modal">
+  <div class="modal">
+    <div class="modal-title" id="import-modal-title">Importa dati</div>
+    <div id="import-modal-body" style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px"></div>
+    <button class="modal-btn" id="import-confirm-btn">Conferma importazione</button>
+    <button class="modal-btn" onclick="document.getElementById('import-modal').classList.remove('open')" style="background:var(--surface);color:var(--text);border:1px solid var(--border2);margin-top:8px">Annulla</button>
+  </div>
+</div>
+
 <script>
-const VERSION = '1.14';
+const VERSION = '1.15';
 const KEY_NAME = 'cali_name';
 const MAX_VERT_SETS = 6;
 const VERT_TARGET_LOW = 50;
@@ -949,6 +986,114 @@ function saveName() {
   renderStepDots(); renderStep(); renderHistory(); renderProgress();
 }
 document.getElementById('name-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
+
+// ── USER MENU ──
+function toggleUserMenu() {
+  const menu = document.getElementById('user-menu');
+  menu.classList.toggle('open');
+  // close on outside click
+  if (menu.classList.contains('open')) {
+    setTimeout(() => document.addEventListener('click', closeUserMenuOutside, { once: true }), 0);
+  }
+}
+function closeUserMenuOutside(e) {
+  const wrap = document.querySelector('.user-menu-wrap');
+  if (!wrap.contains(e.target)) document.getElementById('user-menu').classList.remove('open');
+}
+function closeUserMenu() { document.getElementById('user-menu').classList.remove('open'); }
+
+// ── RENAME ──
+function openRenameModal() {
+  closeUserMenu();
+  const current = getName();
+  const input = document.getElementById('rename-input');
+  input.value = current;
+  const hint = document.getElementById('rename-hint');
+  const hasData = Object.keys(getData()).some(k => !isNaN(Number(k)));
+  hint.textContent = hasData
+    ? `Hai ${Object.keys(getData()).filter(k => !isNaN(Number(k))).length} sessioni salvate come "${current}".`
+    : `Nessun dato salvato come "${current}".`;
+  document.getElementById('rename-btn-carry').style.display = hasData ? '' : 'none';
+  document.getElementById('rename-modal').classList.add('open');
+  setTimeout(() => input.focus(), 100);
+}
+function saveRename(carryData) {
+  const newName = document.getElementById('rename-input').value.trim();
+  if (!newName) return;
+  const oldName = getName();
+  if (newName === oldName) { document.getElementById('rename-modal').classList.remove('open'); return; }
+  if (carryData) {
+    const oldData = getData(); // reads from old key
+    const newKey = 'cali_sessions_' + newName.toLowerCase().replace(/\s+/g,'_');
+    localStorage.setItem(newKey, JSON.stringify(oldData));
+    localStorage.removeItem('cali_sessions_' + oldName.toLowerCase().replace(/\s+/g,'_'));
+  }
+  localStorage.setItem(KEY_NAME, newName);
+  document.getElementById('name-badge').textContent = newName;
+  document.getElementById('rename-modal').classList.remove('open');
+  currentSess = 1; currentStep = 0;
+  const nums = Object.keys(getData()).map(Number).filter(n => !isNaN(n));
+  if (nums.length) currentSess = Math.max(...nums);
+  renderStepDots(); renderStep(); renderHistory(); renderProgress();
+}
+document.getElementById('rename-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveRename(true); });
+
+// ── EXPORT ──
+function exportData() {
+  closeUserMenu();
+  const name = getName();
+  const data = getData();
+  const payload = { name, sessions: data, exported: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `cali-tracker-${name.toLowerCase().replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── IMPORT ──
+let _importPayload = null;
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  e.target.value = '';
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const payload = JSON.parse(ev.target.result);
+      if (!payload.sessions || typeof payload.sessions !== 'object') throw new Error('Formato non valido');
+      _importPayload = payload;
+      const sessionCount = Object.keys(payload.sessions).filter(k => !isNaN(Number(k))).length;
+      const exportedDate = payload.exported ? new Date(payload.exported).toLocaleDateString('it-IT') : '—';
+      const currentName = getName();
+      const body = document.getElementById('import-modal-body');
+      body.innerHTML = `File: <b>${file.name}</b><br>Utente: <b>${payload.name || '—'}</b><br>Sessioni: <b>${sessionCount}</b><br>Esportato il: <b>${exportedDate}</b><br><br>` +
+        `I dati verranno importati come utente <b>${currentName}</b>.<br>` +
+        `<span style="color:var(--coral)">I dati esistenti di ${currentName} verranno sovrascritti.</span>`;
+      document.getElementById('import-confirm-btn').onclick = confirmImport;
+      document.getElementById('import-modal').classList.add('open');
+    } catch(err) {
+      alert('File non valido: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+function confirmImport() {
+  if (!_importPayload) return;
+  saveData(_importPayload.sessions);
+  _importPayload = null;
+  document.getElementById('import-modal').classList.remove('open');
+  currentSess = 1; currentStep = 0;
+  const nums = Object.keys(getData()).map(Number).filter(n => !isNaN(n));
+  if (nums.length) currentSess = Math.max(...nums);
+  renderStepDots(); renderStep(); renderHistory(); renderProgress();
+  const toast = document.getElementById('toast');
+  toast.textContent = '✓ Dati importati';
+  toast.classList.add('show');
+  setTimeout(() => { toast.classList.remove('show'); toast.textContent = '✓ Sessione salvata'; }, 2500);
+}
 
 function switchTab(t) {
   document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active', ['log','history','progress'][i] === t));
