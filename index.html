@@ -67,18 +67,6 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 
 .step-content { padding: 14px 16px 0; }
 
-/* VARIANT CHIPS */
-
-
-
-
-
-
-
-
-
-
-
 /* VARIANT SELECT */
 .variant-row { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
 .variant-select-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; flex-shrink: 0; }
@@ -192,7 +180,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v1.4</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v1.5</span></div>
   <div class="name-badge" id="name-badge" onclick="openNameModal()">— imposta nome</div>
 </div>
 
@@ -247,14 +235,14 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 // session: {
 //   date,
 //   s_vert_variant, hold_max,
-//   hold_sets: [sec, sec, ...],   ← set di lavoro verticale
+//   hold_sets: [sec, sec, ...],
 //   p1: { s5: { variant, sets:[[f,c],...] }, s1: { variant, sets } },
 //   p2: { s7: { variant, sets }, s3: { variant, sets } },
 //   p3: { s6: { variant, sets }, s8: { variant, sets } },
 //   p4: { s4: { variant, sets }, s2: { variant, sets } }
 // }
 
-const VERSION = '1.5';
+const VERSION = '1.6';
 const KEY_NAME = 'cali_name';
 const MAX_VERT_SETS = 6;
 const VERT_TARGET_LOW = 50;
@@ -269,17 +257,8 @@ let currentSess = 1;
 let currentStep = 0;
 const TOTAL_STEPS = 5;
 
-// color token → CSS class suffix (no commas in onclick attributes)
-const COLOR_CLASS = {
-  'purple': 'purple',
-  'teal':   'teal',
-  'coral':  'coral',
-  'blue':   'blue',
-  'amber':  'amber',
-};
-
 const STATION_CATEGORY = {
-  s_vert: 'spinta_verticale',
+  s_vert: 'handstand',
   s5: 'spinta_orizzontale',
   s1: 'tirata_orizzontale',
   s3: 'tirata_verticale',
@@ -287,18 +266,18 @@ const STATION_CATEGORY = {
   s8: 'gamba_posteriore',
   s4: 'core',
   s2: 'catena_posteriore',
-  s7: null
+  s7: 'spinta_verticale'
 };
 
 const PAIRS = [
   null,
   { id:'p1', label:'P1', colorToken:'teal', sets:3, exercises:[
     { key:'s5', name:'S5 — Spinta orizzontale', colorToken:'teal', tag:'spinta orizz.' },
-    { key:'s1', name:'S1 — Tirata orizzontale', colorToken:'teal', tag:'tiraggio orizz.' }
+    { key:'s1', name:'S1 — Tirata orizzontale', colorToken:'teal', tag:'tirata orizz.' }
   ]},
   { id:'p2', label:'P2', colorToken:'coral', sets:3, exercises:[
-    { key:'s7', name:'S7 — Support hold', colorToken:'amber', tag:'sec. per set' },
-    { key:'s3', name:'S3 — Tirata verticale', colorToken:'coral', tag:'tiraggio vert.' }
+    { key:'s7', name:'S7 — Spinta verticale', colorToken:'amber', tag:'spinta vert.' },
+    { key:'s3', name:'S3 — Tirata verticale', colorToken:'coral', tag:'tirata vert.' }
   ]},
   { id:'p3', label:'P3', colorToken:'blue', sets:2, exercises:[
     { key:'s6', name:'S6 — Gamba anteriore', colorToken:'blue', tag:'unilaterale' },
@@ -377,7 +356,7 @@ function goStep(d) {
 }
 
 function renderStep() {
-  const labels = ['Verticale', 'P1 — Spinta + Tirata orizz.', 'P2 — Support hold + Tirata vert.', 'P3 — Gambe', 'P4 — Core + Catena post.'];
+  const labels = ['Verticale', 'P1 — Spinta + Tirata orizz.', 'P2 — Spinta vert. + Tirata vert.', 'P3 — Gambe', 'P4 — Core + Catena post.'];
   document.getElementById('step-label').textContent = labels[currentStep];
   document.getElementById('btn-prev').disabled = currentStep === 0;
   document.getElementById('btn-next').style.display = currentStep < TOTAL_STEPS - 1 ? '' : 'none';
@@ -421,7 +400,6 @@ function renderVertStep(s, prev) {
   const holdSets = s.hold_sets || [];
   const prevHoldSets = prev.hold_sets || [];
 
-  // Calcola target per set (65% del max, arrotondato)
   const targetPerSet = holdMax !== '' ? Math.round(holdMax * 0.65) : null;
   const targetBadge = targetPerSet ? `target ~${targetPerSet}" per set` : 'inserisci hold max';
 
@@ -558,14 +536,12 @@ function collectStep(step) {
   if (step === 0) {
     const hm = document.getElementById('hold_max')?.value;
     if (hm !== '' && hm != null) s.hold_max = parseInt(hm) || 0;
-    // set di lavoro verticale
     const holdSets = [];
     for (let i = 0; i < MAX_VERT_SETS; i++) {
       const v = document.getElementById(`vset-${i}`)?.value;
       holdSets.push(v !== '' && v != null ? parseInt(v) || 0 : null);
     }
     s.hold_sets = holdSets;
-    // variante
     const selVariant = document.querySelector('.variant-select[data-station="s_vert"]');
     if (selVariant?.value) s.s_vert_variant = selVariant.value;
   } else {
@@ -574,10 +550,8 @@ function collectStep(step) {
     pair.exercises.forEach(ex => {
       if (!s[pair.id][ex.key]) s[pair.id][ex.key] = {};
       const exObj = s[pair.id][ex.key];
-      // variante
       const selVariant = document.querySelector(`.variant-select[data-station="${ex.key}"]`);
       if (selVariant?.value) exObj.variant = selVariant.value;
-      // sets
       const sets = [];
       for (let i = 0; i < pair.sets; i++) {
         const fi = document.querySelector(`[data-ex="${ex.key}"][data-set="${i}"][data-type="f"]`);
@@ -714,7 +688,7 @@ function renderProgress() {
     chartHTML('Hold lavoro — totale sessione', 'var(--purple)', holdTot, false),
     chartHTML('S5 Spinta orizz. — rep S1', 'var(--teal)', s => { const r = s.p1?.s5?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
     chartHTML('S1 Tirata orizz. — rep S1', 'var(--teal)', s => { const r = s.p1?.s1?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
-    chartHTML('S7 Support hold — rep S1', 'var(--amber)', s => { const r = s.p2?.s7?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
+    chartHTML('S7 Spinta vert. — rep S1', 'var(--amber)', s => { const r = s.p2?.s7?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
     chartHTML('S3 Tirata vert. — rep S1', 'var(--coral)', s => { const r = s.p2?.s3?.sets?.[0]; return r ? (r[0]||0)+(r[1]||0) : null; }, false),
     chartHTML('S5 cluster % — trend →0', 'var(--amber)', s => clPct(s,'p1','s5'), true),
     chartHTML('S1 cluster % — trend →0', 'var(--amber)', s => clPct(s,'p1','s1'), true),

@@ -1,42 +1,170 @@
 {
-  "spinta_verticale": {
-    "label": "Spinta verticale",
+  "handstand": {
+    "label": "Skill Handstand",
     "stations": ["s_vert"],
-    "variants": ["Pike", "Pike shrug", "Box pike", "Box pike shrug", "Wall walk", "Hold chest to wall", "Wall shrug", "Wall one-leg alternato", "Wall handstand", "Handstand"]
+    "variants": [
+      "Pike",
+      "Pike shrug",
+      "Box pike",
+      "Box pike shrug",
+      "Wall walk",
+      "Hold chest to wall",
+      "Wall shrug",
+      "Wall one-leg alternato",
+      "Wall handstand",
+      "Handstand"
+    ],
+    "metrics": {
+      "Pike": "time",
+      "Box pike": "time",
+      "Hold chest to wall": "time",
+      "Wall one-leg alternato": "time",
+      "Wall handstand": "time",
+      "Handstand": "time"
+    }
   },
   "spinta_orizzontale": {
     "label": "Spinta orizzontale",
     "stations": ["s5"],
-    "variants": ["Pushup inclinato", "Pushup eccentrica", "Pushup", "Pushup piedi su rialzo", "Diamond pushup", "Ring pushup", "RTO pushup",  "Dip", "Ring Dip"]
+    "variants": [
+      "Pushup inclinato",
+      "Pushup eccentrica",
+      "Pushup",
+      "Pushup piedi su rialzo",
+      "Diamond pushup",
+      "Ring pushup",
+      "RTO pushup"
+    ]
   },
   "tirata_orizzontale": {
     "label": "Tirata orizzontale",
     "stations": ["s1"],
-    "variants": ["Row eccentrica", "Row", "Row piedi su rialzo", "Row archer", "Row wide one arm eccentrica", "Row one arm"]
+    "variants": [
+      "Row eccentrica",
+      "Row",
+      "Row piedi su rialzo",
+      "Row archer",
+      "Row wide one arm eccentrica",
+      "Row one arm"
+    ]
   },
   "tirata_verticale": {
     "label": "Tirata verticale",
     "stations": ["s3"],
-    "variants": ["Dead hang", "Scapular pull up", "Active hang", "Pull up eccentrica", "Pull up", "Chest pull up", "Muscle up eccentrica", "Muscle up"]
+    "variants": [
+      "Dead hang",
+      "Scapular pull up",
+      "Active hang",
+      "Pull up eccentrica",
+      "Pull up",
+      "Chest pull up",
+      "Muscle up eccentrica",
+      "Muscle up"
+    ],
+    "metrics": {
+      "Dead hang": "time",
+      "Active hang": "time"
+    }
+  },
+  "spinta_verticale": {
+    "label": "Spinta verticale",
+    "stations": ["s7"],
+    "variants": [
+      "Support hold assistito",
+      "Support hold",
+      "Dip negativo",
+      "Dip",
+      "Dip profondo",
+      "Ring support hold",
+      "Ring support hold RTO",
+      "Ring dip negativo",
+      "Ring dip",
+      "Ring dip RTO finale",
+      "Ring dip RTO"
+    ],
+    "metrics": {
+      "Support hold assistito": "time",
+      "Support hold": "time",
+      "Ring support hold": "time",
+      "Ring support hold RTO": "time"
+    }
   },
   "gamba_anteriore": {
     "label": "Gamba anteriore",
     "stations": ["s6"],
-    "variants": ["Squat", "Step up", "Shrimp squat assisted", "Shrimp squat", "Pistol squat assisted", "Pistol squat"]
+    "variants": [
+      "Squat",
+      "Step up",
+      "Shrimp squat assisted",
+      "Shrimp squat",
+      "Pistol squat assisted",
+      "Pistol squat"
+    ]
   },
   "gamba_posteriore": {
     "label": "Gamba posteriore",
     "stations": ["s8"],
-    "variants": ["Glute bridge", "Arch hamstring isometric", "Arch hamstring march"]
+    "variants": [
+      "Glute bridge",
+      "Arch hamstring isometric",
+      "Arch hamstring march"
+    ],
+    "metrics": {
+      "Arch hamstring isometric": "time"
+    }
   },
   "core": {
     "label": "Core",
     "stations": ["s4"],
-    "variants": ["Dead Bug", "Hollow", "Hanging leg raise", "L-sit", "Dragon flag eccentrica", "Dragon flag tuck", "Dragon flag", "V-sit", "Front lever tuck", "Front lever advanced tuck", "Front lever", "Front lever one leg", "Front lever straddle", "Front lever"] 
+    "variants": [
+      "Dead Bug",
+      "Hollow",
+      "Hanging leg raise",
+      "L-sit",
+      "Dragon flag eccentrica",
+      "Dragon flag tuck",
+      "Dragon flag",
+      "V-sit",
+      "Front lever tuck",
+      "Front lever advanced tuck",
+      "Front lever",
+      "Front lever one leg",
+      "Front lever straddle"
+    ],
+    "metrics": {
+      "Hollow": "time",
+      "L-sit": "time",
+      "V-sit": "time",
+      "Front lever tuck": "time",
+      "Front lever advanced tuck": "time",
+      "Front lever one leg": "time",
+      "Front lever straddle": "time",
+      "Front lever": "time"
+    }
   },
   "catena_posteriore": {
     "label": "Catena posteriore",
     "stations": ["s2"],
-    "variants": ["Superman hold", "Jefferson curl", "Kettlebell Swings", "Deadlifts", "German Hang", "Back lever tuck", "Back lever advanced tuck", "Back lever one leg", "Back lever straddle", "Back lever"] 
+    "variants": [
+      "Superman hold",
+      "Jefferson curl",
+      "Kettlebell Swings",
+      "Deadlifts",
+      "German Hang",
+      "Back lever tuck",
+      "Back lever advanced tuck",
+      "Back lever one leg",
+      "Back lever straddle",
+      "Back lever"
+    ],
+    "metrics": {
+      "Superman hold": "time",
+      "German Hang": "time",
+      "Back lever tuck": "time",
+      "Back lever advanced tuck": "time",
+      "Back lever one leg": "time",
+      "Back lever straddle": "time",
+      "Back lever": "time"
+    }
   }
 }
