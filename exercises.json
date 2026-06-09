@@ -2,12 +2,12 @@
   "spinta_verticale": {
     "label": "Spinta verticale",
     "stations": ["s_vert"],
-    "variants": ["Pike pushup", "Box pike", "Wall walk", "Hold a muro", "Shoulder shrug", "Pushup"]
+    "variants": ["Pike", "Pike shrug", "Box pike", "Box pike shrug", "Wall walk", "Hold chest to wall", "Wall shrug", "Wall one-leg alternato", "Wall handstand", "Handstand"]
   },
   "spinta_orizzontale": {
     "label": "Spinta orizzontale",
     "stations": ["s5"],
-    "variants": ["Pushup inclinato", "Eccentrica", "Su rialzo", "Diamond", "Ring pushup"]
+    "variants": ["Pushup inclinato", "Pushup eccentrica", "Pushup", "Pushup piedi su rialzo", "Diamond pushup", "Ring pushup", "RTO pushup",  "Dip", "Ring Dip"]
   },
   "tirata_orizzontale": {
     "label": "Tirata orizzontale",
@@ -17,26 +17,26 @@
   "tirata_verticale": {
     "label": "Tirata verticale",
     "stations": ["s3"],
-    "variants": ["Dead hang", "Scapular pull up", "Active hang", "Eccentrica", "Pull up"]
+    "variants": ["Dead hang", "Scapular pull up", "Active hang", "Pull up eccentrica", "Pull up", "Chest pull up", "Muscle up eccentrica", "Muscle up"]
   },
   "gamba_anteriore": {
     "label": "Gamba anteriore",
     "stations": ["s6"],
-    "variants": ["Step up", "Bulgarian", "Shrimp squat assisted", "Shrimp squat", "Pistol squat assisted", "Pistol squat"]
+    "variants": ["Squat", "Step up", "Shrimp squat assisted", "Shrimp squat", "Pistol squat assisted", "Pistol squat"]
   },
   "gamba_posteriore": {
     "label": "Gamba posteriore",
     "stations": ["s8"],
-    "variants": ["Glute bridge", "Arch armstring iso", "Arch armstring march"]
+    "variants": ["Glute bridge", "Arch hamstring isometric", "Arch hamstring march"]
   },
   "core": {
     "label": "Core",
     "stations": ["s4"],
-    "variants": ["Hollow", "Plank"]
+    "variants": ["Dead Bug", "Hollow", "Hanging leg raise", "L-sit", "Dragon flag eccentrica", "Dragon flag tuck", "Dragon flag", "V-sit", "Front lever tuck", "Front lever advanced tuck", "Front lever", "Front lever one leg", "Front lever straddle", "Front lever"] 
   },
   "catena_posteriore": {
     "label": "Catena posteriore",
     "stations": ["s2"],
-    "variants": ["Jefferson curl", "Superman hold", "WY back"]
+    "variants": ["Superman hold", "Jefferson curl", "Kettlebell Swings", "Deadlifts", "German Hang", "Back lever tuck", "Back lever advanced tuck", "Back lever one leg", "Back lever straddle", "Back lever"] 
   }
 }
