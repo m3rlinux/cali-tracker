@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 2.7.7
+- **Versione corrente:** 2.7.9
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
