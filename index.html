@@ -1300,17 +1300,9 @@ let _tempFormRestore = null;
 
 // ── SERVICE WORKER ──
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').then(reg => {
-    // Check for updates when user presses "Nuova sessione"
-    window._swReg = reg;
-  });
-
-  // Listen for SW_UPDATED message → save temp state and reload
-  navigator.serviceWorker.addEventListener('message', e => {
-    if (e.data?.type === 'SW_UPDATED') {
-      saveTempState();
-      window.location.reload();
-    }
+  // Unregister any existing SW first to clear stale cache
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(r => r.unregister());
   });
 }
 
