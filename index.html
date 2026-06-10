@@ -386,24 +386,31 @@ function getGroupVariants(stationKey) {
 
 // ── LOAD EXERCISES ──
 async function loadExercises() {
-  document.getElementById('step-content').innerHTML = '<div style="padding:12px;font-family:var(--mono);font-size:11px;color:var(--muted)">Caricamento…</div>';
+  const dbg = s => { document.getElementById('step-content').innerHTML = `<div style="padding:12px;font-family:var(--mono);font-size:11px;color:var(--muted)">${s}</div>`; };
+  dbg('1. fetch exercises.json…');
   try {
     const res = await fetch('exercises.json');
+    dbg(`2. fetch OK — status ${res.status}`);
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    EXERCISES = await res.json();
+    const text = await res.text();
+    dbg(`3. testo ricevuto — ${text.length} chars`);
+    try {
+      EXERCISES = JSON.parse(text);
+      dbg(`4. JSON ok — ${Object.keys(EXERCISES).length} gruppi`);
+    } catch(e) {
+      dbg(`ERRORE JSON.parse: ${e.message}`);
+      EXERCISES = {}; STEPS = []; return;
+    }
     try {
       buildSteps();
+      dbg(`5. buildSteps ok — ${STEPS.length} step`);
     } catch(e) {
-      document.getElementById('step-content').innerHTML = `<div style="padding:12px;font-family:var(--mono);font-size:11px;color:var(--coral)">Errore buildSteps: ${e.message}</div>`;
-      console.error('buildSteps failed:', e);
-      STEPS = [];
-      return;
+      dbg(`ERRORE buildSteps: ${e.message}`);
+      STEPS = []; return;
     }
   } catch(e) {
-    document.getElementById('step-content').innerHTML = `<div style="padding:12px;font-family:var(--mono);font-size:11px;color:var(--coral)">Errore caricamento: ${e.message}</div>`;
-    console.warn('exercises.json fetch failed:', e.message);
-    EXERCISES = {};
-    STEPS = [];
+    dbg(`ERRORE fetch: ${e.message}`);
+    EXERCISES = {}; STEPS = [];
   }
 }
 
