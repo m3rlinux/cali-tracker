@@ -136,6 +136,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .time-total-target { font-size: 10px; color: var(--muted2); font-family: var(--mono); }
 
 /* REPS SETS */
+.set-main { flex-direction: column; align-items: stretch; gap: 6px; }
+.set-main > div[id^="intensity-f-"] { align-self: center; width: 100%; text-align: center; }
 .sets-grid { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
 .set-row { display: flex; align-items: center; gap: 8px; }
 .set-label { font-family: var(--mono); font-size: 10px; color: var(--muted); width: 28px; flex-shrink: 0; }
@@ -270,7 +272,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.21</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.22</span></div>
   <div class="user-menu-wrap">
     <div class="name-badge" id="name-badge" onclick="toggleUserMenu()">— imposta nome</div>
     <div class="user-menu" id="user-menu">
@@ -346,7 +348,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '2.7.21';
+const VERSION = '2.7.22';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
