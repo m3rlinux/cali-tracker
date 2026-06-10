@@ -1,3 +1,9 @@
+<!--
+  Cali Tracker v2.7.0
+  Copyright (c) 2026 Davide Gibilisco
+  Released under the MIT License
+  https://github.com/m3rlinux/cali-tracker
+-->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -197,12 +203,37 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 #step-content.slide-out-right { transform: translateX(60px);  opacity: 0; pointer-events: none; }
 #step-content.slide-in-left   { transform: translateX(60px);  opacity: 0; pointer-events: none; }
 #step-content.slide-in-right  { transform: translateX(-60px); opacity: 0; pointer-events: none; }
+
+/* +/- BUTTONS */
+.stepper-row { display: flex; align-items: center; gap: 6px; }
+.stepper-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; user-select: none; -webkit-user-select: none; }
+.stepper-btn:active { background: var(--border2); }
+.stepper-input { flex: 1; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 9px 4px; font-size: 22px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; }
+.stepper-input::-webkit-inner-spin-button, .stepper-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.stepper-input:focus { outline: none; border-color: var(--teal); }
+
+/* INTENSITY LABEL */
+.intensity-lbl { font-size: 9px; font-family: var(--mono); text-align: center; margin-top: 3px; letter-spacing: .04em; text-transform: uppercase; }
+.intensity-forza     { color: var(--coral); }
+.intensity-ipertrofia { color: var(--teal); }
+.intensity-resistenza { color: var(--blue); }
+
+/* SESS BAR — editing mode */
+.sess-bar-editing { background: var(--surface2); border-bottom: 1px solid var(--border2); }
+.sess-edit-label { font-family: var(--mono); font-size: 11px; color: var(--amber); }
+
+/* SLIDE ANIMATION */
+#step-content { transition: transform .22s ease, opacity .22s ease; }
+#step-content.slide-out-left  { transform: translateX(-60px); opacity: 0; pointer-events: none; }
+#step-content.slide-out-right { transform: translateX(60px);  opacity: 0; pointer-events: none; }
+#step-content.slide-in-left   { transform: translateX(60px);  opacity: 0; pointer-events: none; }
+#step-content.slide-in-right  { transform: translateX(-60px); opacity: 0; pointer-events: none; }
 </style>
 </head>
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.6</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.0</span></div>
   <div class="user-menu-wrap">
     <div class="name-badge" id="name-badge" onclick="toggleUserMenu()">— imposta nome</div>
     <div class="user-menu" id="user-menu">
@@ -221,15 +252,12 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <div class="page active" id="page-log">
-  <div class="sess-bar">
+  <div class="sess-bar" id="sess-bar">
     <div class="sess-info">
-      <div class="sess-num-big" id="sess-num">1</div>
+      <div class="sess-num-big" id="sess-num">—</div>
       <div class="sess-date-sm" id="sess-date">—</div>
     </div>
-    <div class="sess-nav">
-      <button class="sess-btn" onclick="changeSess(-1)">‹</button>
-      <button class="sess-btn" onclick="changeSess(1)">›</button>
-    </div>
+    <div id="sess-bar-right"></div>
   </div>
   <div class="step-bar">
     <div class="step-label" id="step-label"></div>
@@ -237,8 +265,6 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
   </div>
   <div class="step-content" id="step-content"></div>
   <div class="step-nav">
-    <button class="nav-btn" id="btn-prev" onclick="goStep(-1)" style="display:none">‹ Indietro</button>
-    <button class="nav-btn" id="btn-next" onclick="goStep(1)" style="display:none">Avanti ›</button>
     <button class="save-btn" id="btn-save" onclick="saveSession()" style="display:none">Salva ✓</button>
   </div>
   <div class="toast" id="toast">✓ Sessione salvata</div>
@@ -281,7 +307,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '2.6';
+const VERSION = '2.7.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
@@ -379,25 +405,106 @@ async function init() {
   if (!name) openNameModal();
   else document.getElementById('name-badge').textContent = name;
   await loadExercises();
-  const data = getData();
-  const nums = Object.keys(data).map(Number).filter(n => !isNaN(n));
-  if (nums.length) currentSess = Math.max(...nums);
+  const hadTemp = restoreTempState();
+  if (!hadTemp) {
+    const data = getData();
+    const nums = Object.keys(data).map(Number).filter(n => !isNaN(n));
+    currentSess = nums.length ? Math.max(...nums) + 1 : 1;
+    editingSession = false;
+  }
+  renderSessBar();
   renderStepDots();
   renderStep();
   renderHistory();
   renderProgress();
   document.getElementById('version').textContent = 'v' + VERSION;
+  // After render, inject temp form values if any
+  if (_tempFormRestore) {
+    injectTempForm(_tempFormRestore);
+    _tempFormRestore = null;
+  }
+}
+
+function injectTempForm(formData) {
+  if (!STEPS.length) return;
+  const step = STEPS[currentStep];
+  step.stations.forEach(({stationKey}) => {
+    const obj = formData[stationKey];
+    if (!obj) return;
+    const selVariant = document.querySelector(`.variant-select[data-station="${stationKey}"]`);
+    if (selVariant && obj.variant) {
+      selVariant.value = obj.variant;
+      selVariant.className = `variant-select col-${selVariant.dataset.px}`;
+    }
+    const metric = getMetric(stationKey, obj.variant || '');
+    if (metric === 'time') {
+      const prInput = document.querySelector(`[data-pr="${stationKey}"]`);
+      if (prInput && obj.hold_max != null) { prInput.value = obj.hold_max; updateTimeTarget(stationKey); }
+      obj.sets?.forEach((val, i) => {
+        const ti = document.querySelector(`.time-set-input[data-ex="${stationKey}"][data-set="${i}"]`);
+        if (ti && val != null) ti.value = val;
+      });
+      updateTimeTotal(stationKey);
+    } else {
+      obj.sets?.forEach(([f, c], i) => {
+        const fi = document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="f"]`);
+        const ci = document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="c"]`);
+        if (fi && f != null) fi.value = f;
+        if (ci && c != null) ci.value = c;
+      });
+    }
+  });
 }
 
 // ── SESSION NAV ──
-function changeSess(d) {
+let editingSession = false;
+
+function newSession() {
   collectStep(currentStep);
-  const next = currentSess + d;
-  if (next < 1 || next > 30) return;
-  currentSess = next;
+  // Check for SW update when starting a new session
+  if (window._swReg) window._swReg.update();
+  const data = getData();
+  const nums = Object.keys(data).map(Number).filter(n => !isNaN(n));
+  currentSess = nums.length ? Math.max(...nums) + 1 : 1;
   currentStep = 0;
+  editingSession = false;
+  _tempFormRestore = null;
+  renderSessBar();
+  renderStepDots();
+  goStepDirect(0);
+}
+
+function editSession(n) {
+  collectStep(currentStep);
+  currentSess = n;
+  currentStep = 0;
+  editingSession = true;
+  switchTab('log');
+  renderSessBar();
+  renderStepDots();
+  goStepDirect(0);
+}
+
+function goStepDirect(idx) {
+  currentStep = idx;
   renderStepDots();
   renderStep();
+}
+
+function renderSessBar() {
+  const data = getData();
+  const s = data[currentSess] || {};
+  document.getElementById('sess-num').textContent = currentSess;
+  document.getElementById('sess-date').textContent = s.date || '—';
+  const bar = document.getElementById('sess-bar');
+  const right = document.getElementById('sess-bar-right');
+  if (editingSession) {
+    bar.classList.add('sess-bar-editing');
+    right.innerHTML = `<span class="sess-edit-label">✎ modifica</span>`;
+  } else {
+    bar.classList.remove('sess-bar-editing');
+    right.innerHTML = `<button class="nav-btn" onclick="newSession()" style="padding:6px 12px;font-size:11px;font-family:var(--mono)">+ Nuova</button>`;
+  }
 }
 
 // ── STEP NAV ──
@@ -441,8 +548,7 @@ function renderStep() {
   const data = getData();
   const s = data[currentSess] || {};
   const prev = data[currentSess - 1] || {};
-  document.getElementById('sess-num').textContent = currentSess;
-  document.getElementById('sess-date').textContent = s.date || '—';
+  renderSessBar();
   renderPairStep(currentStep, s, prev);
 }
 
@@ -515,13 +621,20 @@ function timeSetsHTML(stationKey, exData, prevExData, numSets, px) {
   </div>`;
 
   const setRows = Array.from({length: MAX_SETS}, (_, i) => {
-    const val = sets[i]?.[0] ?? '';
-    const prevVal = prevSets[i]?.[0] != null ? `${prevSets[i][0]}"` : '';
+    const rawVal = sets[i]?.[0];
+    const prevVal = prevSets[i]?.[0];
+    // pre-fill from prev if no current value
+    const val = rawVal != null ? rawVal : (prevVal != null ? prevVal : '');
+    const prevDisp = prevVal != null ? `${prevVal}"` : '';
     return `<div class="time-set-row">
       <div class="time-set-label">S${i+1}</div>
-      <input class="time-set-input" data-ex="${stationKey}" data-set="${i}" type="number" inputmode="numeric" min="0" placeholder="—" value="${val}" oninput="updateTimeTotal('${stationKey}')">
+      <div class="stepper-row" style="flex:1">
+        <button class="stepper-btn" onclick="stepperTimeChange('${stationKey}',${i},-1)">−</button>
+        <input class="time-set-input stepper-input" data-ex="${stationKey}" data-set="${i}" type="number" inputmode="numeric" min="0" placeholder="—" value="${val}" oninput="updateTimeTotal('${stationKey}')">
+        <button class="stepper-btn" onclick="stepperTimeChange('${stationKey}',${i},1)">+</button>
+      </div>
       <div class="time-set-unit">"</div>
-      <div class="set-prev" style="min-width:32px;text-align:right;font-size:10px;color:var(--muted2);font-family:var(--mono)">${prevVal ? `↑${prevVal}` : ''}</div>
+      <div class="set-prev" style="min-width:32px;text-align:right;font-size:10px;color:var(--muted2);font-family:var(--mono)">${prevDisp ? `↑${prevDisp}` : ''}</div>
     </div>`;
   }).join('');
 
@@ -555,33 +668,115 @@ function updateTimeTotal(stationKey) {
   el.style.color = total >= TIME_TARGET_LOW ? 'var(--teal)' : 'var(--amber)';
 }
 
+function stepperTimeChange(stationKey, setIdx, delta) {
+  const el = document.querySelector(`.time-set-input[data-ex="${stationKey}"][data-set="${setIdx}"]`);
+  if (!el) return;
+  el.value = Math.max(0, (parseInt(el.value) || 0) + delta);
+  updateTimeTotal(stationKey);
+}
+
+// ── INTENSITY LABEL ──
+function intensityLabel(val) {
+  if (val == null || val === '' || val === 0) return '';
+  if (val <= 5)  return '<div class="intensity-lbl intensity-forza">forza</div>';
+  if (val <= 20) return '<div class="intensity-lbl intensity-ipertrofia">ipertrofia</div>';
+  return '<div class="intensity-lbl intensity-resistenza">resistenza</div>';
+}
+function intensityLabelAvg(stationKey, numSets) {
+  let total = 0, count = 0;
+  for (let i = 0; i < numSets; i++) {
+    const f = parseInt(document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="f"]`)?.value) || 0;
+    const c = parseInt(document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="c"]`)?.value) || 0;
+    const rep = f + c;
+    if (rep > 0) { total += rep; count++; }
+  }
+  if (!count) return '';
+  return intensityLabel(Math.round(total / count)).replace('intensity-lbl', 'intensity-lbl').replace('</div>', ' (media)</div>');
+}
+
 // ── REPS SETS HTML ──
 function repsSetsHTML(stationKey, exData, prevExData, numSets) {
   const sets = exData.sets || [];
+  // pre-fill from prev session if current session has no data
   const prevSets = prevExData.sets || [];
   const setRows = Array.from({length: numSets}, (_, i) => {
-    const f = sets[i]?.[0] ?? '';
-    const c = sets[i]?.[1] ?? '';
+    // use current value if exists, else pre-fill from prev
+    const rawF = sets[i]?.[0];
+    const rawC = sets[i]?.[1];
     const pf = prevSets[i]?.[0];
     const pc = prevSets[i]?.[1];
-    const prevStr = pf != null ? (pc ? `${pf}+${pc}` : `${pf}`) : '';
+    const f = rawF != null ? rawF : (pf != null ? pf : '');
+    const c = rawC != null ? rawC : (pc != null ? pc : '');
+    const fVal = f !== '' ? Number(f) : 0;
+    const cVal = c !== '' ? Number(c) : 0;
+    const rep = fVal + cVal;
+    const iLbl = intensityLabel(rep > 0 ? rep : null);
     return `<div class="set-row">
       <div class="set-label">S${i+1}</div>
       <div class="set-inputs">
         <div class="si-wrap">
           <div class="si-lbl">filate</div>
-          <input class="si-input filate" data-ex="${stationKey}" data-set="${i}" data-type="f" type="number" inputmode="numeric" min="0" placeholder="—" value="${f}">
+          <div class="stepper-row">
+            <button class="stepper-btn" onclick="stepperChange('${stationKey}',${i},'f',-1)">−</button>
+            <input class="stepper-input filate" data-ex="${stationKey}" data-set="${i}" data-type="f" type="number" inputmode="numeric" min="0" placeholder="—" value="${f}" oninput="updateRepsIntensity('${stationKey}',${i},${numSets})">
+            <button class="stepper-btn" onclick="stepperChange('${stationKey}',${i},'f',1)">+</button>
+          </div>
+          <div id="intensity-f-${stationKey}-${i}">${iLbl}</div>
         </div>
         <div class="si-wrap">
           <div class="si-lbl">cluster</div>
-          <input class="si-input cluster" data-ex="${stationKey}" data-set="${i}" data-type="c" type="number" inputmode="numeric" min="0" placeholder="—" value="${c}">
+          <div class="stepper-row">
+            <button class="stepper-btn" onclick="stepperChange('${stationKey}',${i},'c',-1)">−</button>
+            <input class="stepper-input cluster" data-ex="${stationKey}" data-set="${i}" data-type="c" type="number" inputmode="numeric" min="0" placeholder="—" value="${c}" oninput="updateRepsIntensity('${stationKey}',${i},${numSets})">
+            <button class="stepper-btn" onclick="stepperChange('${stationKey}',${i},'c',1)">+</button>
+          </div>
         </div>
       </div>
-      <div class="set-prev">${prevStr ? `↑${prevStr}` : ''}</div>
     </div>`;
   }).join('');
-  return `<div class="sets-grid">${setRows}</div>
-  <div class="cluster-hint">cluster dopo 5"–8" di riposo</div>`;
+  return `<div class="sets-grid" id="sets-grid-${stationKey}">${setRows}</div>
+  <div class="cluster-hint">cluster dopo 5"–8" di riposo</div>
+  <div class="time-total-bar">
+    <div class="time-total-label">Media set</div>
+    <div id="reps-avg-${stationKey}" style="font-family:var(--mono);font-size:12px;color:var(--muted)">—</div>
+  </div>`;
+}
+
+function stepperChange(stationKey, setIdx, type, delta) {
+  const el = document.querySelector(`[data-ex="${stationKey}"][data-set="${setIdx}"][data-type="${type}"]`);
+  if (!el) return;
+  const cur = parseInt(el.value) || 0;
+  el.value = Math.max(0, cur + delta);
+  updateRepsIntensity(stationKey, setIdx, 3); // default numSets 3
+}
+
+function updateRepsIntensity(stationKey, setIdx, numSets) {
+  const fi = document.querySelector(`[data-ex="${stationKey}"][data-set="${setIdx}"][data-type="f"]`);
+  const ci = document.querySelector(`[data-ex="${stationKey}"][data-set="${setIdx}"][data-type="c"]`);
+  const rep = (parseInt(fi?.value) || 0) + (parseInt(ci?.value) || 0);
+  const lbl = document.getElementById(`intensity-f-${stationKey}-${setIdx}`);
+  if (lbl) lbl.innerHTML = intensityLabel(rep > 0 ? rep : null);
+  // update average
+  let total = 0, count = 0;
+  for (let i = 0; i < numSets; i++) {
+    const f2 = parseInt(document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="f"]`)?.value) || 0;
+    const c2 = parseInt(document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="c"]`)?.value) || 0;
+    const r = f2 + c2;
+    if (r > 0) { total += r; count++; }
+  }
+  const avg = count > 0 ? Math.round(total / count) : null;
+  const avgEl = document.getElementById(`reps-avg-${stationKey}`);
+  if (avgEl) {
+    let avgClass = '';
+    if (avg != null) {
+      if (avg <= 5) avgClass = 'intensity-forza';
+      else if (avg <= 20) avgClass = 'intensity-ipertrofia';
+      else avgClass = 'intensity-resistenza';
+    }
+    avgEl.innerHTML = avg != null
+      ? `<span class="intensity-lbl ${avgClass}" style="font-size:11px">${avg} rep/set → ${avg<=5?'forza':avg<=20?'ipertrofia':'resistenza'}</span>`
+      : '—';
+  }
 }
 
 // ── PAIR STEP RENDER ──
@@ -665,13 +860,15 @@ function collectStep(stepIdx) {
 }
 
 function saveSession() {
-  // Force-write current form state even for new sessions
   const data = getData();
   if (!data[currentSess]) data[currentSess] = {};
-  data[currentSess].date = new Date().toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit', year:'2-digit' });
-  saveData(data); // write date first so collectStep will proceed
+  if (!editingSession || !data[currentSess].date) {
+    data[currentSess].date = new Date().toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit', year:'2-digit' });
+  }
+  saveData(data);
   collectStep(currentStep);
-  document.getElementById('sess-date').textContent = getData()[currentSess].date;
+  editingSession = false;
+  renderSessBar();
   const toast = document.getElementById('toast');
   toast.textContent = '✓ Sessione salvata';
   toast.classList.add('show');
@@ -762,6 +959,7 @@ function renderHistory() {
         <span class="history-sess-num">Sessione ${n}</span>
         <div class="history-meta">
           <span class="history-date">${s.date||'—'}</span>
+          <button class="delete-btn" style="color:var(--blue);border-color:var(--blue)" onclick="editSession(event,${n})">✎</button>
           <button class="delete-btn" onclick="deleteSession(event,${n})">✕</button>
         </div>
       </div>
@@ -776,6 +974,16 @@ function deleteSession(e, n) {
   if (!confirm(`Cancellare la sessione ${n}?`)) return;
   const data = getData(); delete data[n]; saveData(data);
   renderHistory(); renderProgress();
+}
+function editSession(e, n) {
+  e.stopPropagation();
+  currentSess = n;
+  currentStep = 0;
+  editingSession = true;
+  switchTab('log');
+  renderSessBar();
+  renderStepDots();
+  renderStep();
 }
 
 // ── PROGRESS ──
@@ -1018,12 +1226,90 @@ function switchTab(t) {
     const dx = e.changedTouches[0].clientX - startX;
     const dy = e.changedTouches[0].clientY - startY;
     if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    if (dx < 0) goStep(1);   // swipe left → next
-    else goStep(-1);          // swipe right → prev
+    if (dx < 0) goStep(1);
+    else goStep(-1);
   }, { passive: true });
 })();
 
+// ── TEMP STATE — persist unsaved form data across SW-triggered reloads ──
+const TEMP_KEY = 'cali_temp_state';
+
+function saveTempState() {
+  // Collect current form without writing to localStorage
+  if (!STEPS.length) return;
+  const step = STEPS[currentStep];
+  const formData = {};
+  step.stations.forEach(({stationKey}) => {
+    const obj = {};
+    const selVariant = document.querySelector(`.variant-select[data-station="${stationKey}"]`);
+    if (selVariant?.value) obj.variant = selVariant.value;
+    const metric = getMetric(stationKey, obj.variant || '');
+    if (metric === 'time') {
+      const prInput = document.querySelector(`[data-pr="${stationKey}"]`);
+      if (prInput?.value !== '') obj.hold_max = parseInt(prInput.value) || 0;
+      const sets = [];
+      for (let i = 0; i < MAX_SETS; i++) {
+        const ti = document.querySelector(`.time-set-input[data-ex="${stationKey}"][data-set="${i}"]`);
+        sets.push(ti?.value !== '' ? parseInt(ti.value) : null);
+      }
+      obj.sets = sets;
+    } else {
+      const sets = [];
+      for (let i = 0; i < 3; i++) {
+        const fi = document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="f"]`);
+        const ci = document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="c"]`);
+        sets.push([fi?.value !== '' ? parseInt(fi.value) : null, ci?.value !== '' ? parseInt(ci.value) : null]);
+      }
+      obj.sets = sets;
+    }
+    formData[stationKey] = obj;
+  });
+  sessionStorage.setItem(TEMP_KEY, JSON.stringify({
+    sess: currentSess,
+    step: currentStep,
+    editing: editingSession,
+    form: formData
+  }));
+}
+
+function restoreTempState() {
+  try {
+    const raw = sessionStorage.getItem(TEMP_KEY);
+    if (!raw) return false;
+    sessionStorage.removeItem(TEMP_KEY);
+    const state = JSON.parse(raw);
+    currentSess = state.sess;
+    currentStep = state.step;
+    editingSession = state.editing || false;
+    // Inject into in-memory data so renderStep pre-fills correctly
+    // We write to a temporary object that renderPairStep reads
+    _tempFormRestore = state.form || {};
+    return true;
+  } catch(e) { return false; }
+}
+
+let _tempFormRestore = null;
+
+// ── SERVICE WORKER ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').then(reg => {
+    // Check for updates when user presses "Nuova sessione"
+    window._swReg = reg;
+  });
+
+  // Listen for SW_UPDATED message → save temp state and reload
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data?.type === 'SW_UPDATED') {
+      saveTempState();
+      window.location.reload();
+    }
+  });
+}
+
 init();
 </script>
+  <div style="text-align:center;padding:16px 0 24px;font-family:var(--mono);font-size:10px;color:var(--muted2)">
+    © 2026 Davide Gibilisco · MIT License
+  </div>
 </body>
 </html>
