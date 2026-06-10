@@ -4,7 +4,7 @@
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
 */
-const CACHE_VERSION = '2.7.9';
+const CACHE_VERSION = '2.7.11';
 const CACHE_NAME = `cali-tracker-${CACHE_VERSION}`;
 const ASSETS = [
   './',
