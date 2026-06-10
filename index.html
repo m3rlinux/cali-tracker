@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v2.7.12
+  Cali Tracker v2.7.15
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -150,6 +150,11 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .si-input.cluster:focus { border-color: var(--amber); }
 .set-prev { font-family: var(--mono); font-size: 10px; color: var(--muted2); white-space: nowrap; min-width: 44px; text-align: right; }
 .cluster-hint { font-size: 10px; color: var(--amber); font-family: var(--mono); text-align: center; padding: 6px 12px 10px; opacity: .7; }
+.difficulty-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px 10px; border-top: 1px solid var(--border); }
+.difficulty-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; }
+.difficulty-options { display: flex; gap: 6px; }
+.difficulty-btn { width: 28px; height: 28px; border: 1px solid var(--border2); border-radius: 7px; background: var(--bg); cursor: pointer; font-size: 14px; line-height: 1; display: inline-flex; align-items: center; justify-content: center; }
+.difficulty-btn.active { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
 
 /* HISTORY */
 #page-history { padding: 16px; }
@@ -264,7 +269,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.12</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.15</span></div>
   <div class="user-menu-wrap">
     <div class="name-badge" id="name-badge" onclick="toggleUserMenu()">— imposta nome</div>
     <div class="user-menu" id="user-menu">
@@ -340,11 +345,19 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '2.7.12';
+const VERSION = '2.7.15';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
 const TIME_TARGET_HIGH = 60;
+const REP_ZONE_STRENGTH_MAX = 5;
+const REP_ZONE_HYPERTROPHY_MAX = 20;
+const DIFFICULTY_LEVELS = [
+  { key: 'facile', emoji: '🟢', title: 'Facile' },
+  { key: 'medio', emoji: '🟡', title: 'Medio' },
+  { key: 'difficile', emoji: '🟠', title: 'Difficile' },
+  { key: 'limite', emoji: '🔴', title: 'Limite' }
+];
 
 function sessKey() { return 'cali_sessions_' + (getName().toLowerCase().replace(/\s+/g,'_') || 'default'); }
 function getData() { try { return JSON.parse(localStorage.getItem(sessKey())) || {}; } catch(e) { return {}; } }
@@ -494,6 +507,10 @@ function injectTempForm(formData) {
         if (fi && f != null) fi.value = f;
         if (ci && c != null) ci.value = c;
       });
+      if (obj.difficulty) {
+        const btn = document.querySelector(`.difficulty-btn[data-ex="${stationKey}"][data-level="${obj.difficulty}"]`);
+        if (btn) setDifficulty(stationKey, obj.difficulty, btn);
+      }
     }
   });
 }
@@ -728,11 +745,17 @@ function stepperTimeChange(stationKey, setIdx, delta) {
 }
 
 // ── INTENSITY LABEL ──
+function getIntensityZone(val) {
+  if (val == null || val === '' || val === 0) return null;
+  if (val <= REP_ZONE_STRENGTH_MAX) return { css: 'intensity-forza', label: 'forza' };
+  if (val <= REP_ZONE_HYPERTROPHY_MAX) return { css: 'intensity-ipertrofia', label: 'ipertrofia' };
+  return { css: 'intensity-resistenza', label: 'resistenza' };
+}
+
 function intensityLabel(val) {
-  if (val == null || val === '' || val === 0) return '';
-  if (val <= 5)  return '<div class="intensity-lbl intensity-forza">forza</div>';
-  if (val <= 20) return '<div class="intensity-lbl intensity-ipertrofia">ipertrofia</div>';
-  return '<div class="intensity-lbl intensity-resistenza">resistenza</div>';
+  const zone = getIntensityZone(val);
+  if (!zone) return '';
+  return `<div class="intensity-lbl ${zone.css}">${zone.label}</div>`;
 }
 function intensityLabelAvg(stationKey, numSets) {
   let total = 0, count = 0;
@@ -784,12 +807,14 @@ function repsSetsHTML(stationKey, exData, prevExData, numSets) {
             </div>
           </div>
         </div>
+        <div id="intensity-f-${stationKey}-${i}">${iLbl}</div>
       </div>
-      <div id="intensity-f-${stationKey}-${i}" style="padding-left:36px">${iLbl}</div>
     </div>`;
   }).join('');
+  const difficultyHTML = difficultySelectorHTML(stationKey, exData, prevExData);
   return `<div class="sets-grid" id="sets-grid-${stationKey}">${setRows}</div>
   <div class="cluster-hint">cluster dopo 5"–8" di riposo</div>
+  ${difficultyHTML}
   <div class="time-total-bar">
     <div class="time-total-label">Media set</div>
     <div id="reps-avg-${stationKey}" style="font-family:var(--mono);font-size:12px;color:var(--muted)">—</div>
@@ -821,16 +846,29 @@ function updateRepsIntensity(stationKey, setIdx, numSets) {
   const avg = count > 0 ? Math.round(total / count) : null;
   const avgEl = document.getElementById(`reps-avg-${stationKey}`);
   if (avgEl) {
-    let avgClass = '';
-    if (avg != null) {
-      if (avg <= 5) avgClass = 'intensity-forza';
-      else if (avg <= 20) avgClass = 'intensity-ipertrofia';
-      else avgClass = 'intensity-resistenza';
-    }
+    const zone = getIntensityZone(avg);
     avgEl.innerHTML = avg != null
-      ? `<span class="intensity-lbl ${avgClass}" style="font-size:11px">${avg} rep/set → ${avg<=5?'forza':avg<=20?'ipertrofia':'resistenza'}</span>`
+      ? `<span class="intensity-lbl ${zone?.css || ''}" style="font-size:11px">${avg} rep/set → ${zone?.label || ''}</span>`
       : '—';
   }
+}
+
+function difficultySelectorHTML(stationKey, exData, prevExData) {
+  const selected = exData.difficulty || prevExData.difficulty || '';
+  const options = DIFFICULTY_LEVELS.map(level =>
+    `<button type="button" class="difficulty-btn ${selected === level.key ? 'active' : ''}" data-ex="${stationKey}" data-level="${level.key}" title="${level.title}" onclick="setDifficulty('${stationKey}','${level.key}',this)">${level.emoji}</button>`
+  ).join('');
+  return `<div class="difficulty-row">
+    <div class="difficulty-label">Difficolta</div>
+    <div class="difficulty-options">${options}</div>
+  </div>`;
+}
+
+function setDifficulty(stationKey, level, btn) {
+  const parent = btn?.closest('.difficulty-options');
+  if (!parent) return;
+  parent.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 }
 
 // ── PAIR STEP RENDER ──
@@ -897,11 +935,15 @@ function collectStep(stepIdx) {
     if (metric === 'time') {
       const prInput = document.querySelector(`[data-pr="${stationKey}"]`);
       if (prInput?.value !== '') exObj.hold_max = parseInt(prInput.value) || 0;
+      delete exObj.difficulty;
       for (let i = 0; i < MAX_SETS; i++) {
         const ti = document.querySelector(`.time-set-input[data-ex="${stationKey}"][data-set="${i}"]`);
         sets.push([ti?.value !== '' ? parseInt(ti.value) : null, null]);
       }
     } else {
+      const diffBtn = document.querySelector(`.difficulty-btn[data-ex="${stationKey}"].active`);
+      if (diffBtn) exObj.difficulty = diffBtn.dataset.level;
+      else delete exObj.difficulty;
       for (let i = 0; i < 3; i++) {
         const fi = document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="f"]`);
         const ci = document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="c"]`);
@@ -1310,6 +1352,8 @@ function saveTempState() {
       obj.sets = sets;
     } else {
       const sets = [];
+      const diffBtn = document.querySelector(`.difficulty-btn[data-ex="${stationKey}"].active`);
+      if (diffBtn) obj.difficulty = diffBtn.dataset.level;
       for (let i = 0; i < 3; i++) {
         const fi = document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="f"]`);
         const ci = document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="c"]`);
