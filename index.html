@@ -391,8 +391,16 @@ async function loadExercises() {
     const res = await fetch('exercises.json');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     EXERCISES = await res.json();
-    buildSteps();
+    try {
+      buildSteps();
+    } catch(e) {
+      document.getElementById('step-content').innerHTML = `<div style="padding:12px;font-family:var(--mono);font-size:11px;color:var(--coral)">Errore buildSteps: ${e.message}</div>`;
+      console.error('buildSteps failed:', e);
+      STEPS = [];
+      return;
+    }
   } catch(e) {
+    document.getElementById('step-content').innerHTML = `<div style="padding:12px;font-family:var(--mono);font-size:11px;color:var(--coral)">Errore caricamento: ${e.message}</div>`;
     console.warn('exercises.json fetch failed:', e.message);
     EXERCISES = {};
     STEPS = [];
