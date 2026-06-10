@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v2.7.1
+  Cali Tracker v2.7.2
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -233,7 +233,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.1</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.2</span></div>
   <div class="user-menu-wrap">
     <div class="name-badge" id="name-badge" onclick="toggleUserMenu()">— imposta nome</div>
     <div class="user-menu" id="user-menu">
@@ -307,7 +307,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '2.7.1';
+const VERSION = '2.7.2';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
@@ -386,31 +386,17 @@ function getGroupVariants(stationKey) {
 
 // ── LOAD EXERCISES ──
 async function loadExercises() {
-  const dbg = s => { document.getElementById('step-content').innerHTML = `<div style="padding:12px;font-family:var(--mono);font-size:11px;color:var(--muted)">${s}</div>`; };
-  dbg('1. fetch exercises.json…');
+  document.getElementById('step-content').innerHTML = '<div style="padding:12px;font-family:var(--mono);font-size:11px;color:var(--muted)">Caricamento…</div>';
   try {
     const res = await fetch('exercises.json');
-    dbg(`2. fetch OK — status ${res.status}`);
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    const text = await res.text();
-    dbg(`3. testo ricevuto — ${text.length} chars`);
-    try {
-      EXERCISES = JSON.parse(text);
-      dbg(`4. JSON ok — ${Object.keys(EXERCISES).length} gruppi`);
-    } catch(e) {
-      dbg(`ERRORE JSON.parse: ${e.message}`);
-      EXERCISES = {}; STEPS = []; return;
-    }
-    try {
-      buildSteps();
-      dbg(`5. buildSteps ok — ${STEPS.length} step`);
-    } catch(e) {
-      dbg(`ERRORE buildSteps: ${e.message}`);
-      STEPS = []; return;
-    }
+    EXERCISES = await res.json();
+    buildSteps();
   } catch(e) {
-    dbg(`ERRORE fetch: ${e.message}`);
-    EXERCISES = {}; STEPS = [];
+    document.getElementById('step-content').innerHTML = `<div style="padding:12px;font-family:var(--mono);font-size:11px;color:var(--coral)">Errore: ${e.message}</div>`;
+    console.error('loadExercises failed:', e);
+    EXERCISES = {};
+    STEPS = [];
   }
 }
 
@@ -1306,9 +1292,15 @@ let _tempFormRestore = null;
 
 // ── SERVICE WORKER ──
 if ('serviceWorker' in navigator) {
-  // Unregister any existing SW first to clear stale cache
-  navigator.serviceWorker.getRegistrations().then(regs => {
-    regs.forEach(r => r.unregister());
+  navigator.serviceWorker.register('./sw.js').then(reg => {
+    window._swReg = reg;
+  });
+
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data?.type === 'SW_UPDATED') {
+      saveTempState();
+      window.location.reload();
+    }
   });
 }
 
