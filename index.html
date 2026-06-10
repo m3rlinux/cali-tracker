@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v2.7.19
+  Cali Tracker v2.7.20-preload
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -270,7 +270,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.19</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.20</span></div>
   <div class="user-menu-wrap">
     <div class="name-badge" id="name-badge" onclick="toggleUserMenu()">— imposta nome</div>
     <div class="user-menu" id="user-menu">
@@ -346,12 +346,12 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '2.7.19';
+const VERSION = '2.7.20';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
 const TIME_TARGET_HIGH = 60;
-const DEFAULT_DIFFICULTY_KEY = 'difficile';
+const DEFAULT_DIFFICULTY_KEY = 'medio';
 const DIFFICULTY_LEVELS = [
   { key: 'facile', emoji: '🟢', title: 'Facile' },
   { key: 'medio', emoji: '🟡', title: 'Medio' },
@@ -381,6 +381,42 @@ function getPrevSession(data, sessNum) {
 let currentSess = 1;
 let currentStep = 0;
 let STEPS = []; // built dynamically from EXERCISES
+let draftSession = {};       // in-memory session being edited/created
+let draftDirty = false;      // true when current draft has unsaved changes
+let _suppressTabGuard = false;
+
+function cloneObj(obj) {
+  return JSON.parse(JSON.stringify(obj || {}));
+}
+
+function getSavedSessionNumbers() {
+  return Object.keys(getData()).map(Number).filter(n => !isNaN(n)).sort((a, b) => a - b);
+}
+
+function getNextSessionNumber() {
+  const nums = getSavedSessionNumbers();
+  return nums.length ? Math.max(...nums) + 1 : 1;
+}
+
+function getLastSavedSession() {
+  const data = getData();
+  const nums = Object.keys(data).map(Number).filter(n => !isNaN(n)).sort((a, b) => b - a);
+  const lastNum = nums[0];
+  return lastNum != null ? cloneObj(data[lastNum] || {}) : {};
+}
+
+function resetDraftSession() {
+  currentSess = getNextSessionNumber();
+  currentStep = 0;
+  editingSession = false;
+  draftSession = getLastSavedSession();
+  delete draftSession.date; // nuova sessione: precompila i valori, ma resta non salvata
+  draftDirty = false;
+}
+
+function markDraftDirty() {
+  draftDirty = true;
+}
 
 // ── EXERCISES (loaded from JSON) ──
 let EXERCISES = {};
@@ -468,10 +504,7 @@ async function init() {
   await loadExercises();
   const hadTemp = restoreTempState();
   if (!hadTemp) {
-    const data = getData();
-    const nums = Object.keys(data).map(Number).filter(n => !isNaN(n));
-    currentSess = nums.length ? Math.max(...nums) + 1 : 1;
-    editingSession = false;
+    resetDraftSession();
   }
   renderSessBar();
   renderStepDots();
@@ -479,11 +512,7 @@ async function init() {
   renderHistory();
   renderProgress();
   document.getElementById('version').textContent = 'v' + VERSION;
-  // After render, inject temp form values if any
-  if (_tempFormRestore) {
-    injectTempForm(_tempFormRestore);
-    _tempFormRestore = null;
-  }
+  // No localStorage write happens until the user presses Save.
 }
 
 function injectTempForm(formData) {
@@ -525,26 +554,10 @@ function injectTempForm(formData) {
 let editingSession = false;
 
 function newSession() {
-  collectStep(currentStep);
+  if (draftDirty && !confirm('La sessione corrente non è salvata. Creare una nuova sessione e perdere i dati inseriti?')) return;
   // Check for SW update when starting a new session
   if (window._swReg) window._swReg.update();
-  const data = getData();
-  const nums = Object.keys(data).map(Number).filter(n => !isNaN(n));
-  currentSess = nums.length ? Math.max(...nums) + 1 : 1;
-  currentStep = 0;
-  editingSession = false;
-  _tempFormRestore = null;
-  renderSessBar();
-  renderStepDots();
-  goStepDirect(0);
-}
-
-function editSession(n) {
-  collectStep(currentStep);
-  currentSess = n;
-  currentStep = 0;
-  editingSession = true;
-  switchTab('log');
+  resetDraftSession();
   renderSessBar();
   renderStepDots();
   goStepDirect(0);
@@ -557,8 +570,7 @@ function goStepDirect(idx) {
 }
 
 function renderSessBar() {
-  const data = getData();
-  const s = data[currentSess] || {};
+  const s = draftSession || {};
   document.getElementById('sess-num').textContent = currentSess;
   document.getElementById('sess-date').textContent = s.date || '—';
   const bar = document.getElementById('sess-bar');
@@ -618,7 +630,7 @@ function renderStep() {
   if (btnNext) btnNext.style.display = !isTouch && currentStep < STEPS.length - 1 ? '' : 'none';
   if (btnSave) btnSave.style.display = currentStep === STEPS.length - 1 ? '' : 'none';
   const data = getData();
-  const s = data[currentSess] || {};
+  const s = draftSession || {};
   const prev = getPrevSession(data, currentSess);
   renderSessBar();
   renderPairStep(currentStep, s, prev);
@@ -629,10 +641,9 @@ function variantSelectHTML(stationKey, selectedVariant, prevVariant, px) {
   const variants = getVariants(stationKey);
   if (!variants.length) return '';
   const colClass = `col-${px}`;
-  // Pre-select prev variant for new sessions if no current selection
-  const effectiveVariant = (selectedVariant && variants.includes(selectedVariant))
-    ? selectedVariant
-    : (prevVariant && variants.includes(prevVariant) ? prevVariant : '');
+  // New sessions are pre-filled via draftSession from the last saved session.
+  // Keep this selector bound to the current draft value only.
+  const effectiveVariant = (selectedVariant && variants.includes(selectedVariant)) ? selectedVariant : '';
   const hasSelection = !!effectiveVariant;
   const options = ['<option value="">— scegli —</option>']
     .concat(variants.map(v => `<option value="${v}" ${effectiveVariant === v ? 'selected' : ''}>${v}</option>`))
@@ -646,13 +657,14 @@ function variantSelectHTML(stationKey, selectedVariant, prevVariant, px) {
 }
 
 function onVariantChange(el) {
+  markDraftDirty();
   el.className = `variant-select${el.value ? ' col-' + el.dataset.px : ''}`;
   const stationKey = el.dataset.station;
   const metric = getMetric(stationKey, el.value);
   const exBlock = el.closest('.ex-block');
   if (!exBlock) return;
   const data = getData();
-  const s = data[currentSess] || {};
+  const s = draftSession || {};
   const prev = getPrevSession(data, currentSess);
   const step = STEPS[currentStep];
   const stationEntry = step.stations.find(st => st.stationKey === stationKey);
@@ -660,7 +672,7 @@ function onVariantChange(el) {
   const exData = s[stationKey] || {};
   const prevExData = prev[stationKey] || {};
   const numSets = metric === 'time' ? MAX_SETS : (step.stations.length <= 2 ? 3 : 2);
-  ['ex-time-pr','time-sets','time-total-bar','sets-grid','cluster-hint'].forEach(cls => {
+  ['ex-time-pr','time-sets','time-total-bar','sets-grid','cluster-hint','difficulty-row'].forEach(cls => {
     exBlock.querySelector('.' + cls)?.remove();
   });
   const frag = document.createElement('div');
@@ -698,8 +710,7 @@ function timeSetsHTML(stationKey, exData, prevExData, numSets, px) {
   const setRows = Array.from({length: MAX_SETS}, (_, i) => {
     const rawVal = sets[i]?.[0];
     const prevVal = prevSets[i]?.[0];
-    // pre-fill from prev if no current value
-    const val = rawVal != null ? rawVal : (prevVal != null ? prevVal : '');
+    const val = rawVal != null ? rawVal : '';
     const prevDisp = prevVal != null ? `${prevVal}"` : '';
     return `<div class="time-set-row">
       <div class="time-set-label">S${i+1}</div>
@@ -725,6 +736,7 @@ function timeSetsHTML(stationKey, exData, prevExData, numSets, px) {
 }
 
 function updateTimeTarget(stationKey) {
+  markDraftDirty();
   const input = document.querySelector(`[data-pr="${stationKey}"]`);
   const max = parseInt(input?.value) || 0;
   const target = max > 0 ? Math.round(max * 0.65) : null;
@@ -733,6 +745,7 @@ function updateTimeTarget(stationKey) {
 }
 
 function updateTimeTotal(stationKey) {
+  markDraftDirty();
   let total = 0;
   for (let i = 0; i < MAX_SETS; i++) {
     total += parseInt(document.querySelector(`.time-set-input[data-ex="${stationKey}"][data-set="${i}"]`)?.value) || 0;
@@ -744,6 +757,7 @@ function updateTimeTotal(stationKey) {
 }
 
 function stepperTimeChange(stationKey, setIdx, delta) {
+  markDraftDirty();
   const el = document.querySelector(`.time-set-input[data-ex="${stationKey}"][data-set="${setIdx}"]`);
   if (!el) return;
   el.value = Math.max(0, (parseInt(el.value) || 0) + delta);
@@ -761,7 +775,9 @@ function getDifficultyCoefficient(difficultyKey) {
 
 function getIntensityZoneWithDifficulty(avgReps, difficultyKey) {
   if (avgReps == null || avgReps === '' || avgReps === 0) return null;
-  const stimulusReps = avgReps * getDifficultyCoefficient(difficultyKey);
+  const diff = difficultyKey || DEFAULT_DIFFICULTY_KEY;
+  if (diff === 'facile') return { css: 'intensity-mista', label: 'tecnica / volume leggero' };
+  const stimulusReps = avgReps * getDifficultyCoefficient(diff);
   if (stimulusReps <= 5) return { css: 'intensity-forza', label: 'forza' };
   if (stimulusReps <= 15) return { css: 'intensity-ipertrofia', label: 'ipertrofia' };
   if (stimulusReps <= 30) return { css: 'intensity-mista', label: 'ipertrofia / resistenza' };
@@ -772,14 +788,15 @@ function getStationDifficulty(stationKey) {
   return document.querySelector(`.difficulty-btn[data-ex="${stationKey}"].active`)?.dataset.level || DEFAULT_DIFFICULTY_KEY;
 }
 
-function getRepsAvgFromSets(sets) {
+function getRepsAvgFromSets(sets, minSets = 3) {
   if (!Array.isArray(sets)) return null;
-  let total = 0, count = 0;
+  let total = 0;
   sets.forEach(([f, c]) => {
-    const reps = (f || 0) + (c || 0);
-    if (reps > 0) { total += reps; count++; }
+    total += (f || 0) + (c || 0);
   });
-  return count > 0 ? Math.round(total / count) : null;
+  if (total <= 0) return null;
+  const divisor = Math.max(minSets || 0, 1);
+  return Math.round((total / divisor) * 10) / 10;
 }
 
 function intensityLabel(val, difficultyKey = DEFAULT_DIFFICULTY_KEY) {
@@ -802,18 +819,16 @@ function intensityLabelAvg(stationKey, numSets) {
 // ── REPS SETS HTML ──
 function repsSetsHTML(stationKey, exData, prevExData, numSets) {
   const sets = exData.sets || [];
-  // pre-fill from prev session if current session has no data
   const prevSets = prevExData.sets || [];
-  const selectedDifficulty = exData.difficulty || prevExData.difficulty || DEFAULT_DIFFICULTY_KEY;
+  const selectedDifficulty = exData.difficulty || DEFAULT_DIFFICULTY_KEY;
   const renderedSets = [];
   const setRows = Array.from({length: numSets}, (_, i) => {
-    // use current value if exists, else pre-fill from prev
     const rawF = sets[i]?.[0];
     const rawC = sets[i]?.[1];
     const pf = prevSets[i]?.[0];
     const pc = prevSets[i]?.[1];
-    const f = rawF != null ? rawF : (pf != null ? pf : '');
-    const c = rawC != null ? rawC : (pc != null ? pc : '');
+    const f = rawF != null ? rawF : '';
+    const c = rawC != null ? rawC : '';
     const fVal = f !== '' ? Number(f) : 0;
     const cVal = c !== '' ? Number(c) : 0;
     const rep = fVal + cVal;
@@ -845,7 +860,7 @@ function repsSetsHTML(stationKey, exData, prevExData, numSets) {
     </div>`;
   }).join('');
   const difficultyHTML = difficultySelectorHTML(stationKey, exData, prevExData);
-  const initialAvg = getRepsAvgFromSets(renderedSets);
+  const initialAvg = getRepsAvgFromSets(renderedSets, numSets);
   const initialAvgZone = getIntensityZoneWithDifficulty(initialAvg, selectedDifficulty);
   return `<div class="sets-grid" id="sets-grid-${stationKey}">${setRows}</div>
   <div class="cluster-hint">cluster dopo 5"–8" di riposo</div>
@@ -857,6 +872,7 @@ function repsSetsHTML(stationKey, exData, prevExData, numSets) {
 }
 
 function stepperChange(stationKey, setIdx, type, delta) {
+  markDraftDirty();
   const el = document.querySelector(`[data-ex="${stationKey}"][data-set="${setIdx}"][data-type="${type}"]`);
   if (!el) return;
   const cur = parseInt(el.value) || 0;
@@ -865,21 +881,21 @@ function stepperChange(stationKey, setIdx, type, delta) {
 }
 
 function updateRepsIntensity(stationKey, setIdx, numSets) {
+  markDraftDirty();
   const fi = document.querySelector(`[data-ex="${stationKey}"][data-set="${setIdx}"][data-type="f"]`);
   const ci = document.querySelector(`[data-ex="${stationKey}"][data-set="${setIdx}"][data-type="c"]`);
   const rep = (parseInt(fi?.value) || 0) + (parseInt(ci?.value) || 0);
   const lbl = document.getElementById(`intensity-f-${stationKey}-${setIdx}`);
   const difficultyKey = getStationDifficulty(stationKey);
   if (lbl) lbl.innerHTML = intensityLabel(rep > 0 ? rep : null, difficultyKey);
-  // update average
-  let total = 0, count = 0;
+  // update average: include cluster in total, divide by the planned/minimum number of main sets
+  let total = 0;
   for (let i = 0; i < numSets; i++) {
     const f2 = parseInt(document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="f"]`)?.value) || 0;
     const c2 = parseInt(document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="c"]`)?.value) || 0;
-    const r = f2 + c2;
-    if (r > 0) { total += r; count++; }
+    total += f2 + c2;
   }
-  const avg = count > 0 ? Math.round(total / count) : null;
+  const avg = total > 0 ? Math.round((total / Math.max(numSets, 1)) * 10) / 10 : null;
   const avgEl = document.getElementById(`reps-avg-${stationKey}`);
   if (avgEl) {
     const zone = getIntensityZoneWithDifficulty(avg, difficultyKey);
@@ -890,7 +906,7 @@ function updateRepsIntensity(stationKey, setIdx, numSets) {
 }
 
 function difficultySelectorHTML(stationKey, exData, prevExData) {
-  const selected = exData.difficulty || prevExData.difficulty || '';
+  const selected = exData.difficulty || DEFAULT_DIFFICULTY_KEY;
   const options = DIFFICULTY_LEVELS.map(level =>
     `<button type="button" class="difficulty-btn ${selected === level.key ? 'active' : ''}" data-ex="${stationKey}" data-level="${level.key}" title="${level.title}" onclick="setDifficulty('${stationKey}','${level.key}',this)">${level.emoji}</button>`
   ).join('');
@@ -901,6 +917,7 @@ function difficultySelectorHTML(stationKey, exData, prevExData) {
 }
 
 function setDifficulty(stationKey, level, btn) {
+  markDraftDirty();
   const parent = btn?.closest('.difficulty-options');
   if (!parent) return;
   parent.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
@@ -957,10 +974,8 @@ function renderPairStep(stepIdx, s, prev) {
 // It only writes to localStorage if the session already has a date (i.e. was explicitly saved).
 function collectStep(stepIdx) {
   if (!STEPS.length) return;
-  const data = getData();
-  const sessionExists = data[currentSess]?.date != null;
-  if (!sessionExists) return; // don't write unsaved sessions to localStorage
-  const s = data[currentSess];
+  if (!draftSession) draftSession = {};
+  const s = draftSession;
   const step = STEPS[stepIdx];
 
   step.stations.forEach(({stationKey}) => {
@@ -968,11 +983,13 @@ function collectStep(stepIdx) {
     const exObj = s[stationKey];
     const selVariant = document.querySelector(`.variant-select[data-station="${stationKey}"]`);
     if (selVariant?.value) exObj.variant = selVariant.value;
+    else delete exObj.variant;
     const metric = getMetric(stationKey, exObj.variant || '');
     const sets = [];
     if (metric === 'time') {
       const prInput = document.querySelector(`[data-pr="${stationKey}"]`);
       if (prInput?.value !== '') exObj.hold_max = parseInt(prInput.value) || 0;
+      else delete exObj.hold_max;
       delete exObj.difficulty;
       for (let i = 0; i < MAX_SETS; i++) {
         const ti = document.querySelector(`.time-set-input[data-ex="${stationKey}"][data-set="${i}"]`);
@@ -980,9 +997,9 @@ function collectStep(stepIdx) {
       }
     } else {
       const diffBtn = document.querySelector(`.difficulty-btn[data-ex="${stationKey}"].active`);
-      if (diffBtn) exObj.difficulty = diffBtn.dataset.level;
-      else delete exObj.difficulty;
-      for (let i = 0; i < 3; i++) {
+      exObj.difficulty = diffBtn?.dataset.level || DEFAULT_DIFFICULTY_KEY;
+      const numSets = document.querySelectorAll(`[data-ex="${stationKey}"][data-type="f"]`).length || 3;
+      for (let i = 0; i < numSets; i++) {
         const fi = document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="f"]`);
         const ci = document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="c"]`);
         sets.push([fi?.value !== '' ? parseInt(fi.value) : null, ci?.value !== '' ? parseInt(ci.value) : null]);
@@ -990,18 +1007,18 @@ function collectStep(stepIdx) {
     }
     exObj.sets = sets;
   });
-
-  saveData(data);
 }
 
 function saveSession() {
-  const data = getData();
-  if (!data[currentSess]) data[currentSess] = {};
-  if (!editingSession || !data[currentSess].date) {
-    data[currentSess].date = new Date().toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit', year:'2-digit' });
-  }
-  saveData(data);
   collectStep(currentStep);
+  const data = getData();
+  if (!draftSession) draftSession = {};
+  if (!editingSession || !draftSession.date) {
+    draftSession.date = new Date().toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit', year:'2-digit' });
+  }
+  data[currentSess] = cloneObj(draftSession);
+  saveData(data);
+  draftDirty = false;
   editingSession = false;
   renderSessBar();
   const toast = document.getElementById('toast');
@@ -1096,7 +1113,7 @@ function renderHistory() {
         <span class="history-sess-num">Sessione ${n}</span>
         <div class="history-meta">
           <span class="history-date">${s.date||'—'}</span>
-          <button class="delete-btn" style="color:var(--blue);border-color:var(--blue)" onclick="editSession(event,${n})">✎</button>
+          <button class="delete-btn" style="color:var(--blue);border-color:var(--blue)" onclick="editSessionFromHistory(event,${n})">✎</button>
           <button class="delete-btn" onclick="deleteSession(event,${n})">✕</button>
         </div>
       </div>
@@ -1109,19 +1126,45 @@ function toggleHistory(el) { el.nextElementSibling.classList.toggle('open'); }
 function deleteSession(e, n) {
   e.stopPropagation();
   if (!confirm(`Cancellare la sessione ${n}?`)) return;
-  const data = getData(); delete data[n]; saveData(data);
-  renderHistory(); renderProgress();
+  const data = getData();
+  delete data[n];
+  saveData(data);
+
+  // Se si elimina la sessione che era in modifica, oppure si eliminano tutte,
+  // lo stato di inserimento deve tornare coerente senza richiedere refresh.
+  const remainingNums = Object.keys(data).map(Number).filter(x => !isNaN(x));
+  if (editingSession && currentSess === n) {
+    resetDraftSession();
+    renderSessBar();
+    renderStepDots();
+    renderStep();
+  } else if (!remainingNums.length && !editingSession) {
+    resetDraftSession();
+    renderSessBar();
+    renderStepDots();
+    renderStep();
+  }
+
+  renderHistory();
+  renderProgress();
 }
-function editSession(e, n) {
+function editSessionFromHistory(e, n) {
   e.stopPropagation();
+  if (draftDirty && !confirm('La sessione corrente non è salvata. Aprire questa sessione e perdere i dati inseriti?')) return;
+  const data = getData();
   currentSess = n;
   currentStep = 0;
   editingSession = true;
+  draftSession = cloneObj(data[n] || {});
+  draftDirty = false;
+  _suppressTabGuard = true;
   switchTab('log');
+  _suppressTabGuard = false;
   renderSessBar();
   renderStepDots();
   renderStep();
 }
+
 
 // ── PROGRESS ──
 function renderProgress() {
@@ -1249,9 +1292,7 @@ function saveName() {
   localStorage.setItem(KEY_NAME, v);
   document.getElementById('name-badge').textContent = v;
   document.getElementById('name-modal').classList.remove('open');
-  currentSess = 1; currentStep = 0;
-  const nums = Object.keys(getData()).map(Number).filter(n => !isNaN(n));
-  if (nums.length) currentSess = Math.max(...nums);
+  resetDraftSession();
   renderStepDots(); renderStep(); renderHistory(); renderProgress();
 }
 document.getElementById('name-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
@@ -1283,9 +1324,7 @@ function saveRename(carryData) {
   localStorage.setItem(KEY_NAME, newName);
   document.getElementById('name-badge').textContent = newName;
   document.getElementById('rename-modal').classList.remove('open');
-  currentSess = 1; currentStep = 0;
-  const nums = Object.keys(getData()).map(Number).filter(n => !isNaN(n));
-  if (nums.length) currentSess = Math.max(...nums);
+  resetDraftSession();
   renderStepDots(); renderStep(); renderHistory(); renderProgress();
 }
 document.getElementById('rename-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveRename(true); });
@@ -1332,9 +1371,7 @@ function confirmImport() {
   saveData(_importPayload.sessions);
   _importPayload = null;
   document.getElementById('import-modal').classList.remove('open');
-  currentSess = 1; currentStep = 0;
-  const nums = Object.keys(getData()).map(Number).filter(n => !isNaN(n));
-  if (nums.length) currentSess = Math.max(...nums);
+  resetDraftSession();
   renderStepDots(); renderStep(); renderHistory(); renderProgress();
   const toast = document.getElementById('toast');
   toast.textContent = '✓ Dati importati';
@@ -1343,13 +1380,36 @@ function confirmImport() {
 }
 
 // ── TABS ──
-function switchTab(t) {
+function activateTab(t) {
   document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active', ['log','history','progress'][i] === t));
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
   document.getElementById('page-'+t).classList.add('active');
   if (t === 'history') renderHistory();
   if (t === 'progress') renderProgress();
 }
+
+function switchTab(t) {
+  const activeTab = ['log','history','progress'][Array.from(document.querySelectorAll('.tab')).findIndex(el => el.classList.contains('active'))] || 'log';
+
+  if (!_suppressTabGuard && activeTab === 'log' && t !== 'log' && draftDirty) {
+    const ok = confirm('La sessione corrente non è salvata. Uscendo da Inserisci i dati inseriti verranno persi. Continuare?');
+    if (!ok) return;
+    resetDraftSession();
+    renderSessBar();
+    renderStepDots();
+    renderStep();
+  }
+
+  if (t === 'log' && activeTab !== 'log' && !_suppressTabGuard) {
+    resetDraftSession();
+    renderSessBar();
+    renderStepDots();
+    renderStep();
+  }
+
+  activateTab(t);
+}
+
 
 // ── SWIPE ──
 (function() {
@@ -1372,44 +1432,18 @@ function switchTab(t) {
 const TEMP_KEY = 'cali_temp_state';
 
 function saveTempState() {
-  // Collect current form without writing to localStorage
+  // Preserve unsaved draft only in sessionStorage during an app/service-worker reload.
   if (!STEPS.length) return;
-  const step = STEPS[currentStep];
-  const formData = {};
-  step.stations.forEach(({stationKey}) => {
-    const obj = {};
-    const selVariant = document.querySelector(`.variant-select[data-station="${stationKey}"]`);
-    if (selVariant?.value) obj.variant = selVariant.value;
-    const metric = getMetric(stationKey, obj.variant || '');
-    if (metric === 'time') {
-      const prInput = document.querySelector(`[data-pr="${stationKey}"]`);
-      if (prInput?.value !== '') obj.hold_max = parseInt(prInput.value) || 0;
-      const sets = [];
-      for (let i = 0; i < MAX_SETS; i++) {
-        const ti = document.querySelector(`.time-set-input[data-ex="${stationKey}"][data-set="${i}"]`);
-        sets.push(ti?.value !== '' ? parseInt(ti.value) : null);
-      }
-      obj.sets = sets;
-    } else {
-      const sets = [];
-      const diffBtn = document.querySelector(`.difficulty-btn[data-ex="${stationKey}"].active`);
-      if (diffBtn) obj.difficulty = diffBtn.dataset.level;
-      for (let i = 0; i < 3; i++) {
-        const fi = document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="f"]`);
-        const ci = document.querySelector(`[data-ex="${stationKey}"][data-set="${i}"][data-type="c"]`);
-        sets.push([fi?.value !== '' ? parseInt(fi.value) : null, ci?.value !== '' ? parseInt(ci.value) : null]);
-      }
-      obj.sets = sets;
-    }
-    formData[stationKey] = obj;
-  });
+  collectStep(currentStep);
   sessionStorage.setItem(TEMP_KEY, JSON.stringify({
     sess: currentSess,
     step: currentStep,
     editing: editingSession,
-    form: formData
+    dirty: draftDirty,
+    draft: draftSession || {}
   }));
 }
+
 
 function restoreTempState() {
   try {
@@ -1420,12 +1454,12 @@ function restoreTempState() {
     currentSess = state.sess;
     currentStep = state.step;
     editingSession = state.editing || false;
-    // Inject into in-memory data so renderStep pre-fills correctly
-    // We write to a temporary object that renderPairStep reads
-    _tempFormRestore = state.form || {};
+    draftDirty = state.dirty || false;
+    draftSession = cloneObj(state.draft || {});
     return true;
   } catch(e) { return false; }
 }
+
 
 let _tempFormRestore = null;
 
