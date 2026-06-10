@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v2.7.15
+  Cali Tracker v2.7.19
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -224,6 +224,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .intensity-lbl { font-size: 9px; font-family: var(--mono); text-align: center; margin-top: 3px; letter-spacing: .04em; text-transform: uppercase; }
 .intensity-forza     { color: var(--coral); }
 .intensity-ipertrofia { color: var(--teal); }
+.intensity-mista { color: var(--amber); }
 .intensity-resistenza { color: var(--blue); }
 
 /* SESS BAR — editing mode */
@@ -269,7 +270,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.15</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.19</span></div>
   <div class="user-menu-wrap">
     <div class="name-badge" id="name-badge" onclick="toggleUserMenu()">— imposta nome</div>
     <div class="user-menu" id="user-menu">
@@ -345,19 +346,24 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '2.7.15';
+const VERSION = '2.7.19';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
 const TIME_TARGET_HIGH = 60;
-const REP_ZONE_STRENGTH_MAX = 5;
-const REP_ZONE_HYPERTROPHY_MAX = 20;
+const DEFAULT_DIFFICULTY_KEY = 'difficile';
 const DIFFICULTY_LEVELS = [
   { key: 'facile', emoji: '🟢', title: 'Facile' },
   { key: 'medio', emoji: '🟡', title: 'Medio' },
   { key: 'difficile', emoji: '🟠', title: 'Difficile' },
   { key: 'limite', emoji: '🔴', title: 'Limite' }
 ];
+const DIFFICULTY_COEFFICIENTS = {
+  facile: 0.50,
+  medio: 0.75,
+  difficile: 1.00,
+  limite: 1.15,
+};
 
 function sessKey() { return 'cali_sessions_' + (getName().toLowerCase().replace(/\s+/g,'_') || 'default'); }
 function getData() { try { return JSON.parse(localStorage.getItem(sessKey())) || {}; } catch(e) { return {}; } }
@@ -746,14 +752,38 @@ function stepperTimeChange(stationKey, setIdx, delta) {
 
 // ── INTENSITY LABEL ──
 function getIntensityZone(val) {
-  if (val == null || val === '' || val === 0) return null;
-  if (val <= REP_ZONE_STRENGTH_MAX) return { css: 'intensity-forza', label: 'forza' };
-  if (val <= REP_ZONE_HYPERTROPHY_MAX) return { css: 'intensity-ipertrofia', label: 'ipertrofia' };
+  return getIntensityZoneWithDifficulty(val, DEFAULT_DIFFICULTY_KEY);
+}
+
+function getDifficultyCoefficient(difficultyKey) {
+  return DIFFICULTY_COEFFICIENTS[difficultyKey || DEFAULT_DIFFICULTY_KEY] || 1;
+}
+
+function getIntensityZoneWithDifficulty(avgReps, difficultyKey) {
+  if (avgReps == null || avgReps === '' || avgReps === 0) return null;
+  const stimulusReps = avgReps * getDifficultyCoefficient(difficultyKey);
+  if (stimulusReps <= 5) return { css: 'intensity-forza', label: 'forza' };
+  if (stimulusReps <= 15) return { css: 'intensity-ipertrofia', label: 'ipertrofia' };
+  if (stimulusReps <= 30) return { css: 'intensity-mista', label: 'ipertrofia / resistenza' };
   return { css: 'intensity-resistenza', label: 'resistenza' };
 }
 
-function intensityLabel(val) {
-  const zone = getIntensityZone(val);
+function getStationDifficulty(stationKey) {
+  return document.querySelector(`.difficulty-btn[data-ex="${stationKey}"].active`)?.dataset.level || DEFAULT_DIFFICULTY_KEY;
+}
+
+function getRepsAvgFromSets(sets) {
+  if (!Array.isArray(sets)) return null;
+  let total = 0, count = 0;
+  sets.forEach(([f, c]) => {
+    const reps = (f || 0) + (c || 0);
+    if (reps > 0) { total += reps; count++; }
+  });
+  return count > 0 ? Math.round(total / count) : null;
+}
+
+function intensityLabel(val, difficultyKey = DEFAULT_DIFFICULTY_KEY) {
+  const zone = getIntensityZoneWithDifficulty(val, difficultyKey);
   if (!zone) return '';
   return `<div class="intensity-lbl ${zone.css}">${zone.label}</div>`;
 }
@@ -766,7 +796,7 @@ function intensityLabelAvg(stationKey, numSets) {
     if (rep > 0) { total += rep; count++; }
   }
   if (!count) return '';
-  return intensityLabel(Math.round(total / count)).replace('intensity-lbl', 'intensity-lbl').replace('</div>', ' (media)</div>');
+  return intensityLabel(Math.round(total / count), getStationDifficulty(stationKey)).replace('</div>', ' (media)</div>');
 }
 
 // ── REPS SETS HTML ──
@@ -774,6 +804,8 @@ function repsSetsHTML(stationKey, exData, prevExData, numSets) {
   const sets = exData.sets || [];
   // pre-fill from prev session if current session has no data
   const prevSets = prevExData.sets || [];
+  const selectedDifficulty = exData.difficulty || prevExData.difficulty || DEFAULT_DIFFICULTY_KEY;
+  const renderedSets = [];
   const setRows = Array.from({length: numSets}, (_, i) => {
     // use current value if exists, else pre-fill from prev
     const rawF = sets[i]?.[0];
@@ -785,7 +817,8 @@ function repsSetsHTML(stationKey, exData, prevExData, numSets) {
     const fVal = f !== '' ? Number(f) : 0;
     const cVal = c !== '' ? Number(c) : 0;
     const rep = fVal + cVal;
-    const iLbl = intensityLabel(rep > 0 ? rep : null);
+    renderedSets.push([fVal || null, cVal || null]);
+    const iLbl = intensityLabel(rep > 0 ? rep : null, selectedDifficulty);
     return `<div class="set-row" style="flex-direction:column;align-items:stretch;gap:6px">
       <div class="set-main">
         <div class="set-label">S${i+1}</div>
@@ -812,12 +845,14 @@ function repsSetsHTML(stationKey, exData, prevExData, numSets) {
     </div>`;
   }).join('');
   const difficultyHTML = difficultySelectorHTML(stationKey, exData, prevExData);
+  const initialAvg = getRepsAvgFromSets(renderedSets);
+  const initialAvgZone = getIntensityZoneWithDifficulty(initialAvg, selectedDifficulty);
   return `<div class="sets-grid" id="sets-grid-${stationKey}">${setRows}</div>
   <div class="cluster-hint">cluster dopo 5"–8" di riposo</div>
   ${difficultyHTML}
   <div class="time-total-bar">
     <div class="time-total-label">Media set</div>
-    <div id="reps-avg-${stationKey}" style="font-family:var(--mono);font-size:12px;color:var(--muted)">—</div>
+    <div id="reps-avg-${stationKey}" style="font-family:var(--mono);font-size:12px;color:var(--muted)">${initialAvg != null ? `<span class="intensity-lbl ${initialAvgZone?.css || ''}" style="font-size:11px">${initialAvg} rep/set → ${initialAvgZone?.label || ''}</span>` : '—'}</div>
   </div>`;
 }
 
@@ -834,7 +869,8 @@ function updateRepsIntensity(stationKey, setIdx, numSets) {
   const ci = document.querySelector(`[data-ex="${stationKey}"][data-set="${setIdx}"][data-type="c"]`);
   const rep = (parseInt(fi?.value) || 0) + (parseInt(ci?.value) || 0);
   const lbl = document.getElementById(`intensity-f-${stationKey}-${setIdx}`);
-  if (lbl) lbl.innerHTML = intensityLabel(rep > 0 ? rep : null);
+  const difficultyKey = getStationDifficulty(stationKey);
+  if (lbl) lbl.innerHTML = intensityLabel(rep > 0 ? rep : null, difficultyKey);
   // update average
   let total = 0, count = 0;
   for (let i = 0; i < numSets; i++) {
@@ -846,7 +882,7 @@ function updateRepsIntensity(stationKey, setIdx, numSets) {
   const avg = count > 0 ? Math.round(total / count) : null;
   const avgEl = document.getElementById(`reps-avg-${stationKey}`);
   if (avgEl) {
-    const zone = getIntensityZone(avg);
+    const zone = getIntensityZoneWithDifficulty(avg, difficultyKey);
     avgEl.innerHTML = avg != null
       ? `<span class="intensity-lbl ${zone?.css || ''}" style="font-size:11px">${avg} rep/set → ${zone?.label || ''}</span>`
       : '—';
@@ -869,6 +905,8 @@ function setDifficulty(stationKey, level, btn) {
   if (!parent) return;
   parent.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  const numSets = document.querySelectorAll(`[data-ex="${stationKey}"][data-type="f"]`).length;
+  for (let i = 0; i < numSets; i++) updateRepsIntensity(stationKey, i, numSets);
 }
 
 // ── PAIR STEP RENDER ──
@@ -1030,11 +1068,13 @@ function renderHistory() {
         } else {
           const tot = exObj.sets.reduce((a,[f,c]) => a+(f||0)+(c||0), 0);
           const cl = exObj.sets.reduce((a,[f,c]) => a+(c||0), 0);
+          const avg = getRepsAvgFromSets(exObj.sets);
+          const avgZone = getIntensityZoneWithDifficulty(avg, exObj.difficulty || DEFAULT_DIFFICULTY_KEY);
           const prevTot = sameVariant ? prevExObj?.sets?.reduce((a,[f,c]) => a+(f||0)+(c||0), 0) ?? null : null;
           const prevCl = sameVariant ? prevExObj?.sets?.reduce((a,[f,c]) => a+(c||0), 0) ?? null : null;
           groupRows.push(`<div class="history-row">
             <span class="history-key">${getGroupLabel(stationKey)}${vLabel} ${arrow}</span>
-            <span class="history-val">${tot} rep ${delta(tot, prevTot, false)}</span>
+            <span class="history-val">${tot} rep ${delta(tot, prevTot, false)} ${avgZone ? `<span class="intensity-lbl ${avgZone.css}" style="font-size:10px">${avgZone.label}</span>` : ''}</span>
           </div>`);
           if (cl > 0 || (prevCl != null && prevCl > 0)) {
             groupRows.push(`<div class="history-row">
@@ -1122,7 +1162,7 @@ function renderProgress() {
         const pi = allVars.indexOf(variants[i-1]);
         const isAdvance = ci > pi;
         arrowLabel = (isAdvance ? '↑' : '↓') + v;
-        valColor = isAdvance ? 'var(--teal)' : 'var(--coral)';
+        valColor = isAdvance ? 'var(--purple)' : 'var(--coral)';
       }
       return `<div class="prog-bar" style="background:${color};height:${h}px"><div class="prog-val" style="color:${valColor}">${arrowLabel}</div><div class="prog-bar-label">S${n}</div></div>`;
     }).join('');
@@ -1156,7 +1196,8 @@ function renderProgress() {
       const tot = e.sets.reduce((a,[t]) => a+(t||0), 0);
       return tot > 0 ? tot : null;
     }
-    const r = e.sets[0]; return r ? (r[0]||0)+(r[1]||0) : null;
+    const tot = e.sets.reduce((a,[f,c]) => a+(f||0)+(c||0), 0);
+    return tot > 0 ? tot : null;
   }
 
   function stationPR(s, stationKey) {
@@ -1176,7 +1217,6 @@ function renderProgress() {
         charts.push(chartHTML(`${label} — tot.`, color, s => stationVal(s, stationKey), false, s => s[stationKey]?.variant ?? null, stationKey));
       } else {
         charts.push(chartHTML(`${label} — rep`, color, s => stationVal(s, stationKey), false, s => s[stationKey]?.variant ?? null, stationKey));
-        charts.push(chartHTML(`${label} — cluster %`, color, s => clPct(s, stationKey), true, s => s[stationKey]?.variant ?? null, stationKey));
       }
     });
     const rendered = charts.filter(Boolean);
