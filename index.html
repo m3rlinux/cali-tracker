@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v2.7.20-preload
+  Cali Tracker v2.7.21
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -270,7 +270,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.20</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.21</span></div>
   <div class="user-menu-wrap">
     <div class="name-badge" id="name-badge" onclick="toggleUserMenu()">— imposta nome</div>
     <div class="user-menu" id="user-menu">
@@ -346,7 +346,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '2.7.20';
+const VERSION = '2.7.21';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
@@ -358,13 +358,6 @@ const DIFFICULTY_LEVELS = [
   { key: 'difficile', emoji: '🟠', title: 'Difficile' },
   { key: 'limite', emoji: '🔴', title: 'Limite' }
 ];
-const DIFFICULTY_COEFFICIENTS = {
-  facile: 0.50,
-  medio: 0.75,
-  difficile: 1.00,
-  limite: 1.15,
-};
-
 function sessKey() { return 'cali_sessions_' + (getName().toLowerCase().replace(/\s+/g,'_') || 'default'); }
 function getData() { try { return JSON.parse(localStorage.getItem(sessKey())) || {}; } catch(e) { return {}; } }
 function saveData(d) { localStorage.setItem(sessKey(), JSON.stringify(d)); }
@@ -553,9 +546,9 @@ function injectTempForm(formData) {
 // ── SESSION NAV ──
 let editingSession = false;
 
-function newSession() {
-  if (draftDirty && !confirm('La sessione corrente non è salvata. Creare una nuova sessione e perdere i dati inseriti?')) return;
-  // Check for SW update when starting a new session
+function resetCurrentDraft() {
+  if (draftDirty && !confirm('La sessione corrente non è salvata. Scartare le modifiche e ricominciare?')) return;
+  // Check for SW update when resetting the draft session
   if (window._swReg) window._swReg.update();
   resetDraftSession();
   renderSessBar();
@@ -580,7 +573,7 @@ function renderSessBar() {
     right.innerHTML = `<span class="sess-edit-label">✎ modifica</span>`;
   } else {
     bar.classList.remove('sess-bar-editing');
-    right.innerHTML = `<button class="nav-btn" onclick="newSession()" style="padding:6px 12px;font-size:11px;font-family:var(--mono)">+ Nuova</button>`;
+    right.innerHTML = `<button class="nav-btn" onclick="resetCurrentDraft()" style="padding:6px 12px;font-size:11px;font-family:var(--mono)">↺ Reset</button>`;
   }
 }
 
@@ -769,19 +762,45 @@ function getIntensityZone(val) {
   return getIntensityZoneWithDifficulty(val, DEFAULT_DIFFICULTY_KEY);
 }
 
-function getDifficultyCoefficient(difficultyKey) {
-  return DIFFICULTY_COEFFICIENTS[difficultyKey || DEFAULT_DIFFICULTY_KEY] || 1;
-}
-
 function getIntensityZoneWithDifficulty(avgReps, difficultyKey) {
   if (avgReps == null || avgReps === '' || avgReps === 0) return null;
+
+  const reps = Number(avgReps);
   const diff = difficultyKey || DEFAULT_DIFFICULTY_KEY;
-  if (diff === 'facile') return { css: 'intensity-mista', label: 'tecnica / volume leggero' };
-  const stimulusReps = avgReps * getDifficultyCoefficient(diff);
-  if (stimulusReps <= 5) return { css: 'intensity-forza', label: 'forza' };
-  if (stimulusReps <= 15) return { css: 'intensity-ipertrofia', label: 'ipertrofia' };
-  if (stimulusReps <= 30) return { css: 'intensity-mista', label: 'ipertrofia / resistenza' };
-  return { css: 'intensity-resistenza', label: 'resistenza' };
+
+  // La difficoltà non deve aumentare le reps equivalenti.
+  // Serve invece a qualificare lo stimolo dentro il range di reps.
+  if (diff === 'facile') {
+    return { css: 'intensity-mista', label: 'tecnica / volume leggero' };
+  }
+
+  if (reps <= 5) {
+    return diff === 'limite'
+      ? { css: 'intensity-forza', label: 'forza massimale' }
+      : { css: 'intensity-forza', label: 'forza' };
+  }
+
+  if (reps <= 8) {
+    return (diff === 'difficile' || diff === 'limite')
+      ? { css: 'intensity-forza', label: 'forza / ipertrofia' }
+      : { css: 'intensity-ipertrofia', label: 'ipertrofia' };
+  }
+
+  if (reps <= 15) {
+    return diff === 'limite'
+      ? { css: 'intensity-ipertrofia', label: 'ipertrofia alta' }
+      : { css: 'intensity-ipertrofia', label: 'ipertrofia' };
+  }
+
+  if (reps <= 30) {
+    return (diff === 'difficile' || diff === 'limite')
+      ? { css: 'intensity-mista', label: 'ipertrofia / resistenza' }
+      : { css: 'intensity-resistenza', label: 'resistenza / volume' };
+  }
+
+  return (diff === 'difficile' || diff === 'limite')
+    ? { css: 'intensity-resistenza', label: 'resistenza muscolare' }
+    : { css: 'intensity-resistenza', label: 'resistenza' };
 }
 
 function getStationDifficulty(stationKey) {
@@ -877,7 +896,7 @@ function stepperChange(stationKey, setIdx, type, delta) {
   if (!el) return;
   const cur = parseInt(el.value) || 0;
   el.value = Math.max(0, cur + delta);
-  updateRepsIntensity(stationKey, setIdx, 3); // default numSets 3
+  updateRepsIntensity(stationKey, setIdx, document.querySelectorAll(`[data-ex="${stationKey}"][data-type="f"]`).length || 3);
 }
 
 function updateRepsIntensity(stationKey, setIdx, numSets) {
