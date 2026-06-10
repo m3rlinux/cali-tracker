@@ -125,7 +125,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .time-sets { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
 .time-set-row { display: flex; align-items: center; gap: 8px; }
 .time-set-label { font-family: var(--mono); font-size: 10px; color: var(--muted); width: 28px; flex-shrink: 0; }
-.time-set-input { flex: 1; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 9px 4px; font-size: 22px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; }
+.time-set-input { flex: 1; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 9px 4px; font-size: 22px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; appearance: textfield; }
 .time-set-input::-webkit-inner-spin-button, .time-set-input::-webkit-outer-spin-button { -webkit-appearance: none; }
 .time-set-input:focus { outline: none; border-color: var(--purple); }
 .time-set-unit { font-size: 11px; color: var(--muted2); font-family: var(--mono); width: 20px; }
@@ -139,9 +139,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .set-row { display: flex; align-items: center; gap: 8px; }
 .set-label { font-family: var(--mono); font-size: 10px; color: var(--muted); width: 28px; flex-shrink: 0; }
 .set-inputs { display: flex; gap: 6px; flex: 1; }
-.si-wrap { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.si-wrap { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .si-lbl { font-size: 9px; color: var(--muted2); font-family: var(--mono); text-align: center; text-transform: uppercase; letter-spacing: .04em; }
-.si-input { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 9px 4px; font-size: 22px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; }
+.si-input { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 9px 4px; font-size: 22px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; appearance: textfield; }
 .si-input::-webkit-inner-spin-button, .si-input::-webkit-outer-spin-button { -webkit-appearance: none; }
 .si-input.reps:focus { border-color: var(--teal); }
 .si-input.cluster:focus { border-color: var(--amber); }
@@ -208,7 +208,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .stepper-row { display: flex; align-items: center; gap: 6px; }
 .stepper-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; user-select: none; -webkit-user-select: none; }
 .stepper-btn:active { background: var(--border2); }
-.stepper-input { flex: 1; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 9px 4px; font-size: 22px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; }
+.stepper-input { flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 9px 4px; font-size: 22px; font-family: var(--mono); font-weight: 500; color: var(--text); text-align: center; -moz-appearance: textfield; appearance: textfield; }
 .stepper-input::-webkit-inner-spin-button, .stepper-input::-webkit-outer-spin-button { -webkit-appearance: none; }
 .stepper-input:focus { outline: none; border-color: var(--teal); }
 
@@ -233,7 +233,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.7</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.8</span></div>
   <div class="user-menu-wrap">
     <div class="name-badge" id="name-badge" onclick="toggleUserMenu()">— imposta nome</div>
     <div class="user-menu" id="user-menu">
@@ -309,7 +309,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '2.7.7';
+const VERSION = '2.7.8';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
