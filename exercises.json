@@ -5,6 +5,7 @@
     "variants": [
       "Pike shrug",
       "Box pike shrug",
+      "Box pike shoulder tap",
       "Wall walk",
       "Wall shrug",
       "Wall press to HS (straddle)",
@@ -17,6 +18,7 @@
     "variants": [
       "Pike hold",
       "Box pike hold",
+      "Wall pike hold",
       "Hold chest to wall",
       "Wall one-leg alternato",
       "Wall handstand",
@@ -25,6 +27,7 @@
     "metrics": {
       "Pike hold": "time",
       "Box pike hold": "time",
+      "Wall pike hold": "time",
       "Hold chest to wall": "time",
       "Wall one-leg alternato": "time",
       "Wall handstand": "time",
