@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v2.7.3
+  Cali Tracker v2.7.4
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -233,7 +233,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.3</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.4</span></div>
   <div class="user-menu-wrap">
     <div class="name-badge" id="name-badge" onclick="toggleUserMenu()">— imposta nome</div>
     <div class="user-menu" id="user-menu">
@@ -309,7 +309,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '2.7.3';
+const VERSION = '2.7.4';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
@@ -545,7 +545,10 @@ function renderStep() {
   if (!STEPS.length) return;
   const step = STEPS[currentStep];
   document.getElementById('step-label').textContent = step.label;
-  const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+  // Edge on Windows reports maxTouchPoints > 0 even without touchscreen
+  // Use pointer type check as more reliable fallback
+  const isTouch = ('ontouchstart' in window) ||
+    (navigator.maxTouchPoints > 0 && !window.matchMedia('(pointer: fine)').matches);
   const btnPrev = document.getElementById('btn-prev');
   const btnNext = document.getElementById('btn-next');
   const btnSave = document.getElementById('btn-save');
