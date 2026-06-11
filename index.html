@@ -156,7 +156,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .set-prev { font-family: var(--mono); font-size: 10px; color: var(--muted2); white-space: nowrap; min-width: 44px; text-align: right; }
 .cluster-hint { font-size: 10px; color: var(--amber); font-family: var(--mono); text-align: center; padding: 6px 12px 10px; opacity: .7; }
 .difficulty-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px 10px; border-top: 1px solid var(--border); }
-.difficulty-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; }
+.difficulty-label { font-size: 10px; color: var(--muted); font-family: var(--mono); letter-spacing: .05em; }
 .difficulty-options { display: flex; gap: 6px; }
 .difficulty-btn { width: 28px; height: 28px; border: 1px solid var(--border2); border-radius: 7px; background: var(--bg); cursor: pointer; font-size: 14px; line-height: 1; display: inline-flex; align-items: center; justify-content: center; }
 .difficulty-btn.active { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
@@ -275,7 +275,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.0.0</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.0.1</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -353,17 +353,17 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.0.0';
+const VERSION = '3.0.1';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
 const TIME_TARGET_HIGH = 60;
 const DEFAULT_DIFFICULTY_KEY = 'medio';
 const DIFFICULTY_LEVELS = [
-  { key: 'facile', emoji: '🟢', title: 'Facile' },
-  { key: 'medio', emoji: '🟡', title: 'Medio' },
-  { key: 'difficile', emoji: '🟠', title: 'Difficile' },
-  { key: 'limite', emoji: '🔴', title: 'Limite' }
+  { key: 'facile', emoji: '😊', title: 'Facile' },
+  { key: 'medio', emoji: '😑', title: 'Medio' },
+  { key: 'difficile', emoji: '😓', title: 'Difficile' },
+  { key: 'limite', emoji: '🥵', title: 'Limite' }
 ];
 function sessKey() { return 'cali_sessions_' + (getName().toLowerCase().replace(/\s+/g,'_') || 'default'); }
 function getData() { try { return JSON.parse(localStorage.getItem(sessKey())) || {}; } catch(e) { return {}; } }
@@ -1098,7 +1098,7 @@ function difficultySelectorHTML(stationKey, exData, prevExData) {
     `<button type="button" class="difficulty-btn ${selected === level.key ? 'active' : ''}" data-ex="${stationKey}" data-level="${level.key}" title="${level.title}" onclick="setDifficulty('${stationKey}','${level.key}',this)">${level.emoji}</button>`
   ).join('');
   return `<div class="difficulty-row">
-    <div class="difficulty-label">Difficolta</div>
+    <div class="difficulty-label">Come ti senti?</div>
     <div class="difficulty-options">${options}</div>
   </div>`;
 }
