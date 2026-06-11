@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.4.0
+  Cali Tracker v3.5.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -287,7 +287,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.4.0</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.5.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -370,7 +370,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
         <b>★ Oggi</b> carica la sessione di allenamento del giorno: se hai già usato la variante in passato, vengono proposti i tuoi ultimi valori e i target del giorno riempiono solo i set che ti mancano; altrimenti valgono i target suggeriti. 
         <b>Salva ✓</b> registra la sessione, da qualsiasi step. 
         <b>↺ Reset</b> ricomincia la sessione corrente.</p>
-      <p>Una nuova sessione si pre-compila dall'ultima salvata. <b>Nulla viene salvato finché non premi Salva.</b></p>
+      <p>Le sessioni del giorno vengono salvate come <b>★ WOD</b>: restano nello storico ma non influenzano grafici dei progressi, delta e pre-compilazione — utile ad es. per i de-load.</p>
+      <p>Una nuova sessione si pre-compila dall'ultima salvata (le ★ WOD sono escluse). <b>Nulla viene salvato finché non premi Salva.</b></p>
       <div class="help-h">Storico</div>
       <p>Tocca una sessione per vedere i dettagli. <b>✎</b> la riapre in modifica, <b>✕</b> la elimina. I delta +/− confrontano con la sessione precedente e si azzerano se cambi variante.</p>
       <div class="help-h">Progressi</div>
@@ -393,7 +394,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.4.0';
+const VERSION = '3.5.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -543,10 +544,11 @@ function runVariantMigration() {
   localStorage.setItem(VARIANT_MIGRATION_FLAG, '1');
 }
 
+// Le sessioni WOD (flag wod: true) sono escluse da confronti, prefill e grafici
 function getPrevSession(data, sessNum) {
   const prevNum = Object.keys(data)
     .map(Number)
-    .filter(n => !isNaN(n) && n < sessNum)
+    .filter(n => !isNaN(n) && n < sessNum && !data[n]?.wod)
     .sort((a, b) => b - a)[0];
   return prevNum != null ? (data[prevNum] || {}) : {};
 }
@@ -573,7 +575,7 @@ function getNextSessionNumber() {
 
 function getLastSavedSession() {
   const data = getData();
-  const nums = Object.keys(data).map(Number).filter(n => !isNaN(n)).sort((a, b) => b - a);
+  const nums = Object.keys(data).map(Number).filter(n => !isNaN(n) && !data[n]?.wod).sort((a, b) => b - a);
   const lastNum = nums[0];
   return lastNum != null ? cloneObj(data[lastNum] || {}) : {};
 }
@@ -584,6 +586,7 @@ function resetDraftSession() {
   editingSession = false;
   draftSession = getLastSavedSession();
   delete draftSession.date; // nuova sessione: precompila i valori, ma resta non salvata
+  delete draftSession.wod;
   // Sessione nuova: righe set fisse ai default per station (p0s1: 2, resto 3)
   Object.entries(draftSession).forEach(([stationKey, ex]) => {
     if (ex && typeof ex === 'object' && Array.isArray(ex.sets)) {
@@ -802,6 +805,7 @@ function findLastDataForVariant(stationKey, variant) {
   const data = getData();
   const nums = Object.keys(data).map(Number).filter(n => !isNaN(n)).sort((a, b) => b - a);
   for (const n of nums) {
+    if (data[n]?.wod) continue; // le sessioni WOD non fanno da riferimento
     const ex = data[n]?.[stationKey];
     if (ex && ex.variant === variant) return cloneObj(ex);
   }
@@ -870,6 +874,7 @@ async function loadWodSession() {
   currentSess = getNextSessionNumber();
   editingSession = false;
   draftSession = buildSessionFromWod(wod);
+  draftSession.wod = true; // salvata a parte: non influenza progressi e prefill
   draftDirty = false;
   renderSessBar();
   goStepDirect(0);
@@ -889,12 +894,13 @@ function renderSessBar() {
   const bar = document.getElementById('sess-bar');
   const right = document.getElementById('sess-bar-right');
   const saveBtn = `<button class="save-btn-sm" onclick="saveSession()">Salva ✓</button>`;
+  const wodBadge = s.wod ? `<span class="sess-edit-label" style="color:var(--amber)">★ WOD</span>` : '';
   if (editingSession) {
     bar.classList.add('sess-bar-editing');
-    right.innerHTML = `<span class="sess-edit-label">✎ modifica</span>${saveBtn}`;
+    right.innerHTML = `${wodBadge}<span class="sess-edit-label">✎ modifica</span>${saveBtn}`;
   } else {
     bar.classList.remove('sess-bar-editing');
-    right.innerHTML = `<button class="nav-btn" onclick="loadWodSession()" style="padding:6px 12px;font-size:11px;font-family:var(--mono)">★ Oggi</button>${saveBtn}<button class="nav-btn" onclick="resetCurrentDraft()" style="padding:6px 12px;font-size:11px;font-family:var(--mono)">↺ Reset</button>`;
+    right.innerHTML = `${wodBadge}<button class="nav-btn" onclick="loadWodSession()" style="padding:6px 12px;font-size:11px;font-family:var(--mono)">★ Oggi</button>${saveBtn}<button class="nav-btn" onclick="resetCurrentDraft()" style="padding:6px 12px;font-size:11px;font-family:var(--mono)">↺ Reset</button>`;
   }
 }
 
@@ -1376,7 +1382,7 @@ function saveSession() {
   editingSession = false;
   renderSessBar();
   const toast = document.getElementById('toast');
-  toast.textContent = '✓ Sessione salvata';
+  toast.textContent = draftSession.wod ? '✓ Sessione WOD salvata' : '✓ Sessione salvata';
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2000);
   renderHistory();
@@ -1410,7 +1416,7 @@ function renderHistory() {
   }
 
   list.innerHTML = sessions.map(n => {
-    const s = data[n], prev = data[n-1] || {};
+    const s = data[n], prev = getPrevSession(data, n);
     const rows = [];
 
     STEPS.forEach(step => {
@@ -1464,7 +1470,7 @@ function renderHistory() {
 
     return `<div class="history-sess">
       <div class="history-head" onclick="toggleHistory(this)">
-        <span class="history-sess-num">Sessione ${n}</span>
+        <span class="history-sess-num">Sessione ${n}${s.wod ? ' <span style="color:var(--amber);font-size:10px">★ WOD</span>' : ''}</span>
         <div class="history-meta">
           <span class="history-date">${s.date||'—'}</span>
           <button class="delete-btn" style="color:var(--blue);border-color:var(--blue)" onclick="editSessionFromHistory(event,${n})">✎</button>
@@ -1523,7 +1529,7 @@ function editSessionFromHistory(e, n) {
 // ── PROGRESS ──
 function renderProgress() {
   const data = getData();
-  const sessions = Object.keys(data).map(Number).filter(n => !isNaN(n)).sort((a,b) => a-b);
+  const sessions = Object.keys(data).map(Number).filter(n => !isNaN(n) && !data[n]?.wod).sort((a,b) => a-b);
   const cont = document.getElementById('progress-content');
   if (sessions.length < 2) { cont.innerHTML = '<div class="history-empty">Inserisci almeno 2 sessioni<br>per vedere i progressi.</div>'; return; }
 
