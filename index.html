@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.7.2
+  Cali Tracker v3.7.3
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -292,7 +292,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.7.2</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.7.3</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -367,7 +367,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
     <div class="help-body">
       <div class="help-h">Inserire una sessione</div>
       <p>La scheda è divisa in step, uno per coppia di esercizi. Su mobile cambi step con uno <b>swipe</b> a destra/sinistra, su desktop con i pulsanti ‹ ›.</p>
-      <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max (PR)</b> e target al 65%.</p>
+      <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
       <p>Le <b>emoji</b> 😊😑😓🥵 qualificano quanto è stato duro il lavoro e regolano l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
       <p>I set mostrati seguono la sessione del giorno o il tuo storico; con <b>+ set</b> ne aggiungi fino a 6.</p>
       <div class="help-h">★ Oggi · Salva · Reset</div>
@@ -399,7 +399,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.7.2';
+const VERSION = '3.7.3';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -1020,7 +1020,7 @@ function timeSetsHTML(stationKey, exData, prevExData, numSets, px) {
 
   const prBlock = `<div class="ex-time-pr">
     <div class="ex-vc-card">
-      <div class="ex-vc-label">Hold max (PR)</div>
+      <div class="ex-vc-label">Hold max</div>
       <input class="ex-vc-input" data-pr="${stationKey}" type="number" inputmode="numeric" min="0" placeholder="—" value="${holdMax}" oninput="updateTimeTarget('${stationKey}')">
       <div class="ex-vc-unit">secondi</div>
       ${prevMax ? `<div class="ex-vc-prev">${prevMax}</div>` : ''}
@@ -1224,7 +1224,7 @@ function repsSetsHTML(stationKey, exData, prevExData, numSets) {
   ${difficultyHTML}
   <div class="time-total-bar">
     <div class="time-total-label">Media set</div>
-    <div id="reps-avg-${stationKey}" style="font-family:var(--mono);font-size:12px;color:var(--muted)">${initialAvg != null ? `<span class="intensity-lbl ${initialAvgZone?.css || ''}" style="font-size:11px">${initialAvg} rep/set → ${initialAvgZone?.label || ''}</span>` : '—'}</div>
+    <div id="reps-avg-${stationKey}" style="font-family:var(--mono);font-size:12px;color:var(--muted)">${initialAvg != null ? `<span class="intensity-lbl ${initialAvgZone?.css || ''}" style="font-size:11px">${initialAvg} reps/set → ${initialAvgZone?.label || ''}</span>` : '—'}</div>
   </div>`;
 }
 
@@ -1257,7 +1257,7 @@ function updateRepsIntensity(stationKey, setIdx, numSets) {
   if (avgEl) {
     const zone = getIntensityZoneWithDifficulty(avg, difficultyKey);
     avgEl.innerHTML = avg != null
-      ? `<span class="intensity-lbl ${zone?.css || ''}" style="font-size:11px">${avg} rep/set → ${zone?.label || ''}</span>`
+      ? `<span class="intensity-lbl ${zone?.css || ''}" style="font-size:11px">${avg} reps/set → ${zone?.label || ''}</span>`
       : '—';
   }
 }
@@ -1480,7 +1480,7 @@ function renderHistory() {
           groupRows.push(`<div class="history-row">
             ${exLabelHTML(stationKey, exObj.variant, prevExObj?.variant)}
             <div class="history-valcol">
-              <div class="history-num">${tot} <span style="color:var(--muted);font-size:10px">rep</span> ${delta(tot, prevTot, false)}</div>
+              <div class="history-num">${tot} <span style="color:var(--muted);font-size:10px">reps</span> ${delta(tot, prevTot, false)}</div>
               ${avgZone ? `<div class="history-sub"><span class="intensity-lbl ${avgZone.css}" style="font-size:10px;margin:0">${avgZone.label}</span></div>` : ''}
             </div>
           </div>`);
@@ -1674,10 +1674,10 @@ function renderProgress() {
       const lastKnownVariant = [...sessions].reverse().map(n => getData()[n]?.[stationKey]?.variant).find(v => v) || '';
       const metric = getMetric(stationKey, lastKnownVariant);
       if (metric === 'time') {
-        charts.push(chartHTML(`${label} — PR`, color, s => stationPR(s, stationKey), false, s => s[stationKey]?.variant ?? null, stationKey));
+        charts.push(chartHTML(`${label} — max`, color, s => stationPR(s, stationKey), false, s => s[stationKey]?.variant ?? null, stationKey));
         charts.push(chartHTML(`${label} — tot.`, color, s => stationVal(s, stationKey), false, s => s[stationKey]?.variant ?? null, stationKey));
       } else {
-        charts.push(chartHTML(`${label} — rep`, color, s => stationVal(s, stationKey), false, s => s[stationKey]?.variant ?? null, stationKey));
+        charts.push(chartHTML(`${label} — reps`, color, s => stationVal(s, stationKey), false, s => s[stationKey]?.variant ?? null, stationKey));
       }
     });
     const rendered = charts.filter(Boolean);

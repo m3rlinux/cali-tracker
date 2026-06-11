@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.7.2
+- **Versione corrente:** 3.7.3
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
@@ -83,7 +83,7 @@ In v3.0.0 tutte le varianti sono state tradotte in italiano (flag `cali_variants
 ### Gruppi attuali
 | station | gruppo | label |
 |---------|--------|-------|
-| p0s1 | handstand_skill | Reps verticale |
+| p0s1 | handstand_skill | Verticale dinamica |
 | p0s2 | handstand_hold | Tenuta verticale |
 | p1s1 | tirata_verticale | Tirata verticale |
 | p1s2 | gambe_anteriore | Gambe anteriore |
