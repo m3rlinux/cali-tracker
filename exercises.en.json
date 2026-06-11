@@ -74,17 +74,19 @@
       "Front lever advanced tuck",
       "Front lever one leg",
       "Front lever straddle",
-      "Front lever"
+      "Front lever",
+      "Front lever pullup",
+      "Front lever pullup to bar touch",
+      "Front lever to bar touch isometric"
     ]
   },
   "tirata_orizzontale": {
     "label": "Horizontal pull",
     "variants": [
-      "Eccentric row",
+      "Incline row",
       "Row",
       "Feet-elevated row",
       "Archer row",
-      "Eccentric wide one-arm row",
       "One-arm row"
     ]
   },
@@ -92,6 +94,7 @@
     "label": "Posterior legs",
     "variants": [
       "Glute bridge",
+      "Single-leg glute bridge",
       "Arch hamstring isometric",
       "Arch hamstring march"
     ]

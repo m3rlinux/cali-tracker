@@ -93,7 +93,10 @@
       "Front lever raccolto avanzato",
       "Front lever una gamba",
       "Front lever straddle",
-      "Front lever"
+      "Front lever",
+      "Front lever pullup",
+      "Front lever pullup tocco sbarra",
+      "Front lever tocco sbarra isometrico"
     ],
     "metrics": {
       "Dead bug": "time",
@@ -104,18 +107,18 @@
       "Front lever raccolto avanzato": "time",
       "Front lever una gamba": "time",
       "Front lever straddle": "time",
-      "Front lever": "time"
+      "Front lever": "time",
+      "Front lever tocco sbarra isometrico": "time"
     }
   },
   "tirata_orizzontale": {
     "label": "Tirata orizzontale",
     "station": "p3s1",
     "variants": [
-      "Rematore eccentrico",
+      "Rematore inclinato",
       "Rematore",
       "Rematore piedi su rialzo",
       "Rematore arciere",
-      "Rematore largo un braccio eccentrico",
       "Rematore un braccio"
     ]
   },
@@ -124,6 +127,7 @@
     "station": "p3s2",
     "variants": [
       "Ponte glutei",
+      "Ponte glutei con una gamba",
       "Arch hamstring isometrico",
       "Arch hamstring march"
     ],
