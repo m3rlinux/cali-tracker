@@ -4,12 +4,13 @@
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
 */
-const CACHE_VERSION = '2.7.25a';
+const CACHE_VERSION = '3.0.0';
 const CACHE_NAME = `cali-tracker-${CACHE_VERSION}`;
 const ASSETS = [
   './',
   './index.html',
-  './exercises.json'
+  './exercises.json',
+  './exercises.en.json'
 ];
 
 // Install: cache all assets
@@ -31,18 +32,19 @@ self.addEventListener('activate', e => {
           .map(k => caches.delete(k))
       )
     ).then(() => self.clients.claim())
+      // Notify all clients that a new version is active
+      .then(() => self.clients.matchAll({ type: 'window', includeUncontrolled: true }))
+      .then(clients => {
+        clients.forEach(client => client.postMessage({ type: 'SW_UPDATED', version: CACHE_VERSION }));
+      })
   );
-  // Notify all clients that a new version is active
-  self.clients.matchAll({ type: 'window' }).then(clients => {
-    clients.forEach(client => client.postMessage({ type: 'SW_UPDATED', version: CACHE_VERSION }));
-  });
 });
 
-// Fetch: cache-first for assets, network-first for exercises.json
+// Fetch: cache-first for assets, network-first for JSON data files
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
-  // Always revalidate exercises.json
-  if (url.pathname.endsWith('exercises.json')) {
+  // Always revalidate JSON data (exercises.json, exercises.en.json)
+  if (url.pathname.endsWith('.json')) {
     e.respondWith(
       fetch(e.request)
         .then(res => {

@@ -6,11 +6,12 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 2.7.11
+- **Versione corrente:** 3.0.0
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
-- `exercises.json` — definizione esercizi, varianti e metriche
+- `exercises.json` — definizione esercizi, varianti e metriche (file canonico, italiano)
+- `exercises.en.json` — traduzioni inglesi di label e varianti (solo display)
 - `sw.js` — Service Worker per caching e auto-update
 - `LICENSE` — MIT License
 - `CLAUDE.md` — questo file
@@ -54,11 +55,24 @@ Ogni gruppo esercizi ha:
 - Default metrica: `reps`. Solo le varianti esplicitamente in `metrics` sono `time`
 - **Non cambiare mai i valori `station`** senza considerare che spezza lo storico delle sessioni precedenti
 
+### Lingue (exercises.en.json)
+- `exercises.json` è il file **canonico**: i nomi variante salvati in localStorage sono sempre quelli italiani, qualunque lingua sia attiva
+- `exercises.en.json` contiene solo `label` e `variants` per gruppo (niente `station` né `metrics`) ed è usato solo per la visualizzazione
+- La traduzione delle varianti è **posizionale**: gli array `variants` IT e EN devono avere stessa lunghezza e stesso ordine. **Ogni modifica a `variants` in exercises.json va replicata nella stessa posizione in exercises.en.json**
+- Selettore lingua: badge IT/EN nell'header (`toggleLang()`), scelta in localStorage `cali_lang`, helper `tVariant()` / `getGroupLabel()`
+
+### Rinominare una variante (migrazione)
+I nomi variante sono chiavi nei dati localStorage: rinominarli in `exercises.json` spezza storico, delta e frecce. Per rinominare:
+1. cambiare il nome in `exercises.json` (stessa posizione) e in `exercises.en.json`
+2. aggiungere la coppia `'vecchio nome': 'nuovo nome'` in `LEGACY_VARIANT_MAP` (per station) in `index.html`
+3. creare un nuovo flag di migrazione (es. `cali_variants_v4`) o azzerare quello esistente, e collegare la nuova mappa in `runVariantMigration()`
+In v3.0.0 tutte le varianti sono state tradotte in italiano (flag `cali_variants_v3`); la migrazione gira su tutti gli utenti (`cali_sessions_*`), sugli import e sul draft temporaneo.
+
 ### Gruppi attuali
 | station | gruppo | label |
 |---------|--------|-------|
-| p0s1 | handstand_skill | Reps Handstand |
-| p0s2 | handstand_hold | Hold Handstand |
+| p0s1 | handstand_skill | Reps verticale |
+| p0s2 | handstand_hold | Tenuta verticale |
 | p1s1 | tirata_verticale | Tirata verticale |
 | p1s2 | gambe_anteriore | Gambe anteriore |
 | p2s1 | spinta_orizzontale | Spinta orizzontale |
@@ -86,9 +100,10 @@ Il verde (`--teal: #4dd9a0`) è riservato agli indicatori di progressione (frecc
 - **time**: input secondi con pulsanti +/−. Hold max PR + target 65%. Totale colorato teal ≥50" / amber <50".
 
 ### Navigazione
-- **Mobile**: swipe sinistra/destra per cambiare step
+- **Mobile**: swipe sinistra/destra per cambiare step (al cambio step si torna in cima alla pagina)
 - **Desktop**: bottoni ‹ Indietro / Avanti › (rilevamento touch via `ontouchstart` + `pointer: fine`)
-- Nessun navigatore sessioni — solo pulsante `+ Nuova` per nuova sessione
+- **Salva ✓** è nella sess-bar accanto a ↺ Reset, sempre visibile da qualsiasi step (anche in modalità modifica)
+- Nessun navigatore sessioni — solo pulsante ↺ Reset per ricominciare la sessione corrente
 - ✎ nello storico apre la sessione in modalità modifica
 
 ### Service Worker

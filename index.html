@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v2.7.21
+  Cali Tracker v3.0.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -68,6 +68,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .sess-num-big { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--accent); }
 .sess-date-sm { font-family: var(--mono); font-size: 11px; color: var(--muted); }
 .sess-nav { display: flex; gap: 6px; }
+#sess-bar-right { display: flex; align-items: center; gap: 8px; }
+.save-btn-sm { padding: 7px 14px; background: var(--accent); color: #0c0c0c; border: none; border-radius: var(--r); font-size: 12px; font-weight: 600; font-family: var(--sans); cursor: pointer; }
+.save-btn-sm:active { background: var(--accent2); }
 .sess-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border2); background: var(--surface); color: var(--text); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .sess-btn:active { background: var(--surface2); }
 
@@ -272,7 +275,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v2.7.25</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.0.0</span></div>
+  <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+  <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
     <div class="name-badge" id="name-badge" onclick="toggleUserMenu()">— imposta nome</div>
     <div class="user-menu" id="user-menu">
@@ -281,6 +286,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <div class="user-menu-item" onclick="document.getElementById('import-file').click()">↑ Importa dati</div>
     </div>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+  </div>
   </div>
 </div>
 
@@ -306,7 +312,6 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
   <div class="step-nav">
     <button class="nav-btn" id="btn-prev" onclick="goStep(-1)" style="display:none">‹ Indietro</button>
     <button class="nav-btn" id="btn-next" onclick="goStep(1)" style="display:none">Avanti ›</button>
-    <button class="save-btn" id="btn-save" onclick="saveSession()" style="display:none">Salva ✓</button>
   </div>
   <div class="toast" id="toast">✓ Sessione salvata</div>
 </div>
@@ -348,7 +353,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '2.7.25';
+const VERSION = '3.0.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
@@ -364,6 +369,126 @@ function sessKey() { return 'cali_sessions_' + (getName().toLowerCase().replace(
 function getData() { try { return JSON.parse(localStorage.getItem(sessKey())) || {}; } catch(e) { return {}; } }
 function saveData(d) { localStorage.setItem(sessKey(), JSON.stringify(d)); }
 function getName() { return localStorage.getItem(KEY_NAME) || ''; }
+
+// ── MIGRAZIONE v3 — varianti rinominate in italiano ──
+// I nomi variante salvati nello storico devono corrispondere a exercises.json.
+// Mappa per station: vecchio nome (pre-3.0.0) → nuovo nome italiano.
+const VARIANT_MIGRATION_FLAG = 'cali_variants_v3';
+const LEGACY_VARIANT_MAP = {
+  p0s1: {
+    'Pike shrug': 'Scrollata in pike',
+    'Box pike shrug': 'Scrollata in pike su box',
+    'Box pike shoulder tap': 'Tocco spalla in pike su box',
+    'Wall walk': 'Camminata al muro',
+    'Wall shrug': 'Scrollata al muro',
+    'Wall press to HS (straddle)': 'Press in verticale al muro (straddle)',
+    'Press to HS (straddle)': 'Press in verticale (straddle)'
+  },
+  p0s2: {
+    'Pike hold': 'Tenuta in pike',
+    'Box pike hold': 'Tenuta in pike su box',
+    'Wall pike hold': 'Tenuta in pike al muro',
+    'Hold chest to wall': 'Tenuta petto al muro',
+    'Wall one-leg alternato': 'Verticale al muro una gamba alternata',
+    'Wall handstand': 'Verticale al muro',
+    'Handstand': 'Verticale'
+  },
+  p1s1: {
+    'Dead hang': 'Sospensione passiva',
+    'Scapular pull up': 'Trazione scapolare',
+    'Active hang': 'Sospensione attiva',
+    'Pull up eccentrica': 'Trazione eccentrica',
+    'Pull up': 'Trazione',
+    'Chest pull up': 'Trazione al petto',
+    'Muscle up eccentrica': 'Muscle up eccentrico'
+  },
+  p1s2: {
+    'Shrimp squat assisted': 'Shrimp squat assistito',
+    'Pistol squat assisted': 'Pistol squat assistito'
+  },
+  p2s1: {
+    'Pushup inclinato': 'Piegamento inclinato',
+    'Pushup eccentrica': 'Piegamento eccentrico',
+    'Pushup': 'Piegamento',
+    'Pushup piedi su rialzo': 'Piegamento piedi su rialzo',
+    'Diamond pushup': 'Piegamento diamante',
+    'Ring pushup': 'Piegamento agli anelli',
+    'RTO pushup': 'Piegamento agli anelli RTO'
+  },
+  p2s2: {
+    'Dead Bug': 'Dead bug',
+    'Parallettes leg raise': 'Alzate gambe alle parallette',
+    'Dragon flag eccentrica': 'Dragon flag eccentrico',
+    'Dragon flag tuck': 'Dragon flag raccolto',
+    'Front lever tuck': 'Front lever raccolto',
+    'Front lever advanced tuck': 'Front lever raccolto avanzato',
+    'Front lever one leg': 'Front lever una gamba'
+  },
+  p3s1: {
+    'Row eccentrica': 'Rematore eccentrico',
+    'Row': 'Rematore',
+    'Row piedi su rialzo': 'Rematore piedi su rialzo',
+    'Row archer': 'Rematore arciere',
+    'Row wide one arm eccentrica': 'Rematore largo un braccio eccentrico',
+    'Row one arm': 'Rematore un braccio'
+  },
+  p3s2: {
+    'Glute bridge': 'Ponte glutei',
+    'Arch hamstring isometric': 'Arch hamstring isometrico'
+  },
+  p4s1: {
+    'Support hold assistito': 'Tenuta in appoggio assistita',
+    'Support hold': 'Tenuta in appoggio',
+    'Ring support hold': 'Tenuta in appoggio agli anelli',
+    'Ring support hold RTO': 'Tenuta in appoggio agli anelli RTO',
+    'Ring dip negativo': 'Dip agli anelli negativo',
+    'Ring dip': 'Dip agli anelli',
+    'Ring dip RTO finale': 'Dip agli anelli RTO finale',
+    'Ring dip RTO': 'Dip agli anelli RTO',
+    'Pike pushup': 'Piegamento in pike',
+    'Wall HSPU negativo': 'HSPU al muro negativo',
+    'Wall HSPU': 'HSPU al muro'
+  },
+  p4s2: {
+    'Superman hold': 'Tenuta superman',
+    'Kettlebell Swings': 'Swing con kettlebell',
+    'Deadlifts': 'Stacchi',
+    'German Hang': 'German hang',
+    'Back lever tuck': 'Back lever raccolto',
+    'Back lever advanced tuck': 'Back lever raccolto avanzato',
+    'Back lever one leg': 'Back lever una gamba'
+  }
+};
+
+function migrateSessionVariants(sess) {
+  if (!sess || typeof sess !== 'object') return sess;
+  Object.entries(sess).forEach(([stationKey, ex]) => {
+    const map = LEGACY_VARIANT_MAP[stationKey];
+    if (map && ex && typeof ex === 'object' && ex.variant && map[ex.variant]) {
+      ex.variant = map[ex.variant];
+    }
+  });
+  return sess;
+}
+
+function migrateAllSessions(sessions) {
+  Object.values(sessions || {}).forEach(migrateSessionVariants);
+  return sessions;
+}
+
+// Migra una sola volta i dati di TUTTI gli utenti salvati in localStorage
+function runVariantMigration() {
+  if (localStorage.getItem(VARIANT_MIGRATION_FLAG)) return;
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith('cali_sessions_')) continue;
+    try {
+      const data = JSON.parse(localStorage.getItem(key)) || {};
+      localStorage.setItem(key, JSON.stringify(migrateAllSessions(data)));
+    } catch(e) { /* dati non parsabili: lasciali intatti */ }
+  }
+  localStorage.setItem(VARIANT_MIGRATION_FLAG, '1');
+}
 
 function getPrevSession(data, sessNum) {
   const prevNum = Object.keys(data)
@@ -414,7 +539,14 @@ function markDraftDirty() {
 }
 
 // ── EXERCISES (loaded from JSON) ──
+// EXERCISES (exercises.json) è il file canonico: i nomi variante in localStorage
+// sono SEMPRE quelli italiani. LANG_EXERCISES traduce solo la visualizzazione,
+// mappando le varianti per posizione nell'array.
 let EXERCISES = {};
+let LANG_EXERCISES = null;
+
+const KEY_LANG = 'cali_lang';
+function getLang() { return localStorage.getItem(KEY_LANG) || 'it'; }
 
 // pair color map
 const PAIR_COLORS = { p0:'--p0', p1:'--p1', p2:'--p2', p3:'--p3', p4:'--p4' };
@@ -424,6 +556,13 @@ const PAIR_LABELS = {
   p2: 'Spinta orizzontale + Core',
   p3: 'Tirata orizzontale + Gambe posteriori',
   p4: 'Spinta verticale + Catena posteriore'
+};
+const PAIR_LABELS_EN = {
+  p0: 'Handstand',
+  p1: 'Vertical pull + Anterior legs',
+  p2: 'Horizontal push + Core',
+  p3: 'Horizontal pull + Posterior legs',
+  p4: 'Vertical push + Posterior chain'
 };
 
 function pairColor(pKey) { return `var(${PAIR_COLORS[pKey] || '--muted'})`; }
@@ -442,9 +581,10 @@ function buildSteps() {
   });
   // sort each pair by sY, then sort pairs by pX
   const sortedPairs = Object.keys(groups).sort();
+  const pairLabels = getLang() === 'en' && LANG_EXERCISES ? PAIR_LABELS_EN : PAIR_LABELS;
   STEPS = sortedPairs.map(px => {
     const stations = groups[px].sort((a,b) => a.sy.localeCompare(b.sy));
-    return { px, label: PAIR_LABELS[px] || px.toUpperCase(), stations };
+    return { px, label: pairLabels[px] || px.toUpperCase(), stations };
   });
 }
 
@@ -465,9 +605,24 @@ function getVariants(stationKey) {
   return group?.variants || [];
 }
 
+function getGroupEntry(stationKey) {
+  return Object.entries(EXERCISES).find(([, g]) => g.station === stationKey) || [null, null];
+}
+
 function getGroupLabel(stationKey) {
-  const group = Object.values(EXERCISES).find(g => g.station === stationKey);
-  return group?.label || stationKey;
+  const [groupKey, group] = getGroupEntry(stationKey);
+  if (!group) return stationKey;
+  return LANG_EXERCISES?.[groupKey]?.label || group.label;
+}
+
+// Traduce un nome variante (canonico/italiano) nella lingua attiva, per posizione
+function tVariant(stationKey, variant) {
+  if (!variant || !LANG_EXERCISES) return variant;
+  const [groupKey, group] = getGroupEntry(stationKey);
+  if (!group?.variants) return variant;
+  const idx = group.variants.indexOf(variant);
+  if (idx === -1) return variant;
+  return LANG_EXERCISES[groupKey]?.variants?.[idx] || variant;
 }
 
 function getGroupVariants(stationKey) {
@@ -482,6 +637,13 @@ async function loadExercises() {
     const res = await fetch('exercises.json');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     EXERCISES = await res.json();
+    LANG_EXERCISES = null;
+    if (getLang() === 'en') {
+      try {
+        const resEn = await fetch('exercises.en.json');
+        if (resEn.ok) LANG_EXERCISES = await resEn.json();
+      } catch(e2) { /* fallback: labels italiane */ }
+    }
     buildSteps();
   } catch(e) {
     document.getElementById('step-content').innerHTML = `<div style="padding:12px;font-family:var(--mono);font-size:11px;color:var(--coral)">Errore: ${e.message}</div>`;
@@ -493,9 +655,11 @@ async function loadExercises() {
 
 // ── INIT ──
 async function init() {
+  runVariantMigration();
   const name = getName();
   if (!name) openNameModal();
   else document.getElementById('name-badge').textContent = name;
+  document.getElementById('lang-badge').textContent = getLang().toUpperCase();
   await loadExercises();
   const hadTemp = restoreTempState();
   if (!hadTemp) {
@@ -562,6 +726,7 @@ function goStepDirect(idx) {
   currentStep = idx;
   renderStepDots();
   renderStep();
+  window.scrollTo(0, 0);
 }
 
 function renderSessBar() {
@@ -570,12 +735,13 @@ function renderSessBar() {
   document.getElementById('sess-date').textContent = s.date || '—';
   const bar = document.getElementById('sess-bar');
   const right = document.getElementById('sess-bar-right');
+  const saveBtn = `<button class="save-btn-sm" onclick="saveSession()">Salva ✓</button>`;
   if (editingSession) {
     bar.classList.add('sess-bar-editing');
-    right.innerHTML = `<span class="sess-edit-label">✎ modifica</span>`;
+    right.innerHTML = `<span class="sess-edit-label">✎ modifica</span>${saveBtn}`;
   } else {
     bar.classList.remove('sess-bar-editing');
-    right.innerHTML = `<button class="nav-btn" onclick="resetCurrentDraft()" style="padding:6px 12px;font-size:11px;font-family:var(--mono)">↺ Reset</button>`;
+    right.innerHTML = `${saveBtn}<button class="nav-btn" onclick="resetCurrentDraft()" style="padding:6px 12px;font-size:11px;font-family:var(--mono)">↺ Reset</button>`;
   }
 }
 
@@ -603,6 +769,7 @@ function goStep(d) {
     currentStep = next;
     renderStepDots();
     renderStep();
+    window.scrollTo(0, 0);
     el.classList.add(inClass);
     // force reflow so transition fires
     void el.offsetWidth;
@@ -620,10 +787,8 @@ function renderStep() {
     (navigator.maxTouchPoints > 0 && !window.matchMedia('(pointer: fine)').matches);
   const btnPrev = document.getElementById('btn-prev');
   const btnNext = document.getElementById('btn-next');
-  const btnSave = document.getElementById('btn-save');
   if (btnPrev) btnPrev.style.display = !isTouch && currentStep > 0 ? '' : 'none';
   if (btnNext) btnNext.style.display = !isTouch && currentStep < STEPS.length - 1 ? '' : 'none';
-  if (btnSave) btnSave.style.display = currentStep === STEPS.length - 1 ? '' : 'none';
   const data = getData();
   const s = draftSession || {};
   const prev = getPrevSession(data, currentSess);
@@ -640,8 +805,9 @@ function variantSelectHTML(stationKey, selectedVariant, prevVariant, px) {
   // Keep this selector bound to the current draft value only.
   const effectiveVariant = (selectedVariant && variants.includes(selectedVariant)) ? selectedVariant : '';
   const hasSelection = !!effectiveVariant;
-  const options = ['<option value="">— scegli —</option>']
-    .concat(variants.map(v => `<option value="${v}" ${effectiveVariant === v ? 'selected' : ''}>${v}</option>`))
+  const placeholder = getLang() === 'en' ? '— choose —' : '— scegli —';
+  const options = [`<option value="">${placeholder}</option>`]
+    .concat(variants.map(v => `<option value="${v}" ${effectiveVariant === v ? 'selected' : ''}>${tVariant(stationKey, v)}</option>`))
     .join('');
   return `<div class="variant-row">
     <div class="variant-select-label">Eserc.</div>
@@ -1088,7 +1254,7 @@ function renderHistory() {
         const metric = getMetric(stationKey, exObj.variant || '');
         const sameVariant = exObj.variant === prevExObj?.variant;
         const arrow = variantArrow(stationKey, exObj.variant, prevExObj?.variant);
-        const vLabel = exObj.variant ? ` (${exObj.variant})` : '';
+        const vLabel = exObj.variant ? ` (${tVariant(stationKey, exObj.variant)})` : '';
 
         if (metric === 'time') {
           const tot = exObj.sets.reduce((a,[t]) => a+(t||0), 0);
@@ -1232,7 +1398,7 @@ function renderProgress() {
     }).join('');
 
     const currentVariant = lastVariant
-      ? `<span style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-left:6px">${lastVariant}</span>`
+      ? `<span style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-left:6px">${stationKeyForArrow ? tVariant(stationKeyForArrow, lastVariant) : lastVariant}</span>`
       : '';
 
     return `<div class="prog-section">
@@ -1289,6 +1455,20 @@ function renderProgress() {
   }).filter(Boolean);
 
   cont.innerHTML = sections.join('') || '<div class="history-empty">Dati insufficienti.</div>';
+}
+
+// ── LANGUAGE ──
+async function toggleLang() {
+  const next = getLang() === 'it' ? 'en' : 'it';
+  localStorage.setItem(KEY_LANG, next);
+  document.getElementById('lang-badge').textContent = next.toUpperCase();
+  // Preserva i valori del form corrente prima del re-render
+  collectStep(currentStep);
+  await loadExercises();
+  renderStepDots();
+  renderStep();
+  renderHistory();
+  renderProgress();
 }
 
 // ── USER MENU ──
@@ -1389,7 +1569,8 @@ function importData(e) {
 }
 function confirmImport() {
   if (!_importPayload) return;
-  saveData(_importPayload.sessions);
+  // Gli export pre-3.0.0 contengono i vecchi nomi variante
+  saveData(migrateAllSessions(_importPayload.sessions));
   _importPayload = null;
   document.getElementById('import-modal').classList.remove('open');
   resetDraftSession();
@@ -1476,7 +1657,8 @@ function restoreTempState() {
     currentStep = state.step;
     editingSession = state.editing || false;
     draftDirty = state.dirty || false;
-    draftSession = cloneObj(state.draft || {});
+    // Il draft può arrivare da un reload pre-aggiornamento con i vecchi nomi
+    draftSession = migrateSessionVariants(cloneObj(state.draft || {}));
     return true;
   } catch(e) { return false; }
 }
@@ -1485,9 +1667,19 @@ function restoreTempState() {
 let _tempFormRestore = null;
 
 // ── SERVICE WORKER ──
+const SW_POLL_INTERVAL = 15 * 60 * 1000;
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').then(reg => {
     window._swReg = reg;
+    // Poll the server for a new sw.js: a changed CACHE_VERSION triggers
+    // install → activate → SW_UPDATED → reload
+    setInterval(() => reg.update(), SW_POLL_INTERVAL);
+  });
+
+  // Check for updates whenever the app comes back to the foreground
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && window._swReg) window._swReg.update();
   });
 
   navigator.serviceWorker.addEventListener('message', e => {
