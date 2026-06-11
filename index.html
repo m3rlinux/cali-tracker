@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.2.1
+  Cali Tracker v3.2.2
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -283,7 +283,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.2.1</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.2.2</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -362,7 +362,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <p>Le <b>emoji</b> 😊😑😓🥵 qualificano quanto è stato duro il lavoro e regolano l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
       <div class="help-h">★ Oggi · Salva · Reset</div>
       <p>
-        <b>★ Oggi</b> carica la sessione di allenamento del giorno: se hai già usato la variante in passato, vengono proposti i tuoi ultimi valori, altrimenti i target suggeriti. 
+        <b>★ Oggi</b> carica la sessione di allenamento del giorno: se hai già usato la variante in passato, vengono proposti i tuoi ultimi valori e i target del giorno riempiono solo i set che ti mancano; altrimenti valgono i target suggeriti. 
         <b>Salva ✓</b> registra la sessione, da qualsiasi step. 
         <b>↺ Reset</b> ricomincia la sessione corrente.</p>
       <p>Una nuova sessione si pre-compila dall'ultima salvata. <b>Nulla viene salvato finché non premi Salva.</b></p>
@@ -388,7 +388,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.2.1';
+const VERSION = '3.2.2';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
@@ -792,9 +792,25 @@ function buildSessionFromWod(wod) {
     const clean = cloneObj(ex);
     if (clean.variant && !variants.includes(clean.variant)) delete clean.variant;
     // Se l'utente ha già usato la variante proposta (in qualsiasi sessione),
-    // i suoi dati reali (sets, hold_max, difficoltà) prevalgono sui suggeriti
+    // i suoi dati reali prevalgono sui suggeriti; i set vengono fusi per indice:
+    // valore storico dove presente, target del WOD a riempire i buchi.
+    // I set dello storico non vengono mai tagliati (lunghezza = max dei due array).
     const prevEx = clean.variant ? findLastDataForVariant(stationKey, clean.variant) : null;
-    sess[stationKey] = prevEx || clean;
+    if (prevEx) {
+      const wodSets = Array.isArray(clean.sets) ? clean.sets : [];
+      const userSets = Array.isArray(prevEx.sets) ? prevEx.sets : [];
+      const len = Math.max(wodSets.length, userSets.length);
+      prevEx.sets = Array.from({length: len}, (_, i) => {
+        const u = userSets[i];
+        const hasUserVal = u && (u[0] != null || u[1] != null);
+        if (hasUserVal) return u;
+        return wodSets[i] != null ? cloneObj(wodSets[i]) : (u || [null, null]);
+      });
+      if (prevEx.hold_max == null && clean.hold_max != null) prevEx.hold_max = clean.hold_max;
+      sess[stationKey] = prevEx;
+    } else {
+      sess[stationKey] = clean;
+    }
   });
   if (typeof wod.set_time === 'number' && wod.set_time > 0) sess.set_time = wod.set_time;
   return sess;

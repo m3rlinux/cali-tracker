@@ -1,13 +1,13 @@
 {
-  "set_time": 40,
+  "set_time": 30,
   "stations": {
-    "p0s1": { "variant": "Scrollata in pike", "sets": [[8, null], [8, null], [8, null]] },
+    "p0s1": { "variant": "Tocco spalla in pike su box", "sets": [[8, null], [8, null], [8, null]] },
     "p0s2": { "variant": "Tenuta in pike", "hold_max": 30, "sets": [[20, null], [20, null], [20, null]] },
-    "p1s1": { "variant": "Trazione", "sets": [[6, null], [6, null], [6, null]] },
-    "p1s2": { "variant": "Squat", "sets": [[12, null], [12, null], [12, null]] },
-    "p2s1": { "variant": "Piegamento", "sets": [[10, null], [10, null], [10, null]] },
-    "p2s2": { "variant": "Hollow", "sets": [[20, null], [20, null], [20, null]] },
-    "p3s1": { "variant": "Rematore", "sets": [[8, null], [8, null], [8, null]] },
+    "p1s1": { "variant": "Trazione scapolare", "sets": [[6, null], [6, null], [6, null]] },
+    "p1s2": { "variant": "Shrimp squat assistito", "sets": [[12, null], [12, null], [12, null]] },
+    "p2s1": { "variant": "Piegamento eccentrico", "sets": [[10, null], [10, null], [10, null]] },
+    "p2s2": { "variant": "Alzate gambe alle parallette", "sets": [[20, null], [20, null], [20, null]] },
+    "p3s1": { "variant": "Rematore inclinato", "sets": [[8, null], [8, null], [8, null]] },
     "p3s2": { "variant": "Ponte glutei", "sets": [[12, null], [12, null], [12, null]] },
     "p4s1": { "variant": "Dip", "sets": [[6, null], [6, null], [6, null]] },
     "p4s2": { "variant": "Tenuta superman", "sets": [[20, null], [20, null], [20, null]] }

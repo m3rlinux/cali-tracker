@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.2.1
+- **Versione corrente:** 3.2.2
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
@@ -66,7 +66,7 @@ Ogni gruppo esercizi ha:
 - Template condiviso per tutti gli utenti: `{ "set_time": 30, "stations": { "pXsY": { "variant", "sets", "hold_max"? } } }`
 - I nomi variante devono essere quelli **canonici (italiani)** di exercises.json; varianti sconosciute vengono ignorate al caricamento
 - Si carica col pulsante `★ Oggi` nella sess-bar: sostituisce il draft (con conferma se sporco), non salva nulla finché l'utente non preme Salva
-- Se l'utente ha già usato la variante proposta per una station, i suoi dati reali (sets, hold_max, difficoltà) prevalgono sui valori suggeriti: la ricerca va a ritroso su **tutto lo storico** (`findLastDataForVariant`). La nuova sessione normale invece pre-carica solo l'ultima salvata
+- Se l'utente ha già usato la variante proposta per una station (ricerca a ritroso su **tutto lo storico**, `findLastDataForVariant`), i suoi dati prevalgono con **merge per indice dei set**: valore storico dove presente, target del WOD a riempire set vuoti o mancanti; i set dello storico non vengono mai tagliati (lunghezza = max). `hold_max` e difficoltà sempre dell'utente (il WOD riempie `hold_max` solo se assente). La nuova sessione normale invece pre-carica solo l'ultima salvata
 - `set_time` personalizza il tempo per set mostrato nell'header del pair (default 30"); viene salvato con la sessione ed ereditato dai draft successivi
 - Per cambiare l'allenamento del giorno: modificare wod.json e push (network-first, arriva subito a tutti)
 
