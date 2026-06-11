@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.6.0
+  Cali Tracker v3.7.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -173,12 +173,16 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .delete-btn:active { background: var(--coral); color: #0c0c0c; border-color: var(--coral); }
 .history-body { padding: 10px 14px; display: none; border-top: 1px solid var(--border); }
 .history-body.open { display: block; }
-.history-pair-header { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; padding: 8px 0 4px; border-top: 1px solid var(--border); margin-top: 4px; }
-.history-pair-header:first-child { border-top: none; margin-top: 0; }
-.history-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.history-pair-header { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; padding: 10px 0 4px; }
+.history-pair-header:first-child { padding-top: 0; }
+.history-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); }
 .history-row:last-child { border-bottom: none; }
-.history-key { color: var(--muted); font-family: var(--mono); font-size: 11px; }
-.history-val { font-family: var(--mono); font-weight: 500; font-size: 12px; display: flex; align-items: center; gap: 4px; }
+.history-ex { min-width: 0; }
+.history-variant { font-size: 12px; font-weight: 500; }
+.history-group { font-size: 10px; color: var(--muted); font-family: var(--mono); margin-top: 1px; }
+.history-valcol { text-align: right; flex-shrink: 0; }
+.history-num { font-family: var(--mono); font-weight: 500; font-size: 13px; white-space: nowrap; }
+.history-sub { font-size: 10px; color: var(--muted); font-family: var(--mono); margin-top: 1px; white-space: nowrap; }
 .delta-pos { color: var(--teal); font-size: 10px; }
 .delta-neg { color: var(--coral); font-size: 10px; }
 
@@ -287,7 +291,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.6.0</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.7.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -394,7 +398,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.6.0';
+const VERSION = '3.7.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -1415,6 +1419,16 @@ function renderHistory() {
     return `<span class="${better ? 'delta-pos' : 'delta-neg'}">${d > 0 ? '+' : ''}${d}</span>`;
   }
 
+  // Colonna sinistra della riga: variante in evidenza, gruppo in piccolo sotto
+  function exLabelHTML(stationKey, variant, arrow) {
+    const group = getGroupLabel(stationKey);
+    if (!variant) return `<div class="history-ex"><div class="history-variant">${group}</div></div>`;
+    return `<div class="history-ex">
+      <div class="history-variant">${tVariant(stationKey, variant)} ${arrow}</div>
+      <div class="history-group">${group}</div>
+    </div>`;
+  }
+
   list.innerHTML = sessions.map(n => {
     const s = data[n], prev = getPrevSession(data, n);
     const rows = [];
@@ -1427,19 +1441,24 @@ function renderHistory() {
         const metric = getMetric(stationKey, exObj.variant || '');
         const sameVariant = exObj.variant === prevExObj?.variant;
         const arrow = variantArrow(stationKey, exObj.variant, prevExObj?.variant);
-        const vLabel = exObj.variant ? ` (${tVariant(stationKey, exObj.variant)})` : '';
 
         if (metric === 'time') {
           const tot = exObj.sets.reduce((a,[t]) => a+(t||0), 0);
           const prevTot = sameVariant ? prevExObj?.sets?.reduce((a,[t]) => a+(t||0), 0) ?? null : null;
           const prevPR = sameVariant ? prevExObj?.hold_max ?? null : null;
           if (exObj.hold_max != null || tot > 0) {
+            const main = tot > 0
+              ? `<span style="color:var(--muted);font-size:10px">tot </span>${tot}" ${delta(tot, prevTot, false)}`
+              : `<span style="color:var(--muted);font-size:10px">max </span>${exObj.hold_max}" ${delta(exObj.hold_max, prevPR, false)}`;
+            const sub = tot > 0 && exObj.hold_max != null
+              ? `max ${exObj.hold_max}" ${delta(exObj.hold_max, prevPR, false)}`
+              : '';
             groupRows.push(`<div class="history-row">
-              <span class="history-key">${getGroupLabel(stationKey)}${vLabel} ${arrow}</span>
-              <span class="history-val">
-                ${exObj.hold_max != null ? `<span><span style="color:var(--muted);font-size:10px">max </span>${exObj.hold_max}" ${delta(exObj.hold_max, prevPR, false)}</span>` : ''}
-                ${tot > 0 ? `<span><span style="color:var(--muted);font-size:10px">tot </span>${tot}" ${delta(tot, prevTot, false)}</span>` : ''}
-              </span>
+              ${exLabelHTML(stationKey, exObj.variant, arrow)}
+              <div class="history-valcol">
+                <div class="history-num">${main}</div>
+                ${sub ? `<div class="history-sub">${sub}</div>` : ''}
+              </div>
             </div>`);
           }
         } else {
@@ -1450,13 +1469,16 @@ function renderHistory() {
           const prevTot = sameVariant ? prevExObj?.sets?.reduce((a,[f,c]) => a+(f||0)+(c||0), 0) ?? null : null;
           const prevCl = sameVariant ? prevExObj?.sets?.reduce((a,[f,c]) => a+(c||0), 0) ?? null : null;
           groupRows.push(`<div class="history-row">
-            <span class="history-key">${getGroupLabel(stationKey)}${vLabel} ${arrow}</span>
-            <span class="history-val">${tot} rep ${delta(tot, prevTot, false)} ${avgZone ? `<span class="intensity-lbl ${avgZone.css}" style="font-size:10px">${avgZone.label}</span>` : ''}</span>
+            ${exLabelHTML(stationKey, exObj.variant, arrow)}
+            <div class="history-valcol">
+              <div class="history-num">${tot} <span style="color:var(--muted);font-size:10px">rep</span> ${delta(tot, prevTot, false)}</div>
+              ${avgZone ? `<div class="history-sub"><span class="intensity-lbl ${avgZone.css}" style="font-size:10px;margin:0">${avgZone.label}</span></div>` : ''}
+            </div>
           </div>`);
           if (cl > 0 || (prevCl != null && prevCl > 0)) {
             groupRows.push(`<div class="history-row">
-              <span class="history-key">${getGroupLabel(stationKey)} cluster</span>
-              <span class="history-val">${cl} ${delta(cl, prevCl, true)}</span>
+              <div class="history-ex"><div class="history-group">cluster</div></div>
+              <div class="history-valcol"><div class="history-num">${cl} ${delta(cl, prevCl, true)}</div></div>
             </div>`);
           }
         }
@@ -1587,7 +1609,8 @@ function renderProgress() {
         const pi = allVars.indexOf(variants[i-1]);
         const isAdvance = ci > pi;
         arrowLabel = (isAdvance ? '↑' : '↓') + v;
-        valColor = isAdvance ? 'var(--purple)' : 'var(--coral)';
+        // teal = indicatore di progressione (il viola collide con --p0)
+        valColor = isAdvance ? 'var(--teal)' : 'var(--coral)';
       }
       return `<div class="prog-bar" style="background:${color};height:${h}px"><div class="prog-val" style="color:${valColor}">${arrowLabel}</div><div class="prog-bar-label">S${n}</div></div>`;
     }).join('');
