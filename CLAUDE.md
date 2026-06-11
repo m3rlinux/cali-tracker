@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.7.0
+- **Versione corrente:** 3.7.1
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
@@ -142,6 +142,7 @@ Il verde (`--teal: #4dd9a0`) è riservato agli indicatori di progressione (frecc
 ## Decisioni di design
 - **Righe storico a due livelli**: variante in evidenza + nome gruppo piccolo sotto (niente "Gruppo (variante)" che andava a capo); colonna valori a destra con intensità/max in sub-riga. Una sola linea di separazione (le righe hanno border-bottom, gli header di pair nessun border)
 - **Freccia avanzamento variante nei grafici: teal** (non viola — `--purple` è identico a `--p0` e creava ambiguità); regressione resta coral
+- **Cambio variante evidenziato**: nei grafici le barre delle varianti precedenti hanno `opacity:.3` (altezze non confrontabili) e la variante corrente è un chip accanto al titolo; nello storico la sub-riga mostra "↑/↓ da <variante precedente>"
 - **Frecce ↑↓ nei grafici**: solo per cambio variante atletica (indice nella lista `variants`), mai per cambio `station`
 - **Delta nello storico**: azzerato quando cambia variante o station (nessun confronto cross-variante)
 - **Cluster nei grafici**: rimosso — informazione già leggibile dallo storico

@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.7.0
+  Cali Tracker v3.7.1
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -291,7 +291,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.7.0</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.7.1</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -379,7 +379,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <div class="help-h">Storico</div>
       <p>Tocca una sessione per vedere i dettagli. <b>✎</b> la riapre in modifica, <b>✕</b> la elimina. <b>★</b> converte una sessione WOD in normale (entra nei progressi) e viceversa. I delta +/− confrontano con la sessione precedente e si azzerano se cambi variante.</p>
       <div class="help-h">Progressi</div>
-      <p>Un grafico per esercizio (da 2 sessioni in poi). Le frecce <b>↑↓</b> indicano un cambio di variante nella progressione: ↑ avanzamento, ↓ regressione.</p>
+      <p>Un grafico per esercizio (da 2 sessioni in poi). Le frecce <b>↑↓</b> indicano un cambio di variante nella progressione: ↑ avanzamento, ↓ regressione. Le barre <b>in trasparenza</b> appartengono a varianti precedenti: le altezze non sono confrontabili con la variante corrente, indicata accanto al titolo.</p>
       <div class="help-h">Lingua e dati</div>
       <p>Il badge <b>IT/EN</b> nell'header cambia la lingua dei nomi esercizi.</p>
       <p>I dati restano <b>solo su questo dispositivo</b>. Usa <b>↓ Esporta</b> / <b>↑ Importa</b> dal menu per backup o per passare a un altro dispositivo. L'app si aggiorna da sola senza toccare i dati.</p>
@@ -398,7 +398,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.7.0';
+const VERSION = '3.7.1';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -1419,13 +1419,21 @@ function renderHistory() {
     return `<span class="${better ? 'delta-pos' : 'delta-neg'}">${d > 0 ? '+' : ''}${d}</span>`;
   }
 
-  // Colonna sinistra della riga: variante in evidenza, gruppo in piccolo sotto
-  function exLabelHTML(stationKey, variant, arrow) {
+  // Colonna sinistra della riga: variante in evidenza, gruppo in piccolo sotto.
+  // Al cambio variante mostra anche la transizione: "↑ da <variante precedente>"
+  function exLabelHTML(stationKey, variant, prevVariant) {
     const group = getGroupLabel(stationKey);
     if (!variant) return `<div class="history-ex"><div class="history-variant">${group}</div></div>`;
+    const arrow = variantArrow(stationKey, variant, prevVariant);
+    let subLine = group;
+    if (arrow && prevVariant) {
+      const variants = getGroupVariants(stationKey);
+      const adv = variants.indexOf(variant) > variants.indexOf(prevVariant);
+      subLine += ` <span class="${adv ? 'delta-pos' : 'delta-neg'}" style="font-size:10px">${adv ? '↑' : '↓'} da ${tVariant(stationKey, prevVariant)}</span>`;
+    }
     return `<div class="history-ex">
       <div class="history-variant">${tVariant(stationKey, variant)} ${arrow}</div>
-      <div class="history-group">${group}</div>
+      <div class="history-group">${subLine}</div>
     </div>`;
   }
 
@@ -1440,7 +1448,6 @@ function renderHistory() {
         if (!exObj?.sets) return;
         const metric = getMetric(stationKey, exObj.variant || '');
         const sameVariant = exObj.variant === prevExObj?.variant;
-        const arrow = variantArrow(stationKey, exObj.variant, prevExObj?.variant);
 
         if (metric === 'time') {
           const tot = exObj.sets.reduce((a,[t]) => a+(t||0), 0);
@@ -1454,7 +1461,7 @@ function renderHistory() {
               ? `max ${exObj.hold_max}" ${delta(exObj.hold_max, prevPR, false)}`
               : '';
             groupRows.push(`<div class="history-row">
-              ${exLabelHTML(stationKey, exObj.variant, arrow)}
+              ${exLabelHTML(stationKey, exObj.variant, prevExObj?.variant)}
               <div class="history-valcol">
                 <div class="history-num">${main}</div>
                 ${sub ? `<div class="history-sub">${sub}</div>` : ''}
@@ -1469,7 +1476,7 @@ function renderHistory() {
           const prevTot = sameVariant ? prevExObj?.sets?.reduce((a,[f,c]) => a+(f||0)+(c||0), 0) ?? null : null;
           const prevCl = sameVariant ? prevExObj?.sets?.reduce((a,[f,c]) => a+(c||0), 0) ?? null : null;
           groupRows.push(`<div class="history-row">
-            ${exLabelHTML(stationKey, exObj.variant, arrow)}
+            ${exLabelHTML(stationKey, exObj.variant, prevExObj?.variant)}
             <div class="history-valcol">
               <div class="history-num">${tot} <span style="color:var(--muted);font-size:10px">rep</span> ${delta(tot, prevTot, false)}</div>
               ${avgZone ? `<div class="history-sub"><span class="intensity-lbl ${avgZone.css}" style="font-size:10px;margin:0">${avgZone.label}</span></div>` : ''}
@@ -1612,11 +1619,14 @@ function renderProgress() {
         // teal = indicatore di progressione (il viola collide con --p0)
         valColor = isAdvance ? 'var(--teal)' : 'var(--coral)';
       }
-      return `<div class="prog-bar" style="background:${color};height:${h}px"><div class="prog-val" style="color:${valColor}">${arrowLabel}</div><div class="prog-bar-label">S${n}</div></div>`;
+      // Le barre delle varianti precedenti sono smorzate: i valori non sono
+      // confrontabili in altezza con la variante corrente
+      const isOldVariant = variants && lastVariant != null && variants[i] != null && variants[i] !== lastVariant;
+      return `<div class="prog-bar" style="background:${color};height:${h}px${isOldVariant ? ';opacity:.3' : ''}"><div class="prog-val" style="color:${valColor}">${arrowLabel}</div><div class="prog-bar-label">S${n}</div></div>`;
     }).join('');
 
     const currentVariant = lastVariant
-      ? `<span style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-left:6px">${stationKeyForArrow ? tVariant(stationKeyForArrow, lastVariant) : lastVariant}</span>`
+      ? `<span style="font-size:10px;color:var(--text);font-family:var(--mono);margin-left:6px;text-transform:none;border:1px solid var(--border2);border-radius:10px;padding:1px 8px;white-space:nowrap">${stationKeyForArrow ? tVariant(stationKeyForArrow, lastVariant) : lastVariant}</span>`
       : '';
 
     return `<div class="prog-section">
