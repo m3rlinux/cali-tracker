@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.1.0
+  Cali Tracker v3.2.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -207,6 +207,14 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .modal-btn { width: 100%; margin-top: 12px; padding: 12px; background: var(--accent); color: #0c0c0c; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--sans); }
 .modal-btn-ghost { width: 100%; margin-top: 8px; padding: 12px; background: var(--surface); color: var(--text); border: 1px solid var(--border2); border-radius: 8px; font-size: 14px; cursor: pointer; font-family: var(--sans); }
 
+/* HELP MODAL */
+.help-modal { max-width: 420px; max-height: 85vh; display: flex; flex-direction: column; }
+.help-body { overflow-y: auto; font-size: 13px; line-height: 1.6; }
+.help-h { font-family: var(--mono); font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; margin: 14px 0 4px; }
+.help-h:first-child { margin-top: 0; }
+.help-body p { margin: 0 0 6px; color: var(--muted); }
+.help-body b { color: var(--text); font-weight: 500; }
+
 .toast { text-align: center; font-size: 12px; color: var(--accent); font-family: var(--mono); padding: 8px; opacity: 0; transition: opacity .3s; }
 .toast.show { opacity: 1; }
 
@@ -275,7 +283,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.1.0</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.2.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -284,6 +292,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <div class="user-menu-item" onclick="openRenameModal()">✎ Rinomina</div>
       <div class="user-menu-item" onclick="exportData()">↓ Esporta dati</div>
       <div class="user-menu-item" onclick="document.getElementById('import-file').click()">↑ Importa dati</div>
+      <div class="user-menu-item" onclick="openHelpModal()">? Aiuto</div>
     </div>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
   </div>
@@ -343,6 +352,29 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
   </div>
 </div>
 
+<div class="modal-overlay" id="help-modal">
+  <div class="modal help-modal">
+    <div class="modal-title">Come si usa Cali Tracker</div>
+    <div class="help-body">
+      <div class="help-h">Inserire una sessione</div>
+      <p>La scheda è divisa in step, uno per coppia di esercizi. Su mobile cambi step con uno <b>swipe</b> a destra/sinistra, su desktop con i pulsanti ‹ ›.</p>
+      <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> filate + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max (PR)</b> e target al 65%.</p>
+      <p>La <b>difficoltà</b> 🟢🟡🟠🔴 qualifica quanto è stato duro il lavoro e regola l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
+      <div class="help-h">Salva · Reset · ★ Oggi</div>
+      <p><b>Salva ✓</b> registra la sessione, da qualsiasi step. <b>↺ Reset</b> ricomincia la sessione corrente. <b>★ Oggi</b> carica la sessione di allenamento del giorno: dove usi già la variante proposta ritrovi i tuoi ultimi valori, altrove i target suggeriti.</p>
+      <p>Una nuova sessione si pre-compila dall'ultima salvata. <b>Nulla viene salvato finché non premi Salva.</b></p>
+      <div class="help-h">Storico</div>
+      <p>Tocca una sessione per vedere i dettagli. <b>✎</b> la riapre in modifica, <b>✕</b> la elimina. I delta +/− confrontano con la sessione precedente e si azzerano se cambi variante.</p>
+      <div class="help-h">Progressi</div>
+      <p>Un grafico per esercizio (da 2 sessioni in poi). Le frecce <b>↑↓</b> indicano un cambio di variante nella progressione: ↑ avanzamento, ↓ regressione.</p>
+      <div class="help-h">Lingua e dati</div>
+      <p>Il badge <b>IT/EN</b> nell'header cambia la lingua dei nomi esercizi.</p>
+      <p>I dati restano <b>solo su questo dispositivo</b>. Usa <b>↓ Esporta</b> / <b>↑ Importa</b> dal menu per backup o per passare a un altro dispositivo. L'app si aggiorna da sola senza toccare i dati.</p>
+    </div>
+    <button class="modal-btn" onclick="document.getElementById('help-modal').classList.remove('open')">Chiudi</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="import-modal">
   <div class="modal">
     <div class="modal-title">Importa dati</div>
@@ -353,7 +385,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.1.0';
+const VERSION = '3.2.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
@@ -1539,6 +1571,12 @@ function closeUserMenuOutside(e) {
   if (!wrap.contains(e.target)) document.getElementById('user-menu').classList.remove('open');
 }
 function closeUserMenu() { document.getElementById('user-menu').classList.remove('open'); }
+
+// ── HELP ──
+function openHelpModal() {
+  closeUserMenu();
+  document.getElementById('help-modal').classList.add('open');
+}
 
 // ── NAME MODAL ──
 function openNameModal() { document.getElementById('name-modal').classList.add('open'); setTimeout(() => document.getElementById('name-input').focus(), 100); }

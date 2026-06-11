@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.1.0
+- **Versione corrente:** 3.2.0
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
@@ -114,6 +114,7 @@ Il verde (`--teal: #4dd9a0`) è riservato agli indicatori di progressione (frecc
 - **Salva ✓** è nella sess-bar accanto a ↺ Reset, sempre visibile da qualsiasi step (anche in modalità modifica)
 - Nessun navigatore sessioni — solo pulsante ↺ Reset per ricominciare la sessione corrente
 - ✎ nello storico apre la sessione in modalità modifica
+- Voce `? Aiuto` nel menu utente: modale con guida rapida all'uso (`help-modal`); va tenuta aggiornata quando cambiano le funzionalità
 
 ### Service Worker
 - Cache-first per `index.html`, network-first per `exercises.json`
