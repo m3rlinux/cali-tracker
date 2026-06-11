@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.2.3
+- **Versione corrente:** 3.3.0
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
@@ -103,6 +103,12 @@ Il verde (`--teal: #4dd9a0`) è riservato agli indicatori di progressione (frecc
 
 ### Stepper dinamico
 `buildSteps()` legge `exercises.json`, raggruppa per prefisso `pX`, ordina per `sY`, costruisce `STEPS[]`. Lo stepper UI è completamente dinamico.
+
+### Numero set dinamico
+- Le righe set sono guidate dai dati: `numSetsFor(stationKey, exData)` = max(default station, set valorizzati nei dati, `num_sets`), cap `MAX_SETS` (6)
+- Default per sessione vuota: `DEFAULT_SETS_BY_STATION` (p0s1: 2), tutto il resto `DEFAULT_NUM_SETS` (3) — vale anche per le isometrie (non più 6 righe fisse)
+- Il WOD determina le righe tramite i set proposti; lo storico le estende dove ha più set reali
+- Pulsante `+ set` sotto i set: incrementa `num_sets` nel draft (persiste con la sessione salvata)
 
 ### Metriche
 - **reps**: input filate + cluster con pulsanti +/−. Label intensità sotto ogni set: `forza` (1–5), `ipertrofia` (6–20), `resistenza` (21+). Media rep/set nella barra totale.

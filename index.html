@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.2.3
+  Cali Tracker v3.3.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -225,6 +225,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 #step-content.slide-in-left   { transform: translateX(60px);  opacity: 0; pointer-events: none; }
 #step-content.slide-in-right  { transform: translateX(-60px); opacity: 0; pointer-events: none; }
 
+/* ADD SET */
+.add-set-btn { align-self: center; background: none; border: 1px dashed var(--border2); color: var(--muted); border-radius: 7px; padding: 6px 16px; font-size: 11px; font-family: var(--mono); cursor: pointer; }
+.add-set-btn:active { background: var(--surface2); }
+
 /* +/- BUTTONS */
 .stepper-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .stepper-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; user-select: none; -webkit-user-select: none; }
@@ -283,7 +287,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.2.3</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.3.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -360,6 +364,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <p>La scheda è divisa in step, uno per coppia di esercizi. Su mobile cambi step con uno <b>swipe</b> a destra/sinistra, su desktop con i pulsanti ‹ ›.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max (PR)</b> e target al 65%.</p>
       <p>Le <b>emoji</b> 😊😑😓🥵 qualificano quanto è stato duro il lavoro e regolano l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
+      <p>I set mostrati seguono la sessione del giorno o il tuo storico; con <b>+ set</b> ne aggiungi fino a 6.</p>
       <div class="help-h">★ Oggi · Salva · Reset</div>
       <p>
         <b>★ Oggi</b> carica la sessione di allenamento del giorno: se hai già usato la variante in passato, vengono proposti i tuoi ultimi valori e i target del giorno riempiono solo i set che ti mancano; altrimenti valgono i target suggeriti. 
@@ -388,9 +393,22 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.2.3';
+const VERSION = '3.3.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
+// Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
+const DEFAULT_SETS_BY_STATION = { p0s1: 2 };
+const DEFAULT_NUM_SETS = 3;
+function defaultNumSets(stationKey) { return DEFAULT_SETS_BY_STATION[stationKey] || DEFAULT_NUM_SETS; }
+// Numero di righe set da disegnare: default della station, esteso dai set
+// valorizzati nei dati (storico/WOD) e da eventuali set aggiunti a mano (num_sets)
+function numSetsFor(stationKey, exData) {
+  let filled = 0;
+  (exData?.sets || []).forEach((set, i) => {
+    if (set && (set[0] != null || set[1] != null)) filled = i + 1;
+  });
+  return Math.min(MAX_SETS, Math.max(defaultNumSets(stationKey), filled, exData?.num_sets || 0));
+}
 const TIME_TARGET_LOW = 50;
 const TIME_TARGET_HIGH = 60;
 const DEFAULT_DIFFICULTY_KEY = 'medio';
@@ -564,6 +582,13 @@ function resetDraftSession() {
   editingSession = false;
   draftSession = getLastSavedSession();
   delete draftSession.date; // nuova sessione: precompila i valori, ma resta non salvata
+  // Sessione nuova: righe set fisse ai default per station (p0s1: 2, resto 3)
+  Object.entries(draftSession).forEach(([stationKey, ex]) => {
+    if (ex && typeof ex === 'object' && Array.isArray(ex.sets)) {
+      ex.sets = ex.sets.slice(0, defaultNumSets(stationKey));
+      delete ex.num_sets;
+    }
+  });
   draftDirty = false;
 }
 
@@ -942,7 +967,7 @@ function onVariantChange(el) {
   if (!stationEntry) return;
   const exData = s[stationKey] || {};
   const prevExData = prev[stationKey] || {};
-  const numSets = metric === 'time' ? MAX_SETS : (step.stations.length <= 2 ? 3 : 2);
+  const numSets = numSetsFor(stationKey, exData);
   ['ex-time-pr','time-sets','time-total-bar','sets-grid','cluster-hint','difficulty-row'].forEach(cls => {
     exBlock.querySelector('.' + cls)?.remove();
   });
@@ -978,7 +1003,7 @@ function timeSetsHTML(stationKey, exData, prevExData, numSets, px) {
     </div>
   </div>`;
 
-  const setRows = Array.from({length: MAX_SETS}, (_, i) => {
+  const setRows = Array.from({length: numSets}, (_, i) => {
     const rawVal = sets[i]?.[0];
     const prevVal = prevSets[i]?.[0];
     const val = rawVal != null ? rawVal : '';
@@ -995,8 +1020,11 @@ function timeSetsHTML(stationKey, exData, prevExData, numSets, px) {
     </div>`;
   }).join('');
 
+  const addBtn = numSets < MAX_SETS
+    ? `<button type="button" class="add-set-btn" onclick="addSet('${stationKey}')">+ set</button>`
+    : '';
   return `${prBlock}
-  <div class="time-sets">${setRows}</div>
+  <div class="time-sets">${setRows}${addBtn}</div>
   <div class="time-total-bar">
     <div class="time-total-label">Totale</div>
     <div>
@@ -1159,7 +1187,10 @@ function repsSetsHTML(stationKey, exData, prevExData, numSets) {
   const difficultyHTML = difficultySelectorHTML(stationKey, exData, prevExData);
   const initialAvg = getRepsAvgFromSets(renderedSets, numSets);
   const initialAvgZone = getIntensityZoneWithDifficulty(initialAvg, selectedDifficulty);
-  return `<div class="sets-grid" id="sets-grid-${stationKey}">${setRows}</div>
+  const addBtn = numSets < MAX_SETS
+    ? `<button type="button" class="add-set-btn" onclick="addSet('${stationKey}')">+ set</button>`
+    : '';
+  return `<div class="sets-grid" id="sets-grid-${stationKey}">${setRows}${addBtn}</div>
   <div class="cluster-hint">cluster dopo 5"–8" di riposo</div>
   ${difficultyHTML}
   <div class="time-total-bar">
@@ -1227,8 +1258,6 @@ function setDifficulty(stationKey, level, btn) {
 function renderPairStep(stepIdx, s, prev) {
   const step = STEPS[stepIdx];
   const color = pairColor(step.px);
-  // numSets: time stations always MAX_SETS, reps stations 3
-  const numSets = 3;
 
   const exHTML = step.stations.map(({stationKey, px}) => {
     const exData = s[stationKey] || {};
@@ -1236,8 +1265,10 @@ function renderPairStep(stepIdx, s, prev) {
     const effectiveVariant = exData.variant || prevExData.variant || '';
     const metric = getMetric(stationKey, effectiveVariant);
     const varHTML = variantSelectHTML(stationKey, exData.variant || '', prevExData.variant || '', px);
+    // Righe set guidate dai dati (WOD/storico), con default per station
+    const numSets = numSetsFor(stationKey, exData);
     const setsHTML = metric === 'time'
-      ? timeSetsHTML(stationKey, exData, prevExData, MAX_SETS, px)
+      ? timeSetsHTML(stationKey, exData, prevExData, numSets, px)
       : repsSetsHTML(stationKey, exData, prevExData, numSets);
 
     return `<div class="ex-block">
@@ -1250,11 +1281,9 @@ function renderPairStep(stepIdx, s, prev) {
     </div>`;
   }).join('');
 
-  const hasTimeEx = step.stations.some(({stationKey}) => {
-    const exData = s[stationKey] || {};
-    return getMetric(stationKey, exData.variant || '') === 'time';
-  });
-  const setsLabel = hasTimeEx ? MAX_SETS : numSets;
+  const counts = step.stations.map(({stationKey}) => numSetsFor(stationKey, s[stationKey] || {}));
+  const minSets = Math.min(...counts), maxSets = Math.max(...counts);
+  const setsLabel = minSets === maxSets ? `${minSets}` : `${minSets}–${maxSets}`;
   const setTime = (typeof s.set_time === 'number' && s.set_time > 0) ? s.set_time : 30;
 
   document.getElementById('step-content').innerHTML = `
@@ -1265,6 +1294,16 @@ function renderPairStep(stepIdx, s, prev) {
     </div>
     ${exHTML}
   `;
+}
+
+// Aggiunge una riga set alla station (fino a MAX_SETS), preservando i valori inseriti
+function addSet(stationKey) {
+  markDraftDirty();
+  collectStep(currentStep);
+  if (!draftSession[stationKey]) draftSession[stationKey] = {};
+  const ex = draftSession[stationKey];
+  ex.num_sets = Math.min(MAX_SETS, numSetsFor(stationKey, ex) + 1);
+  renderStep();
 }
 
 // ── COLLECT ──
@@ -1289,10 +1328,9 @@ function collectStep(stepIdx) {
       if (prInput?.value !== '') exObj.hold_max = parseInt(prInput.value) || 0;
       else delete exObj.hold_max;
       delete exObj.difficulty;
-      for (let i = 0; i < MAX_SETS; i++) {
-        const ti = document.querySelector(`.time-set-input[data-ex="${stationKey}"][data-set="${i}"]`);
-        sets.push([ti?.value !== '' ? parseInt(ti.value) : null, null]);
-      }
+      document.querySelectorAll(`.time-set-input[data-ex="${stationKey}"]`).forEach(ti => {
+        sets.push([ti.value !== '' ? parseInt(ti.value) : null, null]);
+      });
     } else {
       const diffBtn = document.querySelector(`.difficulty-btn[data-ex="${stationKey}"].active`);
       exObj.difficulty = diffBtn?.dataset.level || DEFAULT_DIFFICULTY_KEY;
@@ -1383,7 +1421,7 @@ function renderHistory() {
         } else {
           const tot = exObj.sets.reduce((a,[f,c]) => a+(f||0)+(c||0), 0);
           const cl = exObj.sets.reduce((a,[f,c]) => a+(c||0), 0);
-          const avg = getRepsAvgFromSets(exObj.sets);
+          const avg = getRepsAvgFromSets(exObj.sets, numSetsFor(stationKey, exObj));
           const avgZone = getIntensityZoneWithDifficulty(avg, exObj.difficulty || DEFAULT_DIFFICULTY_KEY);
           const prevTot = sameVariant ? prevExObj?.sets?.reduce((a,[f,c]) => a+(f||0)+(c||0), 0) ?? null : null;
           const prevCl = sameVariant ? prevExObj?.sets?.reduce((a,[f,c]) => a+(c||0), 0) ?? null : null;
