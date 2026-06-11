@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.3.0
+- **Versione corrente:** 3.4.0
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
@@ -63,7 +63,9 @@ Ogni gruppo esercizi ha:
 - Selettore lingua: badge IT/EN nell'header (`toggleLang()`), scelta in localStorage `cali_lang`, helper `tVariant()` / `getGroupLabel()`
 
 ### Sessione del giorno (wod.json)
-- Template condiviso per tutti gli utenti: `{ "set_time": 30, "stations": { "pXsY": { "variant", "sets", "hold_max"? } } }`
+- Template condiviso per tutti gli utenti: `{ "set_time": 30, "force_num_sets": bool, "force_values": bool, "stations": { "pXsY": { "variant", "sets", "hold_max"? } } }`
+- `force_num_sets: true` — le righe set sono esattamente quelle proposte dal WOD (anche meno del default; lo storico non estende; `+ set` resta disponibile). Assente/false: lo storico può estendere
+- `force_values: true` — i valori pre-compilati sono i target del WOD anche dove c'è storico; `hold_max` (PR) e difficoltà restano comunque dell'utente. Assente/false: merge per indice (valori utente prima)
 - I nomi variante devono essere quelli **canonici (italiani)** di exercises.json; varianti sconosciute vengono ignorate al caricamento
 - Si carica col pulsante `★ Oggi` nella sess-bar: sostituisce il draft (con conferma se sporco), non salva nulla finché l'utente non preme Salva
 - Se l'utente ha già usato la variante proposta per una station (ricerca a ritroso su **tutto lo storico**, `findLastDataForVariant`), i suoi dati prevalgono con **merge per indice dei set**: valore storico dove presente, target del WOD a riempire set vuoti o mancanti; i set dello storico non vengono mai tagliati (lunghezza = max). `hold_max` e difficoltà sempre dell'utente (il WOD riempie `hold_max` solo se assente). La nuova sessione normale invece pre-carica solo l'ultima salvata

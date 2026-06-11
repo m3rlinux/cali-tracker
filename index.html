@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.3.0
+  Cali Tracker v3.4.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -287,7 +287,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.3.0</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.4.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -393,21 +393,23 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.3.0';
+const VERSION = '3.4.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
 const DEFAULT_SETS_BY_STATION = { p0s1: 2 };
 const DEFAULT_NUM_SETS = 3;
 function defaultNumSets(stationKey) { return DEFAULT_SETS_BY_STATION[stationKey] || DEFAULT_NUM_SETS; }
-// Numero di righe set da disegnare: default della station, esteso dai set
-// valorizzati nei dati (storico/WOD) e da eventuali set aggiunti a mano (num_sets)
+// Numero di righe set da disegnare. La base è num_sets (imposto dal WOD con
+// force_num_sets, o da + set), altrimenti il default della station; i set
+// valorizzati nei dati la estendono.
 function numSetsFor(stationKey, exData) {
   let filled = 0;
   (exData?.sets || []).forEach((set, i) => {
     if (set && (set[0] != null || set[1] != null)) filled = i + 1;
   });
-  return Math.min(MAX_SETS, Math.max(defaultNumSets(stationKey), filled, exData?.num_sets || 0));
+  const base = exData?.num_sets || defaultNumSets(stationKey);
+  return Math.min(MAX_SETS, Math.max(base, filled));
 }
 const TIME_TARGET_LOW = 50;
 const TIME_TARGET_HIGH = 60;
@@ -807,6 +809,13 @@ function findLastDataForVariant(stationKey, variant) {
 }
 
 function buildSessionFromWod(wod) {
+  // Opzioni del template:
+  // force_num_sets — le righe set sono esattamente quelle proposte dal WOD
+  //                  (lo storico non le estende); assente/false = lo storico estende
+  // force_values   — i valori pre-compilati sono i target del WOD anche dove c'è
+  //                  storico (hold_max e difficoltà restano comunque dell'utente)
+  const forceNum = wod.force_num_sets === true;
+  const forceVals = wod.force_values === true;
   const sess = {};
   Object.entries(wod.stations || {}).forEach(([stationKey, ex]) => {
     if (!ex || typeof ex !== 'object') return;
@@ -814,15 +823,16 @@ function buildSessionFromWod(wod) {
     if (!variants.length) return; // station non presente in exercises.json
     const clean = cloneObj(ex);
     if (clean.variant && !variants.includes(clean.variant)) delete clean.variant;
-    // Se l'utente ha già usato la variante proposta (in qualsiasi sessione),
-    // i suoi dati reali prevalgono sui suggeriti; i set vengono fusi per indice:
-    // valore storico dove presente, target del WOD a riempire i buchi.
-    // I set dello storico non vengono mai tagliati (lunghezza = max dei due array).
+    const wodSets = Array.isArray(clean.sets) ? clean.sets : [];
     const prevEx = clean.variant ? findLastDataForVariant(stationKey, clean.variant) : null;
-    if (prevEx) {
-      const wodSets = Array.isArray(clean.sets) ? clean.sets : [];
+    let out;
+    if (prevEx && !forceVals) {
+      // Merge per indice: valore storico dove presente, target del WOD nei buchi.
+      // Con force_num_sets la lunghezza è quella del WOD, altrimenti il massimo.
       const userSets = Array.isArray(prevEx.sets) ? prevEx.sets : [];
-      const len = Math.max(wodSets.length, userSets.length);
+      const len = forceNum && wodSets.length
+        ? wodSets.length
+        : Math.max(wodSets.length, userSets.length);
       prevEx.sets = Array.from({length: len}, (_, i) => {
         const u = userSets[i];
         const hasUserVal = u && (u[0] != null || u[1] != null);
@@ -830,10 +840,18 @@ function buildSessionFromWod(wod) {
         return wodSets[i] != null ? cloneObj(wodSets[i]) : (u || [null, null]);
       });
       if (prevEx.hold_max == null && clean.hold_max != null) prevEx.hold_max = clean.hold_max;
-      sess[stationKey] = prevEx;
+      out = prevEx;
     } else {
-      sess[stationKey] = clean;
+      // Valori del template; hold_max (PR) e difficoltà restano dell'utente
+      if (prevEx) {
+        if (prevEx.hold_max != null) clean.hold_max = prevEx.hold_max;
+        if (prevEx.difficulty) clean.difficulty = prevEx.difficulty;
+      }
+      out = clean;
     }
+    delete out.num_sets; // non ereditare conteggi manuali da vecchie sessioni
+    if (forceNum && wodSets.length) out.num_sets = Math.min(MAX_SETS, wodSets.length);
+    sess[stationKey] = out;
   });
   if (typeof wod.set_time === 'number' && wod.set_time > 0) sess.set_time = wod.set_time;
   return sess;
