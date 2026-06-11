@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.7.1
+  Cali Tracker v3.7.2
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -190,6 +190,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 #page-progress { padding: 16px; }
 .prog-section { margin-bottom: 24px; }
 .prog-title { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+.prog-variant { margin: -6px 0 10px; }
 .prog-chart-wrap { padding-bottom: 22px; }
 .prog-chart { height: 80px; display: flex; align-items: flex-end; gap: 4px; }
 .prog-bar { flex: 1; border-radius: 4px 4px 0 0; min-height: 4px; position: relative; }
@@ -291,7 +292,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.7.1</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.7.2</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -398,7 +399,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.7.1';
+const VERSION = '3.7.2';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -1425,15 +1426,16 @@ function renderHistory() {
     const group = getGroupLabel(stationKey);
     if (!variant) return `<div class="history-ex"><div class="history-variant">${group}</div></div>`;
     const arrow = variantArrow(stationKey, variant, prevVariant);
-    let subLine = group;
+    let transition = '';
     if (arrow && prevVariant) {
       const variants = getGroupVariants(stationKey);
       const adv = variants.indexOf(variant) > variants.indexOf(prevVariant);
-      subLine += ` <span class="${adv ? 'delta-pos' : 'delta-neg'}" style="font-size:10px">${adv ? '↑' : '↓'} da ${tVariant(stationKey, prevVariant)}</span>`;
+      transition = `<div class="history-group"><span class="${adv ? 'delta-pos' : 'delta-neg'}" style="font-size:10px">${adv ? '↑' : '↓'} da ${tVariant(stationKey, prevVariant)}</span></div>`;
     }
     return `<div class="history-ex">
       <div class="history-variant">${tVariant(stationKey, variant)} ${arrow}</div>
-      <div class="history-group">${subLine}</div>
+      <div class="history-group">${group}</div>
+      ${transition}
     </div>`;
   }
 
@@ -1626,11 +1628,12 @@ function renderProgress() {
     }).join('');
 
     const currentVariant = lastVariant
-      ? `<span style="font-size:10px;color:var(--text);font-family:var(--mono);margin-left:6px;text-transform:none;border:1px solid var(--border2);border-radius:10px;padding:1px 8px;white-space:nowrap">${stationKeyForArrow ? tVariant(stationKeyForArrow, lastVariant) : lastVariant}</span>`
+      ? `<div class="prog-variant"><span style="font-size:10px;color:var(--text);font-family:var(--mono);border:1px solid var(--border2);border-radius:10px;padding:1px 8px;white-space:nowrap">${stationKeyForArrow ? tVariant(stationKeyForArrow, lastVariant) : lastVariant}</span></div>`
       : '';
 
     return `<div class="prog-section">
-      <div class="prog-title">${title}${currentVariant}</div>
+      <div class="prog-title">${title}</div>
+      ${currentVariant}
       <div class="prog-chart-wrap"><div class="prog-chart">${bars}</div></div>
       <div class="prog-stat-row">
         <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${defined[0]}</div><div class="prog-stat-lbl">inizio</div></div>
