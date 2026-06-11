@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.5.0
+  Cali Tracker v3.6.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -287,7 +287,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.5.0</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.6.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -373,7 +373,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <p>Le sessioni del giorno vengono salvate come <b>★ WOD</b>: restano nello storico ma non influenzano grafici dei progressi, delta e pre-compilazione — utile ad es. per i de-load.</p>
       <p>Una nuova sessione si pre-compila dall'ultima salvata (le ★ WOD sono escluse). <b>Nulla viene salvato finché non premi Salva.</b></p>
       <div class="help-h">Storico</div>
-      <p>Tocca una sessione per vedere i dettagli. <b>✎</b> la riapre in modifica, <b>✕</b> la elimina. I delta +/− confrontano con la sessione precedente e si azzerano se cambi variante.</p>
+      <p>Tocca una sessione per vedere i dettagli. <b>✎</b> la riapre in modifica, <b>✕</b> la elimina. <b>★</b> converte una sessione WOD in normale (entra nei progressi) e viceversa. I delta +/− confrontano con la sessione precedente e si azzerano se cambi variante.</p>
       <div class="help-h">Progressi</div>
       <p>Un grafico per esercizio (da 2 sessioni in poi). Le frecce <b>↑↓</b> indicano un cambio di variante nella progressione: ↑ avanzamento, ↓ regressione.</p>
       <div class="help-h">Lingua e dati</div>
@@ -394,7 +394,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.5.0';
+const VERSION = '3.6.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -1473,6 +1473,7 @@ function renderHistory() {
         <span class="history-sess-num">Sessione ${n}${s.wod ? ' <span style="color:var(--amber);font-size:10px">★ WOD</span>' : ''}</span>
         <div class="history-meta">
           <span class="history-date">${s.date||'—'}</span>
+          <button class="delete-btn" style="color:${s.wod ? 'var(--amber)' : 'var(--muted2)'};border-color:${s.wod ? 'var(--amber)' : 'var(--border2)'}" title="${s.wod ? 'Converti in sessione normale' : 'Marca come WOD'}" onclick="toggleWodFlag(event,${n})">★</button>
           <button class="delete-btn" style="color:var(--blue);border-color:var(--blue)" onclick="editSessionFromHistory(event,${n})">✎</button>
           <button class="delete-btn" onclick="deleteSession(event,${n})">✕</button>
         </div>
@@ -1483,6 +1484,27 @@ function renderHistory() {
 }
 
 function toggleHistory(el) { el.nextElementSibling.classList.toggle('open'); }
+
+// Converte una sessione WOD in normale (entra nei progressi) e viceversa
+function toggleWodFlag(e, n) {
+  e.stopPropagation();
+  const data = getData();
+  const s = data[n];
+  if (!s) return;
+  const msg = s.wod
+    ? `Convertire la sessione ${n} in sessione normale? Entrerà nei progressi e nei confronti.`
+    : `Marcare la sessione ${n} come ★ WOD? Sarà esclusa da progressi e confronti.`;
+  if (!confirm(msg)) return;
+  if (s.wod) delete s.wod; else s.wod = true;
+  saveData(data);
+  // Se la sessione è aperta in modifica, allinea anche il draft
+  if (editingSession && currentSess === n && draftSession) {
+    if (s.wod) draftSession.wod = true; else delete draftSession.wod;
+    renderSessBar();
+  }
+  renderHistory();
+  renderProgress();
+}
 function deleteSession(e, n) {
   e.stopPropagation();
   if (!confirm(`Cancellare la sessione ${n}?`)) return;
