@@ -1,5 +1,5 @@
 {
-  "set_time": 30,
+  "set_time": 40,
   "stations": {
     "p0s1": { "variant": "Scrollata in pike", "sets": [[8, null], [8, null], [8, null]] },
     "p0s2": { "variant": "Tenuta in pike", "hold_max": 30, "sets": [[20, null], [20, null], [20, null]] },
