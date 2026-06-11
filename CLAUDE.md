@@ -6,12 +6,13 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.0.0
+- **Versione corrente:** 3.1.0
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
 - `exercises.json` — definizione esercizi, varianti e metriche (file canonico, italiano)
 - `exercises.en.json` — traduzioni inglesi di label e varianti (solo display)
+- `wod.json` — sessione del giorno condivisa (template pre-caricabile)
 - `sw.js` — Service Worker per caching e auto-update
 - `LICENSE` — MIT License
 - `CLAUDE.md` — questo file
@@ -60,6 +61,14 @@ Ogni gruppo esercizi ha:
 - `exercises.en.json` contiene solo `label` e `variants` per gruppo (niente `station` né `metrics`) ed è usato solo per la visualizzazione
 - La traduzione delle varianti è **posizionale**: gli array `variants` IT e EN devono avere stessa lunghezza e stesso ordine. **Ogni modifica a `variants` in exercises.json va replicata nella stessa posizione in exercises.en.json**
 - Selettore lingua: badge IT/EN nell'header (`toggleLang()`), scelta in localStorage `cali_lang`, helper `tVariant()` / `getGroupLabel()`
+
+### Sessione del giorno (wod.json)
+- Template condiviso per tutti gli utenti: `{ "set_time": 30, "stations": { "pXsY": { "variant", "sets", "hold_max"? } } }`
+- I nomi variante devono essere quelli **canonici (italiani)** di exercises.json; varianti sconosciute vengono ignorate al caricamento
+- Si carica col pulsante `★ Oggi` nella sess-bar: sostituisce il draft (con conferma se sporco), non salva nulla finché l'utente non preme Salva
+- Se l'ultima sessione salvata dell'utente usa già la variante proposta per una station, i suoi dati reali (sets, hold_max, difficoltà) prevalgono sui valori suggeriti dal template
+- `set_time` personalizza il tempo per set mostrato nell'header del pair (default 30"); viene salvato con la sessione ed ereditato dai draft successivi
+- Per cambiare l'allenamento del giorno: modificare wod.json e push (network-first, arriva subito a tutti)
 
 ### Rinominare una variante (migrazione)
 I nomi variante sono chiavi nei dati localStorage: rinominarli in `exercises.json` spezza storico, delta e frecce. Per rinominare:

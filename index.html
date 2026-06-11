@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.0.0
+  Cali Tracker v3.1.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -275,7 +275,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.0.1</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.1.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -353,7 +353,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.0.1';
+const VERSION = '3.1.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const TIME_TARGET_LOW = 50;
@@ -722,6 +722,60 @@ function resetCurrentDraft() {
   goStepDirect(0);
 }
 
+// ── SESSIONE DEL GIORNO (WOD) ──
+// wod.json: template condiviso { set_time, stations: { pXsY: { variant, sets, hold_max? } } }
+// I nomi variante sono quelli canonici (italiani) di exercises.json.
+async function fetchWod() {
+  try {
+    const res = await fetch('wod.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return await res.json();
+  } catch(e) {
+    console.error('fetchWod failed:', e);
+    return null;
+  }
+}
+
+function buildSessionFromWod(wod) {
+  const last = getLastSavedSession();
+  const sess = {};
+  Object.entries(wod.stations || {}).forEach(([stationKey, ex]) => {
+    if (!ex || typeof ex !== 'object') return;
+    const variants = getVariants(stationKey);
+    if (!variants.length) return; // station non presente in exercises.json
+    const clean = cloneObj(ex);
+    if (clean.variant && !variants.includes(clean.variant)) delete clean.variant;
+    // Se l'ultima sessione salvata usa già la variante proposta, i dati reali
+    // dell'utente (sets, hold_max, difficoltà) prevalgono sui valori suggeriti
+    const prevEx = last[stationKey];
+    if (clean.variant && prevEx?.variant === clean.variant) {
+      sess[stationKey] = cloneObj(prevEx);
+    } else {
+      sess[stationKey] = clean;
+    }
+  });
+  if (typeof wod.set_time === 'number' && wod.set_time > 0) sess.set_time = wod.set_time;
+  return sess;
+}
+
+async function loadWodSession() {
+  if (draftDirty && !confirm('La sessione corrente non è salvata. Scartare le modifiche e caricare la sessione del giorno?')) return;
+  const wod = await fetchWod();
+  if (!wod) {
+    const toast = document.getElementById('toast');
+    toast.textContent = '✗ Sessione del giorno non disponibile';
+    toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); toast.textContent = '✓ Sessione salvata'; }, 2500);
+    return;
+  }
+  currentSess = getNextSessionNumber();
+  editingSession = false;
+  draftSession = buildSessionFromWod(wod);
+  draftDirty = false;
+  renderSessBar();
+  goStepDirect(0);
+}
+
 function goStepDirect(idx) {
   currentStep = idx;
   renderStepDots();
@@ -741,7 +795,7 @@ function renderSessBar() {
     right.innerHTML = `<span class="sess-edit-label">✎ modifica</span>${saveBtn}`;
   } else {
     bar.classList.remove('sess-bar-editing');
-    right.innerHTML = `${saveBtn}<button class="nav-btn" onclick="resetCurrentDraft()" style="padding:6px 12px;font-size:11px;font-family:var(--mono)">↺ Reset</button>`;
+    right.innerHTML = `<button class="nav-btn" onclick="loadWodSession()" style="padding:6px 12px;font-size:11px;font-family:var(--mono)">★ Oggi</button>${saveBtn}<button class="nav-btn" onclick="resetCurrentDraft()" style="padding:6px 12px;font-size:11px;font-family:var(--mono)">↺ Reset</button>`;
   }
 }
 
@@ -1145,12 +1199,13 @@ function renderPairStep(stepIdx, s, prev) {
     return getMetric(stationKey, exData.variant || '') === 'time';
   });
   const setsLabel = hasTimeEx ? MAX_SETS : numSets;
+  const setTime = (typeof s.set_time === 'number' && s.set_time > 0) ? s.set_time : 30;
 
   document.getElementById('step-content').innerHTML = `
     <div class="pair-header">
       <div class="pair-dot" style="background:${color}"></div>
       <div class="pair-title" style="color:${color}">${step.px.toUpperCase()}</div>
-      <div class="pair-sub">${setsLabel} set · 30"</div>
+      <div class="pair-sub">${setsLabel} set · ${setTime}"</div>
     </div>
     ${exHTML}
   `;
