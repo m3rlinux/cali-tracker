@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.7.3
+  Cali Tracker v3.8.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -75,12 +75,13 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .sess-btn:active { background: var(--surface2); }
 
 /* STEP */
-.step-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px 0; }
+.step-bar { display: flex; flex-direction: column; gap: 8px; padding: 10px 16px 0; }
 .step-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-.step-dots { display: flex; gap: 5px; }
-.step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); transition: background .2s; }
-.step-dot.active { background: var(--accent); }
-.step-dot.done { background: var(--muted2); }
+.step-dots { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.step-chip { padding: 4px 10px; border: 1px solid var(--border2); border-radius: 7px; background: var(--surface); color: var(--muted); font-family: var(--mono); font-size: 11px; cursor: pointer; user-select: none; }
+.step-chip:active { background: var(--surface2); }
+.step-chip.active { font-weight: 500; }
+.step-chip-sep { width: 1px; align-self: stretch; background: var(--border2); margin: 2px 3px; }
 
 .step-nav { display: flex; align-items: center; padding: 10px 16px 14px; gap: 10px; }
 .nav-btn { flex: 1; padding: 11px; border: 1px solid var(--border2); background: var(--surface); color: var(--text); border-radius: var(--r); font-size: 13px; font-family: var(--sans); cursor: pointer; }
@@ -292,7 +293,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.7.3</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.8.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -323,8 +324,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
     <div id="sess-bar-right"></div>
   </div>
   <div class="step-bar">
-    <div class="step-label" id="step-label"></div>
     <div class="step-dots" id="step-dots"></div>
+    <div class="step-label" id="step-label"></div>
   </div>
   <div class="step-content" id="step-content"></div>
   <div class="step-nav">
@@ -366,7 +367,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
     <div class="modal-title">Come si usa Cali Tracker</div>
     <div class="help-body">
       <div class="help-h">Inserire una sessione</div>
-      <p>La scheda è divisa in step, uno per coppia di esercizi. Su mobile cambi step con uno <b>swipe</b> a destra/sinistra, su desktop con i pulsanti ‹ ›.</p>
+      <p>La scheda è divisa in step, uno per coppia di esercizi. Su mobile cambi step con uno <b>swipe</b> a destra/sinistra, su desktop con i pulsanti ‹ ›. Tocca i <b>chip P0 P1 … P4</b> in alto per saltare direttamente a una postazione.</p>
+      <p><b>P0</b> è a sé (lo si fa tutti insieme); <b>P1–P4</b> formano un anello: scorrendo avanti da P4 si torna a P1. Così puoi partire dalla tua postazione e proseguire la rotazione.</p>
+      <p>L'intestazione di ogni coppia indica numero di set, <b>tempo di lavoro</b> e <b>rest</b> previsti dalla sessione del giorno.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
       <p>Le <b>emoji</b> 😊😑😓🥵 qualificano quanto è stato duro il lavoro e regolano l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
       <p>I set mostrati seguono la sessione del giorno o il tuo storico; con <b>+ set</b> ne aggiungi fino a 6.</p>
@@ -399,7 +402,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.7.3';
+const VERSION = '3.8.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -863,6 +866,7 @@ function buildSessionFromWod(wod) {
     sess[stationKey] = out;
   });
   if (typeof wod.set_time === 'number' && wod.set_time > 0) sess.set_time = wod.set_time;
+  if (typeof wod.rest === 'number' && wod.rest > 0) sess.rest = wod.rest;
   return sess;
 }
 
@@ -910,17 +914,50 @@ function renderSessBar() {
 }
 
 // ── STEP NAV ──
+// P0 (px 'p0') è fuori dall'anello: gli step P1..P4 formano un anello circolare
+// (swipe avanti da P4 torna a P1). P0 è raggiungibile solo toccando il suo chip.
+function ringInfo() {
+  let ringStart = 0;
+  while (ringStart < STEPS.length && STEPS[ringStart].px === 'p0') ringStart++;
+  if (ringStart >= STEPS.length) ringStart = 0; // nessun anello (solo P0): naviga lineare
+  return { ringStart, ringSize: STEPS.length - ringStart };
+}
+
+// Indice dello step successivo per uno spostamento d (+1/-1); uguale a cur se no-op
+function nextStep(cur, d) {
+  const { ringStart, ringSize } = ringInfo();
+  if (cur < ringStart) {
+    const n = cur + d;
+    if (n < 0) return cur;            // prima del primo step: no-op
+    if (n >= ringStart) return ringStart; // avanti oltre P0: entra nell'anello
+    return n;
+  }
+  if (ringSize <= 0) return cur;
+  const rel = (((cur - ringStart + d) % ringSize) + ringSize) % ringSize;
+  return ringStart + rel;            // dentro l'anello: wrap P1..P4
+}
+
 function renderStepDots() {
-  document.getElementById('step-dots').innerHTML = Array.from({length: STEPS.length}, (_, i) => {
-    const cls = i === currentStep ? 'active' : i < currentStep ? 'done' : '';
-    return `<div class="step-dot ${cls}"></div>`;
+  const { ringStart } = ringInfo();
+  document.getElementById('step-dots').innerHTML = STEPS.map((st, i) => {
+    const sep = (i === ringStart && ringStart > 0) ? '<span class="step-chip-sep"></span>' : '';
+    const active = i === currentStep;
+    const style = active ? `border-color:${pairColor(st.px)};color:${pairColor(st.px)}` : '';
+    return `${sep}<button class="step-chip${active ? ' active' : ''}" style="${style}" onclick="jumpToStep(${i})">${st.px.toUpperCase()}</button>`;
   }).join('');
+}
+
+// Salto diretto a uno step (dai chip): salva lo step corrente prima di spostarsi
+function jumpToStep(idx) {
+  if (idx === currentStep || idx < 0 || idx >= STEPS.length) return;
+  collectStep(currentStep);
+  goStepDirect(idx);
 }
 
 function goStep(d) {
   if (!STEPS.length) return;
-  const next = currentStep + d;
-  if (next < 0 || next >= STEPS.length) return;
+  const next = nextStep(currentStep, d);
+  if (next === currentStep) return;
   collectStep(currentStep);
 
   const el = document.getElementById('step-content');
@@ -951,8 +988,8 @@ function renderStep() {
     (navigator.maxTouchPoints > 0 && !window.matchMedia('(pointer: fine)').matches);
   const btnPrev = document.getElementById('btn-prev');
   const btnNext = document.getElementById('btn-next');
-  if (btnPrev) btnPrev.style.display = !isTouch && currentStep > 0 ? '' : 'none';
-  if (btnNext) btnNext.style.display = !isTouch && currentStep < STEPS.length - 1 ? '' : 'none';
+  if (btnPrev) btnPrev.style.display = !isTouch && nextStep(currentStep, -1) !== currentStep ? '' : 'none';
+  if (btnNext) btnNext.style.display = !isTouch && nextStep(currentStep, 1) !== currentStep ? '' : 'none';
   const data = getData();
   const s = draftSession || {};
   const prev = getPrevSession(data, currentSess);
@@ -1314,12 +1351,14 @@ function renderPairStep(stepIdx, s, prev) {
   const minSets = Math.min(...counts), maxSets = Math.max(...counts);
   const setsLabel = minSets === maxSets ? `${minSets}` : `${minSets}–${maxSets}`;
   const setTime = (typeof s.set_time === 'number' && s.set_time > 0) ? s.set_time : 30;
+  const rest = (typeof s.rest === 'number' && s.rest > 0) ? s.rest : null;
+  const timeLabel = rest ? `${setTime}" lavoro · ${rest}" rest` : `${setTime}"`;
 
   document.getElementById('step-content').innerHTML = `
     <div class="pair-header">
       <div class="pair-dot" style="background:${color}"></div>
       <div class="pair-title" style="color:${color}">${step.px.toUpperCase()}</div>
-      <div class="pair-sub">${setsLabel} set · ${setTime}"</div>
+      <div class="pair-sub">${setsLabel} set · ${timeLabel}</div>
     </div>
     ${exHTML}
   `;

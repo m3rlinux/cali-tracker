@@ -1,5 +1,6 @@
 {
   "set_time": 30,
+  "rest": 60,
   "force_num_sets": true,
   "force_values": false,
   "stations": {
