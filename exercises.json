@@ -34,6 +34,36 @@
       "Verticale": "time"
     }
   },
+  "handstand_extra": {
+    "label": "Verticale supplementare",
+    "station": "p0s3",
+    "optional": true,
+    "variants": [
+      "Scrollata in pike",
+      "Scrollata in pike su box",
+      "Tocco spalla in pike su box",
+      "Camminata al muro",
+      "Scrollata al muro",
+      "Press in verticale al muro (straddle)",
+      "Press in verticale (straddle)",
+      "Tenuta in pike",
+      "Tenuta in pike su box",
+      "Tenuta in pike al muro",
+      "Tenuta petto al muro",
+      "Verticale al muro una gamba alternata",
+      "Verticale al muro",
+      "Verticale"
+    ],
+    "metrics": {
+      "Tenuta in pike": "time",
+      "Tenuta in pike su box": "time",
+      "Tenuta in pike al muro": "time",
+      "Tenuta petto al muro": "time",
+      "Verticale al muro una gamba alternata": "time",
+      "Verticale al muro": "time",
+      "Verticale": "time"
+    }
+  },
   "tirata_verticale": {
     "label": "Tirata verticale",
     "station": "p1s1",

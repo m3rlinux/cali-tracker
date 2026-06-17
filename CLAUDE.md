@@ -6,7 +6,11 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.10.0
+- **Versione corrente:** 3.11.0
+
+### Stazioni opzionali
+- Un gruppo in exercises.json con `"optional": true` (es. `handstand_extra`, station `p0s3`) compare in una coppia **solo se la sessione/wod lo contiene** (`isOptionalStation` / `stationActive` / `activeStations`); filtrato in `renderPairStep`, `pairTimingHTML`, `collectStep`. Le sessioni WOD sono escluse dall'ereditarietà, quindi p0s3 di fatto appare solo via wod
+- `handstand_extra` (p0s3) ha varianti = **unione di handstand_skill (p0s1) + handstand_hold (p0s2)**; le 7 isometrie da p0s2 restano `time`. **Se cambi le varianti di p0s1/p0s2, aggiorna p0s3 di conseguenza** (IT + EN, stessa posizione)
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
@@ -89,6 +93,7 @@ In v3.0.0 tutte le varianti sono state tradotte in italiano (flag `cali_variants
 |---------|--------|-------|
 | p0s1 | handstand_skill | Verticale dinamica |
 | p0s2 | handstand_hold | Tenuta verticale |
+| p0s3 | handstand_extra | Verticale supplementare (opzionale) |
 | p1s1 | tirata_verticale | Tirata verticale |
 | p1s2 | gambe_anteriore | Gambe anteriore |
 | p2s1 | spinta_orizzontale | Spinta orizzontale |

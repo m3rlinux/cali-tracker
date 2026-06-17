@@ -23,6 +23,25 @@
       "Handstand"
     ]
   },
+  "handstand_extra": {
+    "label": "Extra handstand",
+    "variants": [
+      "Pike shrug",
+      "Box pike shrug",
+      "Box pike shoulder tap",
+      "Wall walk",
+      "Wall shrug",
+      "Wall press to HS (straddle)",
+      "Press to HS (straddle)",
+      "Pike hold",
+      "Box pike hold",
+      "Wall pike hold",
+      "Chest-to-wall hold",
+      "Wall one-leg alternating",
+      "Wall handstand",
+      "Handstand"
+    ]
+  },
   "tirata_verticale": {
     "label": "Vertical pull",
     "variants": [
