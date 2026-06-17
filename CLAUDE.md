@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.8.0
+- **Versione corrente:** 3.9.0
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
@@ -71,6 +71,7 @@ Ogni gruppo esercizi ha:
 - Se l'utente ha già usato la variante proposta per una station (ricerca a ritroso su **tutto lo storico**, `findLastDataForVariant`), i suoi dati prevalgono con **merge per indice dei set**: valore storico dove presente, target del WOD a riempire set vuoti o mancanti; i set dello storico non vengono mai tagliati (lunghezza = max). `hold_max` e difficoltà sempre dell'utente (il WOD riempie `hold_max` solo se assente). La nuova sessione normale invece pre-carica solo l'ultima salvata
 - `set_time` personalizza il tempo per set mostrato nell'header del pair (default 30"); viene salvato con la sessione ed ereditato dai draft successivi
 - `rest` (secondi): tempo di recupero mostrato nell'header del pair accanto al tempo di lavoro; opzionale, mostrato solo se presente. Salvato/ereditato come `set_time`
+- `change_time` (secondi) + `mode` (`"alternato"` | `"sequenziale"`): metodo di esecuzione della coppia (`pairTimingHTML`). `alternato` = S1 lavoro › cambio › S2 lavoro › rest per N giri (sequenza a chip colorati, richiede 2 station); `sequenziale`/assente = N set di S1 poi N di S2 (riga compatta, comportamento storico). I tempi non sono timer attivi, solo indicazioni in header; l'input dei set è identico nei due metodi
 - Per cambiare l'allenamento del giorno: modificare wod.json e push (network-first, arriva subito a tutti)
 - Le sessioni caricate da ★ Oggi si salvano con flag `wod: true`: appaiono nello storico col badge ★ WOD ma sono **escluse** da grafici progressi, delta, pre-compilazione (`getPrevSession`, `getLastSavedSession`, `findLastDataForVariant`) — pensato per i de-load. La numerazione resta unica. Il pulsante ★ nello storico (`toggleWodFlag`) converte WOD ↔ normale con conferma
 
