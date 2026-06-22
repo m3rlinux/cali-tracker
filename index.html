@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.16.0
+  Cali Tracker v3.17.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -122,9 +122,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .pair-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-left: auto; }
 .mode-tag { font-size: 9px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--amber); border: 1px solid var(--amber); border-radius: 5px; padding: 1px 5px; }
 .cycle { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 0 0 12px; }
-.cycle-blocks { display: flex; flex-direction: column; gap: 8px; margin: 0 0 12px; }
-.cycle-blocks .cycle { margin: 0; }
-.timing-line { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.chip-row { margin: 0 0 6px; }
 .cycle-rounds { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-right: 2px; }
 .cycle-chip { font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 6px; white-space: nowrap; }
 .cycle-arrow { color: var(--muted2); font-size: 11px; }
@@ -312,7 +310,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.16.0</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.17.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -422,7 +420,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.16.0';
+const VERSION = '3.17.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -1383,58 +1381,18 @@ function setDifficulty(stationKey, level, btn) {
 }
 
 // ── PAIR STEP RENDER ──
+// Ogni sotto-blocco ha la sua riga-chip subito sopra le card a cui si riferisce:
+//  - superset (esercizi collegati da 'alternato', anche 3): UNA riga chip
+//    (×N giri · S1 lavoro › cambio › S2 lavoro › rest) sopra il gruppo di card
+//  - esercizio 'a blocchi' (sequenziale): la sua riga chip dedicata sopra la card
+// Metodo/tempi dal wod (mode/modes per px = stringa o array N-1; set_time/rest per esercizio).
 function renderPairStep(stepIdx, s, prev) {
   const step = STEPS[stepIdx];
   const color = pairColor(step.px);
   const stations = activeStations(step, s); // esclude le opzionali non presenti
+  const content = document.getElementById('step-content');
+  if (!stations.length) { content.innerHTML = ''; return; }
 
-  const exHTML = stations.map(({stationKey, px}) => {
-    const exData = s[stationKey] || {};
-    const prevExData = prev[stationKey] || {};
-    const effectiveVariant = exData.variant || prevExData.variant || '';
-    const metric = getMetric(stationKey, effectiveVariant);
-    const varHTML = variantSelectHTML(stationKey, exData.variant || '', prevExData.variant || '', px);
-    // Righe set guidate dai dati (WOD/storico), con default per station
-    const numSets = numSetsFor(stationKey, exData);
-    const setsHTML = metric === 'time'
-      ? timeSetsHTML(stationKey, exData, prevExData, numSets, px)
-      : repsSetsHTML(stationKey, exData, prevExData, numSets);
-
-    return `<div class="ex-block">
-      <div class="ex-head">
-        <div class="ex-color-dot" style="background:${pairColor(px)}"></div>
-        <div class="ex-name">${getGroupLabel(stationKey)}</div>
-      </div>
-      ${varHTML}
-      ${setsHTML}
-    </div>`;
-  }).join('');
-
-  const counts = stations.map(({stationKey}) => numSetsFor(stationKey, s[stationKey] || {}));
-  const minSets = Math.min(...counts), maxSets = Math.max(...counts);
-  const setsLabel = minSets === maxSets ? `${minSets}` : `${minSets}–${maxSets}`;
-  const { subHTML, cycleHTML } = pairTimingHTML(step, s, color, setsLabel);
-
-  document.getElementById('step-content').innerHTML = `
-    <div class="pair-header">
-      <div class="pair-dot" style="background:${color}"></div>
-      <div class="pair-title" style="color:${color}">${step.px.toUpperCase()}</div>
-      <div class="pair-sub">${subHTML}</div>
-    </div>
-    ${cycleHTML}
-    ${exHTML}
-  `;
-}
-
-// Header tempi della coppia. Dal wod:
-//  - mode/modes per px: stringa ('alternato'|'sequenziale') o array di N-1 valori
-//    (uno per giunzione tra esercizi consecutivi) → metodo misto possibile
-//  - set_time/rest per esercizio (override dei globali della sessione)
-// Gli esercizi collegati da 'alternato' formano un superset (sequenza a chip);
-// 'sequenziale' separa in sotto-blocchi. I tempi non sono timer attivi.
-function pairTimingHTML(step, s, color, setsLabel) {
-  const stations = activeStations(step, s);
-  if (!stations.length) return { subHTML: '', cycleHTML: '' };
   const gSet = (typeof s.set_time === 'number' && s.set_time > 0) ? s.set_time : 30;
   const gRest = (typeof s.rest === 'number' && s.rest > 0) ? s.rest : null;
   const change = (typeof s.change_time === 'number' && s.change_time > 0) ? s.change_time : null;
@@ -1443,53 +1401,75 @@ function pairTimingHTML(step, s, color, setsLabel) {
   const stRest = (k) => { const e = s[k]; return (e && typeof e.rest === 'number' && e.rest > 0) ? e.rest : gRest; };
   const stCount = (k) => numSetsFor(k, s[k] || {});
 
-  // Modi di transizione (N-1): array per giunzione, oppure stringa per tutto il blocco
+  // Modi di transizione (N-1) e sotto-blocchi (run collegati da 'alternato')
   const raw = (s.modes && s.modes[step.px] != null) ? s.modes[step.px] : s.mode;
   const links = [];
-  for (let i = 0; i < stations.length - 1; i++) {
-    links.push(Array.isArray(raw) ? (raw[i] || 'sequenziale') : (raw || 'sequenziale'));
-  }
-  const hasAlt = links.includes('alternato');
-
-  // Caso semplice: tutto sequenziale e tempi uniformi → riga compatta (look storico)
-  const sets = stations.map(st => stSet(st.stationKey));
-  const rests = stations.map(st => stRest(st.stationKey));
-  const uniform = sets.every(v => v === sets[0]) && rests.every(v => v === rests[0]);
-  if (!hasAlt && uniform) {
-    const restPart = rests[0] ? ` · ${rests[0]}" rest` : '';
-    const tag = (s.mode || s.modes) ? ` <span class="mode-tag">a blocchi</span>` : '';
-    return { subHTML: `${setsLabel} set · ${sets[0]}" lavoro${restPart}${tag}`, cycleHTML: '' };
-  }
-
-  // Sotto-blocchi: run di station collegate da 'alternato'
+  for (let i = 0; i < stations.length - 1; i++) links.push(Array.isArray(raw) ? (raw[i] || 'sequenziale') : (raw || 'sequenziale'));
   const blocks = [];
   let cur = [0];
-  for (let i = 1; i < stations.length; i++) {
-    if (links[i-1] === 'alternato') cur.push(i); else { blocks.push(cur); cur = [i]; }
-  }
+  for (let i = 1; i < stations.length; i++) { if (links[i-1] === 'alternato') cur.push(i); else { blocks.push(cur); cur = [i]; } }
   blocks.push(cur);
 
+  const workChip = (lbl, t) => `<span class="cycle-chip" style="background:${color};color:#0c0c0c">${lbl} ${t}"</span>`;
+  const restChip = (t) => `<span class="cycle-chip" style="background:var(--teal);color:#0c0c0c">rest ${t ?? '—'}"</span>`;
+  const swChip = `<span class="cycle-chip" style="background:var(--amber);color:#0c0c0c">cambio ${change ?? '—'}"</span>`;
   const arrow = `<span class="cycle-arrow">›</span>`;
-  const rows = blocks.map(block => {
-    if (block.length > 1) {
+
+  function chipRow(block) {
+    if (block.length > 1) { // superset
       const rounds = Math.max(...block.map(i => stCount(stations[i].stationKey)));
-      const lastRest = stRest(stations[block[block.length-1]].stationKey);
       const seq = [];
       block.forEach((i, j) => {
         const k = stations[i].stationKey;
-        seq.push(`<span class="cycle-chip" style="background:${color};color:#0c0c0c">${sLabel(k)} ${stSet(k)}"</span>`);
-        if (j < block.length - 1) seq.push(`<span class="cycle-chip" style="background:var(--amber);color:#0c0c0c">cambio ${change ?? '—'}"</span>`);
+        seq.push(workChip(sLabel(k), stSet(k)));
+        if (j < block.length - 1) seq.push(swChip);
       });
-      seq.push(`<span class="cycle-chip" style="background:var(--teal);color:#0c0c0c">rest ${lastRest ?? '—'}"</span>`);
-      return `<div class="cycle"><span class="cycle-rounds">×${rounds} giri</span>${seq.join(arrow)}</div>`;
+      seq.push(restChip(stRest(stations[block[block.length-1]].stationKey)));
+      return `<div class="cycle chip-row"><span class="cycle-rounds">×${rounds} giri</span>${seq.join(arrow)}</div>`;
     }
     const k = stations[block[0]].stationKey;
     const r = stRest(k);
-    return `<div class="timing-line"><span class="cycle-rounds">${sLabel(k)} · ${stCount(k)} set</span> ${stSet(k)}" lavoro${r ? ` · ${r}" rest` : ''}</div>`;
-  }).join('');
+    return `<div class="cycle chip-row"><span class="cycle-rounds">×${stCount(k)} set</span>${workChip('lavoro', stSet(k))}${r ? arrow + restChip(r) : ''}</div>`;
+  }
 
-  const tag = links.length && links.every(l => l === 'alternato') ? 'alternato' : (hasAlt ? 'misto' : 'a blocchi');
-  return { subHTML: `<span class="mode-tag">${tag}</span>`, cycleHTML: `<div class="cycle-blocks">${rows}</div>` };
+  function cardHTML({stationKey, px}) {
+    const exData = s[stationKey] || {};
+    const prevExData = prev[stationKey] || {};
+    const effectiveVariant = exData.variant || prevExData.variant || '';
+    const metric = getMetric(stationKey, effectiveVariant);
+    const varHTML = variantSelectHTML(stationKey, exData.variant || '', prevExData.variant || '', px);
+    const numSets = numSetsFor(stationKey, exData);
+    const setsHTML = metric === 'time'
+      ? timeSetsHTML(stationKey, exData, prevExData, numSets, px)
+      : repsSetsHTML(stationKey, exData, prevExData, numSets);
+    return `<div class="ex-block">
+      <div class="ex-head">
+        <div class="ex-color-dot" style="background:${pairColor(px)}"></div>
+        <div class="ex-name">${getGroupLabel(stationKey)}</div>
+      </div>
+      ${varHTML}
+      ${setsHTML}
+    </div>`;
+  }
+
+  let body = '';
+  blocks.forEach(block => {
+    body += chipRow(block);
+    block.forEach(i => body += cardHTML(stations[i]));
+  });
+
+  const tag = (s.mode || s.modes)
+    ? `<span class="mode-tag">${links.length && links.every(l => l === 'alternato') ? 'alternato' : (links.includes('alternato') ? 'misto' : 'a blocchi')}</span>`
+    : '';
+
+  content.innerHTML = `
+    <div class="pair-header">
+      <div class="pair-dot" style="background:${color}"></div>
+      <div class="pair-title" style="color:${color}">${step.px.toUpperCase()}</div>
+      <div class="pair-sub">${tag}</div>
+    </div>
+    ${body}
+  `;
 }
 
 // Aggiunge una riga set alla station (fino a MAX_SETS), preservando i valori inseriti

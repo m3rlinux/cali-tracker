@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.16.0
+- **Versione corrente:** 3.17.0
 
 ### Stazioni opzionali
 - Un gruppo in exercises.json con `"optional": true` (es. `handstand_s3`, station `p0s3`) compare in una coppia **solo se la sessione/wod lo contiene** (`isOptionalStation` / `stationActive` / `activeStations`); filtrato in `renderPairStep`, `pairTimingHTML`, `collectStep`. Le sessioni WOD sono escluse dall'ereditarietà, quindi p0s3 di fatto appare solo via wod
@@ -77,8 +77,9 @@ Ogni gruppo esercizi ha:
 - `set_time` personalizza il tempo per set mostrato nell'header del pair (default 30"); viene salvato con la sessione ed ereditato dai draft successivi
 - `rest` (secondi): tempo di recupero mostrato nell'header del pair accanto al tempo di lavoro; opzionale, mostrato solo se presente. Salvato/ereditato come `set_time`
 - `change_time` (secondi) + `mode` (`"alternato"` | `"sequenziale"`): metodo di esecuzione della coppia (`pairTimingHTML`). `alternato` = S1 lavoro › cambio › S2 lavoro › rest per N giri (sequenza a chip colorati, richiede 2 station); `sequenziale`/assente = N set di S1 poi N di S2 (riga compatta, comportamento storico). I tempi non sono timer attivi, solo indicazioni in header; l'input dei set è identico nei due metodi
-- `modes` (oggetto keyed by px): override del metodo per zona. Valore = **stringa** (`"alternato"`/`"sequenziale"`, tutto il blocco) **o array** di N-1 valori (uno per giunzione tra esercizi consecutivi → metodo **misto**, es. `{"p0":["alternato","sequenziale"]}`). `pairTimingHTML` costruisce sotto-blocchi: i run collegati da `alternato` sono superset (chip cycle), `sequenziale` separa
-- **Tempi per esercizio**: una stazione del wod può avere `set_time`/`rest` propri (override dei globali); mostrati nei chip/righe dei sotto-blocchi. Caso semplice (tutto sequenziale + tempi uniformi) → riga compatta storica; altrimenti vista a sotto-blocchi (`.cycle-blocks`)
+- `modes` (oggetto keyed by px): override del metodo per zona. Valore = **stringa** (`"alternato"`/`"sequenziale"`, tutto il blocco) **o array** di N-1 valori (uno per giunzione tra esercizi consecutivi → metodo **misto**, es. `{"p0":["alternato","sequenziale"]}`)
+- **Rendering a sotto-blocchi interlacciati** (`renderPairStep`): ogni sotto-blocco ha la sua **riga-chip** (`.chip-row`, sempre chip colorati) subito sopra le card a cui si riferisce. Superset (run collegati da `alternato`, anche 3) = UNA riga `×N giri · S1 › cambio › S2 › rest`; esercizio sequenziale = riga dedicata `×N set · lavoro › rest` sopra la sua card. Niente più riga compatta unica in cima
+- **Tempi per esercizio**: una stazione del wod può avere `set_time`/`rest` propri (override dei globali), mostrati nella riga-chip del rispettivo blocco
 - **wod.example.jsonc**: file di documentazione (NON caricato dall'app, JSON non ammette commenti) con tutti i parametri obbligatori/opzionali annotati; `wod.json` resta il file reale
 - **Numero set di P0 (e di ogni station) dal wod**: con `force_num_sets` il conteggio righe segue i `sets` del wod (S3 su P0 appare solo se p0s1 ha 3 elementi). Default sessione nuova: p0s1 = 2, resto = 3 (`DEFAULT_SETS_BY_STATION`)
 - Per cambiare l'allenamento del giorno: modificare wod.json e push (network-first, arriva subito a tutti)
