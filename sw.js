@@ -4,14 +4,19 @@
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
 */
-const CACHE_VERSION = '3.11.0'; // Update this to invalidate old caches
+const CACHE_VERSION = '3.12.0'; // Update this to invalidate old caches
 const CACHE_NAME = `cali-tracker-${CACHE_VERSION}`;
 const ASSETS = [
   './',
   './index.html',
   './exercises.json',
   './exercises.en.json',
-  './wod.json'
+  './wod.json',
+  './manifest.webmanifest',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/icon-maskable-512.png',
+  './icons/apple-touch-icon.png'
 ];
 
 // Install: cache all assets
