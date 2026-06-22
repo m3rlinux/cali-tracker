@@ -1,8 +1,9 @@
 {
   "name": "Cali Tracker",
-  "short_name": "Cali",
+  "short_name": "Cali Tracker",
   "description": "Tracker di allenamento calisthenics: sessioni, storico e progressi.",
   "lang": "it",
+  "id": "./index.html",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
