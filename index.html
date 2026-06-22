@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.14.0
+  Cali Tracker v3.15.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -309,7 +309,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.14.0</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.15.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -419,7 +419,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.14.0';
+const VERSION = '3.15.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -661,6 +661,7 @@ function buildSteps() {
   const groups = {}; // { p0: [{stationKey:'p0s1', group}, ...], p1: [...], ... }
   Object.entries(EXERCISES).forEach(([groupKey, group]) => {
     const st = group.station; // e.g. "p0s1"
+    if (!st) return; // gruppi "pool" (solo varianti, senza station) non sono step
     const m = st.match(/^(p\d+)(s\d+)$/);
     if (!m) return;
     const [, px, sy] = m;
@@ -680,27 +681,31 @@ function getGroupEntry(stationKey) {
   return Object.entries(EXERCISES).find(([, g]) => g.station === stationKey) || [null, null];
 }
 
-// Risolve varianti/metriche/traduzioni effettive di una station. Un gruppo con
-// "variants_from": ["p0s1","p0s2"] eredita le liste unendo le station sorgente
-// (IT, EN e metriche), senza duplicare i dati in exercises.json.
-function resolveStation(stationKey) {
-  const [groupKey, group] = getGroupEntry(stationKey);
-  if (!group) return { variants: [], metrics: {}, enVariants: [] };
-  if (Array.isArray(group.variants_from)) {
+// Risolve varianti/metriche/traduzioni effettive di un gruppo. Con
+// "variants_from": ["handstand_skill","handstand_hold"] eredita le liste unendo
+// i gruppi sorgente (IT, EN e metriche). I ref sono chiavi di gruppo (pool) o
+// station key. Nessuna duplicazione né drift.
+function resolveGroupKey(gk) {
+  const sg = EXERCISES[gk];
+  if (!sg) return { variants: [], metrics: {}, enVariants: [] };
+  if (Array.isArray(sg.variants_from)) {
     const variants = [], enVariants = [];
     let metrics = {};
-    group.variants_from.forEach(src => {
-      const [sgk, sg] = getGroupEntry(src);
-      if (!sg) return;
-      const eg = LANG_EXERCISES?.[sgk];
-      const r = sg.variants_from ? resolveStation(src) : { variants: sg.variants || [], metrics: sg.metrics || {}, enVariants: eg?.variants || [] };
+    sg.variants_from.forEach(ref => {
+      const refKey = EXERCISES[ref] ? ref : getGroupEntry(ref)[0];
+      if (!refKey) return;
+      const r = resolveGroupKey(refKey);
       r.variants.forEach((v, i) => { variants.push(v); enVariants.push(r.enVariants[i] || v); });
       metrics = { ...metrics, ...r.metrics };
     });
     return { variants, metrics, enVariants };
   }
-  const eg = LANG_EXERCISES?.[groupKey];
-  return { variants: group.variants || [], metrics: group.metrics || {}, enVariants: eg?.variants || [] };
+  const eg = LANG_EXERCISES?.[gk];
+  return { variants: sg.variants || [], metrics: sg.metrics || {}, enVariants: eg?.variants || [] };
+}
+function resolveStation(stationKey) {
+  const [groupKey] = getGroupEntry(stationKey);
+  return groupKey ? resolveGroupKey(groupKey) : { variants: [], metrics: {}, enVariants: [] };
 }
 
 function getMetric(stationKey, variant) {

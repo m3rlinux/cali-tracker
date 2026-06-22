@@ -6,11 +6,12 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.14.0
+- **Versione corrente:** 3.15.0
 
 ### Stazioni opzionali
-- Un gruppo in exercises.json con `"optional": true` (es. `handstand_extra`, station `p0s3`) compare in una coppia **solo se la sessione/wod lo contiene** (`isOptionalStation` / `stationActive` / `activeStations`); filtrato in `renderPairStep`, `pairTimingHTML`, `collectStep`. Le sessioni WOD sono escluse dall'ereditarietà, quindi p0s3 di fatto appare solo via wod
-- **Gruppi virtuali `variants_from`**: un gruppo può dichiarare `"variants_from": ["p0s1","p0s2"]` invece di `variants`/`metrics`; `resolveStation()` unisce a runtime varianti, metriche e traduzioni EN delle station sorgente (nessuna duplicazione né drift). Tutti gli helper (`getVariants`/`getMetric`/`getGroupVariants`/`tVariant`) passano da `resolveStation`. `handstand_extra` (p0s3, opzionale) = unione di p0s1 + p0s2; in exercises.en.json basta la sola `label`
+- Un gruppo in exercises.json con `"optional": true` (es. `handstand_s3`, station `p0s3`) compare in una coppia **solo se la sessione/wod lo contiene** (`isOptionalStation` / `stationActive` / `activeStations`); filtrato in `renderPairStep`, `pairTimingHTML`, `collectStep`. Le sessioni WOD sono escluse dall'ereditarietà, quindi p0s3 di fatto appare solo via wod
+- **Gruppi `pool` + `variants_from`**: un gruppo "pool" ha `variants`/`metrics` ma **nessuna `station`** (es. `handstand_skill`, `handstand_hold`); non genera step (`buildSteps` lo salta). Un gruppo-stazione può dichiarare `"variants_from": ["handstand_skill","handstand_hold"]` (chiavi di gruppo o station key) e `resolveGroupKey()`/`resolveStation()` uniscono a runtime varianti, metriche e traduzioni EN (nessuna duplicazione né drift). Tutti gli helper (`getVariants`/`getMetric`/`getGroupVariants`/`tVariant`) passano dal resolver
+- **P0 = 3 slot intercambiabili**: `handstand_s1`/`s2`/`s3` (station p0s1/p0s2/p0s3, l'ultima opzionale) ereditano tutte lo stesso pool (skill + hold) → ogni slot può essere qualsiasi esercizio di verticale; la metrica (reps/time) dipende dalla variante scelta. In exercises.en.json questi gruppi hanno solo `label`
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
@@ -91,9 +92,10 @@ In v3.0.0 tutte le varianti sono state tradotte in italiano (flag `cali_variants
 ### Gruppi attuali
 | station | gruppo | label |
 |---------|--------|-------|
-| p0s1 | handstand_skill | Verticale dinamica |
-| p0s2 | handstand_hold | Tenuta verticale |
-| p0s3 | handstand_extra | Verticale supplementare (opzionale) |
+| p0s1 | handstand_s1 | Verticale 1 |
+| p0s2 | handstand_s2 | Verticale 2 |
+| p0s3 | handstand_s3 | Verticale 3 (opzionale) |
+| — | handstand_skill / handstand_hold | pool varianti (skill / hold), senza station |
 | p1s1 | tirata_verticale | Tirata verticale |
 | p1s2 | gambe_anteriore | Gambe anteriore |
 | p2s1 | spinta_orizzontale | Spinta orizzontale |

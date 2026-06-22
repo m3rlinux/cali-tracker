@@ -24,8 +24,14 @@
       "Handstand"
     ]
   },
-  "handstand_extra": {
-    "label": "Extra handstand"
+  "handstand_s1": {
+    "label": "Handstand 1"
+  },
+  "handstand_s2": {
+    "label": "Handstand 2"
+  },
+  "handstand_s3": {
+    "label": "Handstand 3"
   },
   "tirata_verticale": {
     "label": "Vertical pull",

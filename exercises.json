@@ -1,7 +1,6 @@
 {
   "handstand_skill": {
     "label": "Verticale dinamica",
-    "station": "p0s1",
     "variants": [
       "Scrollata in pike",
       "Scrollata in pike su box",
@@ -15,7 +14,6 @@
   },
   "handstand_hold": {
     "label": "Tenuta verticale",
-    "station": "p0s2",
     "variants": [
       "Tenuta in pike",
       "Tenuta in pike su box",
@@ -35,11 +33,21 @@
       "Verticale": "time"
     }
   },
-  "handstand_extra": {
-    "label": "Verticale supplementare",
+  "handstand_s1": {
+    "label": "Verticale 1",
+    "station": "p0s1",
+    "variants_from": ["handstand_skill", "handstand_hold"]
+  },
+  "handstand_s2": {
+    "label": "Verticale 2",
+    "station": "p0s2",
+    "variants_from": ["handstand_skill", "handstand_hold"]
+  },
+  "handstand_s3": {
+    "label": "Verticale 3",
     "station": "p0s3",
     "optional": true,
-    "variants_from": ["p0s1", "p0s2"]
+    "variants_from": ["handstand_skill", "handstand_hold"]
   },
   "tirata_verticale": {
     "label": "Tirata verticale",
