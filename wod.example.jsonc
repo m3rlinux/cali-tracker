@@ -1,0 +1,70 @@
+// ─────────────────────────────────────────────────────────────────────────────
+//  Cali Tracker — Sessione del giorno (WOD)  ·  GUIDA ALLA COMPILAZIONE
+//
+//  ATTENZIONE: questo file (.jsonc) è SOLO documentazione, l'app NON lo carica.
+//  Il file vero è "wod.json" e NON può contenere commenti (è JSON puro).
+//  Compila wod.json copiando da qui, senza i commenti //.
+//
+//  Dopo aver modificato wod.json, fai push: viene servito network-first, quindi
+//  arriva subito al prossimo "★ Oggi". Bumpa il suffisso di CACHE_VERSION in sw.js
+//  solo se vuoi rinnovare anche la cache offline.
+// ─────────────────────────────────────────────────────────────────────────────
+{
+  // ── PARAMETRI GLOBALI (validi per tutte le coppie, salvo override) ──
+
+  "set_time": 30,        // OBBLIGATORIO consigliato. Secondi di lavoro per set (default 30 se assente)
+  "rest": 60,            // opzionale. Secondi di recupero tra i set/giri (se assente non viene mostrato)
+  "change_time": 30,     // opzionale. Secondi di "cambio" tra due esercizi alternati (superset)
+
+  // Metodo di esecuzione di DEFAULT per tutte le coppie:
+  //   "sequenziale" = N set di S1, poi N set di S2 (a blocchi)
+  //   "alternato"   = S1 lavoro › cambio › S2 lavoro › rest, ripetuto per N giri (superset)
+  "mode": "alternato",   // opzionale (default "sequenziale" se assente)
+
+  // Override del metodo PER ZONA (per px). Indipendente dal default "mode".
+  // Il valore può essere:
+  //   - una STRINGA: "alternato" | "sequenziale" → vale per tutto il blocco
+  //   - un ARRAY di N-1 valori (uno per ogni giunzione tra esercizi consecutivi)
+  //     → permette metodi MISTI in un blocco a 3+ esercizi
+  // Esempi per P0 con 3 stazioni (p0s1, p0s2, p0s3):
+  //   "p0": ["alternato", "sequenziale"]  → S1↔S2 alternato, poi S3 a blocchi
+  //   "p0": ["sequenziale", "alternato"]  → S1 a blocchi, poi S2↔S3 alternato
+  //   "p0": "sequenziale"                 → tutti e 3 a blocchi
+  "modes": { "p0": ["alternato", "sequenziale"] },   // opzionale
+
+  // Come trattare il numero di set e i valori rispetto allo storico dell'utente:
+  "force_num_sets": true,   // opzionale. true = le righe set sono ESATTAMENTE quelle del wod
+                            //            (lo storico non le estende). Assente/false = lo storico estende
+  "force_values": false,    // opzionale. true = i valori pre-compilati sono i target del wod anche
+                            //            dove c'è storico (hold_max e difficoltà restano dell'utente)
+
+  // ── STAZIONI ──
+  // Chiave = stationKey (pXsY). Devono esistere in exercises.json.
+  // P0 = blocco verticale (3 slot intercambiabili, p0s3 opzionale).
+  // P1..P4 = circuito (coppie s1/s2).
+  "stations": {
+
+    // Oggetto stazione — campi:
+    //   "variant"   OBBLIGATORIO (se vuoi pre-selezionare). Nome canonico ITALIANO
+    //               presente nelle varianti di quella station (vedi exercises.json)
+    //   "sets"      OBBLIGATORIO. Array di set. Reps: [reps, cluster] (cluster di solito null).
+    //               Isometrie (time): [secondi, null]. Il numero di elementi = righe set mostrate
+    //   "hold_max"  opzionale, SOLO isometrie. PR di tenuta (secondi); l'app calcola il target 65%
+    //   "set_time"  opzionale. Override del tempo di lavoro SOLO per questo esercizio
+    //   "rest"      opzionale. Override del recupero SOLO per questo esercizio
+
+    "p0s1": { "variant": "Tocco spalla in pike su box", "set_time": 25, "rest": 45, "sets": [[8, null], [8, null]] },
+    "p0s2": { "variant": "Kick-up al muro",             "set_time": 25, "rest": 45, "sets": [[5, null], [5, null], [5, null]] },
+    // p0s3 è la stazione OPZIONALE: includila solo se serve il terzo esercizio di verticale
+    "p0s3": { "variant": "Verticale al muro", "hold_max": 20, "sets": [[15, null], [15, null], [15, null]] },
+
+    "p1s1": { "variant": "Trazione scapolare",        "sets": [[10, null], [10, null], [10, null]] },
+    "p1s2": { "variant": "Shrimp squat assistito",    "sets": [[6, null], [6, null], [6, null]] },
+    "p2s1": { "variant": "Piegamento eccentrico",     "sets": [[6, null], [6, null], [6, null]] },
+    "p2s2": { "variant": "Alzate gambe alle parallette", "sets": [[8, null], [8, null], [8, null]] },
+    "p3s1": { "variant": "Rematore inclinato",        "sets": [[8, null], [8, null], [8, null]] },
+    "p3s2": { "variant": "Ponte glutei con una gamba", "sets": [[6, null], [6, null], [6, null]] },
+    "p4s1": { "variant": "Tenuta in appoggio",        "sets": [[10, null], [10, null], [10, null]] },
+    "p4s2": { "variant": "Swing con kettlebell",      "sets": [[12, null], [12, null], [12, null]] }
+  }
+}
