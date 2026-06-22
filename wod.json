@@ -8,8 +8,8 @@
   "force_values": false,
   "stations": {
     "p0s1": { "variant": "Tocco spalla in pike su box", "sets": [[8, null], [8, null]] },
-    "p0s2": { "variant": "Tenuta in pike al muro", "hold_max": 30, "sets": [[20, null], [20, null], [20, null]] },
-    "p0s3": { "variant": "Verticale al muro", "hold_max": 20, "sets": [[15, null], [15, null]] },
+    "p0s2": { "variant": "Kick-up al muro", "sets": [[5, null], [5, null], [5, null]] },
+    "p0s3": { "variant": "Verticale al muro", "hold_max": 20, "sets": [[15, null], [15, null], [15, null]] },
     "p1s1": { "variant": "Trazione scapolare", "sets": [[10, null], [10, null], [10, null]] },
     "p1s2": { "variant": "Shrimp squat assistito", "sets": [[6, null], [6, null], [6, null]] },
     "p2s1": { "variant": "Piegamento eccentrico", "sets": [[6, null], [6, null], [6, null]] },

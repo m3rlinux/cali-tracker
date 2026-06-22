@@ -6,11 +6,11 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.11.0
+- **Versione corrente:** 3.14.0
 
 ### Stazioni opzionali
 - Un gruppo in exercises.json con `"optional": true` (es. `handstand_extra`, station `p0s3`) compare in una coppia **solo se la sessione/wod lo contiene** (`isOptionalStation` / `stationActive` / `activeStations`); filtrato in `renderPairStep`, `pairTimingHTML`, `collectStep`. Le sessioni WOD sono escluse dall'ereditarietà, quindi p0s3 di fatto appare solo via wod
-- `handstand_extra` (p0s3) ha varianti = **unione di handstand_skill (p0s1) + handstand_hold (p0s2)**; le 7 isometrie da p0s2 restano `time`. **Se cambi le varianti di p0s1/p0s2, aggiorna p0s3 di conseguenza** (IT + EN, stessa posizione)
+- **Gruppi virtuali `variants_from`**: un gruppo può dichiarare `"variants_from": ["p0s1","p0s2"]` invece di `variants`/`metrics`; `resolveStation()` unisce a runtime varianti, metriche e traduzioni EN delle station sorgente (nessuna duplicazione né drift). Tutti gli helper (`getVariants`/`getMetric`/`getGroupVariants`/`tVariant`) passano da `resolveStation`. `handstand_extra` (p0s3, opzionale) = unione di p0s1 + p0s2; in exercises.en.json basta la sola `label`
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)

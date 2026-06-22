@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.13.0
+  Cali Tracker v3.14.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -309,7 +309,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.13.0</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.14.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -419,7 +419,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.13.0';
+const VERSION = '3.14.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -676,25 +676,44 @@ function buildSteps() {
   });
 }
 
-function getMetric(stationKey, variant) {
-  const group = Object.values(EXERCISES).find(g => g.station === stationKey);
-  if (!group) return 'reps';
-  if (variant) return group.metrics?.[variant] || 'reps';
-  // No variant selected: check if ALL variants are time → default to time
-  if (group.metrics && group.variants) {
-    const allTime = group.variants.every(v => group.metrics[v] === 'time');
-    if (allTime) return 'time';
+function getGroupEntry(stationKey) {
+  return Object.entries(EXERCISES).find(([, g]) => g.station === stationKey) || [null, null];
+}
+
+// Risolve varianti/metriche/traduzioni effettive di una station. Un gruppo con
+// "variants_from": ["p0s1","p0s2"] eredita le liste unendo le station sorgente
+// (IT, EN e metriche), senza duplicare i dati in exercises.json.
+function resolveStation(stationKey) {
+  const [groupKey, group] = getGroupEntry(stationKey);
+  if (!group) return { variants: [], metrics: {}, enVariants: [] };
+  if (Array.isArray(group.variants_from)) {
+    const variants = [], enVariants = [];
+    let metrics = {};
+    group.variants_from.forEach(src => {
+      const [sgk, sg] = getGroupEntry(src);
+      if (!sg) return;
+      const eg = LANG_EXERCISES?.[sgk];
+      const r = sg.variants_from ? resolveStation(src) : { variants: sg.variants || [], metrics: sg.metrics || {}, enVariants: eg?.variants || [] };
+      r.variants.forEach((v, i) => { variants.push(v); enVariants.push(r.enVariants[i] || v); });
+      metrics = { ...metrics, ...r.metrics };
+    });
+    return { variants, metrics, enVariants };
   }
+  const eg = LANG_EXERCISES?.[groupKey];
+  return { variants: group.variants || [], metrics: group.metrics || {}, enVariants: eg?.variants || [] };
+}
+
+function getMetric(stationKey, variant) {
+  const { variants, metrics } = resolveStation(stationKey);
+  if (!variants.length) return 'reps';
+  if (variant) return metrics[variant] || 'reps';
+  // Nessuna variante scelta: se TUTTE sono a tempo → default time
+  if (variants.every(v => metrics[v] === 'time')) return 'time';
   return 'reps';
 }
 
 function getVariants(stationKey) {
-  const group = Object.values(EXERCISES).find(g => g.station === stationKey);
-  return group?.variants || [];
-}
-
-function getGroupEntry(stationKey) {
-  return Object.entries(EXERCISES).find(([, g]) => g.station === stationKey) || [null, null];
+  return resolveStation(stationKey).variants;
 }
 
 // Stazioni opzionali (gruppo con "optional": true in exercises.json): compaiono
@@ -719,16 +738,14 @@ function getGroupLabel(stationKey) {
 // Traduce un nome variante (canonico/italiano) nella lingua attiva, per posizione
 function tVariant(stationKey, variant) {
   if (!variant || !LANG_EXERCISES) return variant;
-  const [groupKey, group] = getGroupEntry(stationKey);
-  if (!group?.variants) return variant;
-  const idx = group.variants.indexOf(variant);
+  const { variants, enVariants } = resolveStation(stationKey);
+  const idx = variants.indexOf(variant);
   if (idx === -1) return variant;
-  return LANG_EXERCISES[groupKey]?.variants?.[idx] || variant;
+  return enVariants[idx] || variant;
 }
 
 function getGroupVariants(stationKey) {
-  const group = Object.values(EXERCISES).find(g => g.station === stationKey);
-  return group?.variants || [];
+  return resolveStation(stationKey).variants;
 }
 
 // ── LOAD EXERCISES ──
@@ -1413,7 +1430,7 @@ function pairTimingHTML(step, s, color, setsLabel) {
   if (alternato) {
     const work = (lbl) => `<span class="cycle-chip" style="background:${color};color:#0c0c0c">${lbl} ${setTime}"</span>`;
     const sw = `<span class="cycle-chip" style="background:var(--amber);color:#0c0c0c">cambio ${change ?? '—'}"</span>`;
-    const rst = `<span class="cycle-chip" style="background:var(--surface2);color:var(--muted)">rest ${rest ?? '—'}"</span>`;
+    const rst = `<span class="cycle-chip" style="background:var(--teal);color:#0c0c0c">rest ${rest ?? '—'}"</span>`;
     const arrow = `<span class="cycle-arrow">›</span>`;
     const seq = [];
     stations.forEach((st, i) => {
