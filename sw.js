@@ -4,7 +4,7 @@
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
 */
-const CACHE_VERSION = '3.18.1-a'; // Update this to invalidate old caches
+const CACHE_VERSION = '3.18.2'; // Update this to invalidate old caches
 const CACHE_NAME = `cali-tracker-${CACHE_VERSION}`;
 const ASSETS = [
   './',
@@ -53,8 +53,11 @@ self.addEventListener('fetch', e => {
   // manifest, così cambi a nome/icone vengono letti subito dal browser
   // (l'auto-update PWA non parte se il manifest è servito stantio dalla cache)
   if (url.pathname.endsWith('.json') || url.pathname.endsWith('.webmanifest')) {
+    // cache: 'reload' bypassa la cache HTTP del browser (GitHub Pages serve i
+    // file con max-age=600): senza, il wod/exercises aggiornati arriverebbero
+    // solo dopo ~10 min. Così ★ Oggi prende sempre il file fresco dalla rete.
     e.respondWith(
-      fetch(e.request)
+      fetch(e.request, { cache: 'reload' })
         .then(res => {
           const clone = res.clone();
           caches.open(CACHE_NAME).then(c => c.put(e.request, clone));

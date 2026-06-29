@@ -6,7 +6,8 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.18.0
+- **Versione corrente:** 3.18.2
+- **SW fetch JSON/manifest**: network-first con `fetch(req, {cache:'reload'})` per bypassare la cache HTTP del browser (GitHub Pages serve con `max-age=600`); senza, wod/exercises aggiornati arriverebbero solo dopo ~10 min. Con il fix `★ Oggi` prende sempre il wod fresco (vale dai dispositivi con SW ≥ 3.18.2)
 
 ### Stazioni opzionali
 - Un gruppo in exercises.json con `"optional": true` (es. `handstand_s3`, station `p0s3`) compare in una coppia **solo se la sessione/wod lo contiene** (`isOptionalStation` / `stationActive` / `activeStations`); filtrato in `renderPairStep`, `pairTimingHTML`, `collectStep`. Le sessioni WOD sono escluse dall'ereditarietà, quindi p0s3 di fatto appare solo via wod
