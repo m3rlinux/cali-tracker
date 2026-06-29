@@ -8,8 +8,10 @@
       "Camminata al muro",
       "Scrollata al muro",
       "Kick-up al muro",
+      "Negativa di press (eccentrica)",
       "Press in verticale al muro (straddle)",
-      "Press in verticale (straddle)"
+      "Press in verticale (straddle)",
+      "Press in verticale (pike)"
     ]
   },
   "handstand_hold": {
@@ -56,11 +58,16 @@
       "Sospensione passiva",
       "Trazione scapolare",
       "Sospensione attiva",
+      "Trazione assistita (elastico)",
       "Trazione eccentrica",
       "Trazione",
       "Trazione al petto",
+      "Trazione zavorrata",
+      "Trazione archer",
+      "Trazione esplosiva al petto",
       "Muscle up eccentrico",
-      "Muscle up"
+      "Muscle up",
+      "Muscle up agli anelli"
     ],
     "metrics": {
       "Sospensione passiva": "time",
@@ -72,38 +79,51 @@
     "station": "p1s2",
     "variants": [
       "Squat",
+      "Affondi",
       "Step up",
+      "Cossack squat",
+      "Squat bulgaro",
       "Shrimp squat assistito",
       "Shrimp squat",
       "Pistol squat assistito",
-      "Pistol squat"
+      "Pistol squat",
+      "Pistol squat zavorrato"
     ]
   },
   "spinta_orizzontale": {
     "label": "Spinta orizzontale",
     "station": "p2s1",
     "variants": [
+      "Piegamento al muro",
+      "Piegamento sulle ginocchia",
       "Piegamento inclinato",
       "Piegamento eccentrico",
       "Piegamento",
       "Piegamento piedi su rialzo",
+      "Piegamento esplosivo (battito mani)",
       "Piegamento diamante",
+      "Piegamento archer",
       "Piegamento agli anelli",
-      "Piegamento agli anelli RTO"
+      "Piegamento agli anelli RTO",
+      "Pseudo planche pushup"
     ]
   },
   "core": {
     "label": "Core",
     "station": "p2s2",
     "variants": [
+      "Plank",
       "Dead bug",
       "Hollow",
+      "Ginocchia al petto in sospensione",
       "Alzate gambe alle parallette",
       "L-sit",
       "Dragon flag eccentrico",
       "Dragon flag raccolto",
       "Dragon flag",
+      "Punte alla sbarra",
       "V-sit",
+      "Tergicristallo",
       "Front lever raccolto",
       "Front lever raccolto avanzato",
       "Front lever una gamba",
@@ -114,6 +134,7 @@
       "Front lever tocco sbarra isometrico"
     ],
     "metrics": {
+      "Plank": "time",
       "Dead bug": "time",
       "Hollow": "time",
       "L-sit": "time",
@@ -132,9 +153,15 @@
     "variants": [
       "Rematore inclinato",
       "Rematore",
+      "Rematore agli anelli",
       "Rematore piedi su rialzo",
       "Rematore arciere",
-      "Rematore un braccio"
+      "Rematore un braccio",
+      "Front lever row raccolto",
+      "Front lever row raccolto avanzato",
+      "Front lever row una gamba",
+      "Front lever row straddle",
+      "Front lever row"
     ]
   },
   "gambe_posteriore": {
@@ -142,9 +169,14 @@
     "station": "p3s2",
     "variants": [
       "Ponte glutei",
+      "Ponte glutei piedi su rialzo",
       "Ponte glutei con una gamba",
+      "Stacco rumeno una gamba",
       "Arch hamstring isometrico",
-      "Arch hamstring march"
+      "Arch hamstring march",
+      "Nordic curl assistito",
+      "Nordic curl eccentrico",
+      "Nordic curl"
     ],
     "metrics": {
       "Arch hamstring isometrico": "time"
@@ -166,9 +198,12 @@
       "Dip agli anelli RTO finale",
       "Dip agli anelli RTO",
       "Piegamento in pike",
+      "Piegamento in pike piedi su rialzo",
       "HSPU al muro negativo",
       "HSPU al muro",
-      "HSPU"
+      "HSPU al muro deficit",
+      "HSPU",
+      "HSPU deficit"
     ],
     "metrics": {
       "Tenuta in appoggio assistita": "time",
@@ -181,11 +216,13 @@
     "label": "Catena posteriore",
     "station": "p4s2",
     "variants": [
+      "Iperestensioni a terra",
       "Tenuta superman",
       "Jefferson curl",
       "Swing con kettlebell",
       "Stacchi",
       "German hang",
+      "Skin the cat",
       "Back lever raccolto",
       "Back lever raccolto avanzato",
       "Back lever una gamba",
@@ -195,6 +232,7 @@
     "metrics": {
       "Tenuta superman": "time",
       "German hang": "time",
+      "Skin the cat": "time",
       "Back lever raccolto": "time",
       "Back lever raccolto avanzato": "time",
       "Back lever una gamba": "time",

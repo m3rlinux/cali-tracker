@@ -8,8 +8,10 @@
       "Wall walk",
       "Wall shrug",
       "Wall Kick-up",
+      "Press negative (eccentric)",
       "Wall press to HS (straddle)",
-      "Press to HS (straddle)"
+      "Press to HS (straddle)",
+      "Press to HS (pike)"
     ]
   },
   "handstand_hold": {
@@ -39,47 +41,65 @@
       "Dead hang",
       "Scapular pull up",
       "Active hang",
+      "Band-assisted pull up",
       "Eccentric pull up",
       "Pull up",
       "Chest pull up",
+      "Weighted pull up",
+      "Archer pull up",
+      "Explosive chest pull up",
       "Eccentric muscle up",
-      "Muscle up"
+      "Muscle up",
+      "Ring muscle up"
     ]
   },
   "gambe_anteriore": {
     "label": "Anterior legs",
     "variants": [
       "Squat",
+      "Lunges",
       "Step up",
+      "Cossack squat",
+      "Bulgarian split squat",
       "Assisted shrimp squat",
       "Shrimp squat",
       "Assisted pistol squat",
-      "Pistol squat"
+      "Pistol squat",
+      "Weighted pistol squat"
     ]
   },
   "spinta_orizzontale": {
     "label": "Horizontal push",
     "variants": [
+      "Wall pushup",
+      "Knee pushup",
       "Incline pushup",
       "Eccentric pushup",
       "Pushup",
       "Feet-elevated pushup",
+      "Clap pushup",
       "Diamond pushup",
+      "Archer pushup",
       "Ring pushup",
-      "RTO pushup"
+      "RTO pushup",
+      "Pseudo planche pushup"
     ]
   },
   "core": {
     "label": "Core",
     "variants": [
+      "Plank",
       "Dead Bug",
       "Hollow",
+      "Hanging knee raise",
       "Parallettes leg raise",
       "L-sit",
       "Eccentric dragon flag",
       "Dragon flag tuck",
       "Dragon flag",
+      "Toes to bar",
       "V-sit",
+      "Windshield wipers",
       "Front lever tuck",
       "Front lever advanced tuck",
       "Front lever one leg",
@@ -95,18 +115,29 @@
     "variants": [
       "Incline row",
       "Row",
+      "Ring row",
       "Feet-elevated row",
       "Archer row",
-      "One-arm row"
+      "One-arm row",
+      "Tuck front lever row",
+      "Advanced tuck front lever row",
+      "One-leg front lever row",
+      "Straddle front lever row",
+      "Front lever row"
     ]
   },
   "gambe_posteriore": {
     "label": "Posterior legs",
     "variants": [
       "Glute bridge",
+      "Feet-elevated glute bridge",
       "Single-leg glute bridge",
+      "Single-leg Romanian deadlift",
       "Arch hamstring isometric",
-      "Arch hamstring march"
+      "Arch hamstring march",
+      "Assisted nordic curl",
+      "Eccentric nordic curl",
+      "Nordic curl"
     ]
   },
   "spinta_verticale": {
@@ -124,19 +155,24 @@
       "Ring dip RTO finish",
       "Ring dip RTO",
       "Pike pushup",
+      "Feet-elevated pike pushup",
       "Negative wall HSPU",
       "Wall HSPU",
-      "HSPU"
+      "Deficit wall HSPU",
+      "HSPU",
+      "Deficit HSPU"
     ]
   },
   "catena_posteriore": {
     "label": "Posterior chain",
     "variants": [
+      "Superman raises",
       "Superman hold",
       "Jefferson curl",
       "Kettlebell Swings",
       "Deadlifts",
       "German Hang",
+      "Skin the cat",
       "Back lever tuck",
       "Back lever advanced tuck",
       "Back lever one leg",
