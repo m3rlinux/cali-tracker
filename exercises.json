@@ -8,10 +8,16 @@
       "Camminata al muro",
       "Scrollata al muro",
       "Kick-up al muro",
-      "Negativa di press (eccentrica)",
-      "Press in verticale al muro (straddle)",
+      "Discesa controllata una gamba",
+      "Press tripod raccolto al muro",
+      "Press tripod straddle al muro",
+      "Press tripod full al muro",
+      "Press tripod raccolto libero",
+      "Press tripod straddle libero",
+      "Press tripod full libero",
       "Press in verticale (straddle)",
-      "Press in verticale (pike)"
+      "Press in verticale (pike)",
+      "Negativa di press (eccentrica)"
     ]
   },
   "handstand_hold": {

@@ -8,10 +8,16 @@
       "Wall walk",
       "Wall shrug",
       "Wall Kick-up",
-      "Press negative (eccentric)",
-      "Wall press to HS (straddle)",
+      "One-leg controlled lowering",
+      "Wall tripod press tuck",
+      "Wall tripod press straddle",
+      "Wall tripod press full",
+      "Tripod press tuck",
+      "Tripod press straddle",
+      "Tripod press full",
       "Press to HS (straddle)",
-      "Press to HS (pike)"
+      "Press to HS (pike)",
+      "Press negative (eccentric)"
     ]
   },
   "handstand_hold": {
