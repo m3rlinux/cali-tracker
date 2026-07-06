@@ -29,6 +29,7 @@
       "Tenuta petto al muro",
       "Verticale al muro una gamba alternata",
       "Verticale al muro",
+      "Verticale con spotter",
       "Verticale"
     ],
     "metrics": {
@@ -38,6 +39,7 @@
       "Tenuta petto al muro": "time",
       "Verticale al muro una gamba alternata": "time",
       "Verticale al muro": "time",
+      "Verticale con spotter": "time",
       "Verticale": "time"
     }
   },
