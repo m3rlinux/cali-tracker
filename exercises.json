@@ -61,7 +61,6 @@
   },
   "tirata_verticale": {
     "label": "Tirata verticale",
-    "station": "p1s1",
     "variants": [
       "Sospensione passiva",
       "Trazione scapolare",
@@ -84,7 +83,6 @@
   },
   "gambe_anteriore": {
     "label": "Gambe anteriore",
-    "station": "p1s2",
     "variants": [
       "Squat",
       "Affondi",
@@ -98,9 +96,18 @@
       "Pistol squat zavorrato"
     ]
   },
+  "p1_s1": {
+    "label": "P1 — slot 1",
+    "station": "p1s1",
+    "variants_from": ["tirata_verticale", "gambe_anteriore"]
+  },
+  "p1_s2": {
+    "label": "P1 — slot 2",
+    "station": "p1s2",
+    "variants_from": ["tirata_verticale", "gambe_anteriore"]
+  },
   "spinta_orizzontale": {
     "label": "Spinta orizzontale",
-    "station": "p2s1",
     "variants": [
       "Piegamento al muro",
       "Piegamento sulle ginocchia",
@@ -118,7 +125,6 @@
   },
   "core": {
     "label": "Core",
-    "station": "p2s2",
     "variants": [
       "Plank",
       "Dead bug",
@@ -155,9 +161,18 @@
       "Front lever tocco sbarra isometrico": "time"
     }
   },
+  "p2_s1": {
+    "label": "P2 — slot 1",
+    "station": "p2s1",
+    "variants_from": ["spinta_orizzontale", "core"]
+  },
+  "p2_s2": {
+    "label": "P2 — slot 2",
+    "station": "p2s2",
+    "variants_from": ["spinta_orizzontale", "core"]
+  },
   "tirata_orizzontale": {
     "label": "Tirata orizzontale",
-    "station": "p3s1",
     "variants": [
       "Rematore inclinato",
       "Rematore",
@@ -174,7 +189,6 @@
   },
   "gambe_posteriore": {
     "label": "Gambe posteriore",
-    "station": "p3s2",
     "variants": [
       "Ponte glutei",
       "Ponte glutei piedi su rialzo",
@@ -190,9 +204,18 @@
       "Arch hamstring isometrico": "time"
     }
   },
+  "p3_s1": {
+    "label": "P3 — slot 1",
+    "station": "p3s1",
+    "variants_from": ["tirata_orizzontale", "gambe_posteriore"]
+  },
+  "p3_s2": {
+    "label": "P3 — slot 2",
+    "station": "p3s2",
+    "variants_from": ["tirata_orizzontale", "gambe_posteriore"]
+  },
   "spinta_verticale": {
     "label": "Spinta verticale",
-    "station": "p4s1",
     "variants": [
       "Tenuta in appoggio assistita",
       "Tenuta in appoggio",
@@ -222,7 +245,6 @@
   },
   "catena_posteriore": {
     "label": "Catena posteriore",
-    "station": "p4s2",
     "variants": [
       "Iperestensioni a terra",
       "Tenuta superman",
@@ -246,5 +268,15 @@
       "Back lever straddle": "time",
       "Back lever": "time"
     }
+  },
+  "p4_s1": {
+    "label": "P4 — slot 1",
+    "station": "p4s1",
+    "variants_from": ["spinta_verticale", "catena_posteriore"]
+  },
+  "p4_s2": {
+    "label": "P4 — slot 2",
+    "station": "p4s2",
+    "variants_from": ["spinta_verticale", "catena_posteriore"]
   }
 }
