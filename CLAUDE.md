@@ -6,15 +6,14 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.18.6
+- **Versione corrente:** 3.19.0
 - **fetchWod cache-bust**: `★ Oggi` scarica `wod.json?t=Date.now()` con `cache:'no-store'` → wod sempre fresco a prescindere dalla versione del SW; fallback a `wod.json` (cache SW) se offline
 - **SW fetch JSON/manifest**: network-first con `fetch(req, {cache:'reload'})` per bypassare la cache HTTP del browser (GitHub Pages serve con `max-age=600`); senza, wod/exercises aggiornati arriverebbero solo dopo ~10 min. Con il fix `★ Oggi` prende sempre il wod fresco (vale dai dispositivi con SW ≥ 3.18.2)
 
 ### Stazioni opzionali
 - Un gruppo in exercises.json con `"optional": true` (es. `handstand_s3`, station `p0s3`) compare in una coppia **solo se la sessione/wod lo contiene** (`isOptionalStation` / `stationActive` / `activeStations`); filtrato in `renderPairStep`, `pairTimingHTML`, `collectStep`. Le sessioni WOD sono escluse dall'ereditarietà, quindi p0s3 di fatto appare solo via wod
-- **Gruppi `pool` + `variants_from`**: un gruppo "pool" ha `variants`/`metrics` ma **nessuna `station`** (es. `handstand_skill`, `handstand_hold`); non genera step (`buildSteps` lo salta). Un gruppo-stazione può dichiarare `"variants_from": ["handstand_skill","handstand_hold"]` (chiavi di gruppo o station key) e `resolveGroupKey()`/`resolveStation()` uniscono a runtime varianti, metriche e traduzioni EN (nessuna duplicazione né drift). Tutti gli helper (`getVariants`/`getMetric`/`getGroupVariants`/`tVariant`) passano dal resolver
-- **P0 = 3 slot intercambiabili**: `handstand_s1`/`s2`/`s3` (station p0s1/p0s2/p0s3, l'ultima opzionale) ereditano tutte lo stesso pool (skill + hold) → ogni slot può essere qualsiasi esercizio di verticale; la metrica (reps/time) dipende dalla variante scelta. In exercises.en.json questi gruppi hanno solo `label`
-- **P1–P4 = 2 slot intercambiabili per coppia**: `p1_s1`/`p1_s2` (e analoghi P2–P4) ereditano entrambi i pool della coppia (es. `tirata_verticale` + `gambe_anteriore` su P1); stesso modello di P0
+- **Gruppi `pool` + `variants_from`**: un gruppo "pool" ha `variants`/`metrics` ma **nessuna `station`** (es. `handstand_skill`, `handstand_hold`); non genera step (`buildSteps` lo salta). Un gruppo-stazione può dichiarare `"variants_from": ["handstand_skill","handstand_hold"]` (chiavi di gruppo o station key) oppure `"variants_from": "catalog"` per **tutti i pool** (catalogo unico su ogni slot P0–P4). `resolveGroupKey()`/`resolveStation()` uniscono a runtime varianti, metriche e traduzioni EN. Il select varianti usa `<optgroup>` per categoria
+- **P0–P4 = slot con catalogo unico**: ogni slot (`handstand_s1`…`p4_s2`) ha `variants_from: "catalog"` → ~129 varianti in ogni postazione; la metrica (reps/time) dipende dalla variante scelta
 - **Lookup per variante (globale)**: `VARIANT_REGISTRY` mappa ogni nome variante al pool/metrica; `findLastDataForVariant` / `findPrevExForVariant` cercano in **qualsiasi slot** di qualsiasi sessione. Prefill, ★ Oggi, delta storico e grafici progressi seguono l'esercizio (`variant`), non `pXsY`. I nomi variante sono univoci in tutto `exercises.json`
 
 ## File del progetto

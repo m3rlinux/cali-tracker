@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.18.6
+  Cali Tracker v3.19.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -386,8 +386,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <div class="help-h">Inserire una sessione</div>
       <p>La scheda è divisa in step, uno per coppia di esercizi. Su mobile cambi step con uno <b>swipe</b> a destra/sinistra, su desktop con i pulsanti ‹ ›. Tocca i <b>chip P0 P1 … P4</b> in alto per saltare direttamente a una postazione.</p>
       <p><b>P0</b> è a sé (lo si fa tutti insieme); <b>P1–P4</b> formano un anello: scorrendo avanti da P4 si torna a P1. Così puoi partire dalla tua postazione e proseguire la rotazione.</p>
-      <p>In ogni coppia <b>P0–P4</b> entrambi gli slot possono scegliere qualsiasi esercizio previsto per quella coppia (es. in P1 sia tirata verticale sia gambe anteriori).</p>
-      <p>Storico, pre-compilazione, ★ Oggi e <b>grafici progressi</b> seguono l'<b>esercizio</b> (nome variante), non lo slot fisico: se registri <b>Trazione</b> in <code>p1s2</code> oggi e l'avevi fatta in <code>p1s1</code> o in un'altra postazione, i tuoi dati precedenti vengono ritrovati comunque.</p>
+      <p>In ogni postazione <b>P0–P4</b> puoi scegliere <b>qualsiasi esercizio</b> dal catalogo unico (menu raggruppato per categoria). Storico, pre-compilazione, ★ Oggi e grafici seguono l'esercizio scelto, non lo slot fisico.</p>
       <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio.</p>
       <p>Alcune coppie possono avere un <b>esercizio supplementare</b> (es. una terza stazione in P0): compare solo se previsto dalla sessione del giorno.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
@@ -422,7 +421,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.18.6';
+const VERSION = '3.19.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -643,17 +642,17 @@ function getLang() { return localStorage.getItem(KEY_LANG) || 'it'; }
 const PAIR_COLORS = { p0:'--p0', p1:'--p1', p2:'--p2', p3:'--p3', p4:'--p4' };
 const PAIR_LABELS = {
   p0: 'Handstand',
-  p1: 'Tirata verticale + Gambe anteriori',
-  p2: 'Spinta orizzontale + Core',
-  p3: 'Tirata orizzontale + Gambe posteriori',
-  p4: 'Spinta verticale + Catena posteriore'
+  p1: 'P1',
+  p2: 'P2',
+  p3: 'P3',
+  p4: 'P4'
 };
 const PAIR_LABELS_EN = {
   p0: 'Handstand',
-  p1: 'Vertical pull + Anterior legs',
-  p2: 'Horizontal push + Core',
-  p3: 'Horizontal pull + Posterior legs',
-  p4: 'Vertical push + Posterior chain'
+  p1: 'P1',
+  p2: 'P2',
+  p3: 'P3',
+  p4: 'P4'
 };
 
 function pairColor(pKey) { return `var(${PAIR_COLORS[pKey] || '--muted'})`; }
@@ -685,17 +684,24 @@ function getGroupEntry(stationKey) {
   return Object.entries(EXERCISES).find(([, g]) => g.station === stationKey) || [null, null];
 }
 
+// Pool senza station = categorie del catalogo
+function getCatalogPoolKeys() {
+  return Object.keys(EXERCISES).filter(k => !EXERCISES[k].station);
+}
+
 // Risolve varianti/metriche/traduzioni effettive di un gruppo. Con
 // "variants_from": ["handstand_skill","handstand_hold"] eredita le liste unendo
-// i gruppi sorgente (IT, EN e metriche). I ref sono chiavi di gruppo (pool) o
-// station key. Nessuna duplicazione né drift.
+// i gruppi sorgente (IT, EN e metriche). "variants_from": "catalog" = tutti i pool.
+// I ref sono chiavi di gruppo (pool) o station key. Nessuna duplicazione né drift.
 function resolveGroupKey(gk) {
   const sg = EXERCISES[gk];
   if (!sg) return { variants: [], metrics: {}, enVariants: [] };
-  if (Array.isArray(sg.variants_from)) {
+  let refs = sg.variants_from;
+  if (refs === 'catalog') refs = getCatalogPoolKeys();
+  if (Array.isArray(refs)) {
     const variants = [], enVariants = [];
     let metrics = {};
-    sg.variants_from.forEach(ref => {
+    refs.forEach(ref => {
       const refKey = EXERCISES[ref] ? ref : getGroupEntry(ref)[0];
       if (!refKey) return;
       const r = resolveGroupKey(refKey);
@@ -1147,21 +1153,27 @@ function renderStep() {
 
 // ── VARIANT SELECT ──
 function variantSelectHTML(stationKey, selectedVariant, prevVariant, px) {
-  const variants = getVariants(stationKey);
-  if (!variants.length) return '';
+  const pools = getCatalogPoolKeys();
+  if (!pools.length) return '';
   const colClass = `col-${px}`;
-  // New sessions are pre-filled via draftSession from the last saved session.
-  // Keep this selector bound to the current draft value only.
-  const effectiveVariant = (selectedVariant && variants.includes(selectedVariant)) ? selectedVariant : '';
+  const effectiveVariant = selectedVariant && VARIANT_REGISTRY[selectedVariant] ? selectedVariant : '';
   const hasSelection = !!effectiveVariant;
   const placeholder = getLang() === 'en' ? '— choose —' : '— scegli —';
-  const options = [`<option value="">${placeholder}</option>`]
-    .concat(variants.map(v => `<option value="${v}" ${effectiveVariant === v ? 'selected' : ''}>${tVariant(stationKey, v)}</option>`))
-    .join('');
+  const groups = pools.map(poolKey => {
+    const { variants, enVariants } = resolveGroupKey(poolKey);
+    if (!variants.length) return '';
+    const label = getPoolLabel(poolKey);
+    const opts = variants.map((v, i) => {
+      const tv = (getLang() === 'en' && LANG_EXERCISES) ? (enVariants[i] || v) : v;
+      return `<option value="${v}" ${effectiveVariant === v ? 'selected' : ''}>${tv}</option>`;
+    }).join('');
+    return `<optgroup label="${label}">${opts}</optgroup>`;
+  }).join('');
   return `<div class="variant-row">
     <div class="variant-select-label">Eserc.</div>
     <select class="variant-select ${hasSelection ? colClass : ''}" data-station="${stationKey}" data-px="${px}" onchange="onVariantChange(this)">
-      ${options}
+      <option value="">${placeholder}</option>
+      ${groups}
     </select>
   </div>`;
 }
