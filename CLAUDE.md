@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.18.5
+- **Versione corrente:** 3.18.6
 - **fetchWod cache-bust**: `★ Oggi` scarica `wod.json?t=Date.now()` con `cache:'no-store'` → wod sempre fresco a prescindere dalla versione del SW; fallback a `wod.json` (cache SW) se offline
 - **SW fetch JSON/manifest**: network-first con `fetch(req, {cache:'reload'})` per bypassare la cache HTTP del browser (GitHub Pages serve con `max-age=600`); senza, wod/exercises aggiornati arriverebbero solo dopo ~10 min. Con il fix `★ Oggi` prende sempre il wod fresco (vale dai dispositivi con SW ≥ 3.18.2)
 
@@ -14,7 +14,8 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - Un gruppo in exercises.json con `"optional": true` (es. `handstand_s3`, station `p0s3`) compare in una coppia **solo se la sessione/wod lo contiene** (`isOptionalStation` / `stationActive` / `activeStations`); filtrato in `renderPairStep`, `pairTimingHTML`, `collectStep`. Le sessioni WOD sono escluse dall'ereditarietà, quindi p0s3 di fatto appare solo via wod
 - **Gruppi `pool` + `variants_from`**: un gruppo "pool" ha `variants`/`metrics` ma **nessuna `station`** (es. `handstand_skill`, `handstand_hold`); non genera step (`buildSteps` lo salta). Un gruppo-stazione può dichiarare `"variants_from": ["handstand_skill","handstand_hold"]` (chiavi di gruppo o station key) e `resolveGroupKey()`/`resolveStation()` uniscono a runtime varianti, metriche e traduzioni EN (nessuna duplicazione né drift). Tutti gli helper (`getVariants`/`getMetric`/`getGroupVariants`/`tVariant`) passano dal resolver
 - **P0 = 3 slot intercambiabili**: `handstand_s1`/`s2`/`s3` (station p0s1/p0s2/p0s3, l'ultima opzionale) ereditano tutte lo stesso pool (skill + hold) → ogni slot può essere qualsiasi esercizio di verticale; la metrica (reps/time) dipende dalla variante scelta. In exercises.en.json questi gruppi hanno solo `label`
-- **P1–P4 = 2 slot intercambiabili per coppia**: `p1_s1`/`p1_s2` (e analoghi P2–P4) ereditano entrambi i pool della coppia (es. `tirata_verticale` + `gambe_anteriore` su P1); stesso modello di P0. Storico e grafici restano per slot fisico (`p1s1`, …), non per categoria esercizio
+- **P1–P4 = 2 slot intercambiabili per coppia**: `p1_s1`/`p1_s2` (e analoghi P2–P4) ereditano entrambi i pool della coppia (es. `tirata_verticale` + `gambe_anteriore` su P1); stesso modello di P0
+- **Lookup per variante (globale)**: `VARIANT_REGISTRY` mappa ogni nome variante al pool/metrica; `findLastDataForVariant` / `findPrevExForVariant` cercano in **qualsiasi slot** di qualsiasi sessione. Prefill, ★ Oggi, delta storico e grafici progressi seguono l'esercizio (`variant`), non `pXsY`. I nomi variante sono univoci in tutto `exercises.json`
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
@@ -164,11 +165,9 @@ Il verde (`--teal: #4dd9a0`) è riservato agli indicatori di progressione (frecc
 
 ## Decisioni di design
 - **Righe storico a due livelli**: variante in evidenza + nome gruppo piccolo sotto (niente "Gruppo (variante)" che andava a capo); colonna valori a destra con intensità/max in sub-riga. Una sola linea di separazione (le righe hanno border-bottom, gli header di pair nessun border)
-- **Freccia avanzamento variante nei grafici: teal** (non viola — `--purple` è identico a `--p0` e creava ambiguità); regressione resta coral
-- **Cambio variante evidenziato**: nei grafici le barre delle varianti precedenti hanno `opacity:.3` (altezze non confrontabili) e la variante corrente è un chip su riga propria sotto il titolo; nello storico la transizione "↑/↓ da <variante precedente>" è su riga propria sotto il gruppo
-- **Frecce ↑↓ nei grafici**: solo per cambio variante atletica (indice nella lista `variants`), mai per cambio `station`
-- **Delta nello storico**: azzerato quando cambia variante o station (nessun confronto cross-variante)
-- **Cluster nei grafici**: rimosso — informazione già leggibile dallo storico
+- **Grafici progressi per variante**: un grafico per ogni variante usata ≥2 volte, raggruppata per pool/categoria; i valori seguono l'esercizio in qualsiasi slot (`findExInSession`). Nessuna barra smorzata per cambio variante nello stesso grafico
+- **Delta nello storico**: confronta con l'ultima sessione precedente in cui è comparso lo **stesso esercizio** (qualsiasi slot), via `findPrevExForVariant`. La freccia ↑/↓ nello storico indica ancora il cambio esercizio **allo slot** rispetto alla sessione immediatamente precedente
+- **Prefill / ★ Oggi**: `findLastDataForVariant` cerca la variante globalmente; al cambio variante nel form si caricano i dati storici (`onVariantChange`)
 - **Label intensità**: basata sulla media rep/set, non sul totale (10×4=forza, non ipertrofia)
 - **Pre-carica valori**: nuova sessione eredita variante e valori dalla sessione precedente
 - **Modifiche sessione**: stessa UI di inserimento, header ambra `✎ modifica`
