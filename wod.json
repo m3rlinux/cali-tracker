@@ -15,6 +15,8 @@
     "p2s1": { "variant": "Piegamento", "sets": [[8, null], [8, null], [8, null]] },
     "p2s2": { "variant": "Ginocchia al petto in sospensione", "sets": [[8, null], [8, null], [8, null]] },
     "p3s1": { "variant": "Rematore", "sets": [[6, null], [6, null], [6, null]] },
-    "p3s2": { "variant": "Stacco rumeno una gamba", "sets": [[6, null], [6, null], [6, null]] }
+    "p3s2": { "variant": "Stacco rumeno una gamba", "sets": [[6, null], [6, null], [6, null]] },
+    "p4s1": { "variant": "Dip negativo", "sets": [[5, null], [5, null], [5, null]] },
+    "p4s2": { "variant": "Stacchi", "sets": [[12, null], [12, null], [12, null]] }
   }
 }
