@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.24.1
+  Cali Tracker v3.24.2
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -432,9 +432,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <div class="help-h">Storico</div>
       <p>Tocca una sessione per vedere i dettagli. <b>✎</b> la riapre in modifica, <b>✕</b> la elimina. <b>★</b> converte una sessione WOD in normale (entra nei progressi) e viceversa. I delta +/− confrontano con l'ultima volta che hai fatto <b>quello stesso esercizio</b> (in qualsiasi slot).</p>
       <div class="help-h">Progressi</div>
-      <p>Grafici per <b>variante</b>, raggruppati per categoria (sezioni apribili). Filtri in alto: tutte le sessioni, ultime 12, ultime 8 settimane, solo varianti dell'ultima sessione.</p>
-      <p><b>Scorri</b> sul grafico con il dito: una linea verticale mostra <b>data e valore</b> solo quando sei vicino a un punto. Nessun numero sessione sull'asse — solo la data nel popup. <b>Tap</b> su un punto → salta alla sessione nello storico.</p>
-      <p>Isometrie: tab <b>Max</b> / <b>Tot.</b> con linea PR o target 65%. Reps: tab <b>Tot.</b> / <b>Media/set</b> / <b>Cluster</b>. Grafico sempre a <b>linea</b> (anche con 2 sessioni). Sessioni senza l'esercizio: gap nel tracciato.</p>
+      <p>Mini-grafici di <b>densità</b> (intensità) per <b>variante</b>, raggruppati per categoria.</p>
+      <p>In alto filtri: <b>tutte</b>, <b>anno</b>, <b>mese</b>, <b>Attive</b>. <b>Tap</b> su un minigrafico → si apre il dettaglio con densità + lista delle sessioni filtrate. Lo scorrimento non viene bloccato dai touch sul grafico.</p>
+      <p>Intensità: isometrie = <b>Hold max</b>, reps = <b>Media/set</b>.</p>
       <div class="help-h">Lingua e dati</div>
       <p>Il badge <b>IT/EN</b> nell'header cambia la lingua dei nomi esercizi.</p>
       <p>I dati restano <b>solo su questo dispositivo</b>. Usa <b>↓ Esporta</b> / <b>↑ Importa</b> dal menu per backup o per passare a un altro dispositivo. L'app si aggiorna da sola senza toccare i dati.</p>
@@ -453,7 +453,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.24.1';
+const VERSION = '3.24.2';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -2225,7 +2225,373 @@ function openHistorySession(sessNum) {
   }, 80);
 }
 
+// ── PROGRESS (density mini + tap) ──
+// Nota: il vecchio scrub (touch) viene bypassato: qui rendiamo un minigrafico di densità
+// che non cattura il touch e quindi non blocca lo scrolling.
+const KEY_PROG_YEAR = 'cali_prog_year';
+const KEY_PROG_MONTH = 'cali_prog_month';
+const KEY_PROG_ACTIVE = 'cali_prog_active';
+
+const PROG_MONTHS_IT = ['', 'Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
+
+function getProgYear() { return localStorage.getItem(KEY_PROG_YEAR) || ''; }
+function getProgMonth() { return localStorage.getItem(KEY_PROG_MONTH) || ''; }
+function getProgActiveOnly() { return localStorage.getItem(KEY_PROG_ACTIVE) === '1'; }
+
+function setProgYear(y) {
+  localStorage.setItem(KEY_PROG_YEAR, y || '');
+  localStorage.setItem(KEY_PROG_MONTH, ''); // reset mese quando cambia anno
+  renderProgress();
+}
+function setProgMonth(m) {
+  localStorage.setItem(KEY_PROG_MONTH, m || '');
+  renderProgress();
+}
+function setProgActiveOnly(on) {
+  localStorage.setItem(KEY_PROG_ACTIVE, on ? '1' : '0');
+  renderProgress();
+}
+
+function intensityValInSession(s, variant) {
+  const found = findExInSession(s, variant);
+  if (!found) return null;
+  const ex = found.ex;
+  const metric = getMetricForVariant(variant);
+  if (metric === 'time') {
+    if (ex.hold_max != null) return ex.hold_max;
+    const tot = ex.sets?.reduce((a, [t]) => a + (t || 0), 0) ?? 0;
+    return tot > 0 ? tot : null;
+  }
+  const avg = getRepsAvgFromSets(ex.sets, numSetsFor(found.stationKey, ex));
+  return avg > 0 ? Math.round(avg * 10) / 10 : null;
+}
+
+function intensityFormat(variant, v) {
+  const metric = getMetricForVariant(variant);
+  if (metric === 'time') return `${Math.round(v)}"`;
+  const s = Number(v).toFixed(1);
+  return s.endsWith('.0') ? s.slice(0, -2) : s;
+}
+
+function kdeGaussian(values, xs) {
+  const n = values.length;
+  if (!n) return xs.map(() => 0);
+  if (n === 1) {
+    const v = values[0];
+    const bw = Math.max(Math.abs(v) * 0.15, 1);
+    return xs.map(x => Math.exp(-0.5 * Math.pow((x - v) / bw, 2)));
+  }
+  const mean = values.reduce((a, b) => a + b, 0) / n;
+  const std = Math.sqrt(values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / n);
+  let h = 1.06 * (std || Math.max(Math.abs(mean) * 0.1, 1)) * Math.pow(n, -1 / 5);
+  if (!isFinite(h) || h <= 0) h = Math.max(Math.abs(mean) * 0.1, 1);
+
+  // Normalizzazione non fondamentale: basta per la forma relativa.
+  const inv = 1 / (n * h);
+  const denom = 2 * h * h;
+  return xs.map(x => {
+    let sum = 0;
+    for (let i = 0; i < n; i++) {
+      const d = x - values[i];
+      sum += Math.exp(-(d * d) / denom);
+    }
+    return sum * inv;
+  });
+}
+
+function densitySVG(values, color, w, h) {
+  const pad = 6;
+  const base = h - pad;
+  if (!values || !values.length) return '';
+
+  let minV = Math.min(...values);
+  let maxV = Math.max(...values);
+  if (minV === maxV) { minV -= 1; maxV += 1; }
+
+  const gridN = 48;
+  const xs = Array.from({ length: gridN }, (_, i) => minV + (maxV - minV) * (i / (gridN - 1)));
+  const dens = kdeGaussian(values, xs);
+  const densMax = Math.max(...dens, 1e-9);
+
+  const xMap = x => pad + (x - minV) / (maxV - minV) * (w - pad * 2);
+  const yMap = d => base - (d / densMax) * (h - pad * 2);
+
+  // Area piena
+  let dFill = `M ${xMap(xs[0])} ${base}`;
+  xs.forEach((x, i) => { dFill += ` L ${xMap(x)} ${yMap(dens[i])}`; });
+  dFill += ` L ${xMap(xs[xs.length - 1])} ${base} Z`;
+
+  // Linea curva
+  let dLine = `M ${xMap(xs[0])} ${yMap(dens[0])}`;
+  xs.forEach((x, i) => { dLine += ` L ${xMap(x)} ${yMap(dens[i])}`; });
+
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="density">
+    <path d="${dFill}" fill="${color}" fill-opacity="0.22" />
+    <path d="${dLine}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" />
+  </svg>`;
+}
+
+function openProgVariantCard(el) {
+  const variant = el?.dataset?.variant;
+  if (!variant) return;
+
+  const data = getData();
+  const allSessions = Object.keys(data).map(Number).filter(n => !isNaN(n) && !data[n]?.wod).sort((a, b) => a - b);
+  const year = getProgYear();
+  const month = getProgMonth();
+  let sessions = allSessions;
+  if (year || month) {
+    sessions = sessions.filter(n => {
+      const d = parseSessionDate(data[n]?.date);
+      if (!d) return false;
+      if (year && String(d.getFullYear()) !== String(year)) return false;
+      if (month && String(d.getMonth() + 1) !== String(month)) return false;
+      return true;
+    });
+  }
+
+  const metric = getMetricForVariant(variant);
+  const points = sessions.map(n => {
+    const v = intensityValInSession(data[n], variant);
+    return v == null ? null : { sess: n, date: data[n]?.date || '—', val: v };
+  }).filter(Boolean).sort((a, b) => a.sess - b.sess);
+
+  const latest = points.length ? points[points.length - 1] : null;
+  const poolKey = getPoolKeyForVariant(variant) || '_other';
+  const color = poolColorVar(poolKey).replace('var(', '').replace(')', '') ? poolColorVar(poolKey) : 'var(--muted)';
+
+  // Modal overlay (creazione lazy per evitare HTML patch invasive)
+  let modal = document.getElementById('prog-variant-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'prog-variant-modal';
+    modal.className = 'modal-overlay';
+    modal.onclick = e => { if (e.target === modal) closeProgVariantModal(); };
+    modal.innerHTML = `
+      <div class="modal" style="max-width:560px">
+        <div class="modal-title" id="prog-variant-modal-title">—</div>
+        <div class="prog-variant-modal-body" id="prog-variant-modal-body" style="max-height:72vh; overflow-y:auto"></div>
+        <button class="modal-btn" onclick="closeProgVariantModal()">Chiudi</button>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+
+  const intensityLbl = metric === 'time'
+    ? (getLang() === 'en' ? 'Hold max (sec)' : 'Hold max (sec)')
+    : (getLang() === 'en' ? 'Avg reps/set' : 'Media reps/set');
+
+  const values = points.map(p => p.val);
+  const density = densitySVG(values, el.dataset.color || color, 420, 160);
+
+  const rows = points.map(p => {
+    const vStr = intensityFormat(variant, p.val);
+    return `<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--border);padding:10px 0">
+      <div style="min-width:0">
+        <div style="font-family:var(--mono);font-size:12px">${p.date}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px">Sessione ${p.sess}</div>
+      </div>
+      <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text)">${vStr}</div>
+        <button class="delete-btn" onclick="openHistorySession(${p.sess})" style="border-color:var(--border2);color:var(--muted)">Apri</button>
+      </div>
+    </div>`;
+  }).join('') || `<div style="font-size:12px;color:var(--muted);padding:12px 0">Nessun dato.</div>`;
+
+  modal.querySelector('#prog-variant-modal-title').textContent = `${tVariantByVariant(variant)} · ${intensityLbl}`;
+  const latestStr = latest ? `${latest.date} · ${intensityFormat(variant, latest.val)}` : '—';
+  modal.querySelector('#prog-variant-modal-body').innerHTML = `
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px">
+      <div style="min-width:0">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Dati nel filtro</div>
+        <div style="font-family:var(--mono);font-size:13px;font-weight:600;margin-top:4px">${points.length} sessioni</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px">Ultimo: ${latestStr}</div>
+      </div>
+    </div>
+    ${density}
+    <div style="margin-top:12px">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Valori per sessione</div>
+      ${rows}
+    </div>`;
+
+  modal.classList.add('open');
+}
+
+function closeProgVariantModal() {
+  const modal = document.getElementById('prog-variant-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+function renderProgressDensity() {
+  const data = getData();
+  const cont = document.getElementById('progress-content');
+
+  const allSessions = Object.keys(data).map(Number).filter(n => !isNaN(n) && !data[n]?.wod).sort((a, b) => a - b);
+  if (!allSessions.length) {
+    cont.innerHTML = '<div class="history-empty">Inserisci almeno una sessione<br>per vedere i progressi.</div>';
+    return;
+  }
+
+  const year = getProgYear();
+  const month = getProgMonth();
+  const activeOnly = getProgActiveOnly();
+  const lastSess = allSessions[allSessions.length - 1];
+
+  const activeVariants = new Set();
+  if (activeOnly && lastSess != null) {
+    Object.keys(data[lastSess] || {}).filter(k => /^p\\d+s\\d+$/.test(k)).forEach(sk => {
+      const v = data[lastSess][sk]?.variant;
+      if (v) activeVariants.add(v);
+    });
+  }
+
+  let sessions = allSessions;
+  if (year || month) {
+    sessions = sessions.filter(n => {
+      const d = parseSessionDate(data[n]?.date);
+      if (!d) return false;
+      if (year && String(d.getFullYear()) !== String(year)) return false;
+      if (month && String(d.getMonth() + 1) !== String(month)) return false;
+      return true;
+    });
+  }
+  if (!sessions.length) {
+    cont.innerHTML = '<div class="history-empty">Nessuna sessione nel filtro selezionato.</div>';
+    return;
+  }
+
+  const variantsSeen = new Set();
+  sessions.forEach(n => {
+    Object.keys(data[n] || {}).filter(k => /^p\\d+s\\d+$/.test(k)).forEach(sk => {
+      const v = data[n][sk]?.variant;
+      if (v) variantsSeen.add(v);
+    });
+  });
+
+  const metricByVariant = {};
+  [...variantsSeen].forEach(v => { metricByVariant[v] = getMetricForVariant(v); });
+
+  const years = Array.from(new Set(allSessions.map(n => {
+    const d = parseSessionDate(data[n]?.date);
+    return d ? d.getFullYear() : null;
+  }).filter(x => x != null))).sort((a, b) => b - a);
+
+  const monthsPresent = (year ? new Set(sessions.map(n => {
+    const d = parseSessionDate(data[n]?.date);
+    return d ? (d.getMonth() + 1) : null;
+  }).filter(x => x != null)) : null);
+
+  const yearBtns = years.map(y => {
+    const on = String(year) === String(y);
+    return `<button type="button" class="prog-filter-btn${on ? ' active' : ''}" onclick="setProgYear('${y}')">${y}</button>`;
+  }).join('');
+
+  const monthBtns = year
+    ? (() => {
+        const months = Array.from(monthsPresent || []).sort((a, b) => a - b);
+        return [
+          `<button type="button" class="prog-filter-btn${!getProgMonth() ? ' active' : ''}" onclick="setProgMonth('')">${getLang() === 'en' ? 'All months' : 'Tutti i mesi'}</button>`,
+          ...months.map(m => {
+            const on = String(getProgMonth()) === String(m);
+            return `<button type="button" class="prog-filter-btn${on ? ' active' : ''}" onclick="setProgMonth('${m}')">${PROG_MONTHS_IT[m]}</button>`;
+          })
+        ].join('');
+      })()
+    : '';
+
+  const toolbar = `
+    <div class="prog-toolbar">
+      <button type="button" class="prog-filter-btn${activeOnly ? ' active' : ''}" onclick="setProgActiveOnly(${!activeOnly})">${getLang() === 'en' ? 'Active' : 'Attive'}</button>
+      <button type="button" class="prog-filter-btn${!year ? ' active' : ''}" onclick="setProgYear('')">${getLang() === 'en' ? 'All' : 'Tutte'}</button>
+      ${yearBtns}
+    </div>
+    ${year ? `<div class="prog-toolbar" style="margin-top:-8px">${monthBtns}</div>` : ''}`;
+
+  const byPool = {};
+  [...variantsSeen].forEach(v => {
+    if (activeOnly && !activeVariants.has(v)) return;
+    const pk = getPoolKeyForVariant(v) || '_other';
+    if (!byPool[pk]) byPool[pk] = [];
+    byPool[pk].push(v);
+  });
+
+  // Ordina varianti per ultima occorrenza nel filtro (decrescente)
+  Object.keys(byPool).forEach(pk => {
+    byPool[pk].sort((a, b) => {
+      const la = lastSessionWithVariant(data, sessions, a);
+      const lb = lastSessionWithVariant(data, sessions, b);
+      return lb - la;
+    });
+  });
+
+  const poolOrder = Object.keys(EXERCISES).filter(k => !EXERCISES[k].station);
+  const sections = [];
+
+  poolOrder.forEach(poolKey => {
+    const vars = byPool[poolKey];
+    if (!vars?.length) return;
+    const color = poolColorVar(poolKey);
+    sections.push(`<div class="prog-pair-header" style="color:${color}">${getPoolLabel(poolKey)}</div>`);
+
+    vars.forEach(variant => {
+      const points = sessions.map(n => {
+        const v = intensityValInSession(data[n], variant);
+        return v == null ? null : { sess: n, date: data[n]?.date || '—', val: v };
+      }).filter(Boolean).sort((a, b) => a.sess - b.sess);
+      if (!points.length) return;
+      const latest = points[points.length - 1];
+      const values = points.map(p => p.val);
+      const density = densitySVG(values, color, 260, 62);
+      const vLabel = tVariantByVariant(variant);
+      sections.push(`
+        <div class="prog-section" style="padding:12px;margin-bottom:14px;cursor:pointer" onclick="openProgVariantCard(this)" data-variant="${variant}" data-color="${color}">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+            <div style="min-width:0">
+              <div class="prog-variant-chip" style="border-color:${color};color:${color}">${vLabel}</div>
+              <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3">
+                ${points.length} sessioni · Ultimo: ${latest.date}
+              </div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-family:var(--mono);font-size:12px;font-weight:600">${intensityFormat(variant, latest.val)}</div>
+              <div style="font-family:var(--mono);font-size:10px;color:var(--muted)">intensità</div>
+            </div>
+          </div>
+          <div style="margin-top:10px">${density}</div>
+        </div>
+      `);
+    });
+  });
+
+  // fallback per pool non mappate
+  if (!sections.length && byPool._other?.length) {
+    const vars = byPool._other;
+    sections.push(`<div class="prog-pair-header" style="color:var(--muted)">${getLang() === 'en' ? 'Other' : 'Altro'}</div>`);
+    vars.forEach(variant => {
+      const points = sessions.map(n => {
+        const v = intensityValInSession(data[n], variant);
+        return v == null ? null : { sess: n, date: data[n]?.date || '—', val: v };
+      }).filter(Boolean).sort((a, b) => a.sess - b.sess);
+      if (!points.length) return;
+      const latest = points[points.length - 1];
+      const density = densitySVG(points.map(p => p.val), 'var(--muted)', 260, 62);
+      const vLabel = tVariantByVariant(variant);
+      sections.push(`
+        <div class="prog-section" style="padding:12px;margin-bottom:14px;cursor:pointer" onclick="openProgVariantCard(this)" data-variant="${variant}" data-color="var(--muted)">
+          <div class="prog-variant-chip">${vLabel}</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3">
+            ${points.length} sessioni · Ultimo: ${latest.date}
+          </div>
+          <div style="margin-top:10px">${density}</div>
+        </div>
+      `);
+    });
+  }
+
+  cont.innerHTML = toolbar + (sections.join('') || `<div class="history-empty" style="margin-top:18px">${getLang() === 'en' ? 'No data for filters.' : 'Nessun dato per i filtri selezionati.'}</div>`);
+}
+
 function renderProgress() {
+  return renderProgressDensity();
   const data = getData();
   const allSessions = Object.keys(data).map(Number).filter(n => !isNaN(n) && !data[n]?.wod).sort((a, b) => a - b);
   const cont = document.getElementById('progress-content');
