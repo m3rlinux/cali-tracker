@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.24.9
+  Cali Tracker v3.25.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -446,8 +446,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <div class="help-h">Storico</div>
       <p>Tocca una sessione per vedere i dettagli. <b>✎</b> la riapre in modifica (puoi cambiare anche la <b>data</b> in alto), <b>✕</b> la elimina. <b>★</b> converte una sessione WOD in normale (entra nei progressi) e viceversa. I delta +/− confrontano con l'ultima volta che hai fatto <b>quello stesso esercizio</b> (in qualsiasi slot).</p>
       <div class="help-h">Progressi</div>
-      <p>Mini-grafici di <b>densità</b> (intensità) per <b>variante</b>, raggruppati per categoria.</p>
-      <p>In alto: <b>Tutto</b> / <b>Anno</b> / <b>Mese</b> + navigazione <b>freccette</b> su <b>ultimo anno</b> e <b>ultimo mese</b> (scorri avanti/indietro di mese/anno). <b>Tap</b> su un minigrafico → si apre il dettaglio con densità + lista delle sessioni filtrate. Lo scorrimento non viene bloccato dai touch sul grafico.</p>
+      <p>Mini-grafici <b>andamento</b> (intensità nel tempo) per <b>variante</b>, raggruppati per categoria. Asse orizzontale = sessioni nel periodo filtrato, verticale = intensità.</p>
+      <p>In alto: <b>Tutto</b> / <b>Anno</b> / <b>Mese</b> + navigazione <b>freccette</b>. <b>Tap</b> su un minigrafico → dettaglio con grafico grande + lista sessioni.</p>
       <p>Intensità: isometrie = <b>Hold max</b>, reps = <b>Media/set</b>.</p>
       <div class="help-h">Lingua e dati</div>
       <p>Il badge <b>IT/EN</b> nell'header cambia la lingua dei nomi esercizi.</p>
@@ -467,7 +467,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.24.9';
+const VERSION = '3.25.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -2428,6 +2428,85 @@ function intensityValInSession(s, variant) {
   return avg > 0 ? Math.round(avg * 10) / 10 : null;
 }
 
+function filterProgressSessions(data) {
+  const allSessions = Object.keys(data).map(Number).filter(n => !isNaN(n) && !data[n]?.wod).sort((a, b) => a - b);
+  let year = normalizeProgYear(getProgYear());
+  let month = normalizeProgMonth(getProgMonth());
+  let mode = getProgMode();
+  const lm = getProgLatestYearMonth();
+  if (mode === 'all') {
+    year = '';
+    month = '';
+  } else if (mode === 'year') {
+    if (!year) year = lm.year || '';
+    month = '';
+  } else if (!year || !month) {
+    year = lm.year || '';
+    month = lm.month || '';
+  }
+  let sessions = allSessions;
+  if (mode === 'year') {
+    sessions = sessions.filter(n => {
+      const d = parseSessionDate(data[n]?.date);
+      return d && String(d.getFullYear()) === String(year);
+    });
+  } else if (mode === 'month') {
+    sessions = sessions.filter(n => {
+      const d = parseSessionDate(data[n]?.date);
+      return d && String(d.getFullYear()) === String(year) && String(d.getMonth() + 1) === String(month);
+    });
+  }
+  if (!sessions.length && mode !== 'all') sessions = allSessions;
+  return sessions;
+}
+
+function trendChartSVG(sessions, data, variant, color, w, h) {
+  const points = sessions.map((n, i) => {
+    const v = intensityValInSession(data[n], variant);
+    return { i, sess: n, val: v, has: v != null };
+  });
+  const defined = points.filter(p => p.has);
+  if (!defined.length) return '';
+
+  const pad = { t: 4, r: 4, b: 4, l: 4 };
+  const plotW = w - pad.l - pad.r;
+  const plotH = h - pad.t - pad.b;
+  const vals = defined.map(p => p.val);
+  let yMin = Math.min(...vals);
+  let yMax = Math.max(...vals);
+  if (yMin === yMax) { yMin -= 1; yMax += 1; }
+  const yRange = yMax - yMin;
+  const yMap = v => pad.t + plotH - ((v - yMin) / yRange) * plotH;
+  const slotW = points.length > 0 ? plotW / points.length : plotW;
+  const xMap = idx => pad.l + (idx + 0.5) * slotW;
+
+  let pathD = '';
+  let drawing = false;
+  points.forEach((p, idx) => {
+    if (!p.has) { drawing = false; return; }
+    const x = xMap(idx);
+    const y = yMap(p.val);
+    pathD += (drawing ? ' L' : 'M') + x + ',' + y;
+    drawing = true;
+  });
+
+  const dots = points.map((p, idx) => {
+    if (!p.has) return '';
+    return `<circle cx="${xMap(idx)}" cy="${yMap(p.val)}" r="${w > 300 ? 4 : 2.5}" fill="${color}"/>`;
+  }).join('');
+
+  const grid = [0.25, 0.5, 0.75].map(t => {
+    const y = pad.t + plotH * (1 - t);
+    return `<line x1="${pad.l}" y1="${y}" x2="${w - pad.r}" y2="${y}" stroke="var(--border)" stroke-width="1" opacity="0.35"/>`;
+  }).join('');
+
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="andamento">
+    ${grid}
+    ${pathD ? `<path d="${pathD}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` : ''}
+    <g>${dots}</g>
+  </svg>`;
+}
+
 function intensityFormat(variant, v) {
   const metric = getMetricForVariant(variant);
   if (metric === 'time') return `${Math.round(v)}"`;
@@ -2435,92 +2514,25 @@ function intensityFormat(variant, v) {
   return s.endsWith('.0') ? s.slice(0, -2) : s;
 }
 
-function kdeGaussian(values, xs) {
-  const n = values.length;
-  if (!n) return xs.map(() => 0);
-  if (n === 1) {
-    const v = values[0];
-    const bw = Math.max(Math.abs(v) * 0.15, 1);
-    return xs.map(x => Math.exp(-0.5 * Math.pow((x - v) / bw, 2)));
-  }
-  const mean = values.reduce((a, b) => a + b, 0) / n;
-  const std = Math.sqrt(values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / n);
-  let h = 1.06 * (std || Math.max(Math.abs(mean) * 0.1, 1)) * Math.pow(n, -1 / 5);
-  if (!isFinite(h) || h <= 0) h = Math.max(Math.abs(mean) * 0.1, 1);
-
-  // Normalizzazione non fondamentale: basta per la forma relativa.
-  const inv = 1 / (n * h);
-  const denom = 2 * h * h;
-  return xs.map(x => {
-    let sum = 0;
-    for (let i = 0; i < n; i++) {
-      const d = x - values[i];
-      sum += Math.exp(-(d * d) / denom);
-    }
-    return sum * inv;
-  });
-}
-
-function densitySVG(values, color, w, h) {
-  const pad = 6;
-  const base = h - pad;
-  if (!values || !values.length) return '';
-
-  let minV = Math.min(...values);
-  let maxV = Math.max(...values);
-  if (minV === maxV) { minV -= 1; maxV += 1; }
-
-  const gridN = 48;
-  const xs = Array.from({ length: gridN }, (_, i) => minV + (maxV - minV) * (i / (gridN - 1)));
-  const dens = kdeGaussian(values, xs);
-  const densMax = Math.max(...dens, 1e-9);
-
-  const xMap = x => pad + (x - minV) / (maxV - minV) * (w - pad * 2);
-  const yMap = d => base - (d / densMax) * (h - pad * 2);
-
-  // Area piena
-  let dFill = `M ${xMap(xs[0])} ${base}`;
-  xs.forEach((x, i) => { dFill += ` L ${xMap(x)} ${yMap(dens[i])}`; });
-  dFill += ` L ${xMap(xs[xs.length - 1])} ${base} Z`;
-
-  // Linea curva
-  let dLine = `M ${xMap(xs[0])} ${yMap(dens[0])}`;
-  xs.forEach((x, i) => { dLine += ` L ${xMap(x)} ${yMap(dens[i])}`; });
-
-  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="density">
-    <path d="${dFill}" fill="${color}" fill-opacity="0.22" />
-    <path d="${dLine}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" />
-  </svg>`;
-}
-
 function openProgVariantCard(el) {
   const variant = el?.dataset?.variant;
   if (!variant) return;
 
   const data = getData();
-  const allSessions = Object.keys(data).map(Number).filter(n => !isNaN(n) && !data[n]?.wod).sort((a, b) => a - b);
-  const year = getProgYear();
-  const month = getProgMonth();
-  let sessions = allSessions;
-  if (year || month) {
-    sessions = sessions.filter(n => {
-      const d = parseSessionDate(data[n]?.date);
-      if (!d) return false;
-      if (year && String(d.getFullYear()) !== String(year)) return false;
-      if (month && String(d.getMonth() + 1) !== String(month)) return false;
-      return true;
-    });
-  }
+  const sessions = filterProgressSessions(data);
 
   const metric = getMetricForVariant(variant);
   const points = sessions.map(n => {
     const v = intensityValInSession(data[n], variant);
     return v == null ? null : { sess: n, date: data[n]?.date || '—', val: v };
-  }).filter(Boolean).sort((a, b) => a.sess - b.sess);
+  }).filter(Boolean);
 
   const latest = points.length ? points[points.length - 1] : null;
   const poolKey = getPoolKeyForVariant(variant) || '_other';
   const color = poolColorVar(poolKey).replace('var(', '').replace(')', '') ? poolColorVar(poolKey) : 'var(--muted)';
+  const vals = points.map(p => p.val);
+  const trendAll = vals.length >= 2 ? progTrendLabel(vals[0], vals[vals.length - 1], false) : null;
+  const trendLast = vals.length >= 2 ? progTrendLabel(vals[vals.length - 2], vals[vals.length - 1], false) : null;
 
   // Modal overlay (creazione lazy per evitare HTML patch invasive)
   let modal = document.getElementById('prog-variant-modal');
@@ -2542,8 +2554,7 @@ function openProgVariantCard(el) {
     ? (getLang() === 'en' ? 'Hold max (sec)' : 'Hold max (sec)')
     : (getLang() === 'en' ? 'Avg reps/set' : 'Media reps/set');
 
-  const values = points.map(p => p.val);
-  const density = densitySVG(values, el.dataset.color || color, 420, 160);
+  const chart = trendChartSVG(sessions, data, variant, el.dataset.color || color, 420, 160);
 
   const rows = points.map(p => {
     const vStr = intensityFormat(variant, p.val);
@@ -2561,6 +2572,14 @@ function openProgVariantCard(el) {
 
   modal.querySelector('#prog-variant-modal-title').textContent = `${tVariantByVariant(variant)} · ${intensityLbl}`;
   const latestStr = latest ? `${latest.date} · ${intensityFormat(variant, latest.val)}` : '—';
+  const statsRow = vals.length ? `
+    <div class="prog-stat-row" style="margin-top:10px">
+      <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${intensityFormat(variant, vals[0])}</div><div class="prog-stat-lbl">${getLang() === 'en' ? 'start' : 'inizio'}</div></div>
+      <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${intensityFormat(variant, vals[vals.length - 1])}</div><div class="prog-stat-lbl">${getLang() === 'en' ? 'current' : 'attuale'}</div></div>
+      ${trendLast ? `<div class="prog-stat"><div class="prog-stat-val" style="color:${trendLast.color}">${trendLast.label}</div><div class="prog-stat-lbl">Δ ${getLang() === 'en' ? 'last' : 'ultima'}</div></div>` : ''}
+      ${trendAll ? `<div class="prog-stat"><div class="prog-stat-val" style="color:${trendAll.color}">${trendAll.label}</div><div class="prog-stat-lbl">trend</div></div>` : ''}
+    </div>` : '';
+
   modal.querySelector('#prog-variant-modal-body').innerHTML = `
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px">
       <div style="min-width:0">
@@ -2569,7 +2588,8 @@ function openProgVariantCard(el) {
         <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px">Ultimo: ${latestStr}</div>
       </div>
     </div>
-    ${density}
+    ${chart}
+    ${statsRow}
     <div style="margin-top:12px">
       <div style="font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Valori per sessione</div>
       ${rows}
@@ -2704,8 +2724,9 @@ function renderProgressDensity() {
       }).filter(Boolean).sort((a, b) => a.sess - b.sess);
       if (!points.length) return;
       const latest = points[points.length - 1];
-      const values = points.map(p => p.val);
-      const density = densitySVG(values, color, 260, 62);
+      const vals = points.map(p => p.val);
+      const trend = vals.length >= 2 ? progTrendLabel(vals[0], vals[vals.length - 1], false) : null;
+      const chart = trendChartSVG(sessions, data, variant, color, 260, 62);
       const vLabel = tVariantByVariant(variant);
       sections.push(`
         <div class="prog-section" style="padding:12px;margin-bottom:14px;cursor:pointer" onclick="openProgVariantCard(this)" data-variant="${variant}" data-color="${color}">
@@ -2713,7 +2734,7 @@ function renderProgressDensity() {
             <div style="min-width:0">
               <div class="prog-variant-chip" style="border-color:${color};color:${color}">${vLabel}</div>
               <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3">
-                ${points.length} sessioni · Ultimo: ${latest.date}
+                ${points.length} sessioni · Ultimo: ${latest.date}${trend ? ` · <span style="color:${trend.color}">${trend.label}</span>` : ''}
               </div>
             </div>
             <div style="text-align:right;flex-shrink:0">
@@ -2721,7 +2742,7 @@ function renderProgressDensity() {
               <div style="font-family:var(--mono);font-size:10px;color:var(--muted)">intensità</div>
             </div>
           </div>
-          <div style="margin-top:10px">${density}</div>
+          <div style="margin-top:10px">${chart}</div>
         </div>
       `);
     });
@@ -2738,7 +2759,7 @@ function renderProgressDensity() {
       }).filter(Boolean).sort((a, b) => a.sess - b.sess);
       if (!points.length) return;
       const latest = points[points.length - 1];
-      const density = densitySVG(points.map(p => p.val), 'var(--muted)', 260, 62);
+      const chart = trendChartSVG(sessions, data, variant, 'var(--muted)', 260, 62);
       const vLabel = tVariantByVariant(variant);
       sections.push(`
         <div class="prog-section" style="padding:12px;margin-bottom:14px;cursor:pointer" onclick="openProgVariantCard(this)" data-variant="${variant}" data-color="var(--muted)">
@@ -2746,7 +2767,7 @@ function renderProgressDensity() {
           <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3">
             ${points.length} sessioni · Ultimo: ${latest.date}
           </div>
-          <div style="margin-top:10px">${density}</div>
+          <div style="margin-top:10px">${chart}</div>
         </div>
       `);
     });

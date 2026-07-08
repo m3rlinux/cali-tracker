@@ -163,7 +163,7 @@ Il verde (`--teal: #4dd9a0`) è riservato agli indicatori di progressione (frecc
 
 ## Decisioni di design
 - **Righe storico a due livelli**: variante in evidenza + nome gruppo piccolo sotto (niente "Gruppo (variante)" che andava a capo); colonna valori a destra con intensità/max in sub-riga. Una sola linea di separazione (le righe hanno border-bottom, gli header di pair nessun border)
-- **Grafici progressi per variante**: mini-grafici di **densità** (intensità) raggruppati per categoria. Filtri: <b>Tutte</b> / <b>Anno</b> / <b>Mese</b> + navigazione frecce su <b>ultimo anno</b> e <b>ultimo mese</b> (scorri avanti/indietro di mese/anno). Tap su un minigrafico → dettaglio con densità e lista delle sessioni filtrate (nessun scrub che blocca lo scrolling). Isometrie = Hold max, reps = Media reps/set.  
+- **Grafici progressi per variante**: mini-grafici **andamento** (linea su asse tempo = sessioni nel filtro, verticale = intensità) raggruppati per categoria. Filtri: **Tutto** / **Anno** / **Mese** + frecce. Tap → dettaglio con grafico + lista sessioni. Isometrie = Hold max, reps = Media reps/set.  
 - **Delta nello storico**: confronta con l'ultima sessione precedente in cui è comparso lo **stesso esercizio** (qualsiasi slot), via `findPrevExForVariant`. La freccia ↑/↓ nello storico indica ancora il cambio esercizio **allo slot** rispetto alla sessione immediatamente precedente
 - **Prefill / ★ Oggi**: `findLastDataForVariant` cerca la variante globalmente; al cambio variante nel form si caricano i dati storici (`onVariantChange`)
 - **Label intensità**: basata sulla media rep/set, non sul totale (10×4=forza, non ipertrofia)
