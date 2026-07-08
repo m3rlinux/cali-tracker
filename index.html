@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.23.0
+  Cali Tracker v3.24.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -214,19 +214,44 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 
 /* PROGRESS */
 #page-progress { padding: 16px; }
-.prog-section { margin-bottom: 24px; }
-.prog-title { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
-.prog-variant { margin: -6px 0 10px; }
-.prog-chart-wrap { padding-bottom: 22px; }
-.prog-chart { height: 80px; display: flex; align-items: flex-end; gap: 4px; }
-.prog-bar { flex: 1; border-radius: 4px 4px 0 0; min-height: 4px; position: relative; }
-.prog-bar-label { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: 9px; color: var(--muted); font-family: var(--mono); }
-.prog-val { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 9px; font-family: var(--mono); font-weight: 500; white-space: nowrap; }
-.prog-stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 6px; }
-.prog-stat { background: var(--surface); border-radius: 8px; padding: 10px; text-align: center; }
-.prog-stat-val { font-family: var(--mono); font-size: 18px; font-weight: 500; }
-.prog-stat-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
-.prog-pair-header { font-family: var(--mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; padding: 14px 0 6px; border-top: 1px solid var(--border); margin-top: 4px; }
+.prog-toolbar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.prog-filter-btn { background: var(--surface); border: 1px solid var(--border2); border-radius: 8px; padding: 6px 10px; font-size: 11px; font-family: var(--mono); color: var(--muted); cursor: pointer; }
+.prog-filter-btn.active { border-color: var(--accent); color: var(--accent); }
+.prog-pool { margin-bottom: 8px; }
+.prog-pool-header { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; background: none; border: none; border-top: 1px solid var(--border); padding: 14px 0 8px; margin-top: 4px; font-family: var(--mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; cursor: pointer; text-align: left; }
+.prog-pool-header:first-child { border-top: none; margin-top: 0; }
+.prog-pool-chevron { transition: transform .2s; color: var(--muted); }
+.prog-pool.collapsed .prog-pool-chevron { transform: rotate(-90deg); }
+.prog-pool.collapsed .prog-pool-body { display: none; }
+.prog-section { margin-bottom: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+.prog-variant-chip { display: inline-block; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border2); margin-bottom: 8px; }
+.prog-few-badge { font-size: 9px; font-family: var(--mono); color: var(--amber); text-transform: uppercase; letter-spacing: .04em; margin-left: 6px; }
+.prog-metric-tabs { display: flex; gap: 4px; margin-bottom: 10px; }
+.prog-metric-tab { background: var(--bg); border: 1px solid var(--border2); border-radius: 6px; padding: 4px 10px; font-size: 10px; font-family: var(--mono); color: var(--muted); cursor: pointer; }
+.prog-metric-tab.active { color: var(--text); border-color: var(--border2); }
+.prog-metric-panel { display: none; }
+.prog-metric-panel.active { display: block; }
+.prog-chart-scrub { position: relative; touch-action: none; user-select: none; }
+.prog-chart-plot { position: relative; height: 110px; margin-bottom: 4px; }
+.prog-y-ref { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--muted2); pointer-events: none; z-index: 1; }
+.prog-y-ref-lbl { position: absolute; right: 0; top: -14px; font-size: 8px; font-family: var(--mono); color: var(--muted2); }
+.prog-bars { position: absolute; inset: 0; display: flex; align-items: flex-end; gap: 3px; z-index: 2; }
+.prog-bar { flex: 1; border-radius: 4px 4px 0 0; min-width: 0; position: relative; }
+.prog-bar.miss { background: transparent !important; border: 1px dashed var(--border2); border-bottom: none; min-height: 8px !important; height: 8px !important; align-self: flex-end; }
+.prog-bar-val { position: absolute; left: 50%; transform: translateX(-50%); font-size: 9px; font-family: var(--mono); font-weight: 500; white-space: nowrap; pointer-events: none; }
+.prog-line-svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+.prog-scrub-v { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--text); opacity: 0; pointer-events: none; z-index: 4; transition: opacity .12s; }
+.prog-scrub-v.visible { opacity: .35; }
+.prog-scrub-v.snapped { opacity: .85; width: 2px; }
+.prog-scrub-float { position: absolute; bottom: 100%; transform: translateX(-50%); margin-bottom: 6px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 5px 8px; text-align: center; pointer-events: none; z-index: 5; white-space: nowrap; }
+.prog-scrub-float.hidden { display: none; }
+.prog-scrub-date { display: block; font-size: 10px; font-family: var(--mono); color: var(--text); }
+.prog-scrub-val { display: block; font-size: 11px; font-family: var(--mono); font-weight: 500; margin-top: 1px; }
+.prog-scrub-hint { font-size: 9px; color: var(--muted2); font-family: var(--mono); text-align: center; padding: 2px 0 4px; }
+.prog-stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; }
+.prog-stat { background: var(--bg); border-radius: 8px; padding: 8px 4px; text-align: center; }
+.prog-stat-val { font-family: var(--mono); font-size: 14px; font-weight: 500; }
+.prog-stat-lbl { font-size: 9px; color: var(--muted); margin-top: 2px; line-height: 1.2; }
 
 /* MODAL */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); display: none; align-items: center; justify-content: center; z-index: 100; padding: 24px; }
@@ -411,7 +436,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <div class="help-h">Storico</div>
       <p>Tocca una sessione per vedere i dettagli. <b>✎</b> la riapre in modifica, <b>✕</b> la elimina. <b>★</b> converte una sessione WOD in normale (entra nei progressi) e viceversa. I delta +/− confrontano con l'ultima volta che hai fatto <b>quello stesso esercizio</b> (in qualsiasi slot).</p>
       <div class="help-h">Progressi</div>
-      <p>Un grafico per ogni <b>variante</b> usata almeno due volte (raggruppate per categoria). Le barre seguono l'esercizio in tutte le sessioni e postazioni, non lo slot fisico.</p>
+      <p>Grafici per <b>variante</b>, raggruppati per categoria (sezioni apribili). Filtri in alto: tutte le sessioni, ultime 12, ultime 8 settimane, solo varianti dell'ultima sessione.</p>
+      <p><b>Scorri</b> sul grafico con il dito: una linea verticale mostra <b>data e valore</b> solo quando sei vicino a un punto. Nessun numero sessione sull'asse — solo la data nel popup. <b>Tap</b> su un punto → salta alla sessione nello storico.</p>
+      <p>Isometrie: tab <b>Max</b> / <b>Tot.</b> con linea PR o target 65%. Reps: tab <b>Tot.</b> / <b>Media/set</b> / <b>Cluster</b>. Oltre 8 sessioni: grafico a linea; altrimenti barre. Sessioni senza l'esercizio: tratto tratteggiato.</p>
       <div class="help-h">Lingua e dati</div>
       <p>Il badge <b>IT/EN</b> nell'header cambia la lingua dei nomi esercizi.</p>
       <p>I dati restano <b>solo su questo dispositivo</b>. Usa <b>↓ Esporta</b> / <b>↑ Importa</b> dal menu per backup o per passare a un altro dispositivo. L'app si aggiorna da sola senza toccare i dati.</p>
@@ -430,7 +457,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.23.0';
+const VERSION = '3.24.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -1974,12 +2001,269 @@ function editSessionFromHistory(e, n) {
 
 
 // ── PROGRESS ──
-// Grafici per variante (globale): seguono l'esercizio, non lo slot fisico.
+const KEY_PROG_FILTER = 'cali_prog_filter';
+const KEY_PROG_COLLAPSED = 'cali_prog_collapsed';
+let _progChartId = 0;
+
+function getProgFilter() { return localStorage.getItem(KEY_PROG_FILTER) || 'all'; }
+function setProgFilter(f) { localStorage.setItem(KEY_PROG_FILTER, f); renderProgress(); }
+
+function getProgCollapsed() {
+  try { return JSON.parse(localStorage.getItem(KEY_PROG_COLLAPSED) || '{}'); } catch(e) { return {}; }
+}
+function toggleProgPool(poolKey) {
+  const c = getProgCollapsed();
+  c[poolKey] = !c[poolKey];
+  localStorage.setItem(KEY_PROG_COLLAPSED, JSON.stringify(c));
+  renderProgress();
+}
+
+function parseSessionDate(dateStr) {
+  if (!dateStr || dateStr === '—') return null;
+  const m = dateStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+  if (!m) return null;
+  let y = parseInt(m[3], 10);
+  if (y < 100) y += 2000;
+  return new Date(y, parseInt(m[2], 10) - 1, parseInt(m[1], 10));
+}
+
+function getProgressSessions(data) {
+  const all = Object.keys(data).map(Number).filter(n => !isNaN(n) && !data[n]?.wod).sort((a, b) => a - b);
+  const f = getProgFilter();
+  if (f === '12sess') return all.slice(-12);
+  if (f === '8weeks') {
+    const cutoff = Date.now() - 8 * 7 * 24 * 60 * 60 * 1000;
+    return all.filter(n => {
+      const d = parseSessionDate(data[n]?.date);
+      return d && d.getTime() >= cutoff;
+    });
+  }
+  return all;
+}
+
+function variantValInSession(s, variant, kind) {
+  const found = findExInSession(s, variant);
+  if (!found) return null;
+  const ex = found.ex;
+  const metric = getMetricForVariant(variant);
+  if (kind === 'pr') return ex.hold_max ?? null;
+  if (kind === 'tot' || (kind === 'reps' && metric === 'time')) {
+    const tot = ex.sets?.reduce((a, [t]) => a + (t || 0), 0) ?? 0;
+    return tot > 0 ? tot : null;
+  }
+  if (kind === 'avg') {
+    const avg = getRepsAvgFromSets(ex.sets, numSetsFor(found.stationKey, ex));
+    return avg > 0 ? Math.round(avg * 10) / 10 : null;
+  }
+  if (kind === 'cluster') {
+    const cl = ex.sets?.reduce((a, [f, c]) => a + (c || 0), 0) ?? 0;
+    return cl > 0 ? cl : null;
+  }
+  const tot = ex.sets?.reduce((a, [f, c]) => a + (f || 0) + (c || 0), 0) ?? 0;
+  return tot > 0 ? tot : null;
+}
+
+function lastSessionWithVariant(data, sessions, variant) {
+  for (let i = sessions.length - 1; i >= 0; i--) {
+    const s = data[sessions[i]];
+    const found = findExInSession(s, variant);
+    if (!found) continue;
+    const ex = found.ex;
+    if (ex.hold_max != null || ex.sets?.some(set => set && (set[0] != null || set[1] != null))) return sessions[i];
+  }
+  return -1;
+}
+
+function progTrendLabel(first, last, invert) {
+  if (first == null || last == null) return { label: '—', color: 'var(--muted)' };
+  const d = last - first;
+  if (d === 0) return { label: '=', color: 'var(--muted)' };
+  const good = invert ? d < 0 : d > 0;
+  return { label: (d > 0 ? '+' : '') + d, color: good ? 'var(--teal)' : 'var(--coral)' };
+}
+
+function scrubChartHTML({ sessions, data, valFn, color, unit, refVal, refLabel, lineMode }) {
+  const points = sessions.map((n, i) => {
+    const v = valFn(data[n]);
+    return { i, sess: n, date: data[n]?.date || '—', val: v, has: v != null, unit };
+  });
+  const defined = points.filter(p => p.has).map(p => p.val);
+  if (!defined.length) return '';
+  const fewData = defined.length < 2;
+  const yMax = Math.max(...defined, refVal || 0, 1);
+  const yPct = v => (v / yMax) * 100;
+  const chartId = 'pc' + (++_progChartId);
+  const ptsJson = JSON.stringify(points).replace(/"/g, '&quot;');
+
+  let plotInner = '';
+  if (refVal != null && refVal > 0) {
+    plotInner += `<div class="prog-y-ref" style="bottom:${yPct(refVal)}%"><span class="prog-y-ref-lbl">${refLabel || 'PR'} ${refVal}${unit}</span></div>`;
+  }
+
+  if (lineMode) {
+    const w = 100, h = 100;
+    const slotW = w / points.length;
+    let pathD = '';
+    points.forEach((p, idx) => {
+      if (!p.has) return;
+      const x = (idx + 0.5) * slotW;
+      const y = h - yPct(p.val);
+      pathD += (pathD ? ' L' : 'M') + x + ',' + y;
+    });
+    const dots = points.map((p, idx) => {
+      if (!p.has) return '';
+      const x = (idx + 0.5) * slotW;
+      const y = h - yPct(p.val);
+      return `<circle cx="${x}" cy="${y}" r="2.8" fill="${color}" data-sess="${p.sess}"/>`;
+    }).join('');
+    plotInner += `<svg class="prog-line-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="${pathD}" fill="none" stroke="${color}" stroke-width="1.5" vector-effect="non-scaling-stroke"/><g>${dots}</g></svg>`;
+  } else {
+    const bars = points.map(p => {
+      if (!p.has) return `<div class="prog-bar miss"></div>`;
+      const h = Math.max(8, yPct(p.val));
+      const valInside = h > 28;
+      const valStyle = valInside ? `bottom:4px;color:#0c0c0c` : `bottom:${h + 4}px;color:${color}`;
+      return `<div class="prog-bar" style="background:${color};height:${h}%" data-sess="${p.sess}"><span class="prog-bar-val" style="${valStyle}">${p.val}</span></div>`;
+    }).join('');
+    plotInner += `<div class="prog-bars">${bars}</div>`;
+  }
+
+  const first = defined[0];
+  const last = defined[defined.length - 1];
+  const prev = defined.length > 1 ? defined[defined.length - 2] : null;
+  const trendAll = progTrendLabel(first, last, false);
+  const trendLast = progTrendLabel(prev, last, false);
+
+  return `<div class="prog-chart-scrub" data-chart-id="${chartId}" data-points="${ptsJson}">
+    <div class="prog-chart-plot">${plotInner}<div class="prog-scrub-v"></div></div>
+    <div class="prog-scrub-float hidden"><span class="prog-scrub-date"></span><span class="prog-scrub-val"></span></div>
+    <div class="prog-scrub-hint">${fewData ? (getLang() === 'en' ? 'Few data points · ' : 'Pochi dati · ') : ''}${getLang() === 'en' ? 'Swipe for date' : 'Scorri per la data'} · ${getLang() === 'en' ? 'tap → history' : 'tap → storico'}</div>
+    <div class="prog-stat-row">
+      <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${first}${unit}</div><div class="prog-stat-lbl">${getLang() === 'en' ? 'start' : 'inizio'}</div></div>
+      <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${last}${unit}</div><div class="prog-stat-lbl">${getLang() === 'en' ? 'current' : 'attuale'}</div></div>
+      <div class="prog-stat"><div class="prog-stat-val" style="color:${trendLast.color}">${trendLast.label}</div><div class="prog-stat-lbl">Δ ${getLang() === 'en' ? 'last' : 'ultima'}</div></div>
+      <div class="prog-stat"><div class="prog-stat-val" style="color:${trendAll.color}">${trendAll.label}</div><div class="prog-stat-lbl">trend</div></div>
+    </div>
+  </div>`;
+}
+
+function metricTabsHTML(tabs, groupId) {
+  const btns = tabs.map((t, i) =>
+    `<button type="button" class="prog-metric-tab${i === 0 ? ' active' : ''}" style="${i === 0 ? 'border-color:' + t.color : ''}" data-group="${groupId}" data-tab="${t.id}" onclick="switchProgMetricTab(this)">${t.label}</button>`
+  ).join('');
+  const panels = tabs.map((t, i) =>
+    `<div class="prog-metric-panel${i === 0 ? ' active' : ''}" data-group="${groupId}" data-panel="${t.id}">${t.html}</div>`
+  ).join('');
+  return `<div class="prog-metric-tabs">${btns}</div>${panels}`;
+}
+
+function switchProgMetricTab(btn) {
+  const g = btn.dataset.group, tab = btn.dataset.tab;
+  document.querySelectorAll(`.prog-metric-tab[data-group="${g}"]`).forEach(b => {
+    b.classList.toggle('active', b === btn);
+    if (b === btn) b.style.borderColor = b.closest('.prog-section')?.querySelector('.prog-variant-chip')?.style.borderColor || 'var(--border2)';
+    else b.style.borderColor = '';
+  });
+  document.querySelectorAll(`.prog-metric-panel[data-group="${g}"]`).forEach(p => p.classList.toggle('active', p.dataset.panel === tab));
+  initProgScrubbers();
+}
+
+function initProgScrubbers() {
+  document.querySelectorAll('.prog-chart-scrub').forEach(el => {
+    if (el._scrubInit) return;
+    el._scrubInit = true;
+    const plot = el.querySelector('.prog-chart-plot');
+    const lineEl = el.querySelector('.prog-scrub-v');
+    const floatEl = el.querySelector('.prog-scrub-float');
+    const dateEl = floatEl.querySelector('.prog-scrub-date');
+    const valEl = floatEl.querySelector('.prog-scrub-val');
+    const points = JSON.parse(el.dataset.points.replace(/&quot;/g, '"'));
+    let snappedSess = null;
+    let startX = 0;
+
+    function update(clientX) {
+      const rect = plot.getBoundingClientRect();
+      const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+      const slotW = rect.width / points.length;
+      let best = null, bestDist = Infinity;
+      points.forEach((p, i) => {
+        if (!p.has) return;
+        const cx = (i + 0.5) * slotW;
+        const dist = Math.abs(x - cx);
+        if (dist < bestDist) { bestDist = dist; best = { p, cx }; }
+      });
+      lineEl.style.left = x + 'px';
+      lineEl.classList.add('visible');
+      if (best && bestDist <= slotW * 0.45) {
+        lineEl.style.left = best.cx + 'px';
+        lineEl.classList.add('snapped');
+        floatEl.classList.remove('hidden');
+        floatEl.style.left = best.cx + 'px';
+        dateEl.textContent = best.p.date;
+        valEl.textContent = best.p.val + (best.p.unit || '');
+        valEl.style.color = plot.closest('.prog-section')?.querySelector('.prog-variant-chip')?.style.color || 'var(--text)';
+        snappedSess = best.p.sess;
+      } else {
+        lineEl.classList.remove('snapped');
+        floatEl.classList.add('hidden');
+        snappedSess = null;
+      }
+    }
+    function end() {
+      lineEl.classList.remove('visible', 'snapped');
+      floatEl.classList.add('hidden');
+    }
+
+    plot.addEventListener('pointerdown', e => { startX = e.clientX; plot.setPointerCapture(e.pointerId); update(e.clientX); });
+    plot.addEventListener('pointermove', e => { if (plot.hasPointerCapture(e.pointerId)) update(e.clientX); });
+    plot.addEventListener('pointerup', e => {
+      if (snappedSess != null && Math.abs(e.clientX - startX) < 10) openHistorySession(snappedSess);
+      plot.releasePointerCapture(e.pointerId);
+      end();
+    });
+    plot.addEventListener('pointercancel', end);
+  });
+}
+
+function openHistorySession(sessNum) {
+  switchTab('history');
+  setTimeout(() => {
+    document.querySelectorAll('#history-list .history-sess').forEach(card => {
+      const numEl = card.querySelector('.history-sess-num');
+      const m = numEl?.textContent.match(/^Sessione (\d+)/);
+      if (!m || Number(m[1]) !== sessNum) return;
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const head = card.querySelector('.history-head');
+      const body = card.querySelector('.history-body');
+      if (head && body && !body.classList.contains('open')) toggleHistory(head);
+    });
+  }, 80);
+}
+
 function renderProgress() {
   const data = getData();
-  const sessions = Object.keys(data).map(Number).filter(n => !isNaN(n) && !data[n]?.wod).sort((a,b) => a-b);
+  const allSessions = Object.keys(data).map(Number).filter(n => !isNaN(n) && !data[n]?.wod).sort((a, b) => a - b);
   const cont = document.getElementById('progress-content');
-  if (sessions.length < 2) { cont.innerHTML = '<div class="history-empty">Inserisci almeno 2 sessioni<br>per vedere i progressi.</div>'; return; }
+  if (allSessions.length < 1) {
+    cont.innerHTML = '<div class="history-empty">Inserisci almeno 1 sessione<br>per vedere i progressi.</div>';
+    return;
+  }
+
+  const sessions = getProgressSessions(data);
+  if (sessions.length < 1) {
+    cont.innerHTML = '<div class="history-empty">Nessuna sessione nel periodo selezionato.</div>';
+    return;
+  }
+
+  const filter = getProgFilter();
+  const lastSess = allSessions[allSessions.length - 1];
+  const activeVariants = new Set();
+  if (filter === 'active' && lastSess != null) {
+    Object.keys(data[lastSess] || {}).filter(k => /^p\d+s\d+$/.test(k)).forEach(sk => {
+      const v = data[lastSess][sk]?.variant;
+      if (v) activeVariants.add(v);
+    });
+  }
 
   const variantsSeen = new Set();
   sessions.forEach(n => {
@@ -1989,53 +2273,22 @@ function renderProgress() {
     });
   });
 
-  function variantValInSession(s, variant, kind) {
-    const found = findExInSession(s, variant);
-    if (!found) return null;
-    const ex = found.ex;
-    const metric = getMetricForVariant(variant);
-    if (kind === 'pr') return ex.hold_max ?? null;
-    if (metric === 'time') {
-      const tot = ex.sets?.reduce((a, [t]) => a + (t || 0), 0) ?? 0;
-      return tot > 0 ? tot : null;
-    }
-    const tot = ex.sets?.reduce((a, [f, c]) => a + (f || 0) + (c || 0), 0) ?? 0;
-    return tot > 0 ? tot : null;
-  }
+  const collapsed = getProgCollapsed();
+  const lineMode = sessions.length > 8;
+  _progChartId = 0;
 
-  function chartHTML(title, color, valFn, invertTrend) {
-    const vals = sessions.map(n => valFn(data[n]));
-    if (vals.every(v => v == null)) return '';
-    const defined = vals.filter(v => v != null);
-    if (defined.length < 2) return '';
-    const maxV = Math.max(...defined), minV = Math.min(...defined);
-    const tFirst = defined[0];
-    const tLast = defined[defined.length - 1];
-    const trend = tLast - tFirst;
-    const tLabel = trend === 0 ? '=' : (trend > 0 ? '+' + trend : '' + trend);
-    const tColor = trend === 0 ? 'var(--muted)' :
-      (invertTrend ? (trend < 0 ? 'var(--teal)' : 'var(--coral)') : (trend > 0 ? 'var(--teal)' : 'var(--coral)'));
-
-    const bars = sessions.map((n, i) => {
-      const v = vals[i];
-      if (v == null) return `<div class="prog-bar" style="background:var(--border);height:4px"><div class="prog-bar-label">S${n}</div></div>`;
-      const h = maxV === minV ? 50 : ((v - minV) / (maxV - minV)) * 60 + 10;
-      return `<div class="prog-bar" style="background:${color};height:${h}px"><div class="prog-val" style="color:${color}">${v}</div><div class="prog-bar-label">S${n}</div></div>`;
-    }).join('');
-
-    return `<div class="prog-section">
-      <div class="prog-title">${title}</div>
-      <div class="prog-chart-wrap"><div class="prog-chart">${bars}</div></div>
-      <div class="prog-stat-row">
-        <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${defined[0]}</div><div class="prog-stat-lbl">inizio</div></div>
-        <div class="prog-stat"><div class="prog-stat-val" style="color:${color}">${defined[defined.length-1]}</div><div class="prog-stat-lbl">attuale</div></div>
-        <div class="prog-stat"><div class="prog-stat-val" style="color:${tColor}">${tLabel}</div><div class="prog-stat-lbl">trend</div></div>
-      </div>
-    </div>`;
-  }
+  const fLabels = getLang() === 'en'
+    ? { all: 'All', s12: '12 sess.', w8: '8 weeks', active: 'Active' }
+    : { all: 'Tutte', s12: '12 sess.', w8: '8 sett.', active: 'Attive' };
+  const toolbar = `<div class="prog-toolbar">
+    ${['all', '12sess', '8weeks', 'active'].map(f =>
+      `<button type="button" class="prog-filter-btn${filter === f ? ' active' : ''}" onclick="setProgFilter('${f}')">${f === 'all' ? fLabels.all : f === '12sess' ? fLabels.s12 : f === '8weeks' ? fLabels.w8 : fLabels.active}</button>`
+    ).join('')}
+  </div>`;
 
   const byPool = {};
   [...variantsSeen].forEach(v => {
+    if (filter === 'active' && !activeVariants.has(v)) return;
     const pk = getPoolKeyForVariant(v) || '_other';
     if (!byPool[pk]) byPool[pk] = [];
     byPool[pk].push(v);
@@ -2046,28 +2299,62 @@ function renderProgress() {
   poolOrder.forEach(poolKey => {
     const vars = byPool[poolKey];
     if (!vars?.length) return;
-    vars.sort((a, b) => (VARIANT_REGISTRY[a]?.variantIndex ?? 0) - (VARIANT_REGISTRY[b]?.variantIndex ?? 0));
+    vars.sort((a, b) => lastSessionWithVariant(data, sessions, b) - lastSessionWithVariant(data, sessions, a));
     const color = poolColorVar(poolKey);
-    const charts = [];
+    const isCollapsed = !!collapsed[poolKey];
+    const blocks = [];
+    let groupSeq = 0;
+
     vars.forEach(variant => {
       const metric = getMetricForVariant(variant);
       const vLabel = tVariantByVariant(variant);
+      const groupId = 'pg' + (groupSeq++);
+
       if (metric === 'time') {
-        const maxC = chartHTML(`${vLabel} — max`, color, s => variantValInSession(s, variant, 'pr'), false);
-        const totC = chartHTML(`${vLabel} — tot.`, color, s => variantValInSession(s, variant, 'tot'), false);
-        if (maxC) charts.push(maxC);
-        if (totC) charts.push(totC);
+        const prMax = Math.max(...sessions.map(n => variantValInSession(data[n], variant, 'pr') || 0));
+        const tabs = [
+          { id: 'max', label: 'Max', color, html: scrubChartHTML({
+            sessions, data, color, unit: '"', lineMode, refVal: prMax > 0 ? prMax : null, refLabel: 'PR',
+            valFn: s => variantValInSession(s, variant, 'pr')
+          })},
+          { id: 'tot', label: getLang() === 'en' ? 'Total' : 'Tot.', color, html: scrubChartHTML({
+            sessions, data, color, unit: '"', lineMode,
+            refVal: prMax > 0 ? Math.round(prMax * 0.65) : null, refLabel: '65%',
+            valFn: s => variantValInSession(s, variant, 'tot')
+          })}
+        ].filter(t => t.html);
+        if (!tabs.length) return;
+        blocks.push(`<div class="prog-section">
+          <div class="prog-variant-chip" style="border-color:${color};color:${color}">${vLabel}</div>
+          ${metricTabsHTML(tabs, groupId)}
+        </div>`);
       } else {
-        const c = chartHTML(`${vLabel} — reps`, color, s => variantValInSession(s, variant, 'reps'), false);
-        if (c) charts.push(c);
+        const tabs = [
+          { id: 'reps', label: 'Tot.', color, html: scrubChartHTML({ sessions, data, color, unit: '', lineMode, valFn: s => variantValInSession(s, variant, 'reps') })},
+          { id: 'avg', label: getLang() === 'en' ? 'Avg/set' : 'Media/set', color, html: scrubChartHTML({ sessions, data, color, unit: '', lineMode, valFn: s => variantValInSession(s, variant, 'avg') })},
+          { id: 'cl', label: 'Cluster', color, html: scrubChartHTML({ sessions, data, color, unit: '', lineMode, valFn: s => variantValInSession(s, variant, 'cluster') }) }
+        ].filter(t => t.html);
+        if (!tabs.length) return;
+        blocks.push(`<div class="prog-section">
+          <div class="prog-variant-chip" style="border-color:${color};color:${color}">${vLabel}</div>
+          ${metricTabsHTML(tabs, groupId)}
+        </div>`);
       }
     });
-    if (charts.length) {
-      sections.push(`<div class="prog-pair-header" style="color:${color}">${getPoolLabel(poolKey)}</div>` + charts.join(''));
+
+    if (blocks.length) {
+      sections.push(`<div class="prog-pool${isCollapsed ? ' collapsed' : ''}">
+        <button type="button" class="prog-pool-header" style="color:${color}" onclick="toggleProgPool('${poolKey}')">
+          <span>${getPoolLabel(poolKey)}</span>
+          <span class="prog-pool-chevron">▾</span>
+        </button>
+        <div class="prog-pool-body">${blocks.join('')}</div>
+      </div>`);
     }
   });
 
-  cont.innerHTML = sections.join('') || '<div class="history-empty">Dati insufficienti.</div>';
+  cont.innerHTML = toolbar + (sections.join('') || '<div class="history-empty">Dati insufficienti.</div>');
+  initProgScrubbers();
 }
 
 // ── LANGUAGE ──
