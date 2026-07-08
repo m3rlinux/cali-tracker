@@ -688,10 +688,6 @@ function buildSteps() {
   buildVariantRegistry();
 }
 
-function refreshStepLabels() {
-  STEPS.forEach(step => { step.label = getPairLabel(step.px); });
-}
-
 function getGroupEntry(stationKey) {
   return Object.entries(EXERCISES).find(([, g]) => g.station === stationKey) || [null, null];
 }
