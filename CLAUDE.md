@@ -6,14 +6,14 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.18.4
+- **Versione corrente:** 3.20.0
 - **fetchWod cache-bust**: `★ Oggi` scarica `wod.json?t=Date.now()` con `cache:'no-store'` → wod sempre fresco a prescindere dalla versione del SW; fallback a `wod.json` (cache SW) se offline
 - **SW fetch JSON/manifest**: network-first con `fetch(req, {cache:'reload'})` per bypassare la cache HTTP del browser (GitHub Pages serve con `max-age=600`); senza, wod/exercises aggiornati arriverebbero solo dopo ~10 min. Con il fix `★ Oggi` prende sempre il wod fresco (vale dai dispositivi con SW ≥ 3.18.2)
 
 ### Stazioni opzionali
 - Un gruppo in exercises.json con `"optional": true` (es. `handstand_s3`, station `p0s3`) compare in una coppia **solo se la sessione/wod lo contiene** (`isOptionalStation` / `stationActive` / `activeStations`); filtrato in `renderPairStep`, `pairTimingHTML`, `collectStep`. Le sessioni WOD sono escluse dall'ereditarietà, quindi p0s3 di fatto appare solo via wod
-- **Gruppi `pool` + `variants_from`**: un gruppo "pool" ha `variants`/`metrics` ma **nessuna `station`** (es. `handstand_skill`, `handstand_hold`); non genera step (`buildSteps` lo salta). Un gruppo-stazione può dichiarare `"variants_from": ["handstand_skill","handstand_hold"]` (chiavi di gruppo o station key) e `resolveGroupKey()`/`resolveStation()` uniscono a runtime varianti, metriche e traduzioni EN (nessuna duplicazione né drift). Tutti gli helper (`getVariants`/`getMetric`/`getGroupVariants`/`tVariant`) passano dal resolver
-- **P0 = 3 slot intercambiabili**: `handstand_s1`/`s2`/`s3` (station p0s1/p0s2/p0s3, l'ultima opzionale) ereditano tutte lo stesso pool (skill + hold) → ogni slot può essere qualsiasi esercizio di verticale; la metrica (reps/time) dipende dalla variante scelta. In exercises.en.json questi gruppi hanno solo `label`
+- **Gruppi `pool` (categorie)**: gruppi con `variants`/`metrics` e **nessuna `station`** (es. `tirata_verticale`, `core`). Gli slot (`p1_s1`, …) non hanno varianti proprie: ereditano le categorie **assegnate alla postazione** via `cali_category_layout` in localStorage (default: layout palestra originale). `resolveStation(stationKey)` unisce i pool della coppia `px`; select con `<optgroup>` per categoria. Modale **⚙ Layout categorie** (menu utente o pulsante nell'header coppia): ogni categoria è assegnata a una sola postazione P0–P4
+- **Lookup per variante (globale)**: `VARIANT_REGISTRY` + `findLastDataForVariant` / `findPrevExForVariant` — storico, ★ Oggi, delta e grafici seguono la **variante**, non lo slot: si può spostare una categoria su un'altra postazione senza perdere progressi
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
@@ -101,14 +101,18 @@ In v3.0.0 tutte le varianti sono state tradotte in italiano (flag `cali_variants
 | p0s2 | handstand_s2 | Verticale 2 |
 | p0s3 | handstand_s3 | Verticale 3 (opzionale) |
 | — | handstand_skill / handstand_hold | pool varianti (skill / hold), senza station |
-| p1s1 | tirata_verticale | Tirata verticale |
-| p1s2 | gambe_anteriore | Gambe anteriore |
-| p2s1 | spinta_orizzontale | Spinta orizzontale |
-| p2s2 | core | Core |
-| p3s1 | tirata_orizzontale | Tirata orizzontale |
-| p3s2 | gambe_posteriore | Gambe posteriore |
-| p4s1 | spinta_verticale | Spinta verticale |
-| p4s2 | catena_posteriore | Catena posteriore |
+| p1s1 | p1_s1 | P1 — slot 1 |
+| p1s2 | p1_s2 | P1 — slot 2 |
+| — | tirata_verticale / gambe_anteriore | pool P1, senza station |
+| p2s1 | p2_s1 | P2 — slot 1 |
+| p2s2 | p2_s2 | P2 — slot 2 |
+| — | spinta_orizzontale / core | pool P2, senza station |
+| p3s1 | p3_s1 | P3 — slot 1 |
+| p3s2 | p3_s2 | P3 — slot 2 |
+| — | tirata_orizzontale / gambe_posteriore | pool P3, senza station |
+| p4s1 | p4_s1 | P4 — slot 1 |
+| p4s2 | p4_s2 | P4 — slot 2 |
+| — | spinta_verticale / catena_posteriore | pool P4, senza station |
 
 ### Colori pair
 ```css
@@ -159,11 +163,9 @@ Il verde (`--teal: #4dd9a0`) è riservato agli indicatori di progressione (frecc
 
 ## Decisioni di design
 - **Righe storico a due livelli**: variante in evidenza + nome gruppo piccolo sotto (niente "Gruppo (variante)" che andava a capo); colonna valori a destra con intensità/max in sub-riga. Una sola linea di separazione (le righe hanno border-bottom, gli header di pair nessun border)
-- **Freccia avanzamento variante nei grafici: teal** (non viola — `--purple` è identico a `--p0` e creava ambiguità); regressione resta coral
-- **Cambio variante evidenziato**: nei grafici le barre delle varianti precedenti hanno `opacity:.3` (altezze non confrontabili) e la variante corrente è un chip su riga propria sotto il titolo; nello storico la transizione "↑/↓ da <variante precedente>" è su riga propria sotto il gruppo
-- **Frecce ↑↓ nei grafici**: solo per cambio variante atletica (indice nella lista `variants`), mai per cambio `station`
-- **Delta nello storico**: azzerato quando cambia variante o station (nessun confronto cross-variante)
-- **Cluster nei grafici**: rimosso — informazione già leggibile dallo storico
+- **Grafici progressi per variante**: un grafico per ogni variante usata ≥2 volte, raggruppata per pool/categoria; i valori seguono l'esercizio in qualsiasi slot (`findExInSession`). Nessuna barra smorzata per cambio variante nello stesso grafico
+- **Delta nello storico**: confronta con l'ultima sessione precedente in cui è comparso lo **stesso esercizio** (qualsiasi slot), via `findPrevExForVariant`. La freccia ↑/↓ nello storico indica ancora il cambio esercizio **allo slot** rispetto alla sessione immediatamente precedente
+- **Prefill / ★ Oggi**: `findLastDataForVariant` cerca la variante globalmente; al cambio variante nel form si caricano i dati storici (`onVariantChange`)
 - **Label intensità**: basata sulla media rep/set, non sul totale (10×4=forza, non ipertrofia)
 - **Pre-carica valori**: nuova sessione eredita variante e valori dalla sessione precedente
 - **Modifiche sessione**: stessa UI di inserimento, header ambra `✎ modifica`
