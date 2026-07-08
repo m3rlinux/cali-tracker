@@ -4,7 +4,7 @@
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
 */
-const CACHE_VERSION = '3.25.0'; // Update this to invalidate old caches
+const CACHE_VERSION = '3.25.1'; // Update this to invalidate old caches
 const CACHE_NAME = `cali-tracker-${CACHE_VERSION}`;
 const ASSETS = [
   './',
@@ -46,9 +46,27 @@ self.addEventListener('activate', e => {
   );
 });
 
-// Fetch: cache-first for assets, network-first for JSON data files
+// Fetch: network-first for app shell + JSON; cache-first for static assets
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
+  const isAppShell = e.request.mode === 'navigate'
+    || url.pathname.endsWith('/index.html')
+    || url.pathname.endsWith('/cali-tracker')
+    || url.pathname.endsWith('/cali-tracker/');
+
+  if (isAppShell) {
+    e.respondWith(
+      fetch(e.request, { cache: 'no-store' })
+        .then(res => {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+          return res;
+        })
+        .catch(() => caches.match(e.request).then(c => c || caches.match('./index.html')))
+    );
+    return;
+  }
+
   // Always revalidate JSON data (exercises.json, exercises.en.json) and the
   // manifest, così cambi a nome/icone vengono letti subito dal browser
   // (l'auto-update PWA non parte se il manifest è servito stantio dalla cache)

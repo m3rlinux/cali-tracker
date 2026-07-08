@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.25.0
+  Cali Tracker v3.25.1
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -467,7 +467,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.25.0';
+const VERSION = '3.25.1';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -3116,9 +3116,25 @@ let _tempFormRestore = null;
 // ── SERVICE WORKER ──
 const SW_POLL_INTERVAL = 15 * 60 * 1000;
 
+async function checkRemoteAppVersion() {
+  try {
+    const res = await fetch('index.html?vc=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) return;
+    const html = await res.text();
+    const m = html.match(/const VERSION = '([^']+)'/);
+    if (m && m[1] !== VERSION) {
+      if (window._swReg) await window._swReg.update();
+      saveTempState();
+      window.location.reload();
+    }
+  } catch (e) { /* offline */ }
+}
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').then(reg => {
     window._swReg = reg;
+    reg.update();
+    checkRemoteAppVersion();
     // Poll the server for a new sw.js: a changed CACHE_VERSION triggers
     // install → activate → SW_UPDATED → reload
     setInterval(() => reg.update(), SW_POLL_INTERVAL);
@@ -3126,7 +3142,10 @@ if ('serviceWorker' in navigator) {
 
   // Check for updates whenever the app comes back to the foreground
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && window._swReg) window._swReg.update();
+    if (document.visibilityState === 'visible' && window._swReg) {
+      window._swReg.update();
+      checkRemoteAppVersion();
+    }
   });
 
   navigator.serviceWorker.addEventListener('message', e => {
