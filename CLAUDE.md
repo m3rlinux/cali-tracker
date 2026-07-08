@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.24.4
+- **Versione corrente:** 3.24.5
 - **fetchWod cache-bust**: `★ Oggi` scarica `wod.json?t=Date.now()` con `cache:'no-store'` → wod sempre fresco a prescindere dalla versione del SW; fallback a `wod.json` (cache SW) se offline
 - **SW fetch JSON/manifest**: network-first con `fetch(req, {cache:'reload'})` per bypassare la cache HTTP del browser (GitHub Pages serve con `max-age=600`); senza, wod/exercises aggiornati arriverebbero solo dopo ~10 min. Con il fix `★ Oggi` prende sempre il wod fresco (vale dai dispositivi con SW ≥ 3.18.2)
 
@@ -163,7 +163,7 @@ Il verde (`--teal: #4dd9a0`) è riservato agli indicatori di progressione (frecc
 
 ## Decisioni di design
 - **Righe storico a due livelli**: variante in evidenza + nome gruppo piccolo sotto (niente "Gruppo (variante)" che andava a capo); colonna valori a destra con intensità/max in sub-riga. Una sola linea di separazione (le righe hanno border-bottom, gli header di pair nessun border)
-- **Grafici progressi per variante**: mini-grafici di **densità** (intensità) raggruppati per categoria. Filtri: <b>Attive</b> + navigazione frecce su <b>ultimo anno</b> e <b>ultimo mese</b> (scorri avanti/indietro di mese/anno). Tap su un minigrafico → dettaglio con densità e lista delle sessioni filtrate (nessun scrub che blocca lo scrolling). Isometrie = Hold max, reps = Media reps/set.  
+- **Grafici progressi per variante**: mini-grafici di **densità** (intensità) raggruppati per categoria. Filtri: <b>Tutte</b> / <b>Anno</b> / <b>Mese</b> + navigazione frecce su <b>ultimo anno</b> e <b>ultimo mese</b> (scorri avanti/indietro di mese/anno). Tap su un minigrafico → dettaglio con densità e lista delle sessioni filtrate (nessun scrub che blocca lo scrolling). Isometrie = Hold max, reps = Media reps/set.  
 - **Delta nello storico**: confronta con l'ultima sessione precedente in cui è comparso lo **stesso esercizio** (qualsiasi slot), via `findPrevExForVariant`. La freccia ↑/↓ nello storico indica ancora il cambio esercizio **allo slot** rispetto alla sessione immediatamente precedente
 - **Prefill / ★ Oggi**: `findLastDataForVariant` cerca la variante globalmente; al cambio variante nel form si caricano i dati storici (`onVariantChange`)
 - **Label intensità**: basata sulla media rep/set, non sul totale (10×4=forza, non ipertrofia)

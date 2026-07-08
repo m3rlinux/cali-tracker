@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.24.4
+  Cali Tracker v3.24.5
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -433,7 +433,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <p>Tocca una sessione per vedere i dettagli. <b>✎</b> la riapre in modifica, <b>✕</b> la elimina. <b>★</b> converte una sessione WOD in normale (entra nei progressi) e viceversa. I delta +/− confrontano con l'ultima volta che hai fatto <b>quello stesso esercizio</b> (in qualsiasi slot).</p>
       <div class="help-h">Progressi</div>
       <p>Mini-grafici di <b>densità</b> (intensità) per <b>variante</b>, raggruppati per categoria.</p>
-      <p>In alto: <b>Attive</b> + navigazione <b>freccette</b> su <b>ultimo anno</b> e <b>ultimo mese</b> (scorri avanti/indietro di mese/anno). <b>Tap</b> su un minigrafico → si apre il dettaglio con densità + lista delle sessioni filtrate. Lo scorrimento non viene bloccato dai touch sul grafico.</p>
+      <p>In alto: <b>Tutte</b> / <b>Anno</b> / <b>Mese</b> + navigazione <b>freccette</b> su <b>ultimo anno</b> e <b>ultimo mese</b> (scorri avanti/indietro di mese/anno). <b>Tap</b> su un minigrafico → si apre il dettaglio con densità + lista delle sessioni filtrate. Lo scorrimento non viene bloccato dai touch sul grafico.</p>
       <p>Intensità: isometrie = <b>Hold max</b>, reps = <b>Media/set</b>.</p>
       <div class="help-h">Lingua e dati</div>
       <p>Il badge <b>IT/EN</b> nell'header cambia la lingua dei nomi esercizi.</p>
@@ -453,7 +453,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.24.4';
+const VERSION = '3.24.5';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -2231,12 +2231,35 @@ function openHistorySession(sessNum) {
 const KEY_PROG_YEAR = 'cali_prog_year';
 const KEY_PROG_MONTH = 'cali_prog_month';
 const KEY_PROG_ACTIVE = 'cali_prog_active';
+const KEY_PROG_MODE = 'cali_prog_mode'; // all | year | month
 
 const PROG_MONTHS_IT = ['', 'Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
 
 function getProgYear() { return localStorage.getItem(KEY_PROG_YEAR) || ''; }
 function getProgMonth() { return localStorage.getItem(KEY_PROG_MONTH) || ''; }
 function getProgActiveOnly() { return localStorage.getItem(KEY_PROG_ACTIVE) === '1'; }
+function getProgMode() { return localStorage.getItem(KEY_PROG_MODE) || 'month'; }
+
+function setProgModeAll() {
+  localStorage.setItem(KEY_PROG_MODE, 'all');
+  localStorage.setItem(KEY_PROG_YEAR, '');
+  localStorage.setItem(KEY_PROG_MONTH, '');
+  renderProgress();
+}
+function setProgModeYear() {
+  const lm = getProgLatestYearMonth();
+  localStorage.setItem(KEY_PROG_MODE, 'year');
+  localStorage.setItem(KEY_PROG_YEAR, lm.year || '');
+  localStorage.setItem(KEY_PROG_MONTH, '');
+  renderProgress();
+}
+function setProgModeMonth() {
+  const lm = getProgLatestYearMonth();
+  localStorage.setItem(KEY_PROG_MODE, 'month');
+  localStorage.setItem(KEY_PROG_YEAR, lm.year || '');
+  localStorage.setItem(KEY_PROG_MONTH, lm.month || '');
+  renderProgress();
+}
 
 function normalizeProgYear(y) {
   if (!y) return '';
@@ -2281,6 +2304,7 @@ function getProgLatestYearMonth() {
 }
 
 function shiftProgMonth(delta) {
+  if (getProgMode() !== 'month') { setProgModeMonth(); return; }
   let y = getProgYear();
   let m = getProgMonth();
   if (!y || !m) {
@@ -2295,17 +2319,20 @@ function shiftProgMonth(delta) {
 }
 
 function shiftProgYear(delta) {
+  if (getProgMode() !== 'year') { setProgModeYear(); return; }
   let y = getProgYear();
-  let m = getProgMonth();
-  if (!y || !m) {
+  if (!y) {
     const lm = getProgLatestYearMonth();
     y = lm.year;
-    m = lm.month;
   }
-  if (!y || !m) return;
-  const dt = new Date(parseInt(y, 10), parseInt(m, 10) - 1, 1);
+  if (!y) return;
+  const dt = new Date(parseInt(y, 10), 0, 1);
   dt.setFullYear(dt.getFullYear() + delta);
-  setProgYearMonth(String(dt.getFullYear()), String(dt.getMonth() + 1));
+  // In modalita' "anno" teniamo il mese vuoto.
+  localStorage.setItem(KEY_PROG_YEAR, String(dt.getFullYear()));
+  localStorage.setItem(KEY_PROG_MONTH, '');
+  localStorage.setItem(KEY_PROG_MODE, 'year');
+  renderProgress();
 }
 function setProgActiveOnly(on) {
   localStorage.setItem(KEY_PROG_ACTIVE, on ? '1' : '0');
@@ -2491,49 +2518,51 @@ function renderProgressDensity() {
     return;
   }
 
-  let year = getProgYear();
-  let month = getProgMonth();
-  let activeOnly = getProgActiveOnly();
-  const lastSess = allSessions[allSessions.length - 1];
+  let year = normalizeProgYear(getProgYear());
+  let month = normalizeProgMonth(getProgMonth());
+  let mode = getProgMode(); // all | year | month
 
-  // Normalizza eventuali valori vecchi in localStorage (es. "26" o "07")
-  year = normalizeProgYear(year);
-  month = normalizeProgMonth(month);
-  if (year !== getProgYear()) localStorage.setItem(KEY_PROG_YEAR, year);
-  if (month !== getProgMonth()) localStorage.setItem(KEY_PROG_MONTH, month);
-
-  // Default: ultimo anno + ultimo mese presenti (così le frecce sono sempre disponibili)
-  if ((!year || !month) && lastSess != null) {
-    const d = parseSessionDate(data[lastSess]?.date);
-    if (d) {
-      year = String(d.getFullYear());
-      month = String(d.getMonth() + 1);
-      localStorage.setItem(KEY_PROG_YEAR, year);
-      localStorage.setItem(KEY_PROG_MONTH, month);
+  const lm = getProgLatestYearMonth();
+  // Se i valori sono vecchi o non presenti, li riallineiamo in base alla modalità
+  if (mode === 'all') {
+    year = '';
+    month = '';
+    localStorage.setItem(KEY_PROG_YEAR, '');
+    localStorage.setItem(KEY_PROG_MONTH, '');
+  } else if (mode === 'year') {
+    if (!year) year = lm.year || '';
+    month = '';
+    localStorage.setItem(KEY_PROG_YEAR, year);
+    localStorage.setItem(KEY_PROG_MONTH, '');
+  } else { // month
+    if (!year || !month) {
+      year = lm.year || '';
+      month = lm.month || '';
     }
-  }
-
-  const activeVariants = new Set();
-  if (activeOnly && lastSess != null) {
-    Object.keys(data[lastSess] || {}).filter(k => /^p\\d+s\\d+$/.test(k)).forEach(sk => {
-      const v = data[lastSess][sk]?.variant;
-      if (v) activeVariants.add(v);
-    });
+    localStorage.setItem(KEY_PROG_YEAR, year);
+    localStorage.setItem(KEY_PROG_MONTH, month);
   }
 
   let sessions = allSessions;
-  if (year || month) {
+  if (mode === 'year') {
     sessions = sessions.filter(n => {
       const d = parseSessionDate(data[n]?.date);
-      if (!d) return false;
-      if (year && String(d.getFullYear()) !== String(year)) return false;
-      if (month && String(d.getMonth() + 1) !== String(month)) return false;
-      return true;
+      return d && String(d.getFullYear()) === String(year);
+    });
+  } else if (mode === 'month') {
+    sessions = sessions.filter(n => {
+      const d = parseSessionDate(data[n]?.date);
+      return d && String(d.getFullYear()) === String(year) && String(d.getMonth() + 1) === String(month);
     });
   }
-  if (!sessions.length) {
-    cont.innerHTML = '<div class="history-empty">Nessuna sessione nel filtro selezionato.</div>';
-    return;
+  if (!sessions.length && mode !== 'all') {
+    // Se non ci sono dati nel range selezionato (es. valori vecchi), ripieghiamo su "tutto"
+    mode = 'all';
+    year = '';
+    month = '';
+    localStorage.setItem(KEY_PROG_YEAR, '');
+    localStorage.setItem(KEY_PROG_MONTH, '');
+    sessions = allSessions;
   }
 
   const variantsSeen = new Set();
@@ -2544,27 +2573,32 @@ function renderProgressDensity() {
     });
   });
 
-  const metricByVariant = {};
-  [...variantsSeen].forEach(v => { metricByVariant[v] = getMetricForVariant(v); });
-
   const monthLbl = month ? (PROG_MONTHS_IT[month] || '') : '';
+  const isAll = mode === 'all';
+  const isYear = mode === 'year';
+  const isMonth = mode === 'month';
   const toolbar = `
     <div class="prog-toolbar">
-      <button type="button" class="prog-filter-btn${activeOnly ? ' active' : ''}" onclick="setProgActiveOnly(${!activeOnly})">${getLang() === 'en' ? 'Active' : 'Attive'}</button>
-      <div style="display:flex;align-items:center;gap:6px;margin:0 6px;flex-wrap:wrap;justify-content:center">
-        <button type="button" class="prog-filter-btn" onclick="shiftProgYear(-1)" style="padding:6px 8px;font-size:12px">‹</button>
-        <span style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);min-width:52px;text-align:center">${year || '—'}</span>
-        <button type="button" class="prog-filter-btn" onclick="shiftProgYear(1)" style="padding:6px 8px;font-size:12px">›</button>
-        <span style="color:var(--muted2);font-family:var(--mono)">·</span>
-        <button type="button" class="prog-filter-btn" onclick="shiftProgMonth(-1)" style="padding:6px 8px;font-size:12px">◀</button>
-        <span style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);min-width:38px;text-align:center">${monthLbl || '—'}</span>
-        <button type="button" class="prog-filter-btn" onclick="shiftProgMonth(1)" style="padding:6px 8px;font-size:12px">▶</button>
-      </div>
-    </div>`;
+      <button type="button" class="prog-filter-btn${isAll ? ' active' : ''}" onclick="setProgModeAll()">${getLang() === 'en' ? 'All' : 'Tutte'}</button>
+      <button type="button" class="prog-filter-btn${isYear ? ' active' : ''}" onclick="setProgModeYear()">${getLang() === 'en' ? 'Year' : 'Anno'}</button>
+      <button type="button" class="prog-filter-btn${isMonth ? ' active' : ''}" onclick="setProgModeMonth()">${getLang() === 'en' ? 'Month' : 'Mese'}</button>
+    </div>
+    ${isYear ? `<div class="prog-toolbar" style="margin-top:-10px">
+      <button type="button" class="prog-filter-btn" onclick="shiftProgYear(-1)" style="padding:6px 8px;font-size:12px">‹</button>
+      <span style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);min-width:52px;text-align:center">${year || '—'}</span>
+      <button type="button" class="prog-filter-btn" onclick="shiftProgYear(1)" style="padding:6px 8px;font-size:12px">›</button>
+    </div>` : ''}
+    ${isMonth ? `<div class="prog-toolbar" style="margin-top:-10px">
+      <button type="button" class="prog-filter-btn" onclick="shiftProgMonth(-1)" style="padding:6px 8px;font-size:12px">◀</button>
+      <span style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);min-width:38px;text-align:center">${monthLbl || '—'}</span>
+      <button type="button" class="prog-filter-btn" onclick="shiftProgMonth(1)" style="padding:6px 8px;font-size:12px">▶</button>
+      <span style="color:var(--muted2);font-family:var(--mono)">·</span>
+      <span style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);min-width:52px;text-align:center">${year || '—'}</span>
+    </div>` : ''}
+  `;
 
   const byPool = {};
   [...variantsSeen].forEach(v => {
-    if (activeOnly && !activeVariants.has(v)) return;
     const pk = getPoolKeyForVariant(v) || '_other';
     if (!byPool[pk]) byPool[pk] = [];
     byPool[pk].push(v);
@@ -2643,14 +2677,7 @@ function renderProgressDensity() {
     });
   }
 
-  cont.innerHTML = toolbar + (sections.join('') || `<div class="history-empty" style="margin-top:18px">${getLang() === 'en' ? 'No data for filters.' : 'Nessun dato per i filtri selezionati.'}</div>`);
-
-  // Se "Attive" non trova nulla nel filtro corrente, facciamo fallback a "Tutte"
-  // per evitare che l'utente veda "grafici spariti".
-  if (activeOnly && !sections.length) {
-    localStorage.setItem(KEY_PROG_ACTIVE, '0');
-    return renderProgressDensity();
-  }
+  cont.innerHTML = toolbar + (sections.join('') || `<div class="history-empty" style="margin-top:18px">${getLang() === 'en' ? 'Nessun dato per il range selezionato.' : 'Nessun dato per il range selezionato.'}</div>`);
 }
 
 function renderProgress() {
