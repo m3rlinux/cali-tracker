@@ -262,10 +262,12 @@
   },
   "p4_s1": {
     "label": "P4 — slot 1",
-    "station": "p4s1"
+    "station": "p4s1",
+    "optional": true
   },
   "p4_s2": {
     "label": "P4 — slot 2",
-    "station": "p4s2"
+    "station": "p4s2",
+    "optional": true
   }
 }

@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.24.8
+  Cali Tracker v3.24.9
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -428,11 +428,11 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
     <div class="help-body">
       <div class="help-h">Inserire una sessione</div>
       <p>La scheda è divisa in step, uno per coppia di esercizi. Su mobile cambi step con uno <b>swipe</b> a destra/sinistra, su desktop con i pulsanti ‹ ›. Tocca i <b>chip P0 P1 … P4</b> in alto per saltare direttamente a una postazione.</p>
-      <p><b>P0</b> è a sé (lo si fa tutti insieme); <b>P1–P4</b> formano un anello: scorrendo avanti da P4 si torna a P1. Così puoi partire dalla tua postazione e proseguire la rotazione.</p>
+      <p><b>P0</b> è a sé (lo si fa tutti insieme); <b>P1–P3</b> (e <b>P4</b> se prevista) formano un anello: scorrendo avanti dall'ultima postazione attiva si torna a P1.</p>
       <p>Ogni slot ha un menu <b>categoria</b> e, sotto, il menu <b>esercizio</b> con sole le varianti della categoria scelta. Su <b>P0</b> (verticale) le categorie sono <i>dinamica</i> e <i>tenuta</i>, selezionabili su tutti e tre gli slot; su <b>P1–P4</b> sono disponibili tutte le categorie del circuito (tirata, gambe, spinta, core, …).</p>
       <p>Storico, pre-compilazione, ★ Oggi e grafici seguono l'<b>esercizio</b> (variante), non lo slot: puoi fare la stessa categoria su postazioni diverse senza perdere i progressi.</p>
       <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio.</p>
-      <p>Alcune coppie possono avere un <b>esercizio supplementare</b> (es. una terza stazione in P0): compare solo se previsto dalla sessione del giorno.</p>
+      <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono solo se previste nel WOD o già presenti nella sessione.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
       <p>Le <b>emoji</b> 😊😑😓🥵 qualificano quanto è stato duro il lavoro e regolano l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
       <p>I set mostrati seguono la sessione del giorno o il tuo storico; con <b>+ set</b> ne aggiungi fino a 6.</p>
@@ -467,7 +467,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.24.8';
+const VERSION = '3.24.9';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -824,8 +824,8 @@ function getVariants(stationKey) {
   return resolveStation(stationKey).variants;
 }
 
-// Stazioni opzionali (gruppo con "optional": true in exercises.json): compaiono
-// in una coppia solo se la sessione/wod le contiene. Le altre sono sempre presenti.
+// Stazioni opzionali (gruppo con "optional": true in exercises.json, es. p0s3 e P4):
+// compaiono in una coppia solo se la sessione/wod le contiene.
 function isOptionalStation(stationKey) {
   const [, g] = getGroupEntry(stationKey);
   return !!(g && g.optional);
@@ -835,6 +835,16 @@ function stationActive(stationKey, s) {
 }
 function activeStations(step, s) {
   return step.stations.filter(st => stationActive(st.stationKey, s));
+}
+function stepActive(step, s) {
+  return activeStations(step, s).length > 0;
+}
+function clampStepToActive() {
+  const s = draftSession || {};
+  if (STEPS[currentStep] && stepActive(STEPS[currentStep], s)) return;
+  for (let i = 0; i < STEPS.length; i++) {
+    if (stepActive(STEPS[i], s)) { currentStep = i; return; }
+  }
 }
 
 function getGroupLabel(stationKey) {
@@ -1158,8 +1168,9 @@ async function loadWodSession() {
   draftSession = buildSessionFromWod(wod);
   draftSession.wod = true; // salvata a parte: non influenza progressi e prefill
   draftDirty = false;
+  clampStepToActive();
   renderSessBar();
-  goStepDirect(0);
+  goStepDirect(currentStep);
 }
 
 function goStepDirect(idx) {
@@ -1216,10 +1227,27 @@ function nextStep(cur, d) {
   return ringStart + rel;            // dentro l'anello: wrap P1..P4
 }
 
+// Salta step senza stazioni attive (es. P4 assente dal wod)
+function nextActiveStep(cur, d) {
+  const s = draftSession || {};
+  if (!STEPS.length) return cur;
+  let n = cur;
+  for (let i = 0; i < STEPS.length; i++) {
+    n = nextStep(n, d);
+    if (n === cur && i > 0) return cur;
+    if (stepActive(STEPS[n], s)) return n;
+  }
+  return cur;
+}
+
 function renderStepDots() {
   const { ringStart } = ringInfo();
+  const s = draftSession || {};
+  let sepPlaced = false;
   document.getElementById('step-dots').innerHTML = STEPS.map((st, i) => {
-    const sep = (i === ringStart && ringStart > 0) ? '<span class="step-chip-sep"></span>' : '';
+    if (!stepActive(st, s)) return '';
+    const sep = (!sepPlaced && i >= ringStart && ringStart > 0)
+      ? (sepPlaced = true, '<span class="step-chip-sep"></span>') : '';
     const active = i === currentStep;
     const style = active ? `border-color:${pairColor(st.px)};color:${pairColor(st.px)}` : '';
     return `${sep}<button class="step-chip${active ? ' active' : ''}" style="${style}" onclick="jumpToStep(${i})">${st.px.toUpperCase()}</button>`;
@@ -1229,13 +1257,14 @@ function renderStepDots() {
 // Salto diretto a uno step (dai chip): salva lo step corrente prima di spostarsi
 function jumpToStep(idx) {
   if (idx === currentStep || idx < 0 || idx >= STEPS.length) return;
+  if (!stepActive(STEPS[idx], draftSession || {})) return;
   collectStep(currentStep);
   goStepDirect(idx);
 }
 
 function goStep(d) {
   if (!STEPS.length) return;
-  const next = nextStep(currentStep, d);
+  const next = nextActiveStep(currentStep, d);
   if (next === currentStep) return;
   collectStep(currentStep);
 
@@ -1267,8 +1296,8 @@ function renderStep() {
     (navigator.maxTouchPoints > 0 && !window.matchMedia('(pointer: fine)').matches);
   const btnPrev = document.getElementById('btn-prev');
   const btnNext = document.getElementById('btn-next');
-  if (btnPrev) btnPrev.style.display = !isTouch && nextStep(currentStep, -1) !== currentStep ? '' : 'none';
-  if (btnNext) btnNext.style.display = !isTouch && nextStep(currentStep, 1) !== currentStep ? '' : 'none';
+  if (btnPrev) btnPrev.style.display = !isTouch && nextActiveStep(currentStep, -1) !== currentStep ? '' : 'none';
+  if (btnNext) btnNext.style.display = !isTouch && nextActiveStep(currentStep, 1) !== currentStep ? '' : 'none';
   const data = getData();
   const s = draftSession || {};
   const prev = getPrevSession(data, currentSess);
@@ -1881,7 +1910,7 @@ function renderHistory() {
 
     STEPS.forEach(step => {
       const groupRows = [];
-      step.stations.forEach(({stationKey}) => {
+      activeStations(step, s).forEach(({stationKey}) => {
         const exObj = s[stationKey], prevAtSlot = prev[stationKey];
         if (!exObj?.sets) return;
         const metric = getMetric(stationKey, exObj.variant || '');
@@ -2007,6 +2036,7 @@ function editSessionFromHistory(e, n) {
   editingSession = true;
   draftSession = cloneObj(data[n] || {});
   draftDirty = false;
+  clampStepToActive();
   _suppressTabGuard = true;
   switchTab('log');
   _suppressTabGuard = false;
@@ -3054,6 +3084,7 @@ function restoreTempState() {
     draftDirty = state.dirty || false;
     // Il draft può arrivare da un reload pre-aggiornamento con i vecchi nomi
     draftSession = migrateSessionVariants(cloneObj(state.draft || {}));
+    clampStepToActive();
     return true;
   } catch(e) { return false; }
 }

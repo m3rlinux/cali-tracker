@@ -41,7 +41,7 @@
   // ── STAZIONI ──
   // Chiave = stationKey (pXsY). Devono esistere in exercises.json.
   // P0 = blocco verticale (3 slot intercambiabili, p0s3 opzionale).
-  // P1..P4 = circuito (coppie s1/s2).
+  // P1..P4 = circuito (coppie s1/s2). P4 intera opzionale: ometti p4s1/p4s2 per saltarla.
   "stations": {
 
     // Oggetto stazione — campi:
@@ -63,8 +63,9 @@
     "p2s1": { "variant": "Piegamento eccentrico",     "sets": [[6, null], [6, null], [6, null]] },
     "p2s2": { "variant": "Alzate gambe alle parallette", "sets": [[8, null], [8, null], [8, null]] },
     "p3s1": { "variant": "Rematore inclinato",        "sets": [[8, null], [8, null], [8, null]] },
-    "p3s2": { "variant": "Ponte glutei con una gamba", "sets": [[6, null], [6, null], [6, null]] },
-    "p4s1": { "variant": "Tenuta in appoggio",        "sets": [[10, null], [10, null], [10, null]] },
-    "p4s2": { "variant": "Swing con kettlebell",      "sets": [[12, null], [12, null], [12, null]] }
+    "p3s2": { "variant": "Ponte glutei con una gamba", "sets": [[6, null], [6, null], [6, null]] }
+    // P4 (p4s1, p4s2) è opzionale: includi le stazioni solo se serve la quarta postazione
+    // "p4s1": { "variant": "Tenuta in appoggio",        "sets": [[10, null], [10, null], [10, null]] },
+    // "p4s2": { "variant": "Swing con kettlebell",      "sets": [[12, null], [12, null], [12, null]] }
   }
 }
