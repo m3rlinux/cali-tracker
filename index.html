@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.20.1
+  Cali Tracker v3.21.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -106,6 +106,13 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 /* VARIANT SELECT */
 .variant-row { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
 .variant-select-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; flex-shrink: 0; }
+.category-select { flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 8px 10px; font-size: 13px; font-family: var(--sans); font-weight: 500; color: var(--text); cursor: pointer; appearance: none; -webkit-appearance: none; }
+.category-select:focus { outline: none; }
+.category-select.col-p1 { border-color: var(--p1); color: var(--p1); }
+.category-select.col-p2 { border-color: var(--p2); color: var(--p2); }
+.category-select.col-p3 { border-color: var(--p3); color: var(--p3); }
+.category-select.col-p4 { border-color: var(--p4); color: var(--p4); }
+.ex-head .category-select { font-size: 12px; }
 .variant-select { flex: 1; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 8px 10px; font-size: 13px; font-family: var(--sans); color: var(--text); cursor: pointer; appearance: none; -webkit-appearance: none; }
 .variant-select:focus { outline: none; }
 .variant-select.col-p0 { border-color: var(--p0); color: var(--p0); }
@@ -394,7 +401,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <div class="help-h">Inserire una sessione</div>
       <p>La scheda è divisa in step, uno per coppia di esercizi. Su mobile cambi step con uno <b>swipe</b> a destra/sinistra, su desktop con i pulsanti ‹ ›. Tocca i <b>chip P0 P1 … P4</b> in alto per saltare direttamente a una postazione.</p>
       <p><b>P0</b> è a sé (lo si fa tutti insieme); <b>P1–P4</b> formano un anello: scorrendo avanti da P4 si torna a P1. Così puoi partire dalla tua postazione e proseguire la rotazione.</p>
-      <p>Ogni postazione <b>P0–P4</b> mostra le <b>categorie</b> che le assegni (menu ⚙ Layout categorie o pulsante ⚙ nell'header della coppia). In ogni slot puoi scegliere qualsiasi variante tra le categorie di quella postazione; nel menu variante ogni voce mostra anche il prefisso categoria (<i>Categoria · Esercizio</i>) per riconoscerla subito.</p>
+      <p>Le categorie assegnate a ogni postazione si configurano con <b>⚙ Layout categorie</b> (menu utente o pulsante nell'header della coppia). Su <b>P1–P4</b> ogni slot ha un menu <b>categoria</b> al posto del nome slot e, sotto, il menu <b>esercizio</b> con sole le varianti di quella categoria. Su <b>P0</b> restano le etichette degli slot e un unico menu esercizio con prefisso <i>Categoria · Esercizio</i>.</p>
       <p>Storico, pre-compilazione, ★ Oggi e grafici seguono l'<b>esercizio</b> (variante), non lo slot: puoi spostare una categoria su un'altra postazione senza perdere i progressi.</p>
       <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio.</p>
       <p>Alcune coppie possono avere un <b>esercizio supplementare</b> (es. una terza stazione in P0): compare solo se previsto dalla sessione del giorno.</p>
@@ -439,7 +446,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.20.1';
+const VERSION = '3.21.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -812,6 +819,31 @@ function getGroupLabel(stationKey) {
   return LANG_EXERCISES?.[groupKey]?.label || group.label;
 }
 
+function usesCategoryPicker(px) {
+  return px !== 'p0';
+}
+
+function resolveStationPool(stationKey, exData, px) {
+  const cats = getPairCategories(px);
+  if (!cats.length) return '';
+  if (exData?.pool && cats.includes(exData.pool)) return exData.pool;
+  if (exData?.variant) {
+    const pk = getPoolKeyForVariant(exData.variant);
+    if (pk && cats.includes(pk)) return pk;
+  }
+  const sy = parseInt((stationKey.match(/s(\d+)$/) || [])[1] || '1', 10);
+  return cats[Math.min(Math.max(sy - 1, 0), cats.length - 1)];
+}
+
+function getStationGroupLabel(stationKey, exData) {
+  const px = getPxFromStation(stationKey);
+  if (usesCategoryPicker(px)) {
+    const pool = exData?.pool || (exData?.variant ? getPoolKeyForVariant(exData.variant) : null);
+    return pool ? getPoolLabel(pool) : getGroupLabel(stationKey);
+  }
+  return getGroupLabel(stationKey);
+}
+
 // Traduce un nome variante (canonico/italiano) nella lingua attiva, per posizione
 function tVariant(stationKey, variant) {
   if (!variant || !LANG_EXERCISES) return variant;
@@ -955,6 +987,11 @@ function injectTempForm(formData) {
   step.stations.forEach(({stationKey}) => {
     const obj = formData[stationKey];
     if (!obj) return;
+    const selCat = document.querySelector(`.category-select[data-station="${stationKey}"]`);
+    if (selCat && obj.pool) {
+      selCat.value = obj.pool;
+      selCat.className = `category-select col-${selCat.dataset.px}`;
+    }
     const selVariant = document.querySelector(`.variant-select[data-station="${stationKey}"]`);
     if (selVariant && obj.variant) {
       selVariant.value = obj.variant;
@@ -1072,6 +1109,10 @@ function buildSessionFromWod(wod) {
     }
     delete out.num_sets; // non ereditare conteggi manuali da vecchie sessioni
     if (forceNum && wodSets.length) out.num_sets = Math.min(MAX_SETS, wodSets.length);
+    if (out.variant) {
+      const pk = getPoolKeyForVariant(out.variant);
+      if (pk) out.pool = pk;
+    }
     // Tempi per esercizio (override dei globali); puliti se non specificati nel wod
     if (typeof clean.set_time === 'number' && clean.set_time > 0) out.set_time = clean.set_time; else delete out.set_time;
     if (typeof clean.rest === 'number' && clean.rest > 0) out.rest = clean.rest; else delete out.rest;
@@ -1214,19 +1255,59 @@ function renderStep() {
 }
 
 // ── VARIANT SELECT ──
-function variantSelectHTML(stationKey, selectedVariant, prevVariant, px) {
+function categorySelectHTML(stationKey, selectedPool, px) {
   const categories = getPairCategories(px);
   if (!categories.length) return '';
   const colClass = `col-${px}`;
+  const placeholder = getLang() === 'en' ? '— category —' : '— categoria —';
+  const opts = categories.map(poolKey =>
+    `<option value="${poolKey}" ${selectedPool === poolKey ? 'selected' : ''}>${getPoolLabel(poolKey)}</option>`
+  ).join('');
+  return `<select class="category-select ${selectedPool ? colClass : ''}" data-station="${stationKey}" data-px="${px}" onchange="onCategoryChange(this)">
+    <option value="">${placeholder}</option>
+    ${opts}
+  </select>`;
+}
+
+function variantSelectHTML(stationKey, selectedVariant, px, poolKey) {
+  const colClass = `col-${px}`;
+  const placeholder = getLang() === 'en' ? '— choose —' : '— scegli —';
+
+  if (usesCategoryPicker(px)) {
+    if (!poolKey) {
+      return `<div class="variant-row">
+        <div class="variant-select-label">Eserc.</div>
+        <select class="variant-select" data-station="${stationKey}" data-px="${px}" disabled>
+          <option value="">${getLang() === 'en' ? 'Choose category first' : 'Scegli prima la categoria'}</option>
+        </select>
+      </div>`;
+    }
+    const { variants, enVariants } = resolveGroupKey(poolKey);
+    const effectiveVariant = selectedVariant && variants.includes(selectedVariant) ? selectedVariant : '';
+    const hasSelection = !!effectiveVariant;
+    const opts = variants.map((v, i) => {
+      const tv = (getLang() === 'en' && LANG_EXERCISES) ? (enVariants[i] || v) : v;
+      return `<option value="${v}" ${effectiveVariant === v ? 'selected' : ''}>${tv}</option>`;
+    }).join('');
+    return `<div class="variant-row">
+      <div class="variant-select-label">Eserc.</div>
+      <select class="variant-select ${hasSelection ? colClass : ''}" data-station="${stationKey}" data-px="${px}" onchange="onVariantChange(this)">
+        <option value="">${placeholder}</option>
+        ${opts}
+      </select>
+    </div>`;
+  }
+
+  const categories = getPairCategories(px);
+  if (!categories.length) return '';
   const stationVariants = resolveStation(stationKey).variants;
   const effectiveVariant = selectedVariant && (stationVariants.includes(selectedVariant) || VARIANT_REGISTRY[selectedVariant])
     ? selectedVariant : '';
   const hasSelection = !!effectiveVariant;
-  const placeholder = getLang() === 'en' ? '— choose —' : '— scegli —';
-  let groups = categories.map(poolKey => {
-    const { variants, enVariants } = resolveGroupKey(poolKey);
+  let groups = categories.map(pk => {
+    const { variants, enVariants } = resolveGroupKey(pk);
     if (!variants.length) return '';
-    const label = getPoolLabel(poolKey);
+    const label = getPoolLabel(pk);
     const opts = variants.map((v, i) => {
       const tv = (getLang() === 'en' && LANG_EXERCISES) ? (enVariants[i] || v) : v;
       return `<option value="${v}" ${effectiveVariant === v ? 'selected' : ''}>${label} · ${tv}</option>`;
@@ -1245,6 +1326,26 @@ function variantSelectHTML(stationKey, selectedVariant, prevVariant, px) {
   </div>`;
 }
 
+function onCategoryChange(el) {
+  markDraftDirty();
+  const stationKey = el.dataset.station;
+  const px = el.dataset.px;
+  const poolKey = el.value;
+  el.className = `category-select${poolKey ? ' col-' + px : ''}`;
+  if (!draftSession[stationKey]) draftSession[stationKey] = {};
+  if (poolKey) draftSession[stationKey].pool = poolKey;
+  else delete draftSession[stationKey].pool;
+  const exData = draftSession[stationKey];
+  if (exData.variant && getPoolKeyForVariant(exData.variant) !== poolKey) {
+    delete exData.variant;
+    delete exData.sets;
+    delete exData.hold_max;
+    delete exData.difficulty;
+    delete exData.num_sets;
+  }
+  renderStep();
+}
+
 function onVariantChange(el) {
   markDraftDirty();
   el.className = `variant-select${el.value ? ' col-' + el.dataset.px : ''}`;
@@ -1259,12 +1360,16 @@ function onVariantChange(el) {
   const stationEntry = step.stations.find(st => st.stationKey === stationKey);
   if (!stationEntry) return;
   let exData = s[stationKey] || {};
+  const poolKey = usesCategoryPicker(stationEntry.px)
+    ? (getPoolKeyForVariant(variant) || resolveStationPool(stationKey, exData, stationEntry.px)) : null;
   if (variant) {
     const hist = findLastDataForVariant(stationKey, variant);
     if (hist) {
       draftSession[stationKey] = { ...cloneObj(hist), variant };
+      if (poolKey) draftSession[stationKey].pool = poolKey;
     } else {
       draftSession[stationKey] = { ...exData, variant };
+      if (poolKey) draftSession[stationKey].pool = poolKey;
     }
     exData = draftSession[stationKey];
   }
@@ -1612,21 +1717,30 @@ function renderPairStep(stepIdx, s, prev) {
   function cardHTML({stationKey, px}) {
     const exData = s[stationKey] || {};
     const prevAtSlot = prev[stationKey] || {};
+    const useCat = usesCategoryPicker(px);
+    const poolKey = useCat ? resolveStationPool(stationKey, exData, px) : null;
+    if (useCat && poolKey && !exData.pool) exData.pool = poolKey;
     const effectiveVariant = exData.variant || prevAtSlot.variant || '';
     const prevExData = effectiveVariant
       ? (findPrevExForVariant(data, currentSess, effectiveVariant) || {})
       : {};
     const metric = getMetric(stationKey, effectiveVariant);
-    const varHTML = variantSelectHTML(stationKey, exData.variant || '', prevAtSlot.variant || '', px);
+    const headHTML = useCat
+      ? `<div class="ex-head">
+          <div class="ex-color-dot" style="background:${pairColor(px)}"></div>
+          ${categorySelectHTML(stationKey, poolKey, px)}
+        </div>`
+      : `<div class="ex-head">
+          <div class="ex-color-dot" style="background:${pairColor(px)}"></div>
+          <div class="ex-name">${getGroupLabel(stationKey)}</div>
+        </div>`;
+    const varHTML = variantSelectHTML(stationKey, exData.variant || '', px, poolKey);
     const numSets = numSetsFor(stationKey, exData);
     const setsHTML = metric === 'time'
       ? timeSetsHTML(stationKey, exData, prevExData, numSets, px)
       : repsSetsHTML(stationKey, exData, prevExData, numSets);
     return `<div class="ex-block">
-      <div class="ex-head">
-        <div class="ex-color-dot" style="background:${pairColor(px)}"></div>
-        <div class="ex-name">${getGroupLabel(stationKey)}</div>
-      </div>
+      ${headHTML}
       ${varHTML}
       ${setsHTML}
     </div>`;
@@ -1679,6 +1793,12 @@ function collectStep(stepIdx) {
     const selVariant = document.querySelector(`.variant-select[data-station="${stationKey}"]`);
     if (selVariant?.value) exObj.variant = selVariant.value;
     else delete exObj.variant;
+    const selCat = document.querySelector(`.category-select[data-station="${stationKey}"]`);
+    if (selCat?.value) exObj.pool = selCat.value;
+    else if (exObj.variant) {
+      const pk = getPoolKeyForVariant(exObj.variant);
+      if (pk) exObj.pool = pk;
+    } else if (!usesCategoryPicker(step.px)) delete exObj.pool;
     const metric = getMetric(stationKey, exObj.variant || '');
     const sets = [];
     if (metric === 'time') {
@@ -1752,8 +1872,8 @@ function renderHistory() {
 
   // Colonna sinistra della riga: variante in evidenza, gruppo in piccolo sotto.
   // Al cambio variante mostra anche la transizione: "↑ da <variante precedente>"
-  function exLabelHTML(stationKey, variant, prevSlotVariant) {
-    const group = getGroupLabel(stationKey);
+  function exLabelHTML(stationKey, variant, prevSlotVariant, exObj) {
+    const group = getStationGroupLabel(stationKey, exObj || {});
     if (!variant) return `<div class="history-ex"><div class="history-variant">${group}</div></div>`;
     const arrow = variantArrow(variant, prevSlotVariant);
     let transition = '';
@@ -1795,7 +1915,7 @@ function renderHistory() {
               ? `max ${exObj.hold_max}" ${delta(exObj.hold_max, prevPR, false)}`
               : '';
             groupRows.push(`<div class="history-row">
-              ${exLabelHTML(stationKey, exObj.variant, prevSlotVariant)}
+              ${exLabelHTML(stationKey, exObj.variant, prevSlotVariant, exObj)}
               <div class="history-valcol">
                 <div class="history-num">${main}</div>
                 ${sub ? `<div class="history-sub">${sub}</div>` : ''}
@@ -1810,7 +1930,7 @@ function renderHistory() {
           const prevTot = prevExObj?.sets?.reduce((a,[f,c]) => a+(f||0)+(c||0), 0) ?? null;
           const prevCl = prevExObj?.sets?.reduce((a,[f,c]) => a+(c||0), 0) ?? null;
           groupRows.push(`<div class="history-row">
-            ${exLabelHTML(stationKey, exObj.variant, prevSlotVariant)}
+            ${exLabelHTML(stationKey, exObj.variant, prevSlotVariant, exObj)}
             <div class="history-valcol">
               <div class="history-num">${tot} <span style="color:var(--muted);font-size:10px">reps</span> ${delta(tot, prevTot, false)}</div>
               ${avgZone ? `<div class="history-sub"><span class="intensity-lbl ${avgZone.css}" style="font-size:10px;margin:0">${avgZone.label}</span></div>` : ''}
