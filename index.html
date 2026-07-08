@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.24.3
+  Cali Tracker v3.24.4
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -453,7 +453,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.24.3';
+const VERSION = '3.24.4';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -2238,6 +2238,23 @@ function getProgYear() { return localStorage.getItem(KEY_PROG_YEAR) || ''; }
 function getProgMonth() { return localStorage.getItem(KEY_PROG_MONTH) || ''; }
 function getProgActiveOnly() { return localStorage.getItem(KEY_PROG_ACTIVE) === '1'; }
 
+function normalizeProgYear(y) {
+  if (!y) return '';
+  const n = parseInt(y, 10);
+  if (!isFinite(n)) return '';
+  // compat: se era memorizzato come anno a 2 cifre ("26") lo normalizziamo a "2026"
+  const norm = n < 100 ? (2000 + n) : n;
+  return String(norm);
+}
+
+function normalizeProgMonth(m) {
+  if (!m && m !== 0) return '';
+  const n = parseInt(m, 10);
+  if (!isFinite(n)) return '';
+  if (n < 1 || n > 12) return '';
+  return String(n);
+}
+
 function setProgYear(y) {
   localStorage.setItem(KEY_PROG_YEAR, y || '');
   localStorage.setItem(KEY_PROG_MONTH, ''); // reset mese quando cambia anno
@@ -2476,8 +2493,14 @@ function renderProgressDensity() {
 
   let year = getProgYear();
   let month = getProgMonth();
-  const activeOnly = getProgActiveOnly();
+  let activeOnly = getProgActiveOnly();
   const lastSess = allSessions[allSessions.length - 1];
+
+  // Normalizza eventuali valori vecchi in localStorage (es. "26" o "07")
+  year = normalizeProgYear(year);
+  month = normalizeProgMonth(month);
+  if (year !== getProgYear()) localStorage.setItem(KEY_PROG_YEAR, year);
+  if (month !== getProgMonth()) localStorage.setItem(KEY_PROG_MONTH, month);
 
   // Default: ultimo anno + ultimo mese presenti (così le frecce sono sempre disponibili)
   if ((!year || !month) && lastSess != null) {
@@ -2621,6 +2644,13 @@ function renderProgressDensity() {
   }
 
   cont.innerHTML = toolbar + (sections.join('') || `<div class="history-empty" style="margin-top:18px">${getLang() === 'en' ? 'No data for filters.' : 'Nessun dato per i filtri selezionati.'}</div>`);
+
+  // Se "Attive" non trova nulla nel filtro corrente, facciamo fallback a "Tutte"
+  // per evitare che l'utente veda "grafici spariti".
+  if (activeOnly && !sections.length) {
+    localStorage.setItem(KEY_PROG_ACTIVE, '0');
+    return renderProgressDensity();
+  }
 }
 
 function renderProgress() {
