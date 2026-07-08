@@ -2120,7 +2120,12 @@ document.getElementById('rename-input').addEventListener('keydown', e => { if (e
 function exportData() {
   closeUserMenu();
   const name = getName();
-  const payload = { name, sessions: getData(), exported: new Date().toISOString() };
+  const payload = {
+    name,
+    sessions: getData(),
+    categoryLayout: getCategoryLayout(),
+    exported: new Date().toISOString()
+  };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -2157,6 +2162,9 @@ function confirmImport() {
   if (!_importPayload) return;
   // Gli export pre-3.0.0 contengono i vecchi nomi variante
   saveData(migrateAllSessions(_importPayload.sessions));
+  if (_importPayload.categoryLayout && typeof _importPayload.categoryLayout === 'object') {
+    saveCategoryLayout({ ...DEFAULT_CATEGORY_LAYOUT, ..._importPayload.categoryLayout });
+  }
   _importPayload = null;
   document.getElementById('import-modal').classList.remove('open');
   resetDraftSession();
