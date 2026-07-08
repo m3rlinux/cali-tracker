@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.19.0
+  Cali Tracker v3.20.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -238,6 +238,13 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .help-body p { margin: 0 0 6px; color: var(--muted); }
 .help-body b { color: var(--text); font-weight: 500; }
 
+.layout-modal { max-width: 400px; max-height: 85vh; display: flex; flex-direction: column; }
+.layout-body { overflow-y: auto; font-size: 13px; }
+.layout-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.layout-row-label { flex: 1; line-height: 1.3; }
+.layout-row select { flex: 0 0 76px; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 8px; font-size: 13px; color: var(--text); font-family: var(--mono); }
+.pair-layout-btn { margin-left: auto; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; color: var(--muted); font-size: 14px; padding: 4px 10px; cursor: pointer; font-family: var(--sans); }
+
 .toast { text-align: center; font-size: 12px; color: var(--accent); font-family: var(--mono); padding: 8px; opacity: 0; transition: opacity .3s; }
 .toast.show { opacity: 1; }
 
@@ -319,6 +326,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <div class="user-menu-item" onclick="openRenameModal()">✎ Rinomina</div>
       <div class="user-menu-item" onclick="exportData()">↓ Esporta dati</div>
       <div class="user-menu-item" onclick="document.getElementById('import-file').click()">↑ Importa dati</div>
+      <div class="user-menu-item" onclick="openLayoutModal()">⚙ Layout categorie</div>
       <div class="user-menu-item" onclick="openHelpModal()">? Aiuto</div>
     </div>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
@@ -386,7 +394,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <div class="help-h">Inserire una sessione</div>
       <p>La scheda è divisa in step, uno per coppia di esercizi. Su mobile cambi step con uno <b>swipe</b> a destra/sinistra, su desktop con i pulsanti ‹ ›. Tocca i <b>chip P0 P1 … P4</b> in alto per saltare direttamente a una postazione.</p>
       <p><b>P0</b> è a sé (lo si fa tutti insieme); <b>P1–P4</b> formano un anello: scorrendo avanti da P4 si torna a P1. Così puoi partire dalla tua postazione e proseguire la rotazione.</p>
-      <p>In ogni postazione <b>P0–P4</b> puoi scegliere <b>qualsiasi esercizio</b> dal catalogo unico (menu raggruppato per categoria). Storico, pre-compilazione, ★ Oggi e grafici seguono l'esercizio scelto, non lo slot fisico.</p>
+      <p>Ogni postazione <b>P0–P4</b> mostra le <b>categorie</b> che le assegni (menu ⚙ Layout categorie o pulsante ⚙ nell'header della coppia). In ogni slot puoi scegliere qualsiasi variante tra le categorie di quella postazione.</p>
+      <p>Storico, pre-compilazione, ★ Oggi e grafici seguono l'<b>esercizio</b> (variante), non lo slot: puoi spostare una categoria su un'altra postazione senza perdere i progressi.</p>
       <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio.</p>
       <p>Alcune coppie possono avere un <b>esercizio supplementare</b> (es. una terza stazione in P0): compare solo se previsto dalla sessione del giorno.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
@@ -411,6 +420,15 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
   </div>
 </div>
 
+<div class="modal-overlay" id="layout-modal">
+  <div class="modal layout-modal">
+    <div class="modal-title">Layout categorie</div>
+    <div class="layout-body" id="layout-modal-body"></div>
+    <p style="font-size:12px;color:var(--muted);line-height:1.5;margin:12px 0 0">Ogni categoria è in una sola postazione. Gli esercizi disponibili in ogni slot seguono le categorie assegnate; storico e grafici restano legati alla variante scelta.</p>
+    <button class="modal-btn" onclick="document.getElementById('layout-modal').classList.remove('open')">Chiudi</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="import-modal">
   <div class="modal">
     <div class="modal-title">Importa dati</div>
@@ -421,7 +439,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.19.0';
+const VERSION = '3.20.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -640,19 +658,20 @@ function getLang() { return localStorage.getItem(KEY_LANG) || 'it'; }
 
 // pair color map
 const PAIR_COLORS = { p0:'--p0', p1:'--p1', p2:'--p2', p3:'--p3', p4:'--p4' };
-const PAIR_LABELS = {
-  p0: 'Handstand',
-  p1: 'P1',
-  p2: 'P2',
-  p3: 'P3',
-  p4: 'P4'
-};
-const PAIR_LABELS_EN = {
-  p0: 'Handstand',
-  p1: 'P1',
-  p2: 'P2',
-  p3: 'P3',
-  p4: 'P4'
+const PAIR_ORDER = ['p0', 'p1', 'p2', 'p3', 'p4'];
+
+const KEY_CATEGORY_LAYOUT = 'cali_category_layout';
+const DEFAULT_CATEGORY_LAYOUT = {
+  handstand_skill: 'p0',
+  handstand_hold: 'p0',
+  tirata_verticale: 'p1',
+  gambe_anteriore: 'p1',
+  spinta_orizzontale: 'p2',
+  core: 'p2',
+  tirata_orizzontale: 'p3',
+  gambe_posteriore: 'p3',
+  spinta_verticale: 'p4',
+  catena_posteriore: 'p4'
 };
 
 function pairColor(pKey) { return `var(${PAIR_COLORS[pKey] || '--muted'})`; }
@@ -672,36 +691,69 @@ function buildSteps() {
   });
   // sort each pair by sY, then sort pairs by pX
   const sortedPairs = Object.keys(groups).sort();
-  const pairLabels = getLang() === 'en' && LANG_EXERCISES ? PAIR_LABELS_EN : PAIR_LABELS;
   STEPS = sortedPairs.map(px => {
     const stations = groups[px].sort((a,b) => a.sy.localeCompare(b.sy));
-    return { px, label: pairLabels[px] || px.toUpperCase(), stations };
+    return { px, label: getPairLabel(px), stations };
   });
   buildVariantRegistry();
+}
+
+function refreshStepLabels() {
+  STEPS.forEach(step => { step.label = getPairLabel(step.px); });
 }
 
 function getGroupEntry(stationKey) {
   return Object.entries(EXERCISES).find(([, g]) => g.station === stationKey) || [null, null];
 }
 
-// Pool senza station = categorie del catalogo
-function getCatalogPoolKeys() {
+// Pool senza station = categorie esercizi
+function getCategoryPoolKeys() {
   return Object.keys(EXERCISES).filter(k => !EXERCISES[k].station);
 }
 
-// Risolve varianti/metriche/traduzioni effettive di un gruppo. Con
-// "variants_from": ["handstand_skill","handstand_hold"] eredita le liste unendo
-// i gruppi sorgente (IT, EN e metriche). "variants_from": "catalog" = tutti i pool.
-// I ref sono chiavi di gruppo (pool) o station key. Nessuna duplicazione né drift.
+function getCategoryLayout() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY_CATEGORY_LAYOUT) || 'null');
+    if (saved && typeof saved === 'object') return { ...DEFAULT_CATEGORY_LAYOUT, ...saved };
+  } catch (e) { /* ignore */ }
+  return { ...DEFAULT_CATEGORY_LAYOUT };
+}
+
+function saveCategoryLayout(layout) {
+  localStorage.setItem(KEY_CATEGORY_LAYOUT, JSON.stringify(layout));
+  refreshStepLabels();
+}
+
+function getPxFromStation(stationKey) {
+  const m = stationKey.match(/^(p\d+)s\d+$/);
+  return m ? m[1] : null;
+}
+
+function getPairCategories(px) {
+  const layout = getCategoryLayout();
+  return getCategoryPoolKeys().filter(pk => layout[pk] === px);
+}
+
+function getPairLabel(px) {
+  const cats = getPairCategories(px);
+  if (!cats.length) return px.toUpperCase();
+  return cats.map(getPoolLabel).join(' + ');
+}
+
+function setCategoryPost(categoryKey, px) {
+  const layout = getCategoryLayout();
+  layout[categoryKey] = px;
+  saveCategoryLayout(layout);
+}
+
+// Risolve varianti/metriche/traduzioni effettive di un gruppo pool.
 function resolveGroupKey(gk) {
   const sg = EXERCISES[gk];
   if (!sg) return { variants: [], metrics: {}, enVariants: [] };
-  let refs = sg.variants_from;
-  if (refs === 'catalog') refs = getCatalogPoolKeys();
-  if (Array.isArray(refs)) {
+  if (Array.isArray(sg.variants_from)) {
     const variants = [], enVariants = [];
     let metrics = {};
-    refs.forEach(ref => {
+    sg.variants_from.forEach(ref => {
       const refKey = EXERCISES[ref] ? ref : getGroupEntry(ref)[0];
       if (!refKey) return;
       const r = resolveGroupKey(refKey);
@@ -713,12 +765,22 @@ function resolveGroupKey(gk) {
   const eg = LANG_EXERCISES?.[gk];
   return { variants: sg.variants || [], metrics: sg.metrics || {}, enVariants: eg?.variants || [] };
 }
+
 function resolveStation(stationKey) {
-  const [groupKey] = getGroupEntry(stationKey);
-  return groupKey ? resolveGroupKey(groupKey) : { variants: [], metrics: {}, enVariants: [] };
+  const px = getPxFromStation(stationKey);
+  if (!px) return { variants: [], metrics: {}, enVariants: [] };
+  const variants = [], enVariants = [];
+  let metrics = {};
+  getPairCategories(px).forEach(poolKey => {
+    const r = resolveGroupKey(poolKey);
+    r.variants.forEach((v, i) => { variants.push(v); enVariants.push(r.enVariants[i] || v); });
+    metrics = { ...metrics, ...r.metrics };
+  });
+  return { variants, metrics, enVariants };
 }
 
 function getMetric(stationKey, variant) {
+  if (variant && VARIANT_REGISTRY[variant]) return getMetricForVariant(variant);
   const { variants, metrics } = resolveStation(stationKey);
   if (!variants.length) return 'reps';
   if (variant) return metrics[variant] || 'reps';
@@ -1153,13 +1215,15 @@ function renderStep() {
 
 // ── VARIANT SELECT ──
 function variantSelectHTML(stationKey, selectedVariant, prevVariant, px) {
-  const pools = getCatalogPoolKeys();
-  if (!pools.length) return '';
+  const categories = getPairCategories(px);
+  if (!categories.length) return '';
   const colClass = `col-${px}`;
-  const effectiveVariant = selectedVariant && VARIANT_REGISTRY[selectedVariant] ? selectedVariant : '';
+  const stationVariants = resolveStation(stationKey).variants;
+  const effectiveVariant = selectedVariant && (stationVariants.includes(selectedVariant) || VARIANT_REGISTRY[selectedVariant])
+    ? selectedVariant : '';
   const hasSelection = !!effectiveVariant;
   const placeholder = getLang() === 'en' ? '— choose —' : '— scegli —';
-  const groups = pools.map(poolKey => {
+  let groups = categories.map(poolKey => {
     const { variants, enVariants } = resolveGroupKey(poolKey);
     if (!variants.length) return '';
     const label = getPoolLabel(poolKey);
@@ -1169,6 +1233,9 @@ function variantSelectHTML(stationKey, selectedVariant, prevVariant, px) {
     }).join('');
     return `<optgroup label="${label}">${opts}</optgroup>`;
   }).join('');
+  if (effectiveVariant && !stationVariants.includes(effectiveVariant)) {
+    groups += `<optgroup label="${getLang() === 'en' ? 'Other' : 'Altro'}"><option value="${effectiveVariant}" selected>${tVariantByVariant(effectiveVariant)}</option></optgroup>`;
+  }
   return `<div class="variant-row">
     <div class="variant-select-label">Eserc.</div>
     <select class="variant-select ${hasSelection ? colClass : ''}" data-station="${stationKey}" data-px="${px}" onchange="onVariantChange(this)">
@@ -1578,8 +1645,9 @@ function renderPairStep(stepIdx, s, prev) {
   content.innerHTML = `
     <div class="pair-header">
       <div class="pair-dot" style="background:${color}"></div>
-      <div class="pair-title" style="color:${color}">${step.px.toUpperCase()}</div>
+      <div class="pair-title" style="color:${color}">${step.label}</div>
       <div class="pair-sub">${tag}</div>
+      <button type="button" class="pair-layout-btn" onclick="openLayoutModal('${step.px}')" title="Categorie postazione">⚙</button>
     </div>
     ${body}
   `;
@@ -1967,6 +2035,35 @@ function closeUserMenuOutside(e) {
   if (!wrap.contains(e.target)) document.getElementById('user-menu').classList.remove('open');
 }
 function closeUserMenu() { document.getElementById('user-menu').classList.remove('open'); }
+
+function openLayoutModal(highlightPx) {
+  closeUserMenu();
+  renderLayoutModal(highlightPx || null);
+  document.getElementById('layout-modal').classList.add('open');
+}
+
+function renderLayoutModal(highlightPx) {
+  const layout = getCategoryLayout();
+  const body = document.getElementById('layout-modal-body');
+  body.innerHTML = getCategoryPoolKeys().map(pk => {
+    const label = getPoolLabel(pk);
+    const opts = PAIR_ORDER.map(px =>
+      `<option value="${px}" ${layout[pk] === px ? 'selected' : ''}>${px.toUpperCase()}</option>`
+    ).join('');
+    const hl = highlightPx && layout[pk] === highlightPx
+      ? ' style="background:var(--surface2);border-radius:8px;padding:4px 6px;margin:0 -6px"' : '';
+    return `<div class="layout-row"${hl}><div class="layout-row-label">${label}</div><select onchange="onLayoutCategoryChange('${pk}', this.value)">${opts}</select></div>`;
+  }).join('');
+}
+
+function onLayoutCategoryChange(categoryKey, px) {
+  setCategoryPost(categoryKey, px);
+  renderLayoutModal(px);
+  if (STEPS[currentStep]) {
+    document.getElementById('step-label').textContent = STEPS[currentStep].label;
+    renderStep();
+  }
+}
 
 // ── HELP ──
 function openHelpModal() {

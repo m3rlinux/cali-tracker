@@ -6,15 +6,14 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.19.0
+- **Versione corrente:** 3.20.0
 - **fetchWod cache-bust**: `★ Oggi` scarica `wod.json?t=Date.now()` con `cache:'no-store'` → wod sempre fresco a prescindere dalla versione del SW; fallback a `wod.json` (cache SW) se offline
 - **SW fetch JSON/manifest**: network-first con `fetch(req, {cache:'reload'})` per bypassare la cache HTTP del browser (GitHub Pages serve con `max-age=600`); senza, wod/exercises aggiornati arriverebbero solo dopo ~10 min. Con il fix `★ Oggi` prende sempre il wod fresco (vale dai dispositivi con SW ≥ 3.18.2)
 
 ### Stazioni opzionali
 - Un gruppo in exercises.json con `"optional": true` (es. `handstand_s3`, station `p0s3`) compare in una coppia **solo se la sessione/wod lo contiene** (`isOptionalStation` / `stationActive` / `activeStations`); filtrato in `renderPairStep`, `pairTimingHTML`, `collectStep`. Le sessioni WOD sono escluse dall'ereditarietà, quindi p0s3 di fatto appare solo via wod
-- **Gruppi `pool` + `variants_from`**: un gruppo "pool" ha `variants`/`metrics` ma **nessuna `station`** (es. `handstand_skill`, `handstand_hold`); non genera step (`buildSteps` lo salta). Un gruppo-stazione può dichiarare `"variants_from": ["handstand_skill","handstand_hold"]` (chiavi di gruppo o station key) oppure `"variants_from": "catalog"` per **tutti i pool** (catalogo unico su ogni slot P0–P4). `resolveGroupKey()`/`resolveStation()` uniscono a runtime varianti, metriche e traduzioni EN. Il select varianti usa `<optgroup>` per categoria
-- **P0–P4 = slot con catalogo unico**: ogni slot (`handstand_s1`…`p4_s2`) ha `variants_from: "catalog"` → ~129 varianti in ogni postazione; la metrica (reps/time) dipende dalla variante scelta
-- **Lookup per variante (globale)**: `VARIANT_REGISTRY` mappa ogni nome variante al pool/metrica; `findLastDataForVariant` / `findPrevExForVariant` cercano in **qualsiasi slot** di qualsiasi sessione. Prefill, ★ Oggi, delta storico e grafici progressi seguono l'esercizio (`variant`), non `pXsY`. I nomi variante sono univoci in tutto `exercises.json`
+- **Gruppi `pool` (categorie)**: gruppi con `variants`/`metrics` e **nessuna `station`** (es. `tirata_verticale`, `core`). Gli slot (`p1_s1`, …) non hanno varianti proprie: ereditano le categorie **assegnate alla postazione** via `cali_category_layout` in localStorage (default: layout palestra originale). `resolveStation(stationKey)` unisce i pool della coppia `px`; select con `<optgroup>` per categoria. Modale **⚙ Layout categorie** (menu utente o pulsante nell'header coppia): ogni categoria è assegnata a una sola postazione P0–P4
+- **Lookup per variante (globale)**: `VARIANT_REGISTRY` + `findLastDataForVariant` / `findPrevExForVariant` — storico, ★ Oggi, delta e grafici seguono la **variante**, non lo slot: si può spostare una categoria su un'altra postazione senza perdere progressi
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)

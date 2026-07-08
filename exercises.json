@@ -45,19 +45,16 @@
   },
   "handstand_s1": {
     "label": "Verticale 1",
-    "station": "p0s1",
-    "variants_from": "catalog"
+    "station": "p0s1"
   },
   "handstand_s2": {
     "label": "Verticale 2",
-    "station": "p0s2",
-    "variants_from": "catalog"
+    "station": "p0s2"
   },
   "handstand_s3": {
     "label": "Verticale 3",
     "station": "p0s3",
-    "optional": true,
-    "variants_from": "catalog"
+    "optional": true
   },
   "tirata_verticale": {
     "label": "Tirata verticale",
@@ -98,13 +95,11 @@
   },
   "p1_s1": {
     "label": "P1 — slot 1",
-    "station": "p1s1",
-    "variants_from": "catalog"
+    "station": "p1s1"
   },
   "p1_s2": {
     "label": "P1 — slot 2",
-    "station": "p1s2",
-    "variants_from": "catalog"
+    "station": "p1s2"
   },
   "spinta_orizzontale": {
     "label": "Spinta orizzontale",
@@ -163,13 +158,11 @@
   },
   "p2_s1": {
     "label": "P2 — slot 1",
-    "station": "p2s1",
-    "variants_from": "catalog"
+    "station": "p2s1"
   },
   "p2_s2": {
     "label": "P2 — slot 2",
-    "station": "p2s2",
-    "variants_from": "catalog"
+    "station": "p2s2"
   },
   "tirata_orizzontale": {
     "label": "Tirata orizzontale",
@@ -206,13 +199,11 @@
   },
   "p3_s1": {
     "label": "P3 — slot 1",
-    "station": "p3s1",
-    "variants_from": "catalog"
+    "station": "p3s1"
   },
   "p3_s2": {
     "label": "P3 — slot 2",
-    "station": "p3s2",
-    "variants_from": "catalog"
+    "station": "p3s2"
   },
   "spinta_verticale": {
     "label": "Spinta verticale",
@@ -271,12 +262,10 @@
   },
   "p4_s1": {
     "label": "P4 — slot 1",
-    "station": "p4s1",
-    "variants_from": "catalog"
+    "station": "p4s1"
   },
   "p4_s2": {
     "label": "P4 — slot 2",
-    "station": "p4s2",
-    "variants_from": "catalog"
+    "station": "p4s2"
   }
 }
