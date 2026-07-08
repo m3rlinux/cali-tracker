@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.21.0
+  Cali Tracker v3.22.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -245,13 +245,6 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .help-body p { margin: 0 0 6px; color: var(--muted); }
 .help-body b { color: var(--text); font-weight: 500; }
 
-.layout-modal { max-width: 400px; max-height: 85vh; display: flex; flex-direction: column; }
-.layout-body { overflow-y: auto; font-size: 13px; }
-.layout-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.layout-row-label { flex: 1; line-height: 1.3; }
-.layout-row select { flex: 0 0 76px; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; padding: 8px; font-size: 13px; color: var(--text); font-family: var(--mono); }
-.pair-layout-btn { margin-left: auto; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; color: var(--muted); font-size: 14px; padding: 4px 10px; cursor: pointer; font-family: var(--sans); }
-
 .toast { text-align: center; font-size: 12px; color: var(--accent); font-family: var(--mono); padding: 8px; opacity: 0; transition: opacity .3s; }
 .toast.show { opacity: 1; }
 
@@ -333,7 +326,6 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <div class="user-menu-item" onclick="openRenameModal()">✎ Rinomina</div>
       <div class="user-menu-item" onclick="exportData()">↓ Esporta dati</div>
       <div class="user-menu-item" onclick="document.getElementById('import-file').click()">↑ Importa dati</div>
-      <div class="user-menu-item" onclick="openLayoutModal()">⚙ Layout categorie</div>
       <div class="user-menu-item" onclick="openHelpModal()">? Aiuto</div>
     </div>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
@@ -401,8 +393,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <div class="help-h">Inserire una sessione</div>
       <p>La scheda è divisa in step, uno per coppia di esercizi. Su mobile cambi step con uno <b>swipe</b> a destra/sinistra, su desktop con i pulsanti ‹ ›. Tocca i <b>chip P0 P1 … P4</b> in alto per saltare direttamente a una postazione.</p>
       <p><b>P0</b> è a sé (lo si fa tutti insieme); <b>P1–P4</b> formano un anello: scorrendo avanti da P4 si torna a P1. Così puoi partire dalla tua postazione e proseguire la rotazione.</p>
-      <p>Le categorie assegnate a ogni postazione si configurano con <b>⚙ Layout categorie</b> (menu utente o pulsante nell'header della coppia). Su <b>P1–P4</b> ogni slot ha un menu <b>categoria</b> al posto del nome slot e, sotto, il menu <b>esercizio</b> con sole le varianti di quella categoria. Su <b>P0</b> restano le etichette degli slot e un unico menu esercizio con prefisso <i>Categoria · Esercizio</i>.</p>
-      <p>Storico, pre-compilazione, ★ Oggi e grafici seguono l'<b>esercizio</b> (variante), non lo slot: puoi spostare una categoria su un'altra postazione senza perdere i progressi.</p>
+      <p>Su <b>P1–P4</b> ogni slot ha un menu <b>categoria</b> con tutte le categorie del circuito (tirata, gambe, spinta, core, …) e, sotto, il menu <b>esercizio</b> con sole le varianti della categoria scelta. Su <b>P0</b> restano le etichette degli slot e un unico menu esercizio con prefisso <i>Categoria · Esercizio</i>.</p>
+      <p>Storico, pre-compilazione, ★ Oggi e grafici seguono l'<b>esercizio</b> (variante), non lo slot: puoi fare la stessa categoria su postazioni diverse senza perdere i progressi.</p>
       <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio.</p>
       <p>Alcune coppie possono avere un <b>esercizio supplementare</b> (es. una terza stazione in P0): compare solo se previsto dalla sessione del giorno.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
@@ -427,15 +419,6 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
   </div>
 </div>
 
-<div class="modal-overlay" id="layout-modal">
-  <div class="modal layout-modal">
-    <div class="modal-title">Layout categorie</div>
-    <div class="layout-body" id="layout-modal-body"></div>
-    <p style="font-size:12px;color:var(--muted);line-height:1.5;margin:12px 0 0">Ogni categoria è in una sola postazione. Gli esercizi disponibili in ogni slot seguono le categorie assegnate; storico e grafici restano legati alla variante scelta.</p>
-    <button class="modal-btn" onclick="document.getElementById('layout-modal').classList.remove('open')">Chiudi</button>
-  </div>
-</div>
-
 <div class="modal-overlay" id="import-modal">
   <div class="modal">
     <div class="modal-title">Importa dati</div>
@@ -446,7 +429,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.21.0';
+const VERSION = '3.22.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -667,7 +650,6 @@ function getLang() { return localStorage.getItem(KEY_LANG) || 'it'; }
 const PAIR_COLORS = { p0:'--p0', p1:'--p1', p2:'--p2', p3:'--p3', p4:'--p4' };
 const PAIR_ORDER = ['p0', 'p1', 'p2', 'p3', 'p4'];
 
-const KEY_CATEGORY_LAYOUT = 'cali_category_layout';
 const DEFAULT_CATEGORY_LAYOUT = {
   handstand_skill: 'p0',
   handstand_hold: 'p0',
@@ -680,6 +662,7 @@ const DEFAULT_CATEGORY_LAYOUT = {
   spinta_verticale: 'p4',
   catena_posteriore: 'p4'
 };
+const P0_POOL_KEYS = ['handstand_skill', 'handstand_hold'];
 
 function pairColor(pKey) { return `var(${PAIR_COLORS[pKey] || '--muted'})`; }
 
@@ -705,10 +688,6 @@ function buildSteps() {
   buildVariantRegistry();
 }
 
-function refreshStepLabels() {
-  STEPS.forEach(step => { step.label = getPairLabel(step.px); });
-}
-
 function getGroupEntry(stationKey) {
   return Object.entries(EXERCISES).find(([, g]) => g.station === stationKey) || [null, null];
 }
@@ -718,17 +697,15 @@ function getCategoryPoolKeys() {
   return Object.keys(EXERCISES).filter(k => !EXERCISES[k].station);
 }
 
-function getCategoryLayout() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(KEY_CATEGORY_LAYOUT) || 'null');
-    if (saved && typeof saved === 'object') return { ...DEFAULT_CATEGORY_LAYOUT, ...saved };
-  } catch (e) { /* ignore */ }
-  return { ...DEFAULT_CATEGORY_LAYOUT };
-}
-
-function saveCategoryLayout(layout) {
-  localStorage.setItem(KEY_CATEGORY_LAYOUT, JSON.stringify(layout));
-  refreshStepLabels();
+// Tutte le categorie del circuito P1–P4 (ordine fisso palestra)
+function getWorkCategories() {
+  const order = [];
+  ['p1', 'p2', 'p3', 'p4'].forEach(px => {
+    getCategoryPoolKeys()
+      .filter(pk => DEFAULT_CATEGORY_LAYOUT[pk] === px)
+      .forEach(pk => order.push(pk));
+  });
+  return order;
 }
 
 function getPxFromStation(stationKey) {
@@ -737,20 +714,22 @@ function getPxFromStation(stationKey) {
 }
 
 function getPairCategories(px) {
-  const layout = getCategoryLayout();
-  return getCategoryPoolKeys().filter(pk => layout[pk] === px);
+  if (px === 'p0') return P0_POOL_KEYS.filter(pk => EXERCISES[pk]);
+  return getCategoryPoolKeys().filter(pk => DEFAULT_CATEGORY_LAYOUT[pk] === px);
+}
+
+function defaultPoolForStation(stationKey, px) {
+  const pairDefaults = getPairCategories(px);
+  const sy = parseInt((stationKey.match(/s(\d+)$/) || [])[1] || '1', 10);
+  return pairDefaults[Math.min(Math.max(sy - 1, 0), pairDefaults.length - 1)] || '';
 }
 
 function getPairLabel(px) {
-  const cats = getPairCategories(px);
-  if (!cats.length) return px.toUpperCase();
-  return cats.map(getPoolLabel).join(' + ');
-}
-
-function setCategoryPost(categoryKey, px) {
-  const layout = getCategoryLayout();
-  layout[categoryKey] = px;
-  saveCategoryLayout(layout);
+  if (px === 'p0') {
+    const cats = getPairCategories(px);
+    return cats.length ? cats.map(getPoolLabel).join(' + ') : px.toUpperCase();
+  }
+  return px.toUpperCase();
 }
 
 // Risolve varianti/metriche/traduzioni effettive di un gruppo pool.
@@ -776,9 +755,10 @@ function resolveGroupKey(gk) {
 function resolveStation(stationKey) {
   const px = getPxFromStation(stationKey);
   if (!px) return { variants: [], metrics: {}, enVariants: [] };
+  const categories = px === 'p0' ? getPairCategories(px) : getWorkCategories();
   const variants = [], enVariants = [];
   let metrics = {};
-  getPairCategories(px).forEach(poolKey => {
+  categories.forEach(poolKey => {
     const r = resolveGroupKey(poolKey);
     r.variants.forEach((v, i) => { variants.push(v); enVariants.push(r.enVariants[i] || v); });
     metrics = { ...metrics, ...r.metrics };
@@ -824,15 +804,15 @@ function usesCategoryPicker(px) {
 }
 
 function resolveStationPool(stationKey, exData, px) {
-  const cats = getPairCategories(px);
+  if (!usesCategoryPicker(px)) return '';
+  const cats = getWorkCategories();
   if (!cats.length) return '';
   if (exData?.pool && cats.includes(exData.pool)) return exData.pool;
   if (exData?.variant) {
     const pk = getPoolKeyForVariant(exData.variant);
     if (pk && cats.includes(pk)) return pk;
   }
-  const sy = parseInt((stationKey.match(/s(\d+)$/) || [])[1] || '1', 10);
-  return cats[Math.min(Math.max(sy - 1, 0), cats.length - 1)];
+  return defaultPoolForStation(stationKey, px);
 }
 
 function getStationGroupLabel(stationKey, exData) {
@@ -1256,7 +1236,7 @@ function renderStep() {
 
 // ── VARIANT SELECT ──
 function categorySelectHTML(stationKey, selectedPool, px) {
-  const categories = getPairCategories(px);
+  const categories = getWorkCategories();
   if (!categories.length) return '';
   const colClass = `col-${px}`;
   const placeholder = getLang() === 'en' ? '— category —' : '— categoria —';
@@ -1761,7 +1741,6 @@ function renderPairStep(stepIdx, s, prev) {
       <div class="pair-dot" style="background:${color}"></div>
       <div class="pair-title" style="color:${color}">${step.label}</div>
       <div class="pair-sub">${tag}</div>
-      <button type="button" class="pair-layout-btn" onclick="openLayoutModal('${step.px}')" title="Categorie postazione">⚙</button>
     </div>
     ${body}
   `;
@@ -2156,35 +2135,6 @@ function closeUserMenuOutside(e) {
 }
 function closeUserMenu() { document.getElementById('user-menu').classList.remove('open'); }
 
-function openLayoutModal(highlightPx) {
-  closeUserMenu();
-  renderLayoutModal(highlightPx || null);
-  document.getElementById('layout-modal').classList.add('open');
-}
-
-function renderLayoutModal(highlightPx) {
-  const layout = getCategoryLayout();
-  const body = document.getElementById('layout-modal-body');
-  body.innerHTML = getCategoryPoolKeys().map(pk => {
-    const label = getPoolLabel(pk);
-    const opts = PAIR_ORDER.map(px =>
-      `<option value="${px}" ${layout[pk] === px ? 'selected' : ''}>${px.toUpperCase()}</option>`
-    ).join('');
-    const hl = highlightPx && layout[pk] === highlightPx
-      ? ' style="background:var(--surface2);border-radius:8px;padding:4px 6px;margin:0 -6px"' : '';
-    return `<div class="layout-row"${hl}><div class="layout-row-label">${label}</div><select onchange="onLayoutCategoryChange('${pk}', this.value)">${opts}</select></div>`;
-  }).join('');
-}
-
-function onLayoutCategoryChange(categoryKey, px) {
-  setCategoryPost(categoryKey, px);
-  renderLayoutModal(px);
-  if (STEPS[currentStep]) {
-    document.getElementById('step-label').textContent = STEPS[currentStep].label;
-    renderStep();
-  }
-}
-
 // ── HELP ──
 function openHelpModal() {
   closeUserMenu();
@@ -2243,7 +2193,6 @@ function exportData() {
   const payload = {
     name,
     sessions: getData(),
-    categoryLayout: getCategoryLayout(),
     exported: new Date().toISOString()
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -2282,9 +2231,6 @@ function confirmImport() {
   if (!_importPayload) return;
   // Gli export pre-3.0.0 contengono i vecchi nomi variante
   saveData(migrateAllSessions(_importPayload.sessions));
-  if (_importPayload.categoryLayout && typeof _importPayload.categoryLayout === 'object') {
-    saveCategoryLayout({ ...DEFAULT_CATEGORY_LAYOUT, ..._importPayload.categoryLayout });
-  }
   _importPayload = null;
   document.getElementById('import-modal').classList.remove('open');
   resetDraftSession();
