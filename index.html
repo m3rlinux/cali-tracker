@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.24.5
+  Cali Tracker v3.24.6
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -433,7 +433,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <p>Tocca una sessione per vedere i dettagli. <b>✎</b> la riapre in modifica, <b>✕</b> la elimina. <b>★</b> converte una sessione WOD in normale (entra nei progressi) e viceversa. I delta +/− confrontano con l'ultima volta che hai fatto <b>quello stesso esercizio</b> (in qualsiasi slot).</p>
       <div class="help-h">Progressi</div>
       <p>Mini-grafici di <b>densità</b> (intensità) per <b>variante</b>, raggruppati per categoria.</p>
-      <p>In alto: <b>Tutte</b> / <b>Anno</b> / <b>Mese</b> + navigazione <b>freccette</b> su <b>ultimo anno</b> e <b>ultimo mese</b> (scorri avanti/indietro di mese/anno). <b>Tap</b> su un minigrafico → si apre il dettaglio con densità + lista delle sessioni filtrate. Lo scorrimento non viene bloccato dai touch sul grafico.</p>
+      <p>In alto: <b>Tutto</b> / <b>Anno</b> / <b>Mese</b> + navigazione <b>freccette</b> su <b>ultimo anno</b> e <b>ultimo mese</b> (scorri avanti/indietro di mese/anno). <b>Tap</b> su un minigrafico → si apre il dettaglio con densità + lista delle sessioni filtrate. Lo scorrimento non viene bloccato dai touch sul grafico.</p>
       <p>Intensità: isometrie = <b>Hold max</b>, reps = <b>Media/set</b>.</p>
       <div class="help-h">Lingua e dati</div>
       <p>Il badge <b>IT/EN</b> nell'header cambia la lingua dei nomi esercizi.</p>
@@ -453,7 +453,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.24.5';
+const VERSION = '3.24.6';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -2567,7 +2567,7 @@ function renderProgressDensity() {
 
   const variantsSeen = new Set();
   sessions.forEach(n => {
-    Object.keys(data[n] || {}).filter(k => /^p\\d+s\\d+$/.test(k)).forEach(sk => {
+    Object.keys(data[n] || {}).filter(k => /^p\d+s\d+$/.test(k)).forEach(sk => {
       const v = data[n][sk]?.variant;
       if (v) variantsSeen.add(v);
     });
@@ -2579,7 +2579,7 @@ function renderProgressDensity() {
   const isMonth = mode === 'month';
   const toolbar = `
     <div class="prog-toolbar">
-      <button type="button" class="prog-filter-btn${isAll ? ' active' : ''}" onclick="setProgModeAll()">${getLang() === 'en' ? 'All' : 'Tutte'}</button>
+      <button type="button" class="prog-filter-btn${isAll ? ' active' : ''}" onclick="setProgModeAll()">${getLang() === 'en' ? 'All' : 'Tutto'}</button>
       <button type="button" class="prog-filter-btn${isYear ? ' active' : ''}" onclick="setProgModeYear()">${getLang() === 'en' ? 'Year' : 'Anno'}</button>
       <button type="button" class="prog-filter-btn${isMonth ? ' active' : ''}" onclick="setProgModeMonth()">${getLang() === 'en' ? 'Month' : 'Mese'}</button>
     </div>
