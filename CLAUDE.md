@@ -6,13 +6,13 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.20.1
+- **Versione corrente:** 3.21.0
 - **fetchWod cache-bust**: `★ Oggi` scarica `wod.json?t=Date.now()` con `cache:'no-store'` → wod sempre fresco a prescindere dalla versione del SW; fallback a `wod.json` (cache SW) se offline
 - **SW fetch JSON/manifest**: network-first con `fetch(req, {cache:'reload'})` per bypassare la cache HTTP del browser (GitHub Pages serve con `max-age=600`); senza, wod/exercises aggiornati arriverebbero solo dopo ~10 min. Con il fix `★ Oggi` prende sempre il wod fresco (vale dai dispositivi con SW ≥ 3.18.2)
 
 ### Stazioni opzionali
 - Un gruppo in exercises.json con `"optional": true` (es. `handstand_s3`, station `p0s3`) compare in una coppia **solo se la sessione/wod lo contiene** (`isOptionalStation` / `stationActive` / `activeStations`); filtrato in `renderPairStep`, `pairTimingHTML`, `collectStep`. Le sessioni WOD sono escluse dall'ereditarietà, quindi p0s3 di fatto appare solo via wod
-- **Gruppi `pool` (categorie)**: gruppi con `variants`/`metrics` e **nessuna `station`** (es. `tirata_verticale`, `core`). Gli slot (`p1_s1`, …) non hanno varianti proprie: ereditano le categorie **assegnate alla postazione** via `cali_category_layout` in localStorage (default: layout palestra originale). `resolveStation(stationKey)` unisce i pool della coppia `px`; select con `<optgroup>` per categoria e label opzione `Categoria · Variante` per rendere evidente la categoria. Modale **⚙ Layout categorie** (menu utente o pulsante nell'header coppia): ogni categoria è assegnata a una sola postazione P0–P4
+- **Gruppi `pool` (categorie)**: gruppi con `variants`/`metrics` e **nessuna `station`** (es. `tirata_verticale`, `core`). Gli slot (`p1_s1`, …) non hanno varianti proprie: ereditano le categorie **assegnate alla postazione** via `cali_category_layout` in localStorage (default: layout palestra originale). Modale **⚙ Layout categorie** (menu utente o pulsante nell'header coppia): ogni categoria è assegnata a una sola postazione P0–P4. **P1–P4**: in ogni slot il selettore **categoria** (`.category-select`) sostituisce l'etichetta slot; il menu **esercizio** mostra solo le varianti della categoria scelta (`resolveStationPool` / `pool` in sessione). **P0**: etichette slot + menu esercizio unico con `<optgroup>` e prefisso `Categoria · Variante`
 - **Lookup per variante (globale)**: `VARIANT_REGISTRY` + `findLastDataForVariant` / `findPrevExForVariant` — storico, ★ Oggi, delta e grafici seguono la **variante**, non lo slot: si può spostare una categoria su un'altra postazione senza perdere progressi
 
 ## File del progetto
@@ -42,7 +42,7 @@ Se si aggiorna solo `exercises.json` senza toccare l'app, incrementare `CACHE_VE
 ### Storage
 - Dati sessioni in `localStorage` con chiave `cali_sessions_[nome_utente]`
 - Ogni sessione è un oggetto con chiavi `pXsY` (es. `p0s1`, `p1s2` ecc.)
-- Struttura sessione: `{ date, p0s1: { variant, sets, hold_max? }, p1s1: {...}, ... }`
+- Struttura sessione: `{ date, p0s1: { variant, sets, hold_max? }, p1s1: { variant, pool?, sets, ... }, ... }` — su P1–P4 `pool` è la chiave categoria (es. `tirata_verticale`); se assente si inferisce dalla variante o dallo slot
 - `sets` per reps: `[[reps, cluster], ...]`
 - `sets` per time: `[[secondi, null], ...]`
 - `hold_max` presente solo per varianti isometriche
