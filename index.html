@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.25.1
+  Cali Tracker v3.26.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -130,7 +130,32 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .pair-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-left: auto; flex: 0 0 auto; }
 .mode-tag { font-size: 9px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--amber); border: 1px solid var(--amber); border-radius: 5px; padding: 1px 5px; white-space: nowrap; display: inline-block; line-height: 1.15; }
 .cycle { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 0 0 12px; }
-.chip-row { margin: 0 0 6px; }
+.chip-row { margin: 0 0 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; width: 100%; }
+.timer-start-btn {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.timer-bar {
+  display: none;
+  padding: 12px 16px;
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+}
+.timer-bar.open { display: block; }
+.timer-bar-main { text-align: center; margin-bottom: 10px; }
+.timer-phase { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+.timer-count { font-family: var(--mono); font-size: 32px; font-weight: 600; line-height: 1.1; }
+.timer-prog { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 4px; }
+.timer-bar-actions { display: flex; gap: 8px; justify-content: center; }
+.timer-ctrl { padding: 6px 12px !important; font-size: 11px !important; min-width: 64px; }
 .cycle-rounds { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-right: 2px; }
 .cycle-chip { font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 6px; white-space: nowrap; }
 .cycle-arrow { color: var(--muted2); font-size: 11px; }
@@ -388,6 +413,18 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
     <div class="step-label" id="step-label"></div>
   </div>
   <div class="step-content" id="step-content"></div>
+  <div id="timer-bar" class="timer-bar">
+    <div class="timer-bar-main">
+      <div id="timer-phase" class="timer-phase">—</div>
+      <div id="timer-count" class="timer-count">0:00</div>
+      <div id="timer-prog" class="timer-prog">—</div>
+    </div>
+    <div class="timer-bar-actions">
+      <button type="button" class="nav-btn timer-ctrl" id="timer-pause-btn" onclick="pauseTimer()">Pausa</button>
+      <button type="button" class="nav-btn timer-ctrl" onclick="skipTimerPhase()">Salta</button>
+      <button type="button" class="nav-btn timer-ctrl" onclick="stopTimer(false)">Stop</button>
+    </div>
+  </div>
   <div class="step-nav">
     <button class="nav-btn" id="btn-prev" onclick="goStep(-1)" style="display:none">‹ Indietro</button>
     <button class="nav-btn" id="btn-next" onclick="goStep(1)" style="display:none">Avanti ›</button>
@@ -431,7 +468,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <p><b>P0</b> è a sé (lo si fa tutti insieme); <b>P1–P3</b> (e <b>P4</b> se prevista) formano un anello: scorrendo avanti dall'ultima postazione attiva si torna a P1.</p>
       <p>Ogni slot ha un menu <b>categoria</b> e, sotto, il menu <b>esercizio</b> con sole le varianti della categoria scelta. Su <b>P0</b> (verticale) le categorie sono <i>dinamica</i> e <i>tenuta</i>, selezionabili su tutti e tre gli slot; su <b>P1–P4</b> sono disponibili tutte le categorie del circuito (tirata, gambe, spinta, core, …).</p>
       <p>Storico, pre-compilazione, ★ Oggi e grafici seguono l'<b>esercizio</b> (variante), non lo slot: puoi fare la stessa categoria su postazioni diverse senza perdere i progressi.</p>
-      <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio.</p>
+      <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio. Se sono impostati <b>lavoro</b> e <b>rest</b>, compare <b>▶ Timer</b> sulla riga tempi: avvia un countdown che segue la sequenza del chip (vibrazione + beep a fine fase). Cambiando step o scheda il timer chiede conferma.</p>
       <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono solo se previste nel WOD o già presenti nella sessione.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
       <p>Le <b>emoji</b> 😊😑😓🥵 qualificano quanto è stato duro il lavoro e regolano l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
@@ -467,7 +504,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.25.1';
+const VERSION = '3.26.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -1258,12 +1295,14 @@ function renderStepDots() {
 function jumpToStep(idx) {
   if (idx === currentStep || idx < 0 || idx >= STEPS.length) return;
   if (!stepActive(STEPS[idx], draftSession || {})) return;
+  if (!confirmStopTimer()) return;
   collectStep(currentStep);
   goStepDirect(idx);
 }
 
 function goStep(d) {
   if (!STEPS.length) return;
+  if (!confirmStopTimer()) return;
   const next = nextActiveStep(currentStep, d);
   if (next === currentStep) return;
   collectStep(currentStep);
@@ -1682,20 +1721,14 @@ function setDifficulty(stationKey, level, btn) {
   for (let i = 0; i < numSets; i++) updateRepsIntensity(stationKey, i, numSets);
 }
 
-// ── PAIR STEP RENDER ──
-// Ogni sotto-blocco ha la sua riga-chip subito sopra le card a cui si riferisce:
-//  - superset (esercizi collegati da 'alternato', anche 3): UNA riga chip
-//    (×N giri · S1 lavoro › cambio › S2 lavoro › rest) sopra il gruppo di card
-//  - esercizio 'a blocchi' (sequenziale): la sua riga chip dedicata sopra la card
-// Metodo/tempi dal wod (mode/modes per px = stringa o array N-1; set_time/rest per esercizio).
-function renderPairStep(stepIdx, s, prev) {
+// ── PAIR TIMING + TIMER ──
+function getPairTimingContext(stepIdx, s) {
   const step = STEPS[stepIdx];
-  const color = pairColor(step.px);
-  const stations = activeStations(step, s); // esclude le opzionali non presenti
-  const content = document.getElementById('step-content');
-  if (!stations.length) { content.innerHTML = ''; return; }
-  const data = getData();
+  if (!step) return null;
+  const stations = activeStations(step, s);
+  if (!stations.length) return null;
 
+  const color = pairColor(step.px);
   const gSet = (typeof s.set_time === 'number' && s.set_time > 0) ? s.set_time : 30;
   const gRest = (typeof s.rest === 'number' && s.rest > 0) ? s.rest : null;
   const change = (typeof s.change_time === 'number' && s.change_time > 0) ? s.change_time : null;
@@ -1704,22 +1737,247 @@ function renderPairStep(stepIdx, s, prev) {
   const stRest = (k) => { const e = s[k]; return (e && typeof e.rest === 'number' && e.rest > 0) ? e.rest : gRest; };
   const stCount = (k) => numSetsFor(k, s[k] || {});
 
-  // Modi di transizione (N-1) e sotto-blocchi (run collegati da 'alternato')
   const raw = (s.modes && s.modes[step.px] != null) ? s.modes[step.px] : s.mode;
   const links = [];
   for (let i = 0; i < stations.length - 1; i++) links.push(Array.isArray(raw) ? (raw[i] || 'sequenziale') : (raw || 'sequenziale'));
   const blocks = [];
   let cur = [0];
-  for (let i = 1; i < stations.length; i++) { if (links[i-1] === 'alternato') cur.push(i); else { blocks.push(cur); cur = [i]; } }
+  for (let i = 1; i < stations.length; i++) {
+    if (links[i - 1] === 'alternato') cur.push(i);
+    else { blocks.push(cur); cur = [i]; }
+  }
   blocks.push(cur);
+
+  return { step, stations, color, change, sLabel, stSet, stRest, stCount, blocks, links };
+}
+
+function buildTimerPlan(stepIdx, blockIdx, s) {
+  const ctx = getPairTimingContext(stepIdx, s);
+  if (!ctx) return null;
+  const { stations, color, change, sLabel, stSet, stRest, stCount, blocks } = ctx;
+  const block = blocks[blockIdx];
+  if (!block) return null;
+
+  const phases = [];
+  const addPhase = (type, label, seconds, phaseColor, round, setNum) => {
+    if (!seconds || seconds <= 0) return;
+    phases.push({ type, label, seconds, color: phaseColor, round, setNum });
+  };
+
+  let totalRounds = 1;
+  if (block.length > 1) {
+    totalRounds = Math.max(...block.map(i => stCount(stations[i].stationKey)));
+    for (let r = 1; r <= totalRounds; r++) {
+      block.forEach((i, j) => {
+        const k = stations[i].stationKey;
+        addPhase('work', `${sLabel(k)} · lavoro`, stSet(k), color, r, null);
+        if (j < block.length - 1) addPhase('change', 'cambio', change, 'var(--amber)', r, null);
+      });
+      const restKey = stations[block[block.length - 1]].stationKey;
+      addPhase('rest', 'rest', stRest(restKey), 'var(--teal)', r, null);
+    }
+  } else {
+    const k = stations[block[0]].stationKey;
+    totalRounds = stCount(k);
+    const rest = stRest(k);
+    for (let set = 1; set <= totalRounds; set++) {
+      addPhase('work', 'lavoro', stSet(k), color, null, set);
+      addPhase('rest', 'rest', rest, 'var(--teal)', null, set);
+    }
+  }
+
+  const hasWork = phases.some(p => p.type === 'work');
+  const hasRest = phases.some(p => p.type === 'rest');
+  if (!hasWork || !hasRest) return null;
+
+  return { phases, totalRounds, pairColor: color, stepLabel: ctx.step.label };
+}
+
+let _timer = null;
+let _timerRaf = null;
+let _wakeLock = null;
+let _audioCtx = null;
+
+function timerIsActive() {
+  return _timer && _timer.active && (_timer.paused || _timer.phaseIdx < _timer.phases.length);
+}
+
+function confirmStopTimer() {
+  if (!timerIsActive()) return true;
+  return confirm(getLang() === 'en' ? 'Timer running. Stop it and continue?' : 'Timer attivo. Fermarlo e continuare?');
+}
+
+function formatTimerSec(sec) {
+  const s = Math.max(0, Math.ceil(sec));
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  return m + ':' + String(r).padStart(2, '0');
+}
+
+function timerBeep() {
+  try {
+    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = _audioCtx;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 660;
+    gain.gain.value = 0.12;
+    osc.start();
+    osc.stop(ctx.currentTime + 0.15);
+  } catch (e) { /* no audio */ }
+  if (navigator.vibrate) navigator.vibrate(200);
+}
+
+function renderTimerBar() {
+  const bar = document.getElementById('timer-bar');
+  if (!bar) return;
+  if (!timerIsActive()) {
+    bar.classList.remove('open');
+    return;
+  }
+  bar.classList.add('open');
+  const phase = _timer.phases[_timer.phaseIdx];
+  const remaining = _timer.paused
+    ? _timer.remainingPaused
+    : (_timer.endsAt - Date.now()) / 1000;
+
+  const phaseEl = document.getElementById('timer-phase');
+  phaseEl.textContent = phase.label;
+  phaseEl.style.color = phase.color;
+  document.getElementById('timer-count').textContent = formatTimerSec(remaining);
+
+  const prog = [];
+  if (phase.round != null) prog.push(`Giro ${phase.round}/${_timer.totalRounds}`);
+  else if (phase.setNum != null) prog.push(`Set ${phase.setNum}/${_timer.totalRounds}`);
+  prog.push(`Fase ${_timer.phaseIdx + 1}/${_timer.phases.length}`);
+  document.getElementById('timer-prog').textContent = prog.join(' · ');
+
+  document.getElementById('timer-pause-btn').textContent = _timer.paused
+    ? (getLang() === 'en' ? 'Riprendi' : 'Riprendi')
+    : (getLang() === 'en' ? 'Pause' : 'Pausa');
+}
+
+function timerAdvancePhase() {
+  timerBeep();
+  _timer.phaseIdx++;
+  if (_timer.phaseIdx >= _timer.phases.length) {
+    stopTimer(true);
+    return;
+  }
+  const phase = _timer.phases[_timer.phaseIdx];
+  _timer.endsAt = Date.now() + phase.seconds * 1000;
+  renderTimerBar();
+  _timerRaf = requestAnimationFrame(timerTick);
+}
+
+function timerTick() {
+  if (!_timer || !_timer.active || _timer.paused) return;
+  if ((_timer.endsAt - Date.now()) / 1000 <= 0) {
+    timerAdvancePhase();
+    return;
+  }
+  renderTimerBar();
+  _timerRaf = requestAnimationFrame(timerTick);
+}
+
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) _wakeLock = await navigator.wakeLock.request('screen');
+  } catch (e) { /* unsupported */ }
+}
+
+function releaseWakeLock() {
+  if (_wakeLock) { _wakeLock.release(); _wakeLock = null; }
+}
+
+function startPairTimer(stepIdx, blockIdx) {
+  stopTimer(false);
+  const plan = buildTimerPlan(stepIdx, blockIdx, draftSession || {});
+  if (!plan) return;
+
+  try {
+    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    _audioCtx.resume();
+  } catch (e) { /* no audio */ }
+
+  _timer = {
+    active: true,
+    paused: false,
+    phases: plan.phases,
+    phaseIdx: 0,
+    totalRounds: plan.totalRounds,
+    stepIdx,
+    blockIdx,
+    endsAt: Date.now() + plan.phases[0].seconds * 1000,
+    remainingPaused: 0
+  };
+  requestWakeLock();
+  renderTimerBar();
+  _timerRaf = requestAnimationFrame(timerTick);
+}
+
+function pauseTimer() {
+  if (!_timer || !_timer.active) return;
+  if (_timer.paused) {
+    _timer.paused = false;
+    _timer.endsAt = Date.now() + _timer.remainingPaused * 1000;
+    _timerRaf = requestAnimationFrame(timerTick);
+  } else {
+    _timer.paused = true;
+    _timer.remainingPaused = (_timer.endsAt - Date.now()) / 1000;
+    if (_timerRaf) cancelAnimationFrame(_timerRaf);
+    _timerRaf = null;
+  }
+  renderTimerBar();
+}
+
+function skipTimerPhase() {
+  if (!_timer || !_timer.active) return;
+  if (_timerRaf) cancelAnimationFrame(_timerRaf);
+  _timerRaf = null;
+  _timer.paused = false;
+  timerAdvancePhase();
+}
+
+function stopTimer(completed) {
+  if (_timerRaf) cancelAnimationFrame(_timerRaf);
+  _timerRaf = null;
+  _timer = null;
+  releaseWakeLock();
+  renderTimerBar();
+  if (completed) {
+    const toast = document.getElementById('toast');
+    toast.textContent = getLang() === 'en' ? '✓ Timer done' : '✓ Timer completato';
+    toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); toast.textContent = '✓ Sessione salvata'; }, 2000);
+  }
+}
+
+// ── PAIR STEP RENDER ──
+// Ogni sotto-blocco ha la sua riga-chip subito sopra le card a cui si riferisce:
+//  - superset (esercizi collegati da 'alternato', anche 3): UNA riga chip
+//    (×N giri · S1 lavoro › cambio › S2 lavoro › rest) sopra il gruppo di card
+//  - esercizio 'a blocchi' (sequenziale): la sua riga chip dedicata sopra la card
+// Metodo/tempi dal wod (mode/modes per px = stringa o array N-1; set_time/rest per esercizio).
+function renderPairStep(stepIdx, s, prev) {
+  const ctx = getPairTimingContext(stepIdx, s);
+  const content = document.getElementById('step-content');
+  if (!ctx) { content.innerHTML = ''; return; }
+  const { step, stations, color, change, sLabel, stSet, stRest, stCount, blocks, links } = ctx;
+  const data = getData();
 
   const workChip = (lbl, t) => `<span class="cycle-chip" style="background:${color};color:#0c0c0c">${lbl} ${t}"</span>`;
   const restChip = (t) => `<span class="cycle-chip" style="background:var(--teal);color:#0c0c0c">rest ${t ?? '—'}"</span>`;
   const swChip = `<span class="cycle-chip" style="background:var(--amber);color:#0c0c0c">cambio ${change ?? '—'}"</span>`;
   const arrow = `<span class="cycle-arrow">›</span>`;
 
-  function chipRow(block) {
-    if (block.length > 1) { // superset
+  function chipRow(block, blockIdx) {
+    const timerBtn = buildTimerPlan(stepIdx, blockIdx, s)
+      ? `<button type="button" class="timer-start-btn" onclick="startPairTimer(${stepIdx},${blockIdx})">▶ Timer</button>`
+      : '';
+    if (block.length > 1) {
       const rounds = Math.max(...block.map(i => stCount(stations[i].stationKey)));
       const seq = [];
       block.forEach((i, j) => {
@@ -1727,12 +1985,12 @@ function renderPairStep(stepIdx, s, prev) {
         seq.push(workChip(sLabel(k), stSet(k)));
         if (j < block.length - 1) seq.push(swChip);
       });
-      seq.push(restChip(stRest(stations[block[block.length-1]].stationKey)));
-      return `<div class="cycle chip-row"><span class="cycle-rounds">×${rounds} giri</span>${seq.join(arrow)}</div>`;
+      seq.push(restChip(stRest(stations[block[block.length - 1]].stationKey)));
+      return `<div class="cycle chip-row"><span class="cycle-rounds">×${rounds} giri</span>${seq.join(arrow)}${timerBtn}</div>`;
     }
     const k = stations[block[0]].stationKey;
     const r = stRest(k);
-    return `<div class="cycle chip-row"><span class="cycle-rounds">×${stCount(k)} set</span>${workChip('lavoro', stSet(k))}${r ? arrow + restChip(r) : ''}</div>`;
+    return `<div class="cycle chip-row"><span class="cycle-rounds">×${stCount(k)} set</span>${workChip('lavoro', stSet(k))}${r ? arrow + restChip(r) : ''}${timerBtn}</div>`;
   }
 
   function cardHTML({stationKey, px}) {
@@ -1762,8 +2020,8 @@ function renderPairStep(stepIdx, s, prev) {
   }
 
   let body = '';
-  blocks.forEach(block => {
-    body += chipRow(block);
+  blocks.forEach((block, bi) => {
+    body += chipRow(block, bi);
     block.forEach(i => body += cardHTML(stations[i]));
   });
 
@@ -3038,6 +3296,11 @@ function activateTab(t) {
 
 function switchTab(t) {
   const activeTab = ['log','history','progress'][Array.from(document.querySelectorAll('.tab')).findIndex(el => el.classList.contains('active'))] || 'log';
+
+  if (!_suppressTabGuard && activeTab === 'log' && t !== 'log' && timerIsActive()) {
+    if (!confirmStopTimer()) return;
+    stopTimer(false);
+  }
 
   if (!_suppressTabGuard && activeTab === 'log' && t !== 'log' && draftDirty) {
     const ok = confirm('La sessione corrente non è salvata. Uscendo da Inserisci i dati inseriti verranno persi. Continuare?');
