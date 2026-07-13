@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.26.3
+  Cali Tracker v3.27.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -93,6 +93,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .step-chip:active { background: var(--surface2); }
 .step-chip.active { font-weight: 500; }
 .step-chip-sep { width: 1px; align-self: stretch; background: var(--border2); margin: 2px 3px; }
+.timer-total-badge { font-family: var(--mono); font-size: 10px; padding: 4px 8px; border-radius: 7px; border: 1px dashed var(--border2); color: var(--muted); margin-left: 2px; white-space: nowrap; }
 
 .step-nav { display: flex; align-items: center; padding: 10px 16px 14px; gap: 10px; }
 .nav-btn { flex: 1; padding: 11px; border: 1px solid var(--border2); background: var(--surface); color: var(--text); border-radius: var(--r); font-size: 13px; font-family: var(--sans); cursor: pointer; }
@@ -178,6 +179,9 @@ body.timer-active #page-log { padding-bottom: 160px; }
 .timer-bar.timer-paused .timer-count { opacity: .55; }
 .cycle-rounds { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-right: 2px; }
 .cycle-chip { font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 6px; white-space: nowrap; }
+button.cycle-chip { border: none; cursor: pointer; font-family: var(--mono); font-size: 10px; line-height: inherit; }
+button.cycle-chip-edit { outline: 1px dashed rgba(12,12,12,.35); outline-offset: 1px; }
+button.cycle-chip-edit:active { filter: brightness(.92); }
 .cycle-arrow { color: var(--muted2); font-size: 11px; }
 
 /* EX BLOCK */
@@ -481,6 +485,20 @@ body.timer-active #page-log { padding-bottom: 160px; }
   </div>
 </div>
 
+<div class="modal-overlay" id="timing-modal">
+  <div class="modal">
+    <div class="modal-title" id="timing-modal-title">—</div>
+    <div class="stepper-row" style="justify-content:center;margin:12px 0">
+      <button type="button" class="stepper-btn" onclick="stepTimingEdit(-5)">−</button>
+      <input class="stepper-input timing-edit-input" id="timing-edit-input" type="number" inputmode="numeric" min="5" max="300" oninput="onTimingEditInput()">
+      <button type="button" class="stepper-btn" onclick="stepTimingEdit(5)">+</button>
+    </div>
+    <div style="text-align:center;font-size:11px;color:var(--muted);font-family:var(--mono);margin-bottom:12px">secondi</div>
+    <button class="modal-btn" onclick="saveTimingEdit()">Salva</button>
+    <button class="modal-btn-ghost" onclick="closeTimingEditor()">Annulla</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="help-modal">
   <div class="modal help-modal">
     <div class="modal-title">Come si usa Cali Tracker</div>
@@ -490,7 +508,7 @@ body.timer-active #page-log { padding-bottom: 160px; }
       <p><b>P0</b> è a sé (lo si fa tutti insieme); <b>P1–P3</b> (e <b>P4</b> se prevista) formano un anello: scorrendo avanti dall'ultima postazione attiva si torna a P1.</p>
       <p>Ogni slot ha un menu <b>categoria</b> e, sotto, il menu <b>esercizio</b> con sole le varianti della categoria scelta. Su <b>P0</b> (verticale) le categorie sono <i>dinamica</i> e <i>tenuta</i>, selezionabili su tutti e tre gli slot; su <b>P1–P4</b> sono disponibili tutte le categorie del circuito (tirata, gambe, spinta, core, …).</p>
       <p>Storico, pre-compilazione, ★ Oggi e grafici seguono l'<b>esercizio</b> (variante), non lo slot: puoi fare la stessa categoria su postazioni diverse senza perdere i progressi.</p>
-      <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio. Se sono impostati <b>lavoro</b> e <b>rest</b>, compare <b>▶ Timer</b> sulla riga tempi: avvia un countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), poi <span style="color:#ee412a">rosso</span> lavoro, <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b> (ricomincia la fase corrente), Salta e Stop. Beep negli ultimi 3 secondi di ogni fase + vibrazione a fine fase. All'inizio dell'<b>ultimo rest</b> della postazione (ultimo blocco timer) si passa automaticamente alla postazione successiva (P0→P1…, poi anello P1–P4) mentre il rest continua. Cambiando postazione a mano il timer si ferma; cambiando scheda chiede conferma.</p>
+      <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio. Accanto ai chip <b>P1–P4</b> compare la <b>durata stimata</b> di tutto il workout (timer, inclusa preparazione 10"). Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nelle sessioni <b>★ WOD</b> restano bloccati. Se sono impostati <b>lavoro</b> e <b>rest</b>, compare <b>▶ Timer</b> sulla riga tempi: avvia un countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), poi <span style="color:#ee412a">rosso</span> lavoro, <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b> (ricomincia la fase corrente), Salta e Stop. Beep negli ultimi 3 secondi di ogni fase + vibrazione a fine fase. All'inizio dell'<b>ultimo rest</b> della postazione (ultimo blocco timer) si passa automaticamente alla postazione successiva (P0→P1…, poi anello P1–P4) mentre il rest continua. Cambiando postazione a mano il timer si ferma; cambiando scheda chiede conferma.</p>
       <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono solo se previste nel WOD o già presenti nella sessione.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
       <p>Le <b>emoji</b> 😊😑😓🥵 qualificano quanto è stato duro il lavoro e regolano l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
@@ -526,7 +544,7 @@ body.timer-active #page-log { padding-bottom: 160px; }
 </div>
 
 <script>
-const VERSION = '3.26.3';
+const VERSION = '3.27.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -1303,14 +1321,23 @@ function renderStepDots() {
   const { ringStart } = ringInfo();
   const s = draftSession || {};
   let sepPlaced = false;
-  document.getElementById('step-dots').innerHTML = STEPS.map((st, i) => {
-    if (!stepActive(st, s)) return '';
+  let hasRingChip = false;
+  const parts = [];
+  STEPS.forEach((st, i) => {
+    if (!stepActive(st, s)) return;
+    if (i >= ringStart && ringStart > 0) hasRingChip = true;
     const sep = (!sepPlaced && i >= ringStart && ringStart > 0)
       ? (sepPlaced = true, '<span class="step-chip-sep"></span>') : '';
     const active = i === currentStep;
     const style = active ? `border-color:${pairColor(st.px)};color:${pairColor(st.px)}` : '';
-    return `${sep}<button class="step-chip${active ? ' active' : ''}" style="${style}" onclick="jumpToStep(${i})">${st.px.toUpperCase()}</button>`;
-  }).join('');
+    parts.push(`${sep}<button class="step-chip${active ? ' active' : ''}" style="${style}" onclick="jumpToStep(${i})">${st.px.toUpperCase()}</button>`);
+  });
+  if (hasRingChip) {
+    const total = computeSessionTimerTotalSeconds(s);
+    const tip = getLang() === 'en' ? 'Estimated timer duration (all stations)' : 'Durata stimata timer (tutte le postazioni)';
+    parts.push(`<span class="timer-total-badge" title="${tip}">~${formatTimerDuration(total)}</span>`);
+  }
+  document.getElementById('step-dots').innerHTML = parts.join('');
 }
 
 // Salto diretto a uno step (dai chip): salva lo step corrente prima di spostarsi
@@ -1773,6 +1800,132 @@ function getPairTimingContext(stepIdx, s) {
   return { step, stations, color, change, sLabel, stSet, stRest, stCount, blocks, links };
 }
 
+function sumBlockTimerSeconds(block, ctx) {
+  const { stations, change, stSet, stRest, stCount } = ctx;
+  let total = 0;
+  if (block.length > 1) {
+    const totalRounds = Math.max(...block.map(i => stCount(stations[i].stationKey)));
+    for (let r = 1; r <= totalRounds; r++) {
+      block.forEach((i, j) => {
+        const k = stations[i].stationKey;
+        const w = stSet(k);
+        if (w > 0) total += w;
+        if (j < block.length - 1 && change > 0) total += change;
+      });
+      const restKey = stations[block[block.length - 1]].stationKey;
+      const rest = stRest(restKey);
+      if (rest > 0) total += rest;
+    }
+  } else {
+    const k = stations[block[0]].stationKey;
+    const rounds = stCount(k);
+    const rest = stRest(k);
+    for (let set = 1; set <= rounds; set++) {
+      const w = stSet(k);
+      if (w > 0) total += w;
+      if (rest > 0) total += rest;
+    }
+  }
+  return total;
+}
+
+function computeSessionTimerTotalSeconds(s) {
+  let total = 10;
+  for (let stepIdx = 0; stepIdx < STEPS.length; stepIdx++) {
+    if (!stepActive(STEPS[stepIdx], s)) continue;
+    const ctx = getPairTimingContext(stepIdx, s);
+    if (!ctx) continue;
+    ctx.blocks.forEach(block => { total += sumBlockTimerSeconds(block, ctx); });
+  }
+  return total;
+}
+
+function formatTimerDuration(sec) {
+  const s = Math.max(0, Math.round(sec));
+  if (s >= 3600) {
+    const h = Math.floor(s / 3600);
+    const m = Math.round((s % 3600) / 60);
+    return m > 0 ? `${h}h ${m}m` : `${h}h`;
+  }
+  if (s >= 60) {
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return r > 0 ? `${m}:${String(r).padStart(2, '0')}` : `${m} min`;
+  }
+  return `0:${String(s).padStart(2, '0')}`;
+}
+
+let _timingEdit = null;
+
+function openTimingEditor(kind, stationKey, stepIdx) {
+  const s = draftSession || {};
+  if (s.wod) return;
+  const ctx = getPairTimingContext(stepIdx, s);
+  if (!ctx) return;
+  const en = getLang() === 'en';
+  let value, title;
+  if (kind === 'work') {
+    value = ctx.stSet(stationKey);
+    const lbl = ctx.sLabel(stationKey);
+    title = en ? `Work ${lbl}` : `Lavoro ${lbl}`;
+  } else if (kind === 'change') {
+    value = ctx.change || 30;
+    title = en ? 'Change' : 'Cambio';
+  } else if (kind === 'rest') {
+    const ex = s[stationKey];
+    value = ctx.stRest(stationKey) || 60;
+    title = en ? `Rest ${ctx.sLabel(stationKey)}` : `Rest ${ctx.sLabel(stationKey)}`;
+    _timingEdit = {
+      kind, stationKey, stepIdx,
+      useGlobalRest: !(ex && typeof ex.rest === 'number' && ex.rest > 0)
+    };
+  } else return;
+  if (kind !== 'rest') _timingEdit = { kind, stationKey, stepIdx, useGlobalRest: false };
+  document.getElementById('timing-modal-title').textContent = title;
+  document.getElementById('timing-edit-input').value = value;
+  document.getElementById('timing-modal').classList.add('open');
+}
+
+function stepTimingEdit(delta) {
+  const inp = document.getElementById('timing-edit-input');
+  let v = (parseInt(inp.value, 10) || 0) + delta;
+  inp.value = Math.max(5, Math.min(300, v));
+}
+
+function onTimingEditInput() {
+  const inp = document.getElementById('timing-edit-input');
+  let v = parseInt(inp.value, 10) || 5;
+  inp.value = Math.max(5, Math.min(300, v));
+}
+
+function saveTimingEdit() {
+  if (!_timingEdit) return;
+  const v = parseInt(document.getElementById('timing-edit-input').value, 10) || 5;
+  const s = draftSession || {};
+  const { kind, stationKey, useGlobalRest } = _timingEdit;
+  if (kind === 'work') {
+    if (!s[stationKey]) s[stationKey] = {};
+    s[stationKey].set_time = v;
+  } else if (kind === 'change') {
+    s.change_time = v;
+  } else if (kind === 'rest') {
+    if (useGlobalRest) s.rest = v;
+    else {
+      if (!s[stationKey]) s[stationKey] = {};
+      s[stationKey].rest = v;
+    }
+  }
+  markDraftDirty();
+  closeTimingEditor();
+  renderStepDots();
+  renderStep();
+}
+
+function closeTimingEditor() {
+  _timingEdit = null;
+  document.getElementById('timing-modal').classList.remove('open');
+}
+
 function buildTimerPlan(stepIdx, blockIdx, s) {
   const ctx = getPairTimingContext(stepIdx, s);
   if (!ctx) return null;
@@ -2093,10 +2246,27 @@ function renderPairStep(stepIdx, s, prev) {
   if (!ctx) { content.innerHTML = ''; return; }
   const { step, stations, color, change, sLabel, stSet, stRest, stCount, blocks, links } = ctx;
   const data = getData();
+  const timingLocked = !!s.wod;
 
-  const workChip = (lbl, t) => `<span class="cycle-chip" style="background:${color};color:#0c0c0c">${lbl} ${t}"</span>`;
-  const restChip = (t) => `<span class="cycle-chip" style="background:var(--teal);color:#0c0c0c">rest ${t ?? '—'}"</span>`;
-  const swChip = `<span class="cycle-chip" style="background:var(--amber);color:#0c0c0c">cambio ${change ?? '—'}"</span>`;
+  const workChip = (lbl, t, stationKey) => {
+    const inner = `${lbl} ${t}"`;
+    const style = `background:${color};color:#0c0c0c`;
+    if (timingLocked) return `<span class="cycle-chip" style="${style}">${inner}</span>`;
+    return `<button type="button" class="cycle-chip cycle-chip-edit" style="${style}" onclick="openTimingEditor('work','${stationKey}',${stepIdx})">${inner}</button>`;
+  };
+  const restChip = (t, stationKey) => {
+    const inner = `rest ${t ?? '—'}"`;
+    const style = 'background:var(--teal);color:#0c0c0c';
+    if (!t) return `<span class="cycle-chip" style="${style}">${inner}</span>`;
+    if (timingLocked) return `<span class="cycle-chip" style="${style}">${inner}</span>`;
+    return `<button type="button" class="cycle-chip cycle-chip-edit" style="${style}" onclick="openTimingEditor('rest','${stationKey}',${stepIdx})">${inner}</button>`;
+  };
+  const swChip = (() => {
+    const inner = `cambio ${change ?? '—'}"`;
+    const style = 'background:var(--amber);color:#0c0c0c';
+    if (timingLocked || !change) return `<span class="cycle-chip" style="${style}">${inner}</span>`;
+    return `<button type="button" class="cycle-chip cycle-chip-edit" style="${style}" onclick="openTimingEditor('change','',${stepIdx})">${inner}</button>`;
+  })();
   const arrow = `<span class="cycle-arrow">›</span>`;
 
   function chipRow(block, blockIdx) {
@@ -2108,15 +2278,16 @@ function renderPairStep(stepIdx, s, prev) {
       const seq = [];
       block.forEach((i, j) => {
         const k = stations[i].stationKey;
-        seq.push(workChip(sLabel(k), stSet(k)));
+        seq.push(workChip(sLabel(k), stSet(k), k));
         if (j < block.length - 1) seq.push(swChip);
       });
-      seq.push(restChip(stRest(stations[block[block.length - 1]].stationKey)));
+      const restKey = stations[block[block.length - 1]].stationKey;
+      seq.push(restChip(stRest(restKey), restKey));
       return `<div class="cycle chip-row"><span class="cycle-rounds">×${rounds} giri</span>${seq.join(arrow)}${timerBtn}</div>`;
     }
     const k = stations[block[0]].stationKey;
     const r = stRest(k);
-    return `<div class="cycle chip-row"><span class="cycle-rounds">×${stCount(k)} set</span>${workChip('lavoro', stSet(k))}${r ? arrow + restChip(r) : ''}${timerBtn}</div>`;
+    return `<div class="cycle chip-row"><span class="cycle-rounds">×${stCount(k)} set</span>${workChip('lavoro', stSet(k), k)}${r ? arrow + restChip(r, k) : ''}${timerBtn}</div>`;
   }
 
   function cardHTML({stationKey, px}) {
