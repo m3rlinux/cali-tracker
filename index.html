@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.26.0
+  Cali Tracker v3.26.1
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -145,17 +145,36 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 }
 .timer-bar {
   display: none;
-  padding: 12px 16px;
-  background: var(--surface2);
-  border-top: 1px solid var(--border);
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 250;
+  padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+  box-shadow: 0 -6px 28px rgba(0,0,0,.5);
+  transition: background-color .2s ease;
 }
 .timer-bar.open { display: block; }
-.timer-bar-main { text-align: center; margin-bottom: 10px; }
-.timer-phase { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
-.timer-count { font-family: var(--mono); font-size: 32px; font-weight: 600; line-height: 1.1; }
-.timer-prog { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 4px; }
-.timer-bar-actions { display: flex; gap: 8px; justify-content: center; }
-.timer-ctrl { padding: 6px 12px !important; font-size: 11px !important; min-width: 64px; }
+.timer-bar.timer-phase-work { background: #ee412a; color: #0c0c0c; }
+.timer-bar.timer-phase-change { background: var(--amber); color: #0c0c0c; }
+.timer-bar.timer-phase-rest { background: var(--teal); color: #0c0c0c; }
+body.timer-active #page-log { padding-bottom: 148px; }
+.timer-bar-main { text-align: center; margin-bottom: 12px; }
+.timer-phase { font-family: var(--mono); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px; opacity: .85; }
+.timer-count { font-family: var(--mono); font-size: 56px; font-weight: 600; line-height: 1; letter-spacing: -.02em; }
+.timer-prog { font-family: var(--mono); font-size: 11px; opacity: .75; margin-top: 6px; }
+.timer-bar-actions { display: flex; gap: 10px; justify-content: center; }
+.timer-ctrl {
+  padding: 10px 18px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  min-width: 76px;
+  background: rgba(12,12,12,.22) !important;
+  border: 1px solid rgba(12,12,12,.35) !important;
+  color: #0c0c0c !important;
+  border-radius: 8px !important;
+}
+.timer-bar.timer-paused .timer-count { opacity: .55; }
 .cycle-rounds { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-right: 2px; }
 .cycle-chip { font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 6px; white-space: nowrap; }
 .cycle-arrow { color: var(--muted2); font-size: 11px; }
@@ -413,18 +432,6 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
     <div class="step-label" id="step-label"></div>
   </div>
   <div class="step-content" id="step-content"></div>
-  <div id="timer-bar" class="timer-bar">
-    <div class="timer-bar-main">
-      <div id="timer-phase" class="timer-phase">—</div>
-      <div id="timer-count" class="timer-count">0:00</div>
-      <div id="timer-prog" class="timer-prog">—</div>
-    </div>
-    <div class="timer-bar-actions">
-      <button type="button" class="nav-btn timer-ctrl" id="timer-pause-btn" onclick="pauseTimer()">Pausa</button>
-      <button type="button" class="nav-btn timer-ctrl" onclick="skipTimerPhase()">Salta</button>
-      <button type="button" class="nav-btn timer-ctrl" onclick="stopTimer(false)">Stop</button>
-    </div>
-  </div>
   <div class="step-nav">
     <button class="nav-btn" id="btn-prev" onclick="goStep(-1)" style="display:none">‹ Indietro</button>
     <button class="nav-btn" id="btn-next" onclick="goStep(1)" style="display:none">Avanti ›</button>
@@ -438,6 +445,19 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 
 <div class="page" id="page-progress">
   <div id="progress-content"><div class="history-empty">Inserisci almeno 2 sessioni<br>per vedere i progressi.</div></div>
+</div>
+
+<div id="timer-bar" class="timer-bar" aria-live="polite">
+  <div class="timer-bar-main">
+    <div id="timer-phase" class="timer-phase">—</div>
+    <div id="timer-count" class="timer-count">0:00</div>
+    <div id="timer-prog" class="timer-prog">—</div>
+  </div>
+  <div class="timer-bar-actions">
+    <button type="button" class="nav-btn timer-ctrl" id="timer-pause-btn" onclick="pauseTimer()">Pausa</button>
+    <button type="button" class="nav-btn timer-ctrl" id="timer-skip-btn" onclick="skipTimerPhase()">Salta</button>
+    <button type="button" class="nav-btn timer-ctrl" id="timer-stop-btn" onclick="stopTimer(false)">Stop</button>
+  </div>
 </div>
 
 <!-- MODALS -->
@@ -468,7 +488,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
       <p><b>P0</b> è a sé (lo si fa tutti insieme); <b>P1–P3</b> (e <b>P4</b> se prevista) formano un anello: scorrendo avanti dall'ultima postazione attiva si torna a P1.</p>
       <p>Ogni slot ha un menu <b>categoria</b> e, sotto, il menu <b>esercizio</b> con sole le varianti della categoria scelta. Su <b>P0</b> (verticale) le categorie sono <i>dinamica</i> e <i>tenuta</i>, selezionabili su tutti e tre gli slot; su <b>P1–P4</b> sono disponibili tutte le categorie del circuito (tirata, gambe, spinta, core, …).</p>
       <p>Storico, pre-compilazione, ★ Oggi e grafici seguono l'<b>esercizio</b> (variante), non lo slot: puoi fare la stessa categoria su postazioni diverse senza perdere i progressi.</p>
-      <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio. Se sono impostati <b>lavoro</b> e <b>rest</b>, compare <b>▶ Timer</b> sulla riga tempi: avvia un countdown che segue la sequenza del chip (vibrazione + beep a fine fase). Cambiando step o scheda il timer chiede conferma.</p>
+      <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio. Se sono impostati <b>lavoro</b> e <b>rest</b>, compare <b>▶ Timer</b> sulla riga tempi: avvia un countdown fisso in basso che segue la sequenza del chip — <span style="color:#ee412a">rosso</span> lavoro, <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con pulsanti Pausa / Salta / Stop. Vibrazione + beep a fine fase. Cambiando postazione il timer si ferma da solo; cambiando scheda chiede conferma.</p>
       <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono solo se previste nel WOD o già presenti nella sessione.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
       <p>Le <b>emoji</b> 😊😑😓🥵 qualificano quanto è stato duro il lavoro e regolano l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
@@ -504,7 +524,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 </div>
 
 <script>
-const VERSION = '3.26.0';
+const VERSION = '3.26.1';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -1295,16 +1315,16 @@ function renderStepDots() {
 function jumpToStep(idx) {
   if (idx === currentStep || idx < 0 || idx >= STEPS.length) return;
   if (!stepActive(STEPS[idx], draftSession || {})) return;
-  if (!confirmStopTimer()) return;
+  stopTimerIfLeavingStep(idx);
   collectStep(currentStep);
   goStepDirect(idx);
 }
 
 function goStep(d) {
   if (!STEPS.length) return;
-  if (!confirmStopTimer()) return;
   const next = nextActiveStep(currentStep, d);
   if (next === currentStep) return;
+  stopTimerIfLeavingStep(next);
   collectStep(currentStep);
 
   const el = document.getElementById('step-content');
@@ -1759,9 +1779,9 @@ function buildTimerPlan(stepIdx, blockIdx, s) {
   if (!block) return null;
 
   const phases = [];
-  const addPhase = (type, label, seconds, phaseColor, round, setNum) => {
+  const addPhase = (type, label, seconds, round, setNum) => {
     if (!seconds || seconds <= 0) return;
-    phases.push({ type, label, seconds, color: phaseColor, round, setNum });
+    phases.push({ type, label, seconds, round, setNum });
   };
 
   let totalRounds = 1;
@@ -1770,19 +1790,19 @@ function buildTimerPlan(stepIdx, blockIdx, s) {
     for (let r = 1; r <= totalRounds; r++) {
       block.forEach((i, j) => {
         const k = stations[i].stationKey;
-        addPhase('work', `${sLabel(k)} · lavoro`, stSet(k), color, r, null);
-        if (j < block.length - 1) addPhase('change', 'cambio', change, 'var(--amber)', r, null);
+        addPhase('work', `${sLabel(k)} · lavoro`, stSet(k), r, null);
+        if (j < block.length - 1) addPhase('change', 'cambio', change, r, null);
       });
       const restKey = stations[block[block.length - 1]].stationKey;
-      addPhase('rest', 'rest', stRest(restKey), 'var(--teal)', r, null);
+      addPhase('rest', 'rest', stRest(restKey), r, null);
     }
   } else {
     const k = stations[block[0]].stationKey;
     totalRounds = stCount(k);
     const rest = stRest(k);
     for (let set = 1; set <= totalRounds; set++) {
-      addPhase('work', 'lavoro', stSet(k), color, null, set);
-      addPhase('rest', 'rest', rest, 'var(--teal)', null, set);
+      addPhase('work', 'lavoro', stSet(k), null, set);
+      addPhase('rest', 'rest', rest, null, set);
     }
   }
 
@@ -1805,6 +1825,17 @@ function timerIsActive() {
 function confirmStopTimer() {
   if (!timerIsActive()) return true;
   return confirm(getLang() === 'en' ? 'Timer running. Stop it and continue?' : 'Timer attivo. Fermarlo e continuare?');
+}
+
+function stopTimerIfLeavingStep(newStepIdx) {
+  if (!_timer || !timerIsActive()) return;
+  if (_timer.stepIdx !== newStepIdx) stopTimer(false);
+}
+
+function timerPhaseClass(type) {
+  if (type === 'change') return 'timer-phase-change';
+  if (type === 'rest') return 'timer-phase-rest';
+  return 'timer-phase-work';
 }
 
 function formatTimerSec(sec) {
@@ -1834,29 +1865,39 @@ function renderTimerBar() {
   const bar = document.getElementById('timer-bar');
   if (!bar) return;
   if (!timerIsActive()) {
-    bar.classList.remove('open');
+    bar.classList.remove('open', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rest', 'timer-paused');
+    document.body.classList.remove('timer-active');
     return;
   }
   bar.classList.add('open');
+  document.body.classList.add('timer-active');
   const phase = _timer.phases[_timer.phaseIdx];
   const remaining = _timer.paused
     ? _timer.remainingPaused
     : (_timer.endsAt - Date.now()) / 1000;
 
+  bar.classList.remove('timer-phase-work', 'timer-phase-change', 'timer-phase-rest');
+  bar.classList.add(timerPhaseClass(phase.type));
+  bar.classList.toggle('timer-paused', !!_timer.paused);
+
+  const en = getLang() === 'en';
   const phaseEl = document.getElementById('timer-phase');
-  phaseEl.textContent = phase.label;
-  phaseEl.style.color = phase.color;
+  phaseEl.textContent = _timer.paused
+    ? (en ? 'Paused' : 'In pausa')
+    : phase.label;
   document.getElementById('timer-count').textContent = formatTimerSec(remaining);
 
   const prog = [];
-  if (phase.round != null) prog.push(`Giro ${phase.round}/${_timer.totalRounds}`);
-  else if (phase.setNum != null) prog.push(`Set ${phase.setNum}/${_timer.totalRounds}`);
-  prog.push(`Fase ${_timer.phaseIdx + 1}/${_timer.phases.length}`);
+  if (phase.round != null) prog.push(en ? `Round ${phase.round}/${_timer.totalRounds}` : `Giro ${phase.round}/${_timer.totalRounds}`);
+  else if (phase.setNum != null) prog.push(en ? `Set ${phase.setNum}/${_timer.totalRounds}` : `Set ${phase.setNum}/${_timer.totalRounds}`);
+  prog.push(en ? `Phase ${_timer.phaseIdx + 1}/${_timer.phases.length}` : `Fase ${_timer.phaseIdx + 1}/${_timer.phases.length}`);
   document.getElementById('timer-prog').textContent = prog.join(' · ');
 
   document.getElementById('timer-pause-btn').textContent = _timer.paused
-    ? (getLang() === 'en' ? 'Riprendi' : 'Riprendi')
-    : (getLang() === 'en' ? 'Pause' : 'Pausa');
+    ? (en ? 'Resume' : 'Riprendi')
+    : (en ? 'Pause' : 'Pausa');
+  document.getElementById('timer-skip-btn').textContent = en ? 'Skip' : 'Salta';
+  document.getElementById('timer-stop-btn').textContent = en ? 'Stop' : 'Stop';
 }
 
 function timerAdvancePhase() {
