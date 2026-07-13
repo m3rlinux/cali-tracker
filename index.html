@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.27.2
+  Cali Tracker v3.27.3
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -544,7 +544,7 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
 </div>
 
 <script>
-const VERSION = '3.27.2';
+const VERSION = '3.27.3';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -2116,6 +2116,34 @@ function timerTickBeep() {
   } catch (e) { /* no audio */ }
 }
 
+function timerDoubleBeep() {
+  try {
+    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = _audioCtx;
+    const play = (offset) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 720;
+      gain.gain.value = 0.1;
+      osc.start(ctx.currentTime + offset);
+      osc.stop(ctx.currentTime + offset + 0.1);
+    };
+    play(0);
+    play(0.15);
+  } catch (e) { /* no audio */ }
+}
+
+function timerCheckWorkHalfwayBeep(remaining) {
+  if (!_timer || _timer.paused || _timer.halfwayBeeped) return;
+  const phase = _timer.phases[_timer.phaseIdx];
+  if (phase.type !== 'work') return;
+  if (remaining > phase.seconds / 2) return;
+  _timer.halfwayBeeped = true;
+  timerDoubleBeep();
+}
+
 function timerCheckCountdownBeeps(remaining) {
   if (!_timer || _timer.paused) return;
   const sec = Math.ceil(remaining);
@@ -2129,6 +2157,7 @@ function timerStartPhase() {
   const phase = _timer.phases[_timer.phaseIdx];
   _timer.endsAt = Date.now() + phase.seconds * 1000;
   _timer.lastBeepSec = null;
+  _timer.halfwayBeeped = false;
 }
 
 function renderTimerBar() {
@@ -2193,6 +2222,7 @@ function timerTick() {
     timerAdvancePhase();
     return;
   }
+  timerCheckWorkHalfwayBeep(remaining);
   timerCheckCountdownBeeps(remaining);
   renderTimerBar();
   _timerRaf = requestAnimationFrame(timerTick);
