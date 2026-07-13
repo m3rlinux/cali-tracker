@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.28.3
+  Cali Tracker v3.28.4
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -92,6 +92,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .step-chip { padding: 4px 10px; border: 1px solid var(--border2); border-radius: 7px; background: var(--surface); color: var(--muted); font-family: var(--mono); font-size: 11px; cursor: pointer; user-select: none; }
 .step-chip:active { background: var(--surface2); }
 .step-chip.active { font-weight: 500; }
+.step-chip-add { border-style: dashed; color: var(--p4); border-color: color-mix(in srgb, var(--p4) 45%, var(--border2)); }
+.step-chip-add:active { background: color-mix(in srgb, var(--p4) 12%, var(--surface2)); }
 .step-chip-sep { width: 1px; align-self: stretch; background: var(--border2); margin: 2px 3px; }
 .timer-total-badge { font-family: var(--mono); font-size: 10px; padding: 4px 8px; border-radius: 7px; border: 1px dashed var(--border2); color: var(--muted); margin-left: 2px; white-space: nowrap; }
 .circuit-rounds-ctrl { display: inline-flex; align-items: center; gap: 2px; margin-left: 2px; }
@@ -517,7 +519,7 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
       <p>Accanto ai chip <b>P1–P4</b>: <b>durata stimata</b> del workout (timer, prep 10" una sola volta) e <b>anello ×N</b> — quante volte ripetere il circuito P1–P4. Nelle sessioni <b>personali</b> usi <b>− / +</b> per cambiare N; nel <b>★ WOD</b> il numero di giri è <b>bloccato</b>.</p>
       <p>Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nel WOD restano bloccati. Con <b>lavoro</b> e <b>rest</b> compare <b>▶ Timer</b>: countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), <span style="color:#ee412a">rosso</span> lavoro (doppio beep a metà), <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b>, Salta e Stop. Beep a 3-2-1 e vibrazione a fine fase.</p>
       <p>Il timer <b>catena</b> automaticamente: blocchi sequenziali P0 (s1→s2→s3), poi postazioni P1→P2→…; all'ultimo rest di una postazione passi alla successiva; finito l'anello riparte da P1 fino a N giri. Nell'anello P1–P4 puoi cambiare postazione senza fermare il timer. Cambiando scheda chiede conferma.</p>
-      <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono solo se previste nel WOD o già presenti nella sessione.</p>
+      <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono se previste nel WOD o già presenti nella sessione. Nelle sessioni <b>personali</b> puoi aggiungere <b>P4</b> con <b>+ P4</b> accanto ai chip.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
       <p>Le <b>emoji</b> 😊😑😓🥵 qualificano quanto è stato duro il lavoro e regolano l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
       <p>I set mostrati seguono la sessione del giorno o il tuo storico; con <b>+ set</b> ne aggiungi fino a 6.</p>
@@ -552,7 +554,7 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
 </div>
 
 <script>
-const VERSION = '3.28.3';
+const VERSION = '3.28.4';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const MAX_CIRCUIT_ROUNDS = 6;
@@ -927,6 +929,36 @@ function activeStations(step, s) {
 }
 function stepActive(step, s) {
   return activeStations(step, s).length > 0;
+}
+function isFullyOptionalStep(step) {
+  return step.stations.length > 0 && step.stations.every(st => isOptionalStation(st.stationKey));
+}
+function findLastDataForStation(stationKey) {
+  const data = getData();
+  const nums = Object.keys(data).map(Number).filter(n => !isNaN(n) && !data[n]?.wod).sort((a, b) => b - a);
+  for (const n of nums) {
+    if (data[n][stationKey]) return cloneObj(data[n][stationKey]);
+  }
+  return null;
+}
+function enableOptionalStep(px) {
+  if (draftSession?.wod) return;
+  const step = STEPS.find(st => st.px === px);
+  if (!step || !isFullyOptionalStep(step) || stepActive(step, draftSession)) return;
+  markDraftDirty();
+  collectStep(currentStep);
+  step.stations.forEach(({ stationKey, px: stationPx }) => {
+    const hist = findLastDataForStation(stationKey);
+    if (hist) {
+      draftSession[stationKey] = hist;
+      delete draftSession[stationKey].num_sets;
+    } else {
+      draftSession[stationKey] = { pool: defaultPoolForStation(stationKey, stationPx) };
+    }
+  });
+  const stepIdx = STEPS.indexOf(step);
+  renderStepDots();
+  goStepDirect(stepIdx);
 }
 function clampStepToActive() {
   const s = draftSession || {};
@@ -1363,7 +1395,16 @@ function renderStepDots() {
   let hasRingChip = false;
   const parts = [];
   STEPS.forEach((st, i) => {
-    if (!stepActive(st, s)) return;
+    if (!stepActive(st, s)) {
+      if (!s.wod && st.px === 'p3') {
+        const p4Step = STEPS.find(x => x.px === 'p4');
+        if (p4Step && isFullyOptionalStep(p4Step) && !stepActive(p4Step, s)) {
+          const addTip = getLang() === 'en' ? 'Add station P4' : 'Aggiungi postazione P4';
+          parts.push(`<button type="button" class="step-chip step-chip-add" title="${addTip}" onclick="enableOptionalStep('p4')">+ P4</button>`);
+        }
+      }
+      return;
+    }
     if (i >= ringStart && ringStart > 0) hasRingChip = true;
     const sep = (!sepPlaced && i >= ringStart && ringStart > 0)
       ? (sepPlaced = true, '<span class="step-chip-sep"></span>') : '';
