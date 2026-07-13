@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.26.2
+  Cali Tracker v3.26.3
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -490,7 +490,7 @@ body.timer-active #page-log { padding-bottom: 160px; }
       <p><b>P0</b> è a sé (lo si fa tutti insieme); <b>P1–P3</b> (e <b>P4</b> se prevista) formano un anello: scorrendo avanti dall'ultima postazione attiva si torna a P1.</p>
       <p>Ogni slot ha un menu <b>categoria</b> e, sotto, il menu <b>esercizio</b> con sole le varianti della categoria scelta. Su <b>P0</b> (verticale) le categorie sono <i>dinamica</i> e <i>tenuta</i>, selezionabili su tutti e tre gli slot; su <b>P1–P4</b> sono disponibili tutte le categorie del circuito (tirata, gambe, spinta, core, …).</p>
       <p>Storico, pre-compilazione, ★ Oggi e grafici seguono l'<b>esercizio</b> (variante), non lo slot: puoi fare la stessa categoria su postazioni diverse senza perdere i progressi.</p>
-      <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio. Se sono impostati <b>lavoro</b> e <b>rest</b>, compare <b>▶ Timer</b> sulla riga tempi: avvia un countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), poi <span style="color:#ee412a">rosso</span> lavoro, <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b> (ricomincia la fase corrente), Salta e Stop. Beep negli ultimi 3 secondi di ogni fase + vibrazione a fine fase. Cambiando postazione il timer si ferma da solo; cambiando scheda chiede conferma.</p>
+      <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio. Se sono impostati <b>lavoro</b> e <b>rest</b>, compare <b>▶ Timer</b> sulla riga tempi: avvia un countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), poi <span style="color:#ee412a">rosso</span> lavoro, <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b> (ricomincia la fase corrente), Salta e Stop. Beep negli ultimi 3 secondi di ogni fase + vibrazione a fine fase. All'inizio dell'<b>ultimo rest</b> della postazione (ultimo blocco timer) si passa automaticamente alla postazione successiva (P0→P1…, poi anello P1–P4) mentre il rest continua. Cambiando postazione a mano il timer si ferma; cambiando scheda chiede conferma.</p>
       <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono solo se previste nel WOD o già presenti nella sessione.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
       <p>Le <b>emoji</b> 😊😑😓🥵 qualificano quanto è stato duro il lavoro e regolano l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
@@ -526,7 +526,7 @@ body.timer-active #page-log { padding-bottom: 160px; }
 </div>
 
 <script>
-const VERSION = '3.26.2';
+const VERSION = '3.26.3';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
@@ -1833,7 +1833,34 @@ function confirmStopTimer() {
 
 function stopTimerIfLeavingStep(newStepIdx) {
   if (!_timer || !timerIsActive()) return;
+  if (_timer.autoStepSwitch) {
+    _timer.autoStepSwitch = false;
+    return;
+  }
   if (_timer.stepIdx !== newStepIdx) stopTimer(false);
+}
+
+function timerIsLastRestOfStep() {
+  if (!_timer) return false;
+  const phase = _timer.phases[_timer.phaseIdx];
+  if (phase.type !== 'rest') return false;
+  let lastRestIdx = -1;
+  for (let i = _timer.phases.length - 1; i >= 0; i--) {
+    if (_timer.phases[i].type === 'rest') { lastRestIdx = i; break; }
+  }
+  if (_timer.phaseIdx !== lastRestIdx) return false;
+  const ctx = getPairTimingContext(_timer.stepIdx, draftSession || {});
+  if (!ctx) return false;
+  return _timer.blockIdx === ctx.blocks.length - 1;
+}
+
+function timerAutoAdvanceStep() {
+  if (!_timer || !timerIsActive()) return;
+  const next = nextActiveStep(_timer.stepIdx, 1);
+  if (next === _timer.stepIdx || next === currentStep) return;
+  _timer.autoStepSwitch = true;
+  collectStep(currentStep);
+  goStepDirect(next);
 }
 
 function timerPhaseClass(type) {
@@ -1951,6 +1978,7 @@ function timerAdvancePhase() {
     return;
   }
   timerStartPhase();
+  if (timerIsLastRestOfStep()) timerAutoAdvanceStep();
   renderTimerBar();
   _timerRaf = requestAnimationFrame(timerTick);
 }
