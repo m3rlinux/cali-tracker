@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.28.1
+  Cali Tracker v3.28.2
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -523,7 +523,7 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
       <p>I set mostrati seguono la sessione del giorno o il tuo storico; con <b>+ set</b> ne aggiungi fino a 6.</p>
       <div class="help-h">★ Oggi · Salva · Reset</div>
       <p>
-        <b>★ Oggi</b> carica la sessione di allenamento del giorno: se hai già usato la variante in passato, vengono proposti i tuoi ultimi valori e i target del giorno riempiono solo i set che ti mancano; altrimenti valgono i target suggeriti. 
+        <b>★ Oggi</b> carica la sessione di allenamento del giorno e riparte da <b>P0</b>: se hai già usato la variante in passato, vengono proposti i tuoi ultimi valori e i target del giorno riempiono solo i set che ti mancano; altrimenti valgono i target suggeriti. 
         <b>Salva ✓</b> registra la sessione, da qualsiasi step. 
         <b>↺ Reset</b> ricomincia la sessione corrente.</p>
       <p>Le sessioni del giorno vengono salvate come <b>★ WOD</b>: restano nello storico ma non influenzano grafici dei progressi, delta e pre-compilazione — utile ad es. per i de-load.</p>
@@ -552,7 +552,7 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
 </div>
 
 <script>
-const VERSION = '3.28.1';
+const VERSION = '3.28.2';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const MAX_CIRCUIT_ROUNDS = 6;
@@ -1260,9 +1260,10 @@ async function loadWodSession() {
   draftSession = buildSessionFromWod(wod);
   draftSession.wod = true; // salvata a parte: non influenza progressi e prefill
   draftDirty = false;
-  clampStepToActive();
+  stopTimer(false);
+  const startStep = stepActive(STEPS[0], draftSession) ? 0 : (clampStepToActive(), currentStep);
   renderSessBar();
-  goStepDirect(currentStep);
+  goStepDirect(startStep);
 }
 
 function goStepDirect(idx) {
