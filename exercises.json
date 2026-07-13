@@ -3,8 +3,9 @@
     "label": "Verticale dinamica",
     "variants": [
       "Scrollata in pike",
+      "Tocco spalla in pike",
       "Scrollata in pike su box",
-      "Tocco spalla in pike su box",
+      "Tocco spalla su box corpo posizione a L",
       "Camminata al muro",
       "Scrollata al muro",
       "Kick-up al muro",
@@ -25,7 +26,7 @@
     "variants": [
       "Tenuta in pike",
       "Tenuta in pike su box",
-      "Tenuta in pike al muro",
+      "Tenuta lean al muro",
       "Tenuta petto al muro",
       "Verticale al muro una gamba alternata",
       "Verticale al muro",
@@ -84,6 +85,7 @@
       "Squat",
       "Affondi",
       "Step up",
+      "Goblet squat",
       "Cossack squat",
       "Squat bulgaro",
       "Shrimp squat assistito",
@@ -208,8 +210,8 @@
   "spinta_verticale": {
     "label": "Spinta verticale",
     "variants": [
-      "Tenuta in appoggio assistita",
-      "Tenuta in appoggio",
+      "Tenuta in appoggio assistita (parallele)",
+      "Tenuta in appoggio (parallele)",
       "Dip negativo",
       "Dip",
       "Dip profondo",
@@ -228,8 +230,8 @@
       "HSPU deficit"
     ],
     "metrics": {
-      "Tenuta in appoggio assistita": "time",
-      "Tenuta in appoggio": "time",
+      "Tenuta in appoggio assistita (parallele)": "time",
+      "Tenuta in appoggio (parallele)": "time",
       "Tenuta in appoggio agli anelli": "time",
       "Tenuta in appoggio agli anelli RTO": "time"
     }

@@ -7,14 +7,13 @@
   "force_num_sets": true,
   "force_values": true,
   "stations": {
-    "p0s1": { "variant": "Camminata al muro", "rest": 60, "sets": [[5, null], [5, null], [5, null]] },
-    "p0s2": { "variant": "Kick-up al muro", "rest": 60, "sets": [[5, null], [5, null], [5, null]] },
-    "p0s3": { "variant": "Verticale con spotter", "hold_max": 12, "rest": 60, "sets": [[6, null], [6, null], [6, null]] },
-    "p1s1": { "variant": "Trazione eccentrica", "sets": [[4, null], [4, null], [4, null]] },
-    "p1s2": { "variant": "Cossack squat", "sets": [[4, null], [4, null], [4, null]] },
-    "p2s1": { "variant": "Dip negativo", "sets": [[5, null], [5, null], [5, null]] },
-    "p2s2": { "variant": "Stacco rumeno una gamba", "sets": [[6, null], [6, null], [6, null]] },
+    "p0s1": { "variant": "Tocco spalla su box corpo posizione a L", "set_time": 30, "rest": 60, "sets": [[10, null], [10, null], [10, null]] },
+    "p0s2": { "variant": "Tenuta lean al muro", "hold_max": 40, "set_time": 30, "rest": 60, "sets": [[30, null], [30, null], [30, null]] },
+    "p1s1": { "variant": "Trazione scapolare", "sets": [[8, null], [8, null], [8, null]] },
+    "p1s2": { "variant": "Goblet squat", "sets": [[8, null], [8, null], [8, null]] },
+    "p2s1": { "variant": "Piegamento", "sets": [[6, null], [6, null], [6, null]] },
+    "p2s2": { "variant": "Swing con kettlebell", "sets": [[8, null], [8, null], [8, null]] },
     "p3s1": { "variant": "Ginocchia al petto in sospensione", "sets": [[6, null], [6, null], [6, null]] },
-    "p3s2": { "variant": "Jefferson curl", "sets": [[6, null], [6, null], [6, null]] }
+    "p3s2": { "variant": "Tenuta in appoggio (parallele)", "set_time": 20, "sets": [[20, null], [20, null], [20, null]] }
   }
 }
