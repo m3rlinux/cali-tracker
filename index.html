@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.28.5
+  Cali Tracker v3.28.6
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -89,6 +89,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .step-bar { display: flex; flex-direction: column; gap: 8px; padding: 10px 16px 0; }
 .step-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
 .step-dots { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.step-meta { display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; padding: 2px 0 0; }
+.step-meta:empty { display: none; }
 .step-chip { padding: 4px 10px; border: 1px solid var(--border2); border-radius: 7px; background: var(--surface); color: var(--muted); font-family: var(--mono); font-size: 11px; cursor: pointer; user-select: none; }
 .step-chip:active { background: var(--surface2); }
 .step-chip.active { font-weight: 500; }
@@ -98,7 +100,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .step-chip-rm { width: 20px; height: 20px; padding: 0; border: 1px dashed var(--border2); border-radius: 6px; background: var(--surface); color: var(--muted); font-size: 14px; line-height: 1; cursor: pointer; flex-shrink: 0; }
 .step-chip-rm:active { background: var(--surface2); color: var(--coral); border-color: var(--coral); }
 .step-chip-sep { width: 1px; align-self: stretch; background: var(--border2); margin: 2px 3px; }
-.timer-total-badge { font-family: var(--mono); font-size: 10px; padding: 4px 8px; border-radius: 7px; border: 1px dashed var(--border2); color: var(--muted); margin-left: 2px; white-space: nowrap; }
+.timer-total-badge { font-family: var(--mono); font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 8px; border: 1px dashed var(--border2); color: var(--muted); white-space: nowrap; }
 .circuit-rounds-ctrl { display: inline-flex; align-items: center; gap: 2px; margin-left: 2px; }
 .circuit-rounds-btn { width: 22px; height: 22px; border: 1px solid var(--border2); border-radius: 6px; background: var(--surface); color: var(--muted); font-size: 14px; line-height: 1; cursor: pointer; padding: 0; }
 .circuit-rounds-btn:active { background: var(--surface2); }
@@ -140,12 +142,13 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .pair-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-left: auto; flex: 0 0 auto; }
 .mode-tag { font-size: 9px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--amber); border: 1px solid var(--amber); border-radius: 5px; padding: 1px 5px; white-space: nowrap; display: inline-block; line-height: 1.15; }
 .cycle { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 0 0 12px; }
-.chip-row { margin: 0 0 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; width: 100%; }
+.chip-row { margin: 0 0 6px; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }
+.chip-row-seq { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px; }
 .timer-start-btn {
-  margin-left: auto;
   font-family: var(--mono);
-  font-size: 10px;
-  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
   border-radius: 6px;
   border: 1px solid var(--border2);
   background: var(--surface2);
@@ -172,7 +175,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 body.timer-active #page-log { padding-bottom: 160px; }
 .timer-bar-main { text-align: center; margin-bottom: 12px; }
 .timer-phase { font-family: var(--mono); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px; opacity: .85; }
-.timer-count { font-family: var(--mono); font-size: 56px; font-weight: 600; line-height: 1; letter-spacing: -.02em; }
+.timer-count { font-family: var(--mono); font-size: 64px; font-weight: 600; line-height: 1; letter-spacing: -.02em; }
 .timer-prog { font-family: var(--mono); font-size: 11px; opacity: .75; margin-top: 6px; }
 .timer-bar-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 .timer-ctrl {
@@ -443,6 +446,7 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
   </div>
   <div class="step-bar">
     <div class="step-dots" id="step-dots"></div>
+    <div class="step-meta" id="step-meta"></div>
     <div class="step-label" id="step-label"></div>
   </div>
   <div class="step-content" id="step-content"></div>
@@ -557,7 +561,7 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
 </div>
 
 <script>
-const VERSION = '3.28.5';
+const VERSION = '3.28.6';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const MAX_CIRCUIT_ROUNDS = 6;
@@ -968,7 +972,8 @@ function disableOptionalStep(px) {
   const step = STEPS.find(st => st.px === px);
   if (!step || !isFullyOptionalStep(step) || !stepActive(step, draftSession)) return;
   const en = getLang() === 'en';
-  const msg = en ? 'Remove station P4 from this session?' : 'Rimuovere la postazione P4 da questa sessione?';
+  const label = px.toUpperCase();
+  const msg = en ? `Remove station ${label} from this session?` : `Rimuovere la postazione ${label} da questa sessione?`;
   if (!confirm(msg)) return;
   markDraftDirty();
   collectStep(currentStep);
@@ -1412,17 +1417,9 @@ function renderStepDots() {
   let sepPlaced = false;
   let hasRingChip = false;
   const parts = [];
+  const metaParts = [];
   STEPS.forEach((st, i) => {
-    if (!stepActive(st, s)) {
-      if (!s.wod && st.px === 'p3') {
-        const p4Step = STEPS.find(x => x.px === 'p4');
-        if (p4Step && isFullyOptionalStep(p4Step) && !stepActive(p4Step, s)) {
-          const addTip = getLang() === 'en' ? 'Add station P4' : 'Aggiungi postazione P4';
-          parts.push(`<button type="button" class="step-chip step-chip-add" title="${addTip}" onclick="enableOptionalStep('p4')">+ P4</button>`);
-        }
-      }
-      return;
-    }
+    if (!stepActive(st, s)) return;
     if (i >= ringStart && ringStart > 0) hasRingChip = true;
     const sep = (!sepPlaced && i >= ringStart && ringStart > 0)
       ? (sepPlaced = true, '<span class="step-chip-sep"></span>') : '';
@@ -1435,21 +1432,28 @@ function renderStepDots() {
     } else {
       parts.push(`${sep}${chip}`);
     }
+    if (!s.wod && st.px === 'p3') {
+      const p4Step = STEPS.find(x => x.px === 'p4');
+      if (p4Step && isFullyOptionalStep(p4Step) && !stepActive(p4Step, s)) {
+        const addTip = getLang() === 'en' ? 'Add station P4' : 'Aggiungi postazione P4';
+        parts.push(`<button type="button" class="step-chip step-chip-add" title="${addTip}" onclick="enableOptionalStep('p4')">+ P4</button>`);
+      }
+    }
   });
   if (hasRingChip) {
     const total = computeSessionTimerTotalSeconds(s);
     const en = getLang() === 'en';
     const tip = en ? 'Estimated timer duration (all stations)' : 'Durata stimata timer (tutte le postazioni)';
-    parts.push(`<span class="timer-total-badge" title="${tip}">~${formatTimerDuration(total)}</span>`);
+    metaParts.push(`<span class="timer-total-badge" title="${tip}">~${formatTimerDuration(total)}</span>`);
     const rounds = getCircuitRounds(s);
     const roundsTip = s.wod
       ? (en ? 'P1–P4 circuit laps (locked in WOD)' : 'Giri dell\'anello P1–P4 (bloccato nel WOD)')
       : (en ? 'How many times to repeat the P1–P4 circuit' : 'Quante volte ripetere l\'anello P1–P4');
     const roundsLbl = en ? `circuit ×${rounds}` : `anello ×${rounds}`;
     if (s.wod) {
-      parts.push(`<span class="circuit-rounds-val" title="${roundsTip}">${roundsLbl}</span>`);
+      metaParts.push(`<span class="circuit-rounds-val" title="${roundsTip}">${roundsLbl}</span>`);
     } else {
-      parts.push(`<span class="circuit-rounds-ctrl" title="${roundsTip}">
+      metaParts.push(`<span class="circuit-rounds-ctrl" title="${roundsTip}">
         <button type="button" class="circuit-rounds-btn" onclick="stepCircuitRounds(-1)" aria-label="−">−</button>
         <span class="circuit-rounds-val">${roundsLbl}</span>
         <button type="button" class="circuit-rounds-btn" onclick="stepCircuitRounds(1)" aria-label="+">+</button>
@@ -1457,6 +1461,8 @@ function renderStepDots() {
     }
   }
   document.getElementById('step-dots').innerHTML = parts.join('');
+  const metaEl = document.getElementById('step-meta');
+  if (metaEl) metaEl.innerHTML = metaParts.join('');
 }
 
 // Salto diretto a uno step (dai chip): salva lo step corrente prima di spostarsi
@@ -2507,11 +2513,11 @@ function renderPairStep(stepIdx, s, prev) {
       });
       const restKey = stations[block[block.length - 1]].stationKey;
       seq.push(restChip(stRest(restKey), restKey));
-      return `<div class="cycle chip-row"><span class="cycle-rounds">×${rounds} giri</span>${seq.join(arrow)}${timerBtn}</div>`;
+      return `<div class="cycle chip-row"><div class="chip-row-seq"><span class="cycle-rounds">×${rounds} giri</span>${seq.join(arrow)}</div>${timerBtn}</div>`;
     }
     const k = stations[block[0]].stationKey;
     const r = stRest(k);
-    return `<div class="cycle chip-row"><span class="cycle-rounds">×${stCount(k)} set</span>${workChip('lavoro', stSet(k), k)}${r ? arrow + restChip(r, k) : ''}${timerBtn}</div>`;
+    return `<div class="cycle chip-row"><div class="chip-row-seq"><span class="cycle-rounds">×${stCount(k)} set</span>${workChip('lavoro', stSet(k), k)}${r ? arrow + restChip(r, k) : ''}</div>${timerBtn}</div>`;
   }
 
   function cardHTML({stationKey, px}) {
