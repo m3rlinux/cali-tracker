@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.28.9
+  Cali Tracker v3.29.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -176,7 +176,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .timer-bar.timer-phase-work { background: #ee412a; color: #0c0c0c; }
 .timer-bar.timer-phase-change { background: var(--amber); color: #0c0c0c; }
 .timer-bar.timer-phase-rest { background: var(--teal); color: #0c0c0c; }
-body.timer-active #page-log { padding-bottom: 172px; }
+body.timer-active .page.active { padding-bottom: 172px; }
 .timer-bar-main { text-align: center; margin-bottom: 12px; }
 .timer-phase { font-family: var(--mono); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px; opacity: .85; }
 .timer-count { font-family: var(--mono); font-size: 64px; font-weight: 600; line-height: 1; letter-spacing: -.02em; }
@@ -418,7 +418,7 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
 <body>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.18.4</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.29.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
   <div class="user-menu-wrap">
@@ -529,7 +529,7 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
       <div class="help-h">Timer e durata</div>
       <p>Sotto i chip postazione: <b>Durata</b> stimata del workout (timer, prep 10" una sola volta) e <b>Anello ×N</b> — quante volte ripetere il circuito P1–P4. Nelle sessioni <b>personali</b> usi <b>− / +</b> per cambiare N; nel <b>★ WOD</b> il numero di giri è <b>bloccato</b>.</p>
       <p>Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nel WOD restano bloccati. Con <b>lavoro</b> e <b>rest</b> compare <b>▶ Timer</b>: countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), <span style="color:#ee412a">rosso</span> lavoro (doppio beep a metà), <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b>, Salta e Stop. Beep a 3-2-1 e vibrazione a fine fase.</p>
-      <p>Il timer <b>catena</b> automaticamente: blocchi sequenziali P0 (s1→s2→s3), poi postazioni P1→P2→…; all'ultimo rest di una postazione passi alla successiva; finito l'anello riparte da P1 fino a N giri. Nell'anello P1–P4 puoi cambiare postazione senza fermare il timer. Cambiando scheda chiede conferma.</p>
+      <p>Il timer <b>catena</b> automaticamente: blocchi sequenziali P0 (s1→s2→s3), poi postazioni P1→P2→…; all'ultimo rest di una postazione passi alla successiva; finito l'anello riparte da P1 fino a N giri. Nell'anello P1–P4 puoi cambiare postazione senza fermare il timer. Puoi passare a Storico o Progressi con il timer attivo (usa <b>Stop</b> o <b>Pausa</b> quando serve).</p>
       <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono se previste nel WOD o già presenti nella sessione. Nelle sessioni <b>personali</b> puoi aggiungere o togliere <b>P4</b> con <b>+ P4</b> / <b>×</b> accanto ai chip.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
       <p>Le <b>emoji</b> 😊😑😓🥵 qualificano quanto è stato duro il lavoro e regolano l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
@@ -565,7 +565,7 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
 </div>
 
 <script>
-const VERSION = '3.28.9';
+const VERSION = '3.29.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const MAX_CIRCUIT_ROUNDS = 6;
@@ -2114,16 +2114,6 @@ let _audioCtx = null;
 
 function timerIsActive() {
   return _timer && _timer.active && (_timer.paused || _timer.phaseIdx < _timer.phases.length);
-}
-
-function confirmStopTimer() {
-  if (!timerIsActive()) return true;
-  return confirm(getLang() === 'en' ? 'Timer running. Stop it and continue?' : 'Timer attivo. Fermarlo e continuare?');
-}
-
-function isRingStepIdx(idx) {
-  const { ringStart } = ringInfo();
-  return ringStart > 0 && idx >= ringStart;
 }
 
 function stopTimerIfLeavingStep(newStepIdx) {
@@ -3829,11 +3819,6 @@ function activateTab(t) {
 
 function switchTab(t) {
   const activeTab = ['log','history','progress'][Array.from(document.querySelectorAll('.tab')).findIndex(el => el.classList.contains('active'))] || 'log';
-
-  if (!_suppressTabGuard && activeTab === 'log' && t !== 'log' && timerIsActive()) {
-    if (!confirmStopTimer()) return;
-    stopTimer(false);
-  }
 
   if (!_suppressTabGuard && activeTab === 'log' && t !== 'log' && draftDirty) {
     const ok = confirm('La sessione corrente non è salvata. Uscendo da Inserisci i dati inseriti verranno persi. Continuare?');
