@@ -88,8 +88,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 /* STEP */
 .step-bar { display: flex; flex-direction: column; gap: 8px; padding: 10px 16px 0; }
 .step-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-.step-dots { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
-.step-meta { display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; padding: 2px 0 0; }
+.step-dots { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; flex: 1 1 auto; min-width: 0; }
+.step-chips-line { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; }
+.step-meta { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; margin-left: auto; }
 .step-meta:empty { display: none; }
 .step-chip { padding: 4px 10px; border: 1px solid var(--border2); border-radius: 7px; background: var(--surface); color: var(--muted); font-family: var(--mono); font-size: 11px; cursor: pointer; user-select: none; }
 .step-chip:active { background: var(--surface2); }
@@ -142,11 +143,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .pair-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-left: auto; flex: 0 0 auto; }
 .mode-tag { font-size: 9px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--amber); border: 1px solid var(--amber); border-radius: 5px; padding: 1px 5px; white-space: nowrap; display: inline-block; line-height: 1.15; }
 .cycle { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 0 0 12px; }
-.chip-row { margin: 0 0 6px; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }
-.chip-row-seq { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px; }
-.chip-row-left { align-items: flex-start; }
-.chip-row-left .chip-row-seq { justify-content: flex-start; }
+.chip-row { margin: 0 0 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; width: 100%; }
+.chip-row-seq { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 4px; flex: 1 1 auto; min-width: 0; }
 .timer-start-btn {
+  margin-left: auto;
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 600;
@@ -447,8 +447,10 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
     <div id="sess-bar-right"></div>
   </div>
   <div class="step-bar">
-    <div class="step-dots" id="step-dots"></div>
-    <div class="step-meta" id="step-meta"></div>
+    <div class="step-chips-line">
+      <div class="step-dots" id="step-dots"></div>
+      <div class="step-meta" id="step-meta"></div>
+    </div>
     <div class="step-label" id="step-label"></div>
   </div>
   <div class="step-content" id="step-content"></div>
@@ -2505,7 +2507,7 @@ function renderPairStep(stepIdx, s, prev) {
     const timerBtn = buildTimerPlan(stepIdx, blockIdx, s)
       ? `<button type="button" class="timer-start-btn" onclick="startPairTimer(${stepIdx},${blockIdx})">▶ Timer</button>`
       : '';
-    const rowCls = step.px === 'p0' ? ' chip-row-left' : '';
+    const rowCls = '';
     if (block.length > 1) {
       const rounds = Math.max(...block.map(i => stCount(stations[i].stationKey)));
       const seq = [];
