@@ -6,6 +6,7 @@
   "modes": { "p0": "sequenziale" },
   "force_num_sets": true,
   "force_values": true,
+  "circuit_rounds": 1,
   "stations": {
     "p0s1": { "variant": "Tocco spalla su box corpo posizione a L", "set_time": 30, "rest": 60, "sets": [[10, null], [10, null], [10, null]] },
     "p0s2": { "variant": "Tenuta lean al muro", "hold_max": 40, "set_time": 30, "rest": 60, "sets": [[30, null], [30, null], [30, null]] },

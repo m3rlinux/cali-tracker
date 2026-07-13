@@ -38,6 +38,11 @@
   "force_values": false,    // opzionale. true = i valori pre-compilati sono i target del wod anche
                             //            dove c'è storico (hold_max e difficoltà restano dell'utente)
 
+  // Quante volte ripetere l'anello P1–P4 (1 = un solo giro; default 1 se assente).
+  // P0 è fuori dall'anello e si fa una volta prima del circuito. La durata stimata
+  // in app moltiplica i tempi dell'anello per questo valore.
+  "circuit_rounds": 1,    // opzionale, intero 1–6
+
   // ── STAZIONI ──
   // Chiave = stationKey (pXsY). Devono esistere in exercises.json.
   // P0 = blocco verticale (3 slot intercambiabili, p0s3 opzionale).

@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.27.3
+  Cali Tracker v3.28.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -94,6 +94,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .step-chip.active { font-weight: 500; }
 .step-chip-sep { width: 1px; align-self: stretch; background: var(--border2); margin: 2px 3px; }
 .timer-total-badge { font-family: var(--mono); font-size: 10px; padding: 4px 8px; border-radius: 7px; border: 1px dashed var(--border2); color: var(--muted); margin-left: 2px; white-space: nowrap; }
+.circuit-rounds-ctrl { display: inline-flex; align-items: center; gap: 2px; margin-left: 2px; }
+.circuit-rounds-btn { width: 22px; height: 22px; border: 1px solid var(--border2); border-radius: 6px; background: var(--surface); color: var(--muted); font-size: 14px; line-height: 1; cursor: pointer; padding: 0; }
+.circuit-rounds-btn:active { background: var(--surface2); }
+.circuit-rounds-val { font-family: var(--mono); font-size: 10px; color: var(--muted); padding: 4px 7px; border: 1px dashed var(--border2); border-radius: 7px; white-space: nowrap; }
 
 .step-nav { display: flex; align-items: center; padding: 10px 16px 14px; gap: 10px; }
 .nav-btn { flex: 1; padding: 11px; border: 1px solid var(--border2); background: var(--surface); color: var(--text); border-radius: var(--r); font-size: 13px; font-family: var(--sans); cursor: pointer; }
@@ -508,7 +512,11 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
       <p><b>P0</b> è a sé (lo si fa tutti insieme); <b>P1–P3</b> (e <b>P4</b> se prevista) formano un anello: scorrendo avanti dall'ultima postazione attiva si torna a P1.</p>
       <p>Ogni slot ha un menu <b>categoria</b> e, sotto, il menu <b>esercizio</b> con sole le varianti della categoria scelta. Su <b>P0</b> (verticale) le categorie sono <i>dinamica</i> e <i>tenuta</i>, selezionabili su tutti e tre gli slot; su <b>P1–P4</b> sono disponibili tutte le categorie del circuito (tirata, gambe, spinta, core, …).</p>
       <p>Storico, pre-compilazione, ★ Oggi e grafici seguono l'<b>esercizio</b> (variante), non lo slot: puoi fare la stessa categoria su postazioni diverse senza perdere i progressi.</p>
-      <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio. Accanto ai chip <b>P1–P4</b> compare la <b>durata stimata</b> di tutto il workout (timer, inclusa preparazione 10"). Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nelle sessioni <b>★ WOD</b> restano bloccati. Se sono impostati <b>lavoro</b> e <b>rest</b>, compare <b>▶ Timer</b> sulla riga tempi: avvia un countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), poi <span style="color:#ee412a">rosso</span> lavoro, <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b> (ricomincia la fase corrente), Salta e Stop. Beep negli ultimi 3 secondi di ogni fase + vibrazione a fine fase. All'inizio dell'<b>ultimo rest</b> dell'ultimo blocco timer della postazione si passa alla successiva mentre il rest continua; finito un blocco (anche con <b>Salta</b>) si avvia il blocco o la postazione seguente (P0 sequenziale: s1→s2→s3, poi P1…) senza ripetere la preparazione. Nell'anello <b>P1–P4</b> puoi cambiare postazione senza fermare il timer. Cambiando scheda chiede conferma.</p>
+      <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio.</p>
+      <div class="help-h">Timer e durata</div>
+      <p>Accanto ai chip <b>P1–P4</b>: <b>durata stimata</b> del workout (timer, prep 10" una sola volta) e <b>anello ×N</b> — quante volte ripetere il circuito P1–P4. Nelle sessioni <b>personali</b> usi <b>− / +</b> per cambiare N; nel <b>★ WOD</b> vale <b>circuit_rounds</b> da wod.json (sola lettura).</p>
+      <p>Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nel WOD restano bloccati. Con <b>lavoro</b> e <b>rest</b> compare <b>▶ Timer</b>: countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), <span style="color:#ee412a">rosso</span> lavoro (doppio beep a metà), <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b>, Salta e Stop. Beep a 3-2-1 e vibrazione a fine fase.</p>
+      <p>Il timer <b>catena</b> automaticamente: blocchi sequenziali P0 (s1→s2→s3), poi postazioni P1→P2→…; all'ultimo rest di una postazione passi alla successiva; finito l'anello riparte da P1 fino a N giri. Nell'anello P1–P4 puoi cambiare postazione senza fermare il timer. Cambiando scheda chiede conferma.</p>
       <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono solo se previste nel WOD o già presenti nella sessione.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
       <p>Le <b>emoji</b> 😊😑😓🥵 qualificano quanto è stato duro il lavoro e regolano l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
@@ -544,9 +552,14 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
 </div>
 
 <script>
-const VERSION = '3.27.3';
+const VERSION = '3.28.0';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
+const MAX_CIRCUIT_ROUNDS = 6;
+const DEFAULT_CIRCUIT_ROUNDS = 1;
+const TIMER_BEEP_GAIN = 0.12;
+const TIMER_TICK_GAIN = 0.12;
+const TIMER_HALF_GAIN = 0.13;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
 const DEFAULT_SETS_BY_STATION = { p0s1: 2 };
 const DEFAULT_NUM_SETS = 3;
@@ -1227,6 +1240,9 @@ function buildSessionFromWod(wod) {
   if (wod.mode === 'alternato' || wod.mode === 'sequenziale') sess.mode = wod.mode;
   // Override del metodo per zona (per px): es. P0 indipendente dal circuito P1-P4
   if (wod.modes && typeof wod.modes === 'object') sess.modes = cloneObj(wod.modes);
+  if (typeof wod.circuit_rounds === 'number' && wod.circuit_rounds >= 1) {
+    sess.circuit_rounds = Math.min(MAX_CIRCUIT_ROUNDS, Math.floor(wod.circuit_rounds));
+  }
   return sess;
 }
 
@@ -1317,6 +1333,29 @@ function nextActiveStep(cur, d) {
   return cur;
 }
 
+function getCircuitRounds(s) {
+  const n = s?.circuit_rounds;
+  if (typeof n === 'number' && n >= 1) return Math.min(MAX_CIRCUIT_ROUNDS, Math.floor(n));
+  return DEFAULT_CIRCUIT_ROUNDS;
+}
+
+function lastRingStepIdx(s) {
+  const { ringStart } = ringInfo();
+  if (ringStart <= 0) return -1;
+  for (let i = STEPS.length - 1; i >= ringStart; i--) {
+    if (stepActive(STEPS[i], s)) return i;
+  }
+  return -1;
+}
+
+function stepCircuitRounds(delta) {
+  if (!draftSession || draftSession.wod) return;
+  markDraftDirty();
+  const cur = getCircuitRounds(draftSession);
+  draftSession.circuit_rounds = Math.max(1, Math.min(MAX_CIRCUIT_ROUNDS, cur + delta));
+  renderStepDots();
+}
+
 function renderStepDots() {
   const { ringStart } = ringInfo();
   const s = draftSession || {};
@@ -1334,8 +1373,21 @@ function renderStepDots() {
   });
   if (hasRingChip) {
     const total = computeSessionTimerTotalSeconds(s);
-    const tip = getLang() === 'en' ? 'Estimated timer duration (all stations)' : 'Durata stimata timer (tutte le postazioni)';
+    const en = getLang() === 'en';
+    const tip = en ? 'Estimated timer duration (all stations)' : 'Durata stimata timer (tutte le postazioni)';
     parts.push(`<span class="timer-total-badge" title="${tip}">~${formatTimerDuration(total)}</span>`);
+    const rounds = getCircuitRounds(s);
+    const roundsTip = en ? 'How many times to repeat the P1–P4 circuit' : 'Quante volte ripetere l\'anello P1–P4';
+    const roundsLbl = en ? `circuit ×${rounds}` : `anello ×${rounds}`;
+    if (s.wod) {
+      parts.push(`<span class="circuit-rounds-val" title="${roundsTip}">${roundsLbl}</span>`);
+    } else {
+      parts.push(`<span class="circuit-rounds-ctrl" title="${roundsTip}">
+        <button type="button" class="circuit-rounds-btn" onclick="stepCircuitRounds(-1)" aria-label="−">−</button>
+        <span class="circuit-rounds-val">${roundsLbl}</span>
+        <button type="button" class="circuit-rounds-btn" onclick="stepCircuitRounds(1)" aria-label="+">+</button>
+      </span>`);
+    }
   }
   document.getElementById('step-dots').innerHTML = parts.join('');
 }
@@ -1831,12 +1883,18 @@ function sumBlockTimerSeconds(block, ctx) {
 
 function computeSessionTimerTotalSeconds(s) {
   let total = 10;
+  const { ringStart } = ringInfo();
+  let ringSeconds = 0;
   for (let stepIdx = 0; stepIdx < STEPS.length; stepIdx++) {
     if (!stepActive(STEPS[stepIdx], s)) continue;
     const ctx = getPairTimingContext(stepIdx, s);
     if (!ctx) continue;
-    ctx.blocks.forEach(block => { total += sumBlockTimerSeconds(block, ctx); });
+    let stepSec = 0;
+    ctx.blocks.forEach(block => { stepSec += sumBlockTimerSeconds(block, ctx); });
+    if (ringStart > 0 && stepIdx >= ringStart) ringSeconds += stepSec;
+    else total += stepSec;
   }
+  total += ringSeconds * getCircuitRounds(s);
   return total;
 }
 
@@ -2018,29 +2076,42 @@ function nextTimerBlockIdx(stepIdx, afterBlockIdx, s) {
   return -1;
 }
 
+function tryChainToNextStep() {
+  const s = draftSession || {};
+  const next = nextActiveStep(_timer.stepIdx, 1);
+  if (next === _timer.stepIdx) return false;
+
+  const { ringStart } = ringInfo();
+  const lastRing = lastRingStepIdx(s);
+  let lap = _timer.circuitLap || 1;
+  const maxLaps = getCircuitRounds(s);
+
+  if (!isRingStepIdx(_timer.stepIdx) && isRingStepIdx(next)) lap = 1;
+  if (lastRing >= 0 && _timer.stepIdx === lastRing && next === ringStart) {
+    if (lap >= maxLaps) return false;
+    lap++;
+  }
+
+  const blockIdx = firstTimerBlockIdx(next, s);
+  if (blockIdx < 0 || !buildTimerPlan(next, blockIdx, s)) return false;
+
+  if (currentStep !== next) {
+    _timer.autoStepSwitch = true;
+    collectStep(currentStep);
+    goStepDirect(next);
+  }
+  startPairTimer(next, blockIdx, true, lap);
+  return true;
+}
+
 function timerOnBlockComplete() {
   const s = draftSession || {};
   const nextBlock = nextTimerBlockIdx(_timer.stepIdx, _timer.blockIdx, s);
   if (nextBlock >= 0) {
-    startPairTimer(_timer.stepIdx, nextBlock, true);
+    startPairTimer(_timer.stepIdx, nextBlock, true, _timer.circuitLap || 1);
     return;
   }
-
-  const next = nextActiveStep(_timer.stepIdx, 1);
-  if (next !== _timer.stepIdx) {
-    const blockIdx = firstTimerBlockIdx(next, s);
-    const plan = blockIdx >= 0 ? buildTimerPlan(next, blockIdx, s) : null;
-    if (plan) {
-      if (currentStep !== next) {
-        _timer.autoStepSwitch = true;
-        collectStep(currentStep);
-        goStepDirect(next);
-      }
-      startPairTimer(next, blockIdx, true);
-      return;
-    }
-  }
-  stopTimer(true);
+  if (!tryChainToNextStep()) stopTimer(true);
 }
 
 function timerIsLastRestOfStep() {
@@ -2094,7 +2165,7 @@ function timerBeep() {
     osc.connect(gain);
     gain.connect(ctx.destination);
     osc.frequency.value = 660;
-    gain.gain.value = 0.12;
+    gain.gain.value = TIMER_BEEP_GAIN;
     osc.start();
     osc.stop(ctx.currentTime + 0.15);
   } catch (e) { /* no audio */ }
@@ -2110,9 +2181,9 @@ function timerTickBeep() {
     osc.connect(gain);
     gain.connect(ctx.destination);
     osc.frequency.value = 880;
-    gain.gain.value = 0.09;
+    gain.gain.value = TIMER_TICK_GAIN;
     osc.start();
-    osc.stop(ctx.currentTime + 0.08);
+    osc.stop(ctx.currentTime + 0.1);
   } catch (e) { /* no audio */ }
 }
 
@@ -2125,10 +2196,10 @@ function timerDoubleBeep() {
       const gain = ctx.createGain();
       osc.connect(gain);
       gain.connect(ctx.destination);
-      osc.frequency.value = 720;
-      gain.gain.value = 0.1;
+      osc.frequency.value = 660;
+      gain.gain.value = TIMER_HALF_GAIN;
       osc.start(ctx.currentTime + offset);
-      osc.stop(ctx.currentTime + offset + 0.1);
+      osc.stop(ctx.currentTime + offset + 0.12);
     };
     play(0);
     play(0.15);
@@ -2187,6 +2258,10 @@ function renderTimerBar() {
   document.getElementById('timer-count').textContent = formatTimerSec(remaining);
 
   const prog = [];
+  const maxCircuit = getCircuitRounds(draftSession || {});
+  if (isRingStepIdx(_timer.stepIdx) && maxCircuit > 1) {
+    prog.push(en ? `Circuit lap ${_timer.circuitLap || 1}/${maxCircuit}` : `Giro anello ${_timer.circuitLap || 1}/${maxCircuit}`);
+  }
   if (phase.type !== 'prep') {
     if (phase.round != null) prog.push(en ? `Round ${phase.round}/${_timer.totalRounds}` : `Giro ${phase.round}/${_timer.totalRounds}`);
     else if (phase.setNum != null) prog.push(en ? `Set ${phase.setNum}/${_timer.totalRounds}` : `Set ${phase.setNum}/${_timer.totalRounds}`);
@@ -2238,7 +2313,7 @@ function releaseWakeLock() {
   if (_wakeLock) { _wakeLock.release(); _wakeLock = null; }
 }
 
-function startPairTimer(stepIdx, blockIdx, chained) {
+function startPairTimer(stepIdx, blockIdx, chained, circuitLap) {
   if (!chained) stopTimer(false);
   const plan = buildTimerPlan(stepIdx, blockIdx, draftSession || {});
   if (!plan) return;
@@ -2249,6 +2324,10 @@ function startPairTimer(stepIdx, blockIdx, chained) {
     if (chained) timerOnBlockComplete();
     return;
   }
+
+  const lap = chained
+    ? (circuitLap || _timer?.circuitLap || 1)
+    : (isRingStepIdx(stepIdx) ? 1 : 0);
 
   try {
     if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2263,6 +2342,7 @@ function startPairTimer(stepIdx, blockIdx, chained) {
     totalRounds: plan.totalRounds,
     stepIdx,
     blockIdx,
+    circuitLap: lap,
     endsAt: 0,
     remainingPaused: 0,
     lastBeepSec: null

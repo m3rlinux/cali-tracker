@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.24.5
+- **Versione corrente:** 3.28.0
 - **fetchWod cache-bust**: `★ Oggi` scarica `wod.json?t=Date.now()` con `cache:'no-store'` → wod sempre fresco a prescindere dalla versione del SW; fallback a `wod.json` (cache SW) se offline
 - **SW fetch JSON/manifest**: network-first con `fetch(req, {cache:'reload'})` per bypassare la cache HTTP del browser (GitHub Pages serve con `max-age=600`); senza, wod/exercises aggiornati arriverebbero solo dopo ~10 min. Con il fix `★ Oggi` prende sempre il wod fresco (vale dai dispositivi con SW ≥ 3.18.2)
 
@@ -42,7 +42,7 @@ Se si aggiorna solo `exercises.json` senza toccare l'app, incrementare `CACHE_VE
 ### Storage
 - Dati sessioni in `localStorage` con chiave `cali_sessions_[nome_utente]`
 - Ogni sessione è un oggetto con chiavi `pXsY` (es. `p0s1`, `p1s2` ecc.)
-- Struttura sessione: `{ date, p0s1: { variant, sets, hold_max? }, p1s1: { variant, pool?, sets, ... }, ... }` — su P1–P4 `pool` è la chiave categoria (es. `tirata_verticale`); se assente si inferisce dalla variante o dallo slot
+- Struttura sessione: `{ date, circuit_rounds?, wod?, set_time?, rest?, change_time?, mode?, modes?, p0s1: { variant, sets, hold_max? }, ... }` — `circuit_rounds` a livello sessione; su P1–P4 `pool` è la chiave categoria (es. `tirata_verticale`); se assente si inferisce dalla variante o dallo slot
 - `sets` per reps: `[[reps, cluster], ...]`
 - `sets` per time: `[[secondi, null], ...]`
 - `hold_max` presente solo per varianti isometriche
@@ -70,7 +70,8 @@ Ogni gruppo esercizi ha:
 - Selettore lingua: badge IT/EN nell'header (`toggleLang()`), scelta in localStorage `cali_lang`, helper `tVariant()` / `getGroupLabel()`
 
 ### Sessione del giorno (wod.json)
-- Template condiviso per tutti gli utenti: `{ "set_time": 30, "force_num_sets": bool, "force_values": bool, "stations": { "pXsY": { "variant", "sets", "hold_max"? } } }`
+- Template condiviso per tutti gli utenti: `{ "set_time", "rest", "change_time", "mode", "modes", "force_num_sets", "force_values", "circuit_rounds", "stations": { "pXsY": { "variant", "sets", "hold_max?", "set_time?", "rest?" } } }`
+- `circuit_rounds` (opzionale, default 1, max 6): quante volte ripetere l'anello **P1–P4**. P0 è fuori dall'anello. Salvato in sessione; in app compare come `anello ×N` accanto ai chip P1–P4 (bloccato nel WOD, modificabile con −/+ nelle sessioni personali). La **durata stimata** moltiplica i tempi dell'anello per N. Il **timer** ripete il circuito fino a N giri poi si ferma
 - `force_num_sets: true` — le righe set sono esattamente quelle proposte dal WOD (anche meno del default; lo storico non estende; `+ set` resta disponibile). Assente/false: lo storico può estendere
 - `force_values: true` — i valori pre-compilati sono i target del WOD anche dove c'è storico; `hold_max` (PR) e difficoltà restano comunque dell'utente. Assente/false: merge per indice (valori utente prima)
 - I nomi variante devono essere quelli **canonici (italiani)** di exercises.json; varianti sconosciute vengono ignorate al caricamento
@@ -78,7 +79,8 @@ Ogni gruppo esercizi ha:
 - Se l'utente ha già usato la variante proposta per una station (ricerca a ritroso su **tutto lo storico**, `findLastDataForVariant`), i suoi dati prevalgono con **merge per indice dei set**: valore storico dove presente, target del WOD a riempire set vuoti o mancanti; i set dello storico non vengono mai tagliati (lunghezza = max). `hold_max` e difficoltà sempre dell'utente (il WOD riempie `hold_max` solo se assente). La nuova sessione normale invece pre-carica solo l'ultima salvata
 - `set_time` personalizza il tempo per set mostrato nell'header del pair (default 30"); viene salvato con la sessione ed ereditato dai draft successivi
 - `rest` (secondi): tempo di recupero mostrato nell'header del pair accanto al tempo di lavoro; opzionale, mostrato solo se presente. Salvato/ereditato come `set_time`
-- `change_time` (secondi) + `mode` (`"alternato"` | `"sequenziale"`): metodo di esecuzione della coppia. `alternato` = S1 lavoro › cambio › S2 lavoro › rest per N giri (sequenza a chip colorati, richiede 2 station); `sequenziale`/assente = N set di S1 poi N di S2. Con **lavoro** e **rest** impostati, ogni riga-chip mostra **▶ Timer**: countdown che segue la sequenza del chip (vibrazione + beep a fine fase; pausa/salta/stop). Cambio step/tab chiede conferma se il timer è attivo
+- `change_time` (secondi) + `mode` (`"alternato"` | `"sequenziale"`): metodo di esecuzione della coppia. `alternato` = S1 lavoro › cambio › S2 lavoro › rest per N giri (sequenza a chip colorati, richiede 2 station); `sequenziale`/assente = N set di S1 poi N di S2. Con **lavoro** e **rest** impostati, ogni riga-chip mostra **▶ Timer** (vedi sotto)
+- **Timer** (`buildTimerPlan`, `#timer-bar` fisso in basso): prep 10" (solo all'avvio), fasi lavoro/cambio/rest colorate. Beep doppio a metà fase **lavoro**; beep 3-2-1; beep+vibrazione a fine fase. Pausa / Reset / Salta / Stop. **Catena automatica**: blocchi sequenziali P0 → postazione successiva; fine blocco → blocco o postazione seguente senza prep; ultimo rest postazione → UI postazione successiva; fine anello → riparte da P1 fino a `circuit_rounds`. Navigazione manuale P1–P4 non ferma il timer; cambio scheda chiede conferma. Sessioni personali: chip tempi editabili; WOD: bloccati
 - `modes` (oggetto keyed by px): override del metodo per zona. Valore = **stringa** (`"alternato"`/`"sequenziale"`, tutto il blocco) **o array** di N-1 valori (uno per giunzione tra esercizi consecutivi → metodo **misto**, es. `{"p0":["alternato","sequenziale"]}`)
 - **Rendering a sotto-blocchi interlacciati** (`renderPairStep`): ogni sotto-blocco ha la sua **riga-chip** (`.chip-row`, sempre chip colorati) subito sopra le card a cui si riferisce. Superset (run collegati da `alternato`, anche 3) = UNA riga `×N giri · S1 › cambio › S2 › rest`; esercizio sequenziale = riga dedicata `×N set · lavoro › rest` sopra la sua card. Niente più riga compatta unica in cima
 - **Tempi per esercizio**: una stazione del wod può avere `set_time`/`rest` propri (override dei globali), mostrati nella riga-chip del rispettivo blocco
