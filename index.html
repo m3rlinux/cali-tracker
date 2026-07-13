@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.28.0
+  Cali Tracker v3.28.1
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -552,14 +552,13 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
 </div>
 
 <script>
-const VERSION = '3.28.0';
+const VERSION = '3.28.1';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const MAX_CIRCUIT_ROUNDS = 6;
 const DEFAULT_CIRCUIT_ROUNDS = 1;
 const TIMER_BEEP_GAIN = 0.12;
 const TIMER_TICK_GAIN = 0.12;
-const TIMER_HALF_GAIN = 0.13;
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
 const DEFAULT_SETS_BY_STATION = { p0s1: 2 };
 const DEFAULT_NUM_SETS = 3;
@@ -2172,7 +2171,7 @@ function timerBeep() {
   if (navigator.vibrate) navigator.vibrate(200);
 }
 
-function timerTickBeep() {
+function timerPlayTickBeep(offset) {
   try {
     if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     const ctx = _audioCtx;
@@ -2182,28 +2181,18 @@ function timerTickBeep() {
     gain.connect(ctx.destination);
     osc.frequency.value = 880;
     gain.gain.value = TIMER_TICK_GAIN;
-    osc.start();
-    osc.stop(ctx.currentTime + 0.1);
+    osc.start(ctx.currentTime + offset);
+    osc.stop(ctx.currentTime + offset + 0.1);
   } catch (e) { /* no audio */ }
 }
 
+function timerTickBeep() {
+  timerPlayTickBeep(0);
+}
+
 function timerDoubleBeep() {
-  try {
-    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const ctx = _audioCtx;
-    const play = (offset) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.value = 660;
-      gain.gain.value = TIMER_HALF_GAIN;
-      osc.start(ctx.currentTime + offset);
-      osc.stop(ctx.currentTime + offset + 0.12);
-    };
-    play(0);
-    play(0.15);
-  } catch (e) { /* no audio */ }
+  timerPlayTickBeep(0);
+  timerPlayTickBeep(0.15);
 }
 
 function timerCheckWorkHalfwayBeep(remaining) {
