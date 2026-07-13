@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.28.6
+  Cali Tracker v3.28.7
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -144,6 +144,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .cycle { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 0 0 12px; }
 .chip-row { margin: 0 0 6px; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }
 .chip-row-seq { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px; }
+.chip-row-left { align-items: flex-start; }
+.chip-row-left .chip-row-seq { justify-content: flex-start; }
 .timer-start-btn {
   font-family: var(--mono);
   font-size: 12px;
@@ -172,7 +174,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .timer-bar.timer-phase-work { background: #ee412a; color: #0c0c0c; }
 .timer-bar.timer-phase-change { background: var(--amber); color: #0c0c0c; }
 .timer-bar.timer-phase-rest { background: var(--teal); color: #0c0c0c; }
-body.timer-active #page-log { padding-bottom: 160px; }
+body.timer-active #page-log { padding-bottom: 172px; }
 .timer-bar-main { text-align: center; margin-bottom: 12px; }
 .timer-phase { font-family: var(--mono); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px; opacity: .85; }
 .timer-count { font-family: var(--mono); font-size: 64px; font-weight: 600; line-height: 1; letter-spacing: -.02em; }
@@ -561,7 +563,7 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
 </div>
 
 <script>
-const VERSION = '3.28.6';
+const VERSION = '3.28.7';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const MAX_CIRCUIT_ROUNDS = 6;
@@ -2503,6 +2505,7 @@ function renderPairStep(stepIdx, s, prev) {
     const timerBtn = buildTimerPlan(stepIdx, blockIdx, s)
       ? `<button type="button" class="timer-start-btn" onclick="startPairTimer(${stepIdx},${blockIdx})">▶ Timer</button>`
       : '';
+    const rowCls = step.px === 'p0' ? ' chip-row-left' : '';
     if (block.length > 1) {
       const rounds = Math.max(...block.map(i => stCount(stations[i].stationKey)));
       const seq = [];
@@ -2513,11 +2516,11 @@ function renderPairStep(stepIdx, s, prev) {
       });
       const restKey = stations[block[block.length - 1]].stationKey;
       seq.push(restChip(stRest(restKey), restKey));
-      return `<div class="cycle chip-row"><div class="chip-row-seq"><span class="cycle-rounds">×${rounds} giri</span>${seq.join(arrow)}</div>${timerBtn}</div>`;
+      return `<div class="cycle chip-row${rowCls}"><div class="chip-row-seq"><span class="cycle-rounds">×${rounds} giri</span>${seq.join(arrow)}</div>${timerBtn}</div>`;
     }
     const k = stations[block[0]].stationKey;
     const r = stRest(k);
-    return `<div class="cycle chip-row"><div class="chip-row-seq"><span class="cycle-rounds">×${stCount(k)} set</span>${workChip('lavoro', stSet(k), k)}${r ? arrow + restChip(r, k) : ''}</div>${timerBtn}</div>`;
+    return `<div class="cycle chip-row${rowCls}"><div class="chip-row-seq"><span class="cycle-rounds">×${stCount(k)} set</span>${workChip('lavoro', stSet(k), k)}${r ? arrow + restChip(r, k) : ''}</div>${timerBtn}</div>`;
   }
 
   function cardHTML({stationKey, px}) {
