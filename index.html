@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.28.7
+  Cali Tracker v3.28.8
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -88,10 +88,11 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 /* STEP */
 .step-bar { display: flex; flex-direction: column; gap: 8px; padding: 10px 16px 0; }
 .step-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-.step-dots { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; flex: 1 1 auto; min-width: 0; }
-.step-chips-line { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; }
-.step-meta { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; margin-left: auto; }
+.step-dots { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; width: 100%; }
+.step-meta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; width: 100%; }
 .step-meta:empty { display: none; }
+.step-meta-group { display: inline-flex; align-items: center; gap: 6px; }
+.step-meta-label { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; flex-shrink: 0; }
 .step-chip { padding: 4px 10px; border: 1px solid var(--border2); border-radius: 7px; background: var(--surface); color: var(--muted); font-family: var(--mono); font-size: 11px; cursor: pointer; user-select: none; }
 .step-chip:active { background: var(--surface2); }
 .step-chip.active { font-weight: 500; }
@@ -143,10 +144,11 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .pair-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-left: auto; flex: 0 0 auto; }
 .mode-tag { font-size: 9px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--amber); border: 1px solid var(--amber); border-radius: 5px; padding: 1px 5px; white-space: nowrap; display: inline-block; line-height: 1.15; }
 .cycle { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 0 0 12px; }
-.chip-row { margin: 0 0 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; width: 100%; }
-.chip-row-seq { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 4px; flex: 1 1 auto; min-width: 0; }
+.chip-row { margin: 0 0 6px; display: flex; flex-direction: column; align-items: stretch; gap: 8px; width: 100%; }
+.chip-row-seq { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 4px; width: 100%; }
+.chip-row-timer { display: flex; justify-content: center; width: 100%; }
 .timer-start-btn {
-  margin-left: auto;
+  margin-left: 0;
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 600;
@@ -447,10 +449,8 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
     <div id="sess-bar-right"></div>
   </div>
   <div class="step-bar">
-    <div class="step-chips-line">
-      <div class="step-dots" id="step-dots"></div>
-      <div class="step-meta" id="step-meta"></div>
-    </div>
+    <div class="step-dots" id="step-dots"></div>
+    <div class="step-meta" id="step-meta"></div>
     <div class="step-label" id="step-label"></div>
   </div>
   <div class="step-content" id="step-content"></div>
@@ -565,7 +565,7 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
 </div>
 
 <script>
-const VERSION = '3.28.7';
+const VERSION = '3.28.8';
 const KEY_NAME = 'cali_name';
 const MAX_SETS = 6;
 const MAX_CIRCUIT_ROUNDS = 6;
@@ -1447,21 +1447,23 @@ function renderStepDots() {
   if (hasRingChip) {
     const total = computeSessionTimerTotalSeconds(s);
     const en = getLang() === 'en';
+    const durLbl = en ? 'Duration' : 'Durata';
+    const ringLbl = en ? 'Circuit' : 'Anello';
     const tip = en ? 'Estimated timer duration (all stations)' : 'Durata stimata timer (tutte le postazioni)';
-    metaParts.push(`<span class="timer-total-badge" title="${tip}">~${formatTimerDuration(total)}</span>`);
+    metaParts.push(`<span class="step-meta-group"><span class="step-meta-label">${durLbl}</span><span class="timer-total-badge" title="${tip}">~${formatTimerDuration(total)}</span></span>`);
     const rounds = getCircuitRounds(s);
     const roundsTip = s.wod
       ? (en ? 'P1–P4 circuit laps (locked in WOD)' : 'Giri dell\'anello P1–P4 (bloccato nel WOD)')
       : (en ? 'How many times to repeat the P1–P4 circuit' : 'Quante volte ripetere l\'anello P1–P4');
-    const roundsLbl = en ? `circuit ×${rounds}` : `anello ×${rounds}`;
+    const roundsLbl = en ? `×${rounds}` : `×${rounds}`;
     if (s.wod) {
-      metaParts.push(`<span class="circuit-rounds-val" title="${roundsTip}">${roundsLbl}</span>`);
+      metaParts.push(`<span class="step-meta-group"><span class="step-meta-label">${ringLbl}</span><span class="circuit-rounds-val" title="${roundsTip}">${roundsLbl}</span></span>`);
     } else {
-      metaParts.push(`<span class="circuit-rounds-ctrl" title="${roundsTip}">
+      metaParts.push(`<span class="step-meta-group" title="${roundsTip}"><span class="step-meta-label">${ringLbl}</span><span class="circuit-rounds-ctrl">
         <button type="button" class="circuit-rounds-btn" onclick="stepCircuitRounds(-1)" aria-label="−">−</button>
         <span class="circuit-rounds-val">${roundsLbl}</span>
         <button type="button" class="circuit-rounds-btn" onclick="stepCircuitRounds(1)" aria-label="+">+</button>
-      </span>`);
+      </span></span>`);
     }
   }
   document.getElementById('step-dots').innerHTML = parts.join('');
@@ -2505,9 +2507,8 @@ function renderPairStep(stepIdx, s, prev) {
 
   function chipRow(block, blockIdx) {
     const timerBtn = buildTimerPlan(stepIdx, blockIdx, s)
-      ? `<button type="button" class="timer-start-btn" onclick="startPairTimer(${stepIdx},${blockIdx})">▶ Timer</button>`
+      ? `<div class="chip-row-timer"><button type="button" class="timer-start-btn" onclick="startPairTimer(${stepIdx},${blockIdx})">▶ Timer</button></div>`
       : '';
-    const rowCls = '';
     if (block.length > 1) {
       const rounds = Math.max(...block.map(i => stCount(stations[i].stationKey)));
       const seq = [];
@@ -2518,11 +2519,11 @@ function renderPairStep(stepIdx, s, prev) {
       });
       const restKey = stations[block[block.length - 1]].stationKey;
       seq.push(restChip(stRest(restKey), restKey));
-      return `<div class="cycle chip-row${rowCls}"><div class="chip-row-seq"><span class="cycle-rounds">×${rounds} giri</span>${seq.join(arrow)}</div>${timerBtn}</div>`;
+      return `<div class="cycle chip-row"><div class="chip-row-seq"><span class="cycle-rounds">×${rounds} giri</span>${seq.join(arrow)}</div>${timerBtn}</div>`;
     }
     const k = stations[block[0]].stationKey;
     const r = stRest(k);
-    return `<div class="cycle chip-row${rowCls}"><div class="chip-row-seq"><span class="cycle-rounds">×${stCount(k)} set</span>${workChip('lavoro', stSet(k), k)}${r ? arrow + restChip(r, k) : ''}</div>${timerBtn}</div>`;
+    return `<div class="cycle chip-row"><div class="chip-row-seq"><span class="cycle-rounds">×${stCount(k)} set</span>${workChip('lavoro', stSet(k), k)}${r ? arrow + restChip(r, k) : ''}</div>${timerBtn}</div>`;
   }
 
   function cardHTML({stationKey, px}) {
