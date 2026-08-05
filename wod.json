@@ -13,7 +13,7 @@
     "p1s1": { "variant": "Trazione assistita (elastico)", "sets": [[4, null], [4, null], [4, null]] },
     "p1s2": { "variant": "Pistol squat box", "sets": [[6, null], [6, null], [6, null]] },
     "p2s1": { "variant": "Piegamento", "sets": [[6, null], [6, null], [6, null]] },
-    "p2s2": { "variant": "German hang", "set_time": 30, "sets": [[20, null], [20, null], [20, null]] },
+    "p2s2": { "variant": "Stacchi una gamba (con manubrio)", "set_time": 30, "sets": [[6, null], [6, null], [6, null]] },
     "p3s1": { "variant": "Ginocchia al petto in sospensione", "sets": [[8, null], [8, null], [8, null]] },
     "p3s2": { "variant": "Tuck L-sit", "set_time": 30, "sets": [[20, null], [20, null], [20, null]] }
   }
