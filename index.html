@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.30.0
+  Cali Tracker v3.30.1
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -174,8 +174,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .timer-bar.open { display: block; }
 .timer-bar.timer-phase-prep { background: var(--blue); color: #0c0c0c; }
 .timer-bar.timer-phase-work { background: #ee412a; color: #0c0c0c; }
-.timer-bar.timer-phase-change,
-.timer-bar.timer-phase-rotate { background: var(--amber); color: #0c0c0c; }
+.timer-bar.timer-phase-change { background: var(--amber); color: #0c0c0c; }
 .timer-bar.timer-phase-rest { background: var(--teal); color: #0c0c0c; }
 body.timer-active .page.active { padding-bottom: 172px; }
 .timer-bar-main { text-align: center; margin-bottom: 12px; }
@@ -556,12 +555,12 @@ body.coach-mode { max-width: 960px; }
       <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio.</p>
       <div class="help-h">Timer e durata</div>
       <p>Sotto i chip postazione: <b>Durata</b> stimata del workout (timer, prep 10" una sola volta) e <b>Anello ×N</b> — quante volte ripetere il circuito P1–P4. Nelle sessioni <b>personali</b> usi <b>− / +</b> per cambiare N; nel <b>★ WOD</b> il numero di giri è <b>bloccato</b>.</p>
-      <p>Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nel WOD restano bloccati. Con <b>lavoro</b> e <b>rest</b> compare <b>▶ Timer</b>: countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), <span style="color:#ee412a">rosso</span> lavoro (doppio beep a metà), <span style="color:var(--amber)">giallo</span> cambio (e <b>rotazione</b> in classe), <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b>, Salta e Stop. Beep a 3-2-1 e vibrazione a fine fase.</p>
+      <p>Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nel WOD restano bloccati. Con <b>lavoro</b> e <b>rest</b> compare <b>▶ Timer</b>: countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), <span style="color:#ee412a">rosso</span> lavoro (doppio beep a metà), <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b>, Salta e Stop. Beep a 3-2-1 e vibrazione a fine fase.</p>
       <p>In <b>modalità allievo</b> il timer <b>catena</b> automaticamente: blocchi sequenziali P0 (s1→s2→s3), poi postazioni P1→P2→…; all'ultimo rest di una postazione passi alla successiva; finito l'anello riparte da P1 fino a N giri. Nell'anello P1–P4 puoi cambiare postazione senza fermare il timer. Puoi passare a Storico o Progressi con il timer attivo (usa <b>Stop</b> o <b>Pausa</b> quando serve).</p>
       <div class="help-h">Modalità coach (classe)</div>
       <p>Dal menu utente (o dal badge <b>Allievo / Classe</b> in alto) passi alla <b>bacheca</b>: tutte le postazioni visibili insieme. Pensata per una classe in cui ogni coppia occupa una postazione.</p>
-      <p><b>P0</b> si fa tutti insieme, col timer della verticale (non concatena a P1). Poi <b>▶ Via circuito</b> avvia un <b>timer master</b> unico — stessi tempi globali (lavoro / cambio / rest) per tutte le postazioni occupate. A fine set c'è una fase <b>rotazione</b> (ambra): chi era in P1 va in P2, e così via. Il giro completo di rotazioni si ripete per <b>Anello ×N</b>.</p>
-      <p>La durata stimata in classe conta P0 in sequenza e il circuito <b>in parallelo</b> (un blocco × numero postazioni × N giri), più le rotazioni. I tempi per-esercizio del WOD restano visibili in bacheca ma l'orologio di classe usa i tempi <b>globali</b>.</p>
+      <p><b>P0</b> si fa tutti insieme, col timer della verticale (non concatena a P1). Poi <b>▶ Via circuito</b> avvia un <b>timer master</b> unico — stessi tempi globali (lavoro / cambio / rest) per tutte le postazioni occupate. All'ultimo rest di ogni blocco di set le persone <b>ruotano</b> (chi era in P1 va in P2); non c'è tempo extra. Il giro completo di rotazioni si ripete per <b>Anello ×N</b>.</p>
+      <p>La durata stimata in classe conta P0 in sequenza e il circuito <b>in parallelo</b> (un blocco × numero postazioni × N giri). I tempi per-esercizio del WOD restano visibili in bacheca ma l'orologio di classe usa i tempi <b>globali</b>.</p>
       <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono se previste nel WOD o già presenti nella sessione. Nelle sessioni <b>personali</b> puoi aggiungere o togliere <b>P4</b> con <b>+ P4</b> / <b>×</b> accanto ai chip.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
       <p>Le <b>emoji</b> 😊😑😓🥵 qualificano quanto è stato duro il lavoro e regolano l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
@@ -597,7 +596,7 @@ body.coach-mode { max-width: 960px; }
 </div>
 
 <script>
-const VERSION = '3.30.0';
+const VERSION = '3.30.1';
 const KEY_NAME = 'cali_name';
 const KEY_COACH = 'cali_coach';
 const MAX_SETS = 6;
@@ -1364,7 +1363,6 @@ function buildSessionFromWod(wod) {
   if (typeof wod.circuit_rounds === 'number' && wod.circuit_rounds >= 1) {
     sess.circuit_rounds = Math.min(MAX_CIRCUIT_ROUNDS, Math.floor(wod.circuit_rounds));
   }
-  if (typeof wod.rotate_time === 'number' && wod.rotate_time > 0) sess.rotate_time = Math.floor(wod.rotate_time);
   return sess;
 }
 
@@ -2042,12 +2040,6 @@ function sumBlockTimerSeconds(block, ctx) {
   return total;
 }
 
-function getRotateTime(s) {
-  if (typeof s?.rotate_time === 'number' && s.rotate_time > 0) return Math.floor(s.rotate_time);
-  if (typeof s?.change_time === 'number' && s.change_time > 0) return s.change_time;
-  return 30;
-}
-
 function ringStepIndices(s) {
   const idxs = [];
   STEPS.forEach((st, i) => {
@@ -2075,7 +2067,6 @@ function buildClassCircuitPlan(s) {
   const gSet = (typeof s.set_time === 'number' && s.set_time > 0) ? s.set_time : 30;
   const gRest = (typeof s.rest === 'number' && s.rest > 0) ? s.rest : null;
   const change = (typeof s.change_time === 'number' && s.change_time > 0) ? s.change_time : null;
-  const rotate = getRotateTime(s);
   const mode = s.mode === 'alternato' ? 'alternato' : 'sequenziale';
   const totalRounds = classCircuitSetCount(s);
   const maxCircuit = getCircuitRounds(s);
@@ -2094,21 +2085,20 @@ function buildClassCircuitPlan(s) {
   for (let lap = 1; lap <= maxCircuit; lap++) {
     for (let st = 1; st <= nStations; st++) {
       const stationBlock = (lap - 1) * nStations + st;
+      const isLastBlock = lap === maxCircuit && st === nStations;
       if (mode === 'alternato') {
         for (let r = 1; r <= totalRounds; r++) {
           add('work', 'S1 · lavoro', gSet, meta(stationBlock, lap, r, null));
           add('change', 'cambio', change, meta(stationBlock, lap, r, null));
           add('work', 'S2 · lavoro', gSet, meta(stationBlock, lap, r, null));
-          add('rest', 'rest', gRest, meta(stationBlock, lap, r, null));
+          add('rest', 'rest', gRest, { ...meta(stationBlock, lap, r, null), rotateRest: !isLastBlock && r === totalRounds });
         }
       } else {
         for (let set = 1; set <= totalRounds; set++) {
           add('work', 'lavoro', gSet, meta(stationBlock, lap, null, set));
-          add('rest', 'rest', gRest, meta(stationBlock, lap, null, set));
+          add('rest', 'rest', gRest, { ...meta(stationBlock, lap, null, set), rotateRest: !isLastBlock && set === totalRounds });
         }
       }
-      const isLast = lap === maxCircuit && st === nStations;
-      if (!isLast) add('rotate', 'rotazione', rotate, meta(stationBlock, lap, null, null));
     }
   }
 
@@ -2399,14 +2389,13 @@ function timerAutoAdvanceStep() {
 function timerPhaseClass(type) {
   if (type === 'prep') return 'timer-phase-prep';
   if (type === 'change') return 'timer-phase-change';
-  if (type === 'rotate') return 'timer-phase-rotate';
   if (type === 'rest') return 'timer-phase-rest';
   return 'timer-phase-work';
 }
 
 function timerPhaseLabel(phase, en) {
   if (phase.type === 'prep') return en ? 'Get ready' : 'Preparazione';
-  if (phase.type === 'rotate') return en ? 'Rotate' : 'Rotazione';
+  if (phase.rotateRest) return en ? 'rest · rotate' : 'rest · rotazione';
   return phase.label;
 }
 
@@ -2486,7 +2475,7 @@ function renderTimerBar() {
   const bar = document.getElementById('timer-bar');
   if (!bar) return;
   if (!timerIsActive()) {
-    bar.classList.remove('open', 'timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rotate', 'timer-phase-rest', 'timer-paused');
+    bar.classList.remove('open', 'timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rest', 'timer-paused');
     document.body.classList.remove('timer-active');
     return;
   }
@@ -2497,7 +2486,7 @@ function renderTimerBar() {
     ? _timer.remainingPaused
     : (_timer.endsAt - Date.now()) / 1000;
 
-  bar.classList.remove('timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rotate', 'timer-phase-rest');
+  bar.classList.remove('timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rest');
   bar.classList.add(timerPhaseClass(phase.type));
   bar.classList.toggle('timer-paused', !!_timer.paused);
 
@@ -2517,7 +2506,7 @@ function renderTimerBar() {
     if (maxCircuit > 1) {
       prog.push(en ? `Lap ${phase.circuitLap || 1}/${maxCircuit}` : `Anello ${phase.circuitLap || 1}/${maxCircuit}`);
     }
-    if (phase.type !== 'prep' && phase.type !== 'rotate') {
+    if (phase.type !== 'prep') {
       if (phase.round != null) prog.push(en ? `Round ${phase.round}/${_timer.totalRounds}` : `Giro ${phase.round}/${_timer.totalRounds}`);
       else if (phase.setNum != null) prog.push(en ? `Set ${phase.setNum}/${_timer.totalRounds}` : `Set ${phase.setNum}/${_timer.totalRounds}`);
     }

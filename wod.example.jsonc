@@ -43,11 +43,6 @@
   // in app moltiplica i tempi dell'anello per questo valore.
   "circuit_rounds": 1,    // opzionale, intero 1–6
 
-  // Secondi per spostarsi alla postazione successiva in modalità coach (classe).
-  // Dopo gli N set del timer master, fase "rotazione" (ambra). Default = change_time
-  // (o 30 se assente). L'ultima rotazione dell'ultimo giro viene omessa.
-  "rotate_time": 30,      // opzionale, solo classe / timer master
-
   // ── STAZIONI ──
   // Chiave = stationKey (pXsY). Devono esistere in exercises.json.
   // P0 = blocco verticale (3 slot intercambiabili, p0s3 opzionale).
