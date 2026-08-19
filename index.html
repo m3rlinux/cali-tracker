@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.29.1
+  Cali Tracker v3.30.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -60,7 +60,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 /* USER MENU */
 .user-menu-wrap { position: relative; flex-shrink: 0; }
 .name-badge { font-size: 12px; color: var(--muted); font-family: var(--mono); cursor: pointer; border: 1px solid var(--border2); border-radius: 20px; padding: 4px 10px; user-select: none; max-width: 42vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.user-menu { position: absolute; right: 0; top: calc(100% + 6px); background: var(--surface); border: 1px solid var(--border2); border-radius: var(--r); min-width: 160px; z-index: 50; overflow: hidden; display: none; }
+.user-menu { position: absolute; right: 0; top: calc(100% + 6px); background: var(--surface); border: 1px solid var(--border2); border-radius: var(--r); min-width: 180px; z-index: 50; overflow: hidden; display: none; }
 .user-menu.open { display: block; }
 .user-menu-item { padding: 11px 14px; font-size: 13px; font-family: var(--sans); color: var(--text); cursor: pointer; border-bottom: 1px solid var(--border); }
 .user-menu-item:last-child { border-bottom: none; }
@@ -174,7 +174,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .timer-bar.open { display: block; }
 .timer-bar.timer-phase-prep { background: var(--blue); color: #0c0c0c; }
 .timer-bar.timer-phase-work { background: #ee412a; color: #0c0c0c; }
-.timer-bar.timer-phase-change { background: var(--amber); color: #0c0c0c; }
+.timer-bar.timer-phase-change,
+.timer-bar.timer-phase-rotate { background: var(--amber); color: #0c0c0c; }
 .timer-bar.timer-phase-rest { background: var(--teal); color: #0c0c0c; }
 body.timer-active .page.active { padding-bottom: 172px; }
 .timer-bar-main { text-align: center; margin-bottom: 12px; }
@@ -397,8 +398,33 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
   .time-total-target { width: 100%; }
 }
 
+body.coach-mode { max-width: 960px; }
+
+.coach-badge.coach-on { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 55%, var(--border2)); }
+.coach-board { display: flex; flex-direction: column; gap: 18px; padding-bottom: 8px; }
+.coach-section-label { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+.coach-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.coach-station { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 12px; scroll-margin-top: 8px; }
+.coach-station-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.coach-station-title { font-size: 14px; font-weight: 600; }
+.coach-ex { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.coach-ex:last-child { border-bottom: none; }
+.coach-ex-info { min-width: 0; }
+.coach-ex-name { font-size: 13px; font-weight: 500; }
+.coach-ex-pool { font-size: 10px; color: var(--muted); font-family: var(--mono); margin-top: 2px; }
+.coach-ex-target { font-family: var(--mono); font-size: 13px; font-weight: 500; flex-shrink: 0; white-space: nowrap; }
+.coach-via { display: flex; justify-content: center; margin-top: 4px; }
+.coach-via .timer-start-btn { font-size: 14px; padding: 10px 22px; }
+.coach-station .chip-row { margin-bottom: 8px; }
+.coach-station .chip-row:last-of-type { margin-bottom: 4px; }
+
+@media (min-width: 700px) {
+  .coach-grid { grid-template-columns: 1fr 1fr; }
+}
+
 @media (min-width: 768px) {
   body { max-width: 620px; }
+  body.coach-mode { max-width: 960px; }
   .app-header { padding: 20px 18px 12px; }
   .step-bar { padding: 12px 18px 0; }
   .step-content { padding: 16px 18px 0; }
@@ -421,10 +447,12 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
   <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.29.1</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
+  <div class="name-badge coach-badge" id="coach-badge" onclick="toggleCoachMode()" title="Modalità allievo / coach">Allievo</div>
   <div class="user-menu-wrap">
     <div class="name-badge" id="name-badge" onclick="toggleUserMenu()">— imposta nome</div>
     <div class="user-menu" id="user-menu">
       <div class="user-menu-item" onclick="openRenameModal()">✎ Rinomina</div>
+      <div class="user-menu-item" id="coach-menu-item" onclick="toggleCoachMode()">Modalità coach</div>
       <div class="user-menu-item" onclick="exportData()">↓ Esporta dati</div>
       <div class="user-menu-item" onclick="document.getElementById('import-file').click()">↑ Importa dati</div>
       <div class="user-menu-item" onclick="openHelpModal()">? Aiuto</div>
@@ -528,8 +556,12 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
       <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio.</p>
       <div class="help-h">Timer e durata</div>
       <p>Sotto i chip postazione: <b>Durata</b> stimata del workout (timer, prep 10" una sola volta) e <b>Anello ×N</b> — quante volte ripetere il circuito P1–P4. Nelle sessioni <b>personali</b> usi <b>− / +</b> per cambiare N; nel <b>★ WOD</b> il numero di giri è <b>bloccato</b>.</p>
-      <p>Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nel WOD restano bloccati. Con <b>lavoro</b> e <b>rest</b> compare <b>▶ Timer</b>: countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), <span style="color:#ee412a">rosso</span> lavoro (doppio beep a metà), <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b>, Salta e Stop. Beep a 3-2-1 e vibrazione a fine fase.</p>
-      <p>Il timer <b>catena</b> automaticamente: blocchi sequenziali P0 (s1→s2→s3), poi postazioni P1→P2→…; all'ultimo rest di una postazione passi alla successiva; finito l'anello riparte da P1 fino a N giri. Nell'anello P1–P4 puoi cambiare postazione senza fermare il timer. Puoi passare a Storico o Progressi con il timer attivo (usa <b>Stop</b> o <b>Pausa</b> quando serve).</p>
+      <p>Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nel WOD restano bloccati. Con <b>lavoro</b> e <b>rest</b> compare <b>▶ Timer</b>: countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), <span style="color:#ee412a">rosso</span> lavoro (doppio beep a metà), <span style="color:var(--amber)">giallo</span> cambio (e <b>rotazione</b> in classe), <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b>, Salta e Stop. Beep a 3-2-1 e vibrazione a fine fase.</p>
+      <p>In <b>modalità allievo</b> il timer <b>catena</b> automaticamente: blocchi sequenziali P0 (s1→s2→s3), poi postazioni P1→P2→…; all'ultimo rest di una postazione passi alla successiva; finito l'anello riparte da P1 fino a N giri. Nell'anello P1–P4 puoi cambiare postazione senza fermare il timer. Puoi passare a Storico o Progressi con il timer attivo (usa <b>Stop</b> o <b>Pausa</b> quando serve).</p>
+      <div class="help-h">Modalità coach (classe)</div>
+      <p>Dal menu utente (o dal badge <b>Allievo / Classe</b> in alto) passi alla <b>bacheca</b>: tutte le postazioni visibili insieme. Pensata per una classe in cui ogni coppia occupa una postazione.</p>
+      <p><b>P0</b> si fa tutti insieme, col timer della verticale (non concatena a P1). Poi <b>▶ Via circuito</b> avvia un <b>timer master</b> unico — stessi tempi globali (lavoro / cambio / rest) per tutte le postazioni occupate. A fine set c'è una fase <b>rotazione</b> (ambra): chi era in P1 va in P2, e così via. Il giro completo di rotazioni si ripete per <b>Anello ×N</b>.</p>
+      <p>La durata stimata in classe conta P0 in sequenza e il circuito <b>in parallelo</b> (un blocco × numero postazioni × N giri), più le rotazioni. I tempi per-esercizio del WOD restano visibili in bacheca ma l'orologio di classe usa i tempi <b>globali</b>.</p>
       <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono se previste nel WOD o già presenti nella sessione. Nelle sessioni <b>personali</b> puoi aggiungere o togliere <b>P4</b> con <b>+ P4</b> / <b>×</b> accanto ai chip.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
       <p>Le <b>emoji</b> 😊😑😓🥵 qualificano quanto è stato duro il lavoro e regolano l'etichetta di intensità (forza / ipertrofia / resistenza).</p>
@@ -565,8 +597,9 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
 </div>
 
 <script>
-const VERSION = '3.29.1';
+const VERSION = '3.30.0';
 const KEY_NAME = 'cali_name';
+const KEY_COACH = 'cali_coach';
 const MAX_SETS = 6;
 const MAX_CIRCUIT_ROUNDS = 6;
 const DEFAULT_CIRCUIT_ROUNDS = 1;
@@ -785,6 +818,35 @@ let LANG_EXERCISES = null;
 
 const KEY_LANG = 'cali_lang';
 function getLang() { return localStorage.getItem(KEY_LANG) || 'it'; }
+
+function isCoachMode() { return localStorage.getItem(KEY_COACH) === '1'; }
+function applyCoachMode() {
+  const on = isCoachMode();
+  document.body.classList.toggle('coach-mode', on);
+  const en = getLang() === 'en';
+  const badge = document.getElementById('coach-badge');
+  if (badge) {
+    badge.textContent = on ? (en ? 'Class' : 'Classe') : (en ? 'Solo' : 'Allievo');
+    badge.classList.toggle('coach-on', on);
+    badge.title = on
+      ? (en ? 'Switch to student mode' : 'Passa alla modalità allievo')
+      : (en ? 'Switch to coach / class mode' : 'Passa alla modalità coach / classe');
+  }
+  const menu = document.getElementById('coach-menu-item');
+  if (menu) {
+    menu.textContent = on
+      ? (en ? 'Student mode' : 'Modalità allievo')
+      : (en ? 'Coach mode' : 'Modalità coach');
+  }
+}
+function toggleCoachMode() {
+  closeUserMenu();
+  localStorage.setItem(KEY_COACH, isCoachMode() ? '0' : '1');
+  stopTimer(false);
+  applyCoachMode();
+  renderStepDots();
+  renderStep();
+}
 
 // pair color map
 const PAIR_COLORS = { p0:'--p0', p1:'--p1', p2:'--p2', p3:'--p3', p4:'--p4' };
@@ -1141,6 +1203,7 @@ async function init() {
   if (!name) openNameModal();
   else document.getElementById('name-badge').textContent = name;
   document.getElementById('lang-badge').textContent = getLang().toUpperCase();
+  applyCoachMode();
   await loadExercises();
   const hadTemp = restoreTempState();
   if (!hadTemp) {
@@ -1301,6 +1364,7 @@ function buildSessionFromWod(wod) {
   if (typeof wod.circuit_rounds === 'number' && wod.circuit_rounds >= 1) {
     sess.circuit_rounds = Math.min(MAX_CIRCUIT_ROUNDS, Math.floor(wod.circuit_rounds));
   }
+  if (typeof wod.rotate_time === 'number' && wod.rotate_time > 0) sess.rotate_time = Math.floor(wod.rotate_time);
   return sess;
 }
 
@@ -1449,7 +1513,9 @@ function renderStepDots() {
     const en = getLang() === 'en';
     const durLbl = en ? 'Duration' : 'Durata';
     const ringLbl = en ? 'Circuit' : 'Anello';
-    const tip = en ? 'Estimated timer duration (all stations)' : 'Durata stimata timer (tutte le postazioni)';
+    const tip = isCoachMode()
+      ? (en ? 'Estimated class duration (P0 then parallel circuit)' : 'Durata stimata classe (P0 poi circuito in parallelo)')
+      : (en ? 'Estimated timer duration (all stations)' : 'Durata stimata timer (tutte le postazioni)');
     metaParts.push(`<span class="step-meta-group"><span class="step-meta-label">${durLbl}</span><span class="timer-total-badge" title="${tip}">~${formatTimerDuration(total)}</span></span>`);
     const rounds = getCircuitRounds(s);
     const roundsTip = s.wod
@@ -1473,14 +1539,23 @@ function renderStepDots() {
 
 // Salto diretto a uno step (dai chip): salva lo step corrente prima di spostarsi
 function jumpToStep(idx) {
-  if (idx === currentStep || idx < 0 || idx >= STEPS.length) return;
+  if (idx < 0 || idx >= STEPS.length) return;
   if (!stepActive(STEPS[idx], draftSession || {})) return;
+  if (isCoachMode()) {
+    currentStep = idx;
+    renderStepDots();
+    const el = document.getElementById('coach-' + STEPS[idx].px);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+  if (idx === currentStep) return;
   stopTimerIfLeavingStep(idx);
   collectStep(currentStep);
   goStepDirect(idx);
 }
 
 function goStep(d) {
+  if (isCoachMode()) return;
   if (!STEPS.length) return;
   const next = nextActiveStep(currentStep, d);
   if (next === currentStep) return;
@@ -1507,20 +1582,27 @@ function goStep(d) {
 
 function renderStep() {
   if (!STEPS.length) return;
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+  const s = draftSession || {};
+  renderSessBar();
+  if (isCoachMode()) {
+    document.getElementById('step-label').textContent = getLang() === 'en' ? 'Class board' : 'Bacheca classe';
+    if (btnPrev) btnPrev.style.display = 'none';
+    if (btnNext) btnNext.style.display = 'none';
+    renderCoachBoard();
+    return;
+  }
   const step = STEPS[currentStep];
   document.getElementById('step-label').textContent = step.label;
   // Edge on Windows reports maxTouchPoints > 0 even without touchscreen
   // Use pointer type check as more reliable fallback
   const isTouch = ('ontouchstart' in window) ||
     (navigator.maxTouchPoints > 0 && !window.matchMedia('(pointer: fine)').matches);
-  const btnPrev = document.getElementById('btn-prev');
-  const btnNext = document.getElementById('btn-next');
   if (btnPrev) btnPrev.style.display = !isTouch && nextActiveStep(currentStep, -1) !== currentStep ? '' : 'none';
   if (btnNext) btnNext.style.display = !isTouch && nextActiveStep(currentStep, 1) !== currentStep ? '' : 'none';
   const data = getData();
-  const s = draftSession || {};
   const prev = getPrevSession(data, currentSess);
-  renderSessBar();
   renderPairStep(currentStep, s, prev);
 }
 
@@ -1960,7 +2042,109 @@ function sumBlockTimerSeconds(block, ctx) {
   return total;
 }
 
+function getRotateTime(s) {
+  if (typeof s?.rotate_time === 'number' && s.rotate_time > 0) return Math.floor(s.rotate_time);
+  if (typeof s?.change_time === 'number' && s.change_time > 0) return s.change_time;
+  return 30;
+}
+
+function ringStepIndices(s) {
+  const idxs = [];
+  STEPS.forEach((st, i) => {
+    if (st.px === 'p0') return;
+    if (stepActive(st, s)) idxs.push(i);
+  });
+  return idxs;
+}
+
+function classCircuitSetCount(s) {
+  let max = 0;
+  ringStepIndices(s).forEach(idx => {
+    const ctx = getPairTimingContext(idx, s);
+    if (!ctx) return;
+    ctx.stations.forEach(st => {
+      max = Math.max(max, ctx.stCount(st.stationKey));
+    });
+  });
+  return max || DEFAULT_NUM_SETS;
+}
+
+function buildClassCircuitPlan(s) {
+  const ringIdxs = ringStepIndices(s);
+  if (!ringIdxs.length) return null;
+  const gSet = (typeof s.set_time === 'number' && s.set_time > 0) ? s.set_time : 30;
+  const gRest = (typeof s.rest === 'number' && s.rest > 0) ? s.rest : null;
+  const change = (typeof s.change_time === 'number' && s.change_time > 0) ? s.change_time : null;
+  const rotate = getRotateTime(s);
+  const mode = s.mode === 'alternato' ? 'alternato' : 'sequenziale';
+  const totalRounds = classCircuitSetCount(s);
+  const maxCircuit = getCircuitRounds(s);
+  const nStations = ringIdxs.length;
+  const totalBlocks = nStations * maxCircuit;
+  const phases = [];
+  const add = (type, label, seconds, extra) => {
+    if (!seconds || seconds <= 0) return;
+    phases.push({ type, label, seconds, ...extra });
+  };
+  const meta = (stationBlock, lap, round, setNum) => ({
+    round, setNum, stationBlock, totalBlocks, nStations,
+    circuitLap: lap, maxCircuit, totalRounds
+  });
+
+  for (let lap = 1; lap <= maxCircuit; lap++) {
+    for (let st = 1; st <= nStations; st++) {
+      const stationBlock = (lap - 1) * nStations + st;
+      if (mode === 'alternato') {
+        for (let r = 1; r <= totalRounds; r++) {
+          add('work', 'S1 · lavoro', gSet, meta(stationBlock, lap, r, null));
+          add('change', 'cambio', change, meta(stationBlock, lap, r, null));
+          add('work', 'S2 · lavoro', gSet, meta(stationBlock, lap, r, null));
+          add('rest', 'rest', gRest, meta(stationBlock, lap, r, null));
+        }
+      } else {
+        for (let set = 1; set <= totalRounds; set++) {
+          add('work', 'lavoro', gSet, meta(stationBlock, lap, null, set));
+          add('rest', 'rest', gRest, meta(stationBlock, lap, null, set));
+        }
+      }
+      const isLast = lap === maxCircuit && st === nStations;
+      if (!isLast) add('rotate', 'rotazione', rotate, meta(stationBlock, lap, null, null));
+    }
+  }
+
+  const hasWork = phases.some(p => p.type === 'work');
+  const hasRest = phases.some(p => p.type === 'rest');
+  if (!hasWork || !hasRest) return null;
+  phases.unshift({
+    type: 'prep', label: 'preparazione', seconds: 10,
+    round: null, setNum: null, stationBlock: 1, totalBlocks, nStations,
+    circuitLap: 1, maxCircuit, totalRounds
+  });
+  return { phases, totalRounds, nStations, maxCircuit, totalBlocks };
+}
+
+function computeP0TimerSeconds(s) {
+  let total = 0;
+  STEPS.forEach((st, stepIdx) => {
+    if (st.px !== 'p0' || !stepActive(st, s)) return;
+    const ctx = getPairTimingContext(stepIdx, s);
+    if (!ctx) return;
+    ctx.blocks.forEach(block => { total += sumBlockTimerSeconds(block, ctx); });
+  });
+  return total;
+}
+
+function computeClassTimerTotalSeconds(s) {
+  let total = 0;
+  const p0 = computeP0TimerSeconds(s);
+  if (p0 > 0) total += 10 + p0;
+  const plan = buildClassCircuitPlan(s);
+  if (plan) plan.phases.forEach(p => { total += p.seconds; });
+  return total;
+}
+
 function computeSessionTimerTotalSeconds(s) {
+  if (isCoachMode()) return computeClassTimerTotalSeconds(s);
   let total = 10;
   const { ringStart } = ringInfo();
   let ringSeconds = 0;
@@ -2151,6 +2335,7 @@ function nextTimerBlockIdx(stepIdx, afterBlockIdx, s) {
 }
 
 function tryChainToNextStep() {
+  if (isCoachMode()) return false;
   const s = draftSession || {};
   const next = nextActiveStep(_timer.stepIdx, 1);
   if (next === _timer.stepIdx) return false;
@@ -2189,7 +2374,7 @@ function timerOnBlockComplete() {
 }
 
 function timerIsLastRestOfStep() {
-  if (!_timer) return false;
+  if (!_timer || _timer.coachCircuit) return false;
   const phase = _timer.phases[_timer.phaseIdx];
   if (phase.type !== 'rest') return false;
   let lastRestIdx = -1;
@@ -2214,12 +2399,14 @@ function timerAutoAdvanceStep() {
 function timerPhaseClass(type) {
   if (type === 'prep') return 'timer-phase-prep';
   if (type === 'change') return 'timer-phase-change';
+  if (type === 'rotate') return 'timer-phase-rotate';
   if (type === 'rest') return 'timer-phase-rest';
   return 'timer-phase-work';
 }
 
 function timerPhaseLabel(phase, en) {
   if (phase.type === 'prep') return en ? 'Get ready' : 'Preparazione';
+  if (phase.type === 'rotate') return en ? 'Rotate' : 'Rotazione';
   return phase.label;
 }
 
@@ -2299,7 +2486,7 @@ function renderTimerBar() {
   const bar = document.getElementById('timer-bar');
   if (!bar) return;
   if (!timerIsActive()) {
-    bar.classList.remove('open', 'timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rest', 'timer-paused');
+    bar.classList.remove('open', 'timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rotate', 'timer-phase-rest', 'timer-paused');
     document.body.classList.remove('timer-active');
     return;
   }
@@ -2310,7 +2497,7 @@ function renderTimerBar() {
     ? _timer.remainingPaused
     : (_timer.endsAt - Date.now()) / 1000;
 
-  bar.classList.remove('timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rest');
+  bar.classList.remove('timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rotate', 'timer-phase-rest');
   bar.classList.add(timerPhaseClass(phase.type));
   bar.classList.toggle('timer-paused', !!_timer.paused);
 
@@ -2322,13 +2509,27 @@ function renderTimerBar() {
   document.getElementById('timer-count').textContent = formatTimerSec(remaining);
 
   const prog = [];
-  const maxCircuit = getCircuitRounds(draftSession || {});
-  if (isRingStepIdx(_timer.stepIdx) && maxCircuit > 1) {
-    prog.push(en ? `Circuit lap ${_timer.circuitLap || 1}/${maxCircuit}` : `Giro anello ${_timer.circuitLap || 1}/${maxCircuit}`);
-  }
-  if (phase.type !== 'prep') {
-    if (phase.round != null) prog.push(en ? `Round ${phase.round}/${_timer.totalRounds}` : `Giro ${phase.round}/${_timer.totalRounds}`);
-    else if (phase.setNum != null) prog.push(en ? `Set ${phase.setNum}/${_timer.totalRounds}` : `Set ${phase.setNum}/${_timer.totalRounds}`);
+  if (_timer.coachCircuit) {
+    const nSt = phase.nStations || _timer.nStations || 1;
+    const rot = phase.stationBlock != null ? ((phase.stationBlock - 1) % nSt) + 1 : 1;
+    prog.push(en ? `Rotation ${rot}/${nSt}` : `Rotazione ${rot}/${nSt}`);
+    const maxCircuit = phase.maxCircuit || _timer.maxCircuit || 1;
+    if (maxCircuit > 1) {
+      prog.push(en ? `Lap ${phase.circuitLap || 1}/${maxCircuit}` : `Anello ${phase.circuitLap || 1}/${maxCircuit}`);
+    }
+    if (phase.type !== 'prep' && phase.type !== 'rotate') {
+      if (phase.round != null) prog.push(en ? `Round ${phase.round}/${_timer.totalRounds}` : `Giro ${phase.round}/${_timer.totalRounds}`);
+      else if (phase.setNum != null) prog.push(en ? `Set ${phase.setNum}/${_timer.totalRounds}` : `Set ${phase.setNum}/${_timer.totalRounds}`);
+    }
+  } else {
+    const maxCircuit = getCircuitRounds(draftSession || {});
+    if (isRingStepIdx(_timer.stepIdx) && maxCircuit > 1) {
+      prog.push(en ? `Circuit lap ${_timer.circuitLap || 1}/${maxCircuit}` : `Giro anello ${_timer.circuitLap || 1}/${maxCircuit}`);
+    }
+    if (phase.type !== 'prep') {
+      if (phase.round != null) prog.push(en ? `Round ${phase.round}/${_timer.totalRounds}` : `Giro ${phase.round}/${_timer.totalRounds}`);
+      else if (phase.setNum != null) prog.push(en ? `Set ${phase.setNum}/${_timer.totalRounds}` : `Set ${phase.setNum}/${_timer.totalRounds}`);
+    }
   }
   prog.push(en ? `Phase ${_timer.phaseIdx + 1}/${_timer.phases.length}` : `Fase ${_timer.phaseIdx + 1}/${_timer.phases.length}`);
   document.getElementById('timer-prog').textContent = prog.join(' · ');
@@ -2417,6 +2618,36 @@ function startPairTimer(stepIdx, blockIdx, chained, circuitLap) {
   _timerRaf = requestAnimationFrame(timerTick);
 }
 
+function startClassCircuitTimer() {
+  stopTimer(false);
+  const plan = buildClassCircuitPlan(draftSession || {});
+  if (!plan) return;
+  try {
+    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    _audioCtx.resume();
+  } catch (e) { /* no audio */ }
+  _timer = {
+    active: true,
+    paused: false,
+    coachCircuit: true,
+    phases: plan.phases,
+    phaseIdx: 0,
+    totalRounds: plan.totalRounds,
+    nStations: plan.nStations,
+    maxCircuit: plan.maxCircuit,
+    stepIdx: -1,
+    blockIdx: 0,
+    circuitLap: 1,
+    endsAt: 0,
+    remainingPaused: 0,
+    lastBeepSec: null
+  };
+  timerStartPhase();
+  requestWakeLock();
+  renderTimerBar();
+  _timerRaf = requestAnimationFrame(timerTick);
+}
+
 function resetTimerPhase() {
   if (!_timer || !_timer.active) return;
   _timer.paused = false;
@@ -2463,6 +2694,128 @@ function stopTimer(completed) {
     toast.classList.add('show');
     setTimeout(() => { toast.classList.remove('show'); toast.textContent = '✓ Sessione salvata'; }, 2000);
   }
+}
+
+function formatCoachTarget(stationKey, exData) {
+  const sets = exData?.sets || [];
+  const n = numSetsFor(stationKey, exData || {});
+  const metric = getMetric(stationKey, exData?.variant || '');
+  const vals = [];
+  for (let i = 0; i < n; i++) {
+    const set = sets[i] || [null, null];
+    if (metric === 'time') {
+      vals.push(set[0] != null ? set[0] + '"' : '—');
+    } else {
+      let t = set[0] != null ? String(set[0]) : '—';
+      if (set[1]) t += '+' + set[1];
+      vals.push(t);
+    }
+  }
+  if (!vals.length) return '';
+  const first = vals[0];
+  if (vals.every(v => v === first) && first !== '—') return n + '×' + first;
+  return vals.join(' · ');
+}
+
+function coachChipRowsHTML(ctx, stepIdx, withTimer) {
+  if (!ctx) return '';
+  const { stations, color, change, sLabel, stSet, stRest, stCount, blocks } = ctx;
+  const workChip = (lbl, t) =>
+    `<span class="cycle-chip" style="background:${color};color:#0c0c0c">${lbl} ${t}"</span>`;
+  const restChip = (t) =>
+    `<span class="cycle-chip" style="background:var(--teal);color:#0c0c0c">rest ${t ?? '—'}"</span>`;
+  const swChip = `<span class="cycle-chip" style="background:var(--amber);color:#0c0c0c">cambio ${change ?? '—'}"</span>`;
+  const arrow = `<span class="cycle-arrow">›</span>`;
+  return blocks.map((block, blockIdx) => {
+    const timerBtn = (withTimer && buildTimerPlan(stepIdx, blockIdx, draftSession || {}))
+      ? `<div class="chip-row-timer"><button type="button" class="timer-start-btn" onclick="startPairTimer(${stepIdx},${blockIdx})">▶ Timer</button></div>`
+      : '';
+    if (block.length > 1) {
+      const rounds = Math.max(...block.map(i => stCount(stations[i].stationKey)));
+      const seq = [];
+      block.forEach((i, j) => {
+        const k = stations[i].stationKey;
+        seq.push(workChip(sLabel(k), stSet(k)));
+        if (j < block.length - 1) seq.push(swChip);
+      });
+      seq.push(restChip(stRest(stations[block[block.length - 1]].stationKey)));
+      return `<div class="cycle chip-row"><div class="chip-row-seq"><span class="cycle-rounds">×${rounds} giri</span>${seq.join(arrow)}</div>${timerBtn}</div>`;
+    }
+    const k = stations[block[0]].stationKey;
+    const r = stRest(k);
+    return `<div class="cycle chip-row"><div class="chip-row-seq"><span class="cycle-rounds">×${stCount(k)} set</span>${workChip('lavoro', stSet(k))}${r ? arrow + restChip(r) : ''}</div>${timerBtn}</div>`;
+  }).join('');
+}
+
+function coachExListHTML(ctx, s) {
+  if (!ctx) return '';
+  return ctx.stations.map(({ stationKey, px }) => {
+    const exData = s[stationKey] || {};
+    const poolKey = resolveStationPool(stationKey, exData, px);
+    const variant = exData.variant || '';
+    const name = variant ? tVariantByVariant(variant) : (getLang() === 'en' ? '—' : '—');
+    const pool = poolKey ? getPoolLabel(poolKey) : '';
+    const target = formatCoachTarget(stationKey, exData);
+    return `<div class="coach-ex">
+      <div class="coach-ex-info">
+        <div class="coach-ex-name">${name}</div>
+        ${pool ? `<div class="coach-ex-pool">${pool}</div>` : ''}
+      </div>
+      <div class="coach-ex-target">${target}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderCoachBoard() {
+  const content = document.getElementById('step-content');
+  const s = draftSession || {};
+  const en = getLang() === 'en';
+  const p0Idx = STEPS.findIndex(st => st.px === 'p0');
+  const ringIdxs = ringStepIndices(s);
+  let html = '<div class="coach-board">';
+
+  if (p0Idx >= 0 && stepActive(STEPS[p0Idx], s)) {
+    const ctx = getPairTimingContext(p0Idx, s);
+    const color = pairColor('p0');
+    html += `<div>
+      <div class="coach-section-label">${en ? 'Together' : 'Tutti insieme'}</div>
+      <div class="coach-station" id="coach-p0">
+      <div class="coach-station-head">
+        <div class="pair-dot" style="background:${color}"></div>
+        <div class="coach-station-title" style="color:${color}">${STEPS[p0Idx].label}</div>
+      </div>
+      ${coachChipRowsHTML(ctx, p0Idx, true)}
+      ${coachExListHTML(ctx, s)}
+    </div></div>`;
+  }
+
+  if (ringIdxs.length) {
+    html += `<div>
+      <div class="coach-section-label">${en ? 'Circuit (all stations together)' : 'Circuito (tutte le postazioni insieme)'}</div>
+      <div class="coach-grid">`;
+    ringIdxs.forEach(idx => {
+      const st = STEPS[idx];
+      const ctx = getPairTimingContext(idx, s);
+      const color = pairColor(st.px);
+      html += `<div class="coach-station" id="coach-${st.px}">
+        <div class="coach-station-head">
+          <div class="pair-dot" style="background:${color}"></div>
+          <div class="coach-station-title" style="color:${color}">${st.label}</div>
+        </div>
+        ${coachChipRowsHTML(ctx, idx, false)}
+        ${coachExListHTML(ctx, s)}
+      </div>`;
+    });
+    html += `</div>`;
+    if (buildClassCircuitPlan(s)) {
+      const via = en ? '▶ Start circuit' : '▶ Via circuito';
+      html += `<div class="coach-via"><button type="button" class="timer-start-btn" onclick="startClassCircuitTimer()">${via}</button></div>`;
+    }
+    html += `</div>`;
+  }
+
+  html += '</div>';
+  content.innerHTML = html;
 }
 
 // ── PAIR STEP RENDER ──
@@ -2582,6 +2935,7 @@ function addSet(stationKey) {
 // It only writes to localStorage if the session already has a date (i.e. was explicitly saved).
 function collectStep(stepIdx) {
   if (!STEPS.length) return;
+  if (isCoachMode()) return;
   if (!draftSession) draftSession = {};
   const s = draftSession;
   const step = STEPS[stepIdx];
@@ -3684,6 +4038,7 @@ async function toggleLang() {
   const next = getLang() === 'it' ? 'en' : 'it';
   localStorage.setItem(KEY_LANG, next);
   document.getElementById('lang-badge').textContent = next.toUpperCase();
+  applyCoachMode();
   // Preserva i valori del form corrente prima del re-render
   collectStep(currentStep);
   await loadExercises();
@@ -3854,6 +4209,7 @@ function switchTab(t) {
     startY = e.touches[0].clientY;
   }, { passive: true });
   el.addEventListener('touchend', e => {
+    if (isCoachMode()) return;
     const dx = e.changedTouches[0].clientX - startX;
     const dy = e.changedTouches[0].clientY - startY;
     if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
