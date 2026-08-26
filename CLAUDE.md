@@ -6,13 +6,13 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.30.1
+- **Versione corrente:** 3.31.0
 - **fetchWod cache-bust**: `★ Oggi` scarica `wod.json?t=Date.now()` con `cache:'no-store'` → wod sempre fresco a prescindere dalla versione del SW; fallback a `wod.json` (cache SW) se offline
 - **SW fetch JSON/manifest**: network-first con `fetch(req, {cache:'reload'})` per bypassare la cache HTTP del browser (GitHub Pages serve con `max-age=600`); senza, wod/exercises aggiornati arriverebbero solo dopo ~10 min. Con il fix `★ Oggi` prende sempre il wod fresco (vale dai dispositivi con SW ≥ 3.18.2)
 
 ### Stazioni opzionali
 - Un gruppo in exercises.json con `"optional": true` (es. `handstand_s3` / `p0s3`, oppure `p4_s1`/`p4_s2` / `p4s1`/`p4s2`) compare in una coppia **solo se la sessione/wod lo contiene** (`isOptionalStation` / `stationActive` / `activeStations`); filtrato in `renderPairStep`, `collectStep`, chip step e navigazione. Se P4 è assente, il chip P4 non compare e l'anello P1–P3 va da P3 a P1. Le sessioni WOD sono escluse dall'ereditarietà, quindi p0s3 e P4 di fatto appaiono solo via wod (o se già salvati nella sessione)
-- **Gruppi `pool` (categorie)**: gruppi con `variants`/`metrics` e **nessuna `station`** (es. `tirata_verticale`, `handstand_skill`). Gli slot non hanno varianti proprie. In ogni slot: selettore **categoria** (`.category-select`) + menu **esercizio** filtrato (`getPickerCategories(px)` / `pool` in sessione). **P0**: `handstand_skill` + `handstand_hold` su tutti e tre gli slot (p0s1–p0s3). **P1–P4**: tutte le categorie del circuito (`getWorkCategories()`). Default categoria per slot nuovo: layout palestra originale (`DEFAULT_CATEGORY_LAYOUT`)
+- **Gruppi `pool` (categorie)**: gruppi con `variants`/`metrics` e **nessuna `station`** (es. `tirata_verticale`, `handstand_skill`, `combo`). Gli slot non hanno varianti proprie. In ogni slot: selettore **categoria** (`.category-select`) + menu **esercizio** filtrato (`getPickerCategories(px)` / `pool` in sessione). **P0**: `handstand_skill` + `handstand_hold` su tutti e tre gli slot (p0s1–p0s3). **P1–P4**: tutte le categorie del circuito (`getWorkCategories()`), più i pool extra non in `DEFAULT_CATEGORY_LAYOUT` in coda (es. `combo`). Default categoria per slot nuovo: layout palestra originale (`DEFAULT_CATEGORY_LAYOUT`)
 - **Lookup per variante (globale)**: `VARIANT_REGISTRY` + `findLastDataForVariant` / `findPrevExForVariant` — storico, ★ Oggi, delta e grafici seguono la **variante**, non lo slot: la stessa categoria può comparire su postazioni diverse senza perdere progressi
 
 ## File del progetto
@@ -116,6 +116,7 @@ In v3.0.0 tutte le varianti sono state tradotte in italiano (flag `cali_variants
 | p4s1 | p4_s1 | P4 — slot 1 (opzionale) |
 | p4s2 | p4_s2 | P4 — slot 2 (opzionale) |
 | — | spinta_verticale / catena_posteriore | pool P4, senza station |
+| — | combo | pool extra P1–P4 (coda selettore), senza station |
 
 ### Colori pair
 ```css

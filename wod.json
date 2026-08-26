@@ -15,6 +15,6 @@
     "p2s1": { "variant": "Sospensione passiva", "sets": [[20, null], [20, null], [20, null], [20, null]] },
     "p2s2": { "variant": "Affondi", "sets": [[12, null], [12, null], [12, null], [12, null]] },
     "p3s1": { "variant": "Piegamento in pike", "sets": [[6, null], [6, null], [6, null], [6, null]] },
-    "p3s2": { "variant": "Ponte glutei piedi su rialzo", "sets": [[6, null], [6, null], [6, null], [6, null]] }
+    "p3s2": { "variant": "Ponte glutei piedi su rialzo + Crunch tap", "sets": [[8, null], [8, null], [8, null], [8, null]] }
   }
 }

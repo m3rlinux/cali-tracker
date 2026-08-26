@@ -215,5 +215,11 @@
   },
   "p4_s2": {
     "label": "P4 — slot 2"
+  },
+  "combo": {
+    "label": "Combo",
+    "variants": [
+      "Feet-elevated glute bridge + Crunch tap"
+    ]
   }
 }

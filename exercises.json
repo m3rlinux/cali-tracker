@@ -275,5 +275,11 @@
     "label": "P4 — slot 2",
     "station": "p4s2",
     "optional": true
+  },
+  "combo": {
+    "label": "Combo",
+    "variants": [
+      "Ponte glutei piedi su rialzo + Crunch tap"
+    ]
   }
 }
