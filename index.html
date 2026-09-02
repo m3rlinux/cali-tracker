@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.31.0
+  Cali Tracker v3.31.1
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -48,6 +48,7 @@
   --p2: #47d2eb;
   --p3: #df60f0;
   --p4: #f09138;
+  --combo: #c8f060;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; }
@@ -176,6 +177,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .timer-bar.timer-phase-work { background: #ee412a; color: #0c0c0c; }
 .timer-bar.timer-phase-change { background: var(--amber); color: #0c0c0c; }
 .timer-bar.timer-phase-rest { background: var(--teal); color: #0c0c0c; }
+.timer-bar.timer-phase-rest.timer-rotate { background: var(--amber); color: #0c0c0c; }
 body.timer-active .page.active { padding-bottom: 172px; }
 .timer-bar-main { text-align: center; margin-bottom: 12px; }
 .timer-phase { font-family: var(--mono); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px; opacity: .85; }
@@ -555,11 +557,11 @@ body.coach-mode { max-width: 960px; }
       <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio.</p>
       <div class="help-h">Timer e durata</div>
       <p>Sotto i chip postazione: <b>Durata</b> stimata del workout (timer, prep 10" una sola volta) e <b>Anello ×N</b> — quante volte ripetere il circuito P1–P4. Nelle sessioni <b>personali</b> usi <b>− / +</b> per cambiare N; nel <b>★ WOD</b> il numero di giri è <b>bloccato</b>.</p>
-      <p>Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nel WOD restano bloccati. Con <b>lavoro</b> e <b>rest</b> compare <b>▶ Timer</b>: countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), <span style="color:#ee412a">rosso</span> lavoro (doppio beep a metà), <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b>, Salta e Stop. Beep a 3-2-1 e vibrazione a fine fase.</p>
+      <p>Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nel WOD restano bloccati. Con <b>lavoro</b> e <b>rest</b> compare <b>▶ Timer</b>: countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), <span style="color:#ee412a">rosso</span> lavoro (doppio beep a metà), <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b>, Salta e Stop. Beep a 3-2-1 e vibrazione a fine fase. In <b>classe</b> l'ultimo rest di un blocco (rotazione) è <span style="color:var(--amber)">giallo</span>.</p>
       <p>In <b>modalità allievo</b> il timer <b>catena</b> automaticamente: blocchi sequenziali P0 (s1→s2→s3), poi postazioni P1→P2→…; all'ultimo rest di una postazione passi alla successiva; finito l'anello riparte da P1 fino a N giri. Nell'anello P1–P4 puoi cambiare postazione senza fermare il timer. Puoi passare a Storico o Progressi con il timer attivo (usa <b>Stop</b> o <b>Pausa</b> quando serve).</p>
       <div class="help-h">Modalità coach (classe)</div>
       <p>Dal menu utente (o dal badge <b>Allievo / Classe</b> in alto) passi alla <b>bacheca</b>: tutte le postazioni visibili insieme. Pensata per una classe in cui ogni coppia occupa una postazione.</p>
-      <p><b>P0</b> si fa tutti insieme, col timer della verticale (non concatena a P1). Poi <b>▶ Via circuito</b> avvia un <b>timer master</b> unico — stessi tempi globali (lavoro / cambio / rest) per tutte le postazioni occupate. All'ultimo rest di ogni blocco di set le persone <b>ruotano</b> (chi era in P1 va in P2); non c'è tempo extra. Il giro completo di rotazioni si ripete per <b>Anello ×N</b>.</p>
+      <p><b>P0</b> si fa tutti insieme, col timer della verticale (non concatena a P1). Poi <b>▶ Via circuito</b> avvia un <b>timer master</b> unico — stessi tempi globali (lavoro / cambio / rest) per tutte le postazioni occupate. In <b>alternato</b> il blocco è S1 › cambio › S2 › rest ×N; in <b>sequenziale</b> sono N set di S1 poi N di S2, come le due righe-chip. All'ultimo rest di ogni blocco le persone <b>ruotano</b> (barra gialla, chi era in P1 va in P2); non c'è tempo extra. Il giro completo di rotazioni si ripete per <b>Anello ×N</b>.</p>
       <p>La durata stimata in classe conta P0 in sequenza e il circuito <b>in parallelo</b> (un blocco × numero postazioni × N giri). I tempi per-esercizio del WOD restano visibili in bacheca ma l'orologio di classe usa i tempi <b>globali</b>.</p>
       <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono se previste nel WOD o già presenti nella sessione. Nelle sessioni <b>personali</b> puoi aggiungere o togliere <b>P4</b> con <b>+ P4</b> / <b>×</b> accanto ai chip.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
@@ -596,7 +598,7 @@ body.coach-mode { max-width: 960px; }
 </div>
 
 <script>
-const VERSION = '3.31.0';
+const VERSION = '3.31.1';
 const KEY_NAME = 'cali_name';
 const KEY_COACH = 'cali_coach';
 const MAX_SETS = 6;
@@ -632,6 +634,14 @@ function sessKey() { return 'cali_sessions_' + (getName().toLowerCase().replace(
 function getData() { try { return JSON.parse(localStorage.getItem(sessKey())) || {}; } catch(e) { return {}; } }
 function saveData(d) { localStorage.setItem(sessKey(), JSON.stringify(d)); }
 function getName() { return localStorage.getItem(KEY_NAME) || ''; }
+function escapeHtml(s) {
+  return String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 // ── MIGRAZIONE v3 — varianti rinominate in italiano ──
 // I nomi variante salvati nello storico devono corrispondere a exercises.json.
@@ -840,6 +850,8 @@ function applyCoachMode() {
 }
 function toggleCoachMode() {
   closeUserMenu();
+  // Raccogli il form allievo prima di spegnere i campi (Classe non ha input).
+  if (!isCoachMode()) collectStep(currentStep);
   localStorage.setItem(KEY_COACH, isCoachMode() ? '0' : '1');
   stopTimer(false);
   applyCoachMode();
@@ -1104,7 +1116,7 @@ const POOL_PAIR_COLOR = {
   spinta_orizzontale: '--p2', core: '--p2',
   tirata_orizzontale: '--p3', gambe_posteriore: '--p3',
   spinta_verticale: '--p4', catena_posteriore: '--p4',
-  combo: '--muted'
+  combo: '--combo'
 };
 
 function buildVariantRegistry() {
@@ -1192,7 +1204,7 @@ async function loadExercises() {
     }
     buildSteps();
   } catch(e) {
-    document.getElementById('step-content').innerHTML = `<div style="padding:12px;font-family:var(--mono);font-size:11px;color:var(--coral)">Errore: ${e.message}</div>`;
+    document.getElementById('step-content').innerHTML = `<div style="padding:12px;font-family:var(--mono);font-size:11px;color:var(--coral)">Errore: ${escapeHtml(e.message)}</div>`;
     console.error('loadExercises failed:', e);
     EXERCISES = {};
     STEPS = [];
@@ -1404,7 +1416,7 @@ function renderSessBar() {
   const dateEl = document.getElementById('sess-date');
   if (editingSession) {
     const iso = sessionDateToIso(s.date);
-    dateEl.innerHTML = `<input type="date" class="sess-date-input" value="${iso}" onchange="onEditSessionDateChange(this)" aria-label="Data sessione">`;
+    dateEl.innerHTML = `<input type="date" class="sess-date-input" value="${escapeHtml(iso)}" onchange="onEditSessionDateChange(this)" aria-label="Data sessione">`;
   } else {
     dateEl.textContent = s.date || '—';
   }
@@ -1615,7 +1627,7 @@ function categorySelectHTML(stationKey, selectedPool, px) {
   const colClass = `col-${px}`;
   const placeholder = getLang() === 'en' ? '— category —' : '— categoria —';
   const opts = categories.map(poolKey =>
-    `<option value="${poolKey}" ${selectedPool === poolKey ? 'selected' : ''}>${getPoolLabel(poolKey)}</option>`
+    `<option value="${escapeHtml(poolKey)}" ${selectedPool === poolKey ? 'selected' : ''}>${escapeHtml(getPoolLabel(poolKey))}</option>`
   ).join('');
   return `<select class="category-select ${selectedPool ? colClass : ''}" data-station="${stationKey}" data-px="${px}" onchange="onCategoryChange(this)">
     <option value="">${placeholder}</option>
@@ -1640,7 +1652,7 @@ function variantSelectHTML(stationKey, selectedVariant, px, poolKey) {
   const hasSelection = !!effectiveVariant;
   const opts = variants.map((v, i) => {
     const tv = (getLang() === 'en' && LANG_EXERCISES) ? (enVariants[i] || v) : v;
-    return `<option value="${v}" ${effectiveVariant === v ? 'selected' : ''}>${tv}</option>`;
+    return `<option value="${escapeHtml(v)}" ${effectiveVariant === v ? 'selected' : ''}>${escapeHtml(tv)}</option>`;
   }).join('');
   return `<div class="variant-row">
     <div class="variant-select-label">Eserc.</div>
@@ -1653,6 +1665,7 @@ function variantSelectHTML(stationKey, selectedVariant, px, poolKey) {
 
 function onCategoryChange(el) {
   markDraftDirty();
+  collectStep(currentStep);
   const stationKey = el.dataset.station;
   const px = el.dataset.px;
   const poolKey = el.value;
@@ -2098,9 +2111,14 @@ function buildClassCircuitPlan(s) {
           add('rest', 'rest', gRest, { ...meta(stationBlock, lap, r, null), rotateRest: !isLastBlock && r === totalRounds });
         }
       } else {
-        for (let set = 1; set <= totalRounds; set++) {
-          add('work', 'lavoro', gSet, meta(stationBlock, lap, null, set));
-          add('rest', 'rest', gRest, { ...meta(stationBlock, lap, null, set), rotateRest: !isLastBlock && set === totalRounds });
+        for (let si = 1; si <= 2; si++) {
+          for (let set = 1; set <= totalRounds; set++) {
+            add('work', `S${si} · lavoro`, gSet, meta(stationBlock, lap, null, set));
+            add('rest', 'rest', gRest, {
+              ...meta(stationBlock, lap, null, set),
+              rotateRest: !isLastBlock && si === 2 && set === totalRounds
+            });
+          }
         }
       }
     }
@@ -2215,6 +2233,7 @@ function onTimingEditInput() {
 
 function saveTimingEdit() {
   if (!_timingEdit) return;
+  collectStep(currentStep);
   const v = parseInt(document.getElementById('timing-edit-input').value, 10) || 5;
   const s = draftSession || {};
   const { kind, stationKey, useGlobalRest } = _timingEdit;
@@ -2479,7 +2498,7 @@ function renderTimerBar() {
   const bar = document.getElementById('timer-bar');
   if (!bar) return;
   if (!timerIsActive()) {
-    bar.classList.remove('open', 'timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rest', 'timer-paused');
+    bar.classList.remove('open', 'timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rest', 'timer-paused', 'timer-rotate');
     document.body.classList.remove('timer-active');
     return;
   }
@@ -2493,6 +2512,7 @@ function renderTimerBar() {
   bar.classList.remove('timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rest');
   bar.classList.add(timerPhaseClass(phase.type));
   bar.classList.toggle('timer-paused', !!_timer.paused);
+  bar.classList.toggle('timer-rotate', !!phase.rotateRest);
 
   const en = getLang() === 'en';
   const phaseEl = document.getElementById('timer-phase');
@@ -2746,15 +2766,15 @@ function coachExListHTML(ctx, s) {
     const exData = s[stationKey] || {};
     const poolKey = resolveStationPool(stationKey, exData, px);
     const variant = exData.variant || '';
-    const name = variant ? tVariantByVariant(variant) : (getLang() === 'en' ? '—' : '—');
+    const name = variant ? tVariantByVariant(variant) : '—';
     const pool = poolKey ? getPoolLabel(poolKey) : '';
     const target = formatCoachTarget(stationKey, exData);
     return `<div class="coach-ex">
       <div class="coach-ex-info">
-        <div class="coach-ex-name">${name}</div>
-        ${pool ? `<div class="coach-ex-pool">${pool}</div>` : ''}
+        <div class="coach-ex-name">${escapeHtml(name)}</div>
+        ${pool ? `<div class="coach-ex-pool">${escapeHtml(pool)}</div>` : ''}
       </div>
-      <div class="coach-ex-target">${target}</div>
+      <div class="coach-ex-target">${escapeHtml(target)}</div>
     </div>`;
   }).join('');
 }
@@ -3021,18 +3041,18 @@ function renderHistory() {
   // Al cambio variante mostra anche la transizione: "↑ da <variante precedente>"
   function exLabelHTML(stationKey, variant, prevSlotVariant, exObj) {
     const group = getStationGroupLabel(stationKey, exObj || {});
-    if (!variant) return `<div class="history-ex"><div class="history-variant">${group}</div></div>`;
+    if (!variant) return `<div class="history-ex"><div class="history-variant">${escapeHtml(group)}</div></div>`;
     const arrow = variantArrow(variant, prevSlotVariant);
     let transition = '';
     if (arrow && prevSlotVariant) {
       const poolKey = getPoolKeyForVariant(variant);
       const variants = poolKey ? getVariantsForPool(poolKey) : [];
       const adv = variants.indexOf(variant) > variants.indexOf(prevSlotVariant);
-      transition = `<div class="history-group"><span class="${adv ? 'delta-pos' : 'delta-neg'}" style="font-size:10px">${adv ? '↑' : '↓'} da ${tVariantByVariant(prevSlotVariant)}</span></div>`;
+      transition = `<div class="history-group"><span class="${adv ? 'delta-pos' : 'delta-neg'}" style="font-size:10px">${adv ? '↑' : '↓'} da ${escapeHtml(tVariantByVariant(prevSlotVariant))}</span></div>`;
     }
     return `<div class="history-ex">
-      <div class="history-variant">${tVariantByVariant(variant)} ${arrow}</div>
-      <div class="history-group">${group}</div>
+      <div class="history-variant">${escapeHtml(tVariantByVariant(variant))} ${arrow}</div>
+      <div class="history-group">${escapeHtml(group)}</div>
       ${transition}
     </div>`;
   }
@@ -3102,7 +3122,7 @@ function renderHistory() {
       <div class="history-head" onclick="toggleHistory(this)">
         <span class="history-sess-num">Sessione ${n}${s.wod ? ' <span style="color:var(--amber);font-size:10px">★ WOD</span>' : ''}</span>
         <div class="history-meta">
-          <span class="history-date">${s.date||'—'}</span>
+          <span class="history-date">${escapeHtml(s.date||'—')}</span>
           <button class="delete-btn" style="color:${s.wod ? 'var(--amber)' : 'var(--muted2)'};border-color:${s.wod ? 'var(--amber)' : 'var(--border2)'}" title="${s.wod ? 'Converti in sessione normale' : 'Marca come WOD'}" onclick="toggleWodFlag(event,${n})">★</button>
           <button class="delete-btn" style="color:var(--blue);border-color:var(--blue)" onclick="editSessionFromHistory(event,${n})">✎</button>
           <button class="delete-btn" onclick="deleteSession(event,${n})">✕</button>
@@ -3693,7 +3713,7 @@ function openProgVariantCard(el) {
     const vStr = intensityFormat(variant, p.val);
     return `<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--border);padding:10px 0">
       <div style="min-width:0">
-        <div style="font-family:var(--mono);font-size:12px">${p.date}</div>
+        <div style="font-family:var(--mono);font-size:12px">${escapeHtml(p.date)}</div>
         <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px">Sessione ${p.sess}</div>
       </div>
       <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px">
@@ -3718,7 +3738,7 @@ function openProgVariantCard(el) {
       <div style="min-width:0">
         <div style="font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Dati nel filtro</div>
         <div style="font-family:var(--mono);font-size:13px;font-weight:600;margin-top:4px">${points.length} sessioni</div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px">Ultimo: ${latestStr}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px">Ultimo: ${escapeHtml(latestStr)}</div>
       </div>
     </div>
     ${chart}
@@ -3848,7 +3868,7 @@ function renderProgressDensity() {
     const vars = byPool[poolKey];
     if (!vars?.length) return;
     const color = poolColorVar(poolKey);
-    sections.push(`<div class="prog-pair-header" style="color:${color}">${getPoolLabel(poolKey)}</div>`);
+    sections.push(`<div class="prog-pair-header" style="color:${color}">${escapeHtml(getPoolLabel(poolKey))}</div>`);
 
     vars.forEach(variant => {
       const points = sessions.map(n => {
@@ -3860,14 +3880,14 @@ function renderProgressDensity() {
       const vals = points.map(p => p.val);
       const trend = vals.length >= 2 ? progTrendLabel(vals[0], vals[vals.length - 1], false) : null;
       const chart = trendChartSVG(sessions, data, variant, color, 260, 62);
-      const vLabel = tVariantByVariant(variant);
+      const vLabel = escapeHtml(tVariantByVariant(variant));
       sections.push(`
-        <div class="prog-section" style="padding:12px;margin-bottom:14px;cursor:pointer" onclick="openProgVariantCard(this)" data-variant="${variant}" data-color="${color}">
+        <div class="prog-section" style="padding:12px;margin-bottom:14px;cursor:pointer" onclick="openProgVariantCard(this)" data-variant="${escapeHtml(variant)}" data-color="${escapeHtml(color)}">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
             <div style="min-width:0">
               <div class="prog-variant-chip" style="border-color:${color};color:${color}">${vLabel}</div>
               <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3">
-                ${points.length} sessioni · Ultimo: ${latest.date}${trend ? ` · <span style="color:${trend.color}">${trend.label}</span>` : ''}
+                ${points.length} sessioni · Ultimo: ${escapeHtml(latest.date)}${trend ? ` · <span style="color:${trend.color}">${trend.label}</span>` : ''}
               </div>
             </div>
             <div style="text-align:right;flex-shrink:0">
@@ -3893,12 +3913,12 @@ function renderProgressDensity() {
       if (!points.length) return;
       const latest = points[points.length - 1];
       const chart = trendChartSVG(sessions, data, variant, 'var(--muted)', 260, 62);
-      const vLabel = tVariantByVariant(variant);
+      const vLabel = escapeHtml(tVariantByVariant(variant));
       sections.push(`
-        <div class="prog-section" style="padding:12px;margin-bottom:14px;cursor:pointer" onclick="openProgVariantCard(this)" data-variant="${variant}" data-color="var(--muted)">
+        <div class="prog-section" style="padding:12px;margin-bottom:14px;cursor:pointer" onclick="openProgVariantCard(this)" data-variant="${escapeHtml(variant)}" data-color="var(--muted)">
           <div class="prog-variant-chip">${vLabel}</div>
           <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3">
-            ${points.length} sessioni · Ultimo: ${latest.date}
+            ${points.length} sessioni · Ultimo: ${escapeHtml(latest.date)}
           </div>
           <div style="margin-top:10px">${chart}</div>
         </div>
@@ -4013,8 +4033,8 @@ function renderProgress() {
 
     if (blocks.length) {
       sections.push(`<div class="prog-pool${isCollapsed ? ' collapsed' : ''}">
-        <button type="button" class="prog-pool-header" style="color:${color}" onclick="toggleProgPool('${poolKey}')">
-          <span>${getPoolLabel(poolKey)}</span>
+        <button type="button" class="prog-pool-header" style="color:${color}" onclick="toggleProgPool('${escapeHtml(poolKey)}')">
+          <span>${escapeHtml(getPoolLabel(poolKey))}</span>
           <span class="prog-pool-chevron">▾</span>
         </button>
         <div class="prog-pool-body">${blocks.join('')}</div>
@@ -4139,8 +4159,8 @@ function importData(e) {
       const count = Object.keys(payload.sessions).filter(k => !isNaN(Number(k))).length;
       const exported = payload.exported ? new Date(payload.exported).toLocaleDateString('it-IT') : '—';
       document.getElementById('import-modal-body').innerHTML =
-        `File: <b>${file.name}</b><br>Utente: <b>${payload.name || '—'}</b><br>Sessioni: <b>${count}</b><br>Esportato il: <b>${exported}</b><br><br>` +
-        `Verranno importati come <b>${getName()}</b>.<br><span style="color:var(--coral)">I dati esistenti verranno sovrascritti.</span>`;
+        `File: <b>${escapeHtml(file.name)}</b><br>Utente: <b>${escapeHtml(payload.name || '—')}</b><br>Sessioni: <b>${count}</b><br>Esportato il: <b>${escapeHtml(exported)}</b><br><br>` +
+        `Verranno importati come <b>${escapeHtml(getName())}</b>.<br><span style="color:var(--coral)">I dati esistenti verranno sovrascritti.</span>`;
       document.getElementById('import-confirm-btn').onclick = confirmImport;
       document.getElementById('import-modal').classList.add('open');
     } catch(err) { alert('File non valido: ' + err.message); }
