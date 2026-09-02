@@ -9,12 +9,14 @@
   "circuit_rounds": 1,
   "stations": {
     "p0s1": { "variant": "Tenuta in pike", "set_time": 20, "rest": 60, "sets": [[20, null], [20, null], [20, null]] },
-    "p0s2": { "variant": "Camminata al muro", "set_time": 20, "rest": 60, "sets": [[20, null], [20, null], [20, null]] },
-    "p1s1": { "variant": "Rematore inclinato", "sets": [[6, null], [6, null], [6, null], [6, null]] },
-    "p1s2": { "variant": "Piegamento inclinato", "sets": [[6, null], [6, null], [6, null], [6, null]] },
-    "p2s1": { "variant": "Sospensione passiva", "sets": [[20, null], [20, null], [20, null], [20, null]] },
-    "p2s2": { "variant": "Affondi", "sets": [[12, null], [12, null], [12, null], [12, null]] },
-    "p3s1": { "variant": "Piegamento in pike", "sets": [[6, null], [6, null], [6, null], [6, null]] },
-    "p3s2": { "variant": "Ponte glutei piedi su rialzo + Crunch tap", "sets": [[8, null], [8, null], [8, null], [8, null]] }
+    "p0s2": { "variant": "Camminata al muro", "set_time": 30, "rest": 60, "sets": [[20, null], [20, null], [20, null]] },
+    "p1s1": { "variant": "Trazione scapolare", "sets": [[8, null], [8, null], [8, null]] },
+    "p1s2": { "variant": "Affondi", "sets": [[10, null], [10, null], [10, null]] },
+    "p2s1": { "variant": "Piegamento inclinato", "sets": [[6, null], [6, null], [6, null]] },
+    "p2s2": { "variant": "Dead bug", "sets": [[20, null], [20, null], [20, null]] },
+    "p3s1": { "variant": "Rematore inclinato", "sets": [[6, null], [6, null], [6, null]] },
+    "p3s2": { "variant": "Ponte glutei piedi su rialzo + Crunch tap", "sets": [[8, null], [8, null], [8, null]] },
+    "p4s1": { "variant": "Piegamento in pike", "sets": [[6, null], [6, null], [6, null]] },
+    "p4s2": { "variant": "Iperestensioni a terra", "sets": [[10, null], [10, null], [10, null]] }
   }
 }
