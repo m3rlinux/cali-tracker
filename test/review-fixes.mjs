@@ -34,9 +34,9 @@ assert.equal(escapeHtml("it's"), 'it&#39;s');
 assert.equal(escapeHtml(null), '');
 
 const version = html.match(/const VERSION = '([^']+)'/)[1];
-assert.equal(version, '4.2.1');
-assert.match(html, /Cali Tracker v4\.2\.1/);
-assert.match(sw, /const CACHE_VERSION = '4\.2\.1'/);
+assert.equal(version, '4.2.2');
+assert.match(html, /Cali Tracker v4\.2\.2/);
+assert.match(sw, /const CACHE_VERSION = '4\.2\.2'/);
 
 const setCoach = extractFn(html, 'setCoachMode');
 assert.match(setCoach, /if \(on\) collectStep\(currentStep\);/);
@@ -120,10 +120,15 @@ assert.match(extractFn(html, 'getSettings'), /Math\.max\(0\.5/);
 assert.match(extractFn(html, 'timerBeep'), /playCueWav/);
 assert.match(extractFn(html, 'timerBeep'), /vibrate\(\[80, 40, 120\]\)/);
 assert.match(extractFn(html, 'timerSpeak'), /preparati/);
+assert.match(extractFn(html, 'timerSpeak'), /'cambio'/);
+assert.match(extractFn(html, 'timerSpeak'), /'riposo'/);
+assert.match(extractFn(html, 'timerSpeak'), /'via'/);
 assert.match(extractFn(html, 'timerSpeak'), /get ready/);
 assert.match(extractFn(html, 'timerSpeak'), /speechSynthesis\.cancel/);
 assert.match(extractFn(html, 'timerStartPhase'), /phase\.type === 'prep'/);
-assert.match(extractFn(html, 'timerStartPhase'), /phase\.type === 'change'/);
+assert.match(extractFn(html, 'timerStartPhase'), /timerSpeak\('change'\)/);
+assert.match(extractFn(html, 'timerStartPhase'), /timerSpeak\('rest'\)/);
+assert.match(extractFn(html, 'timerStartPhase'), /timerSpeak\('go'\)/);
 assert.match(extractFn(html, 'timerCheckRestReadyCue'), /phase\.seconds <= 10/);
 assert.match(extractFn(html, 'timerCheckRestReadyCue'), /phase\.type !== 'change'/);
 assert.match(extractFn(html, 'timerCheckCountdownBeeps'), /isVoiceCue\(\)/);
@@ -136,7 +141,7 @@ assert.match(html, /data-cue="beep"/);
 assert.match(html, /data-cue="voice"/);
 assert.match(html, /id="settings-vol"/);
 assert.match(html, /Impostazioni<\/b> i segnali sono <b>Beep<\/b>/);
-assert.match(html, /preparati su prep, cambio e rest/);
+assert.match(html, /via \/ cambio \/ riposo all'inizio fase/);
 
 const makeToneWavDataUri = new Function(`return (${extractFn(html, 'makeToneWavDataUri')})`)();
 const wavUri = makeToneWavDataUri(660, 0.15);
@@ -146,4 +151,4 @@ assert.ok(wavUri.length > 100);
 const fbCfg = readFileSync(join(root, 'firebase-config.js'), 'utf8');
 assert.match(fbCfg, /adminEmails/);
 
-console.log('ok: v4.2.1 review fixes');
+console.log('ok: v4.2.2 review fixes');
