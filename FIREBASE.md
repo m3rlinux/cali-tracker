@@ -26,6 +26,19 @@ Dalla tab Admin si assegna anche il ruolo **istruttore** (`role: instructor`): s
 
 Se l'email admin non coincide ancora tra config e rules, il profilo nasce `pending`: in Firestore imposta `status: approved`, oppure usa un altro account già admin.
 
-## 3. Deploy
+## 3. API key (restrizioni siti)
+
+Se restringi la chiave web per HTTP referrer, servono **entrambi** (Google Sign-In gira su `firebaseapp.com`, l’app su Pages):
+
+```
+https://m3rlinux.github.io/*
+https://cali-tracker-647fe.firebaseapp.com/*
+```
+
+Solo `github.io` fa funzionare email/password ma rompe «Continua con Google»: il browser finisce su `…firebaseapp.com/__/auth/handler` con *The requested action is invalid*. In quel caso torna a https://m3rlinux.github.io/cali-tracker/ (non restare su quella pagina bianca).
+
+Opzionale: `https://cali-tracker-647fe.web.app/*` e `http://localhost/*` se testi in locale.
+
+## 4. Deploy
 
 `firebase-config.js` è copiato su Pages dal workflow. Dopo il push, l’app chiede login: senza config compilata mostra “Firebase non configurato”.

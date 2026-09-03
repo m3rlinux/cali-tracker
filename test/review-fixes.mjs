@@ -34,9 +34,9 @@ assert.equal(escapeHtml("it's"), 'it&#39;s');
 assert.equal(escapeHtml(null), '');
 
 const version = html.match(/const VERSION = '([^']+)'/)[1];
-assert.equal(version, '4.1.0');
-assert.match(html, /Cali Tracker v4\.1\.0/);
-assert.match(sw, /const CACHE_VERSION = '4\.1\.0'/);
+assert.equal(version, '4.2.0');
+assert.match(html, /Cali Tracker v4\.2\.0/);
+assert.match(sw, /const CACHE_VERSION = '4\.2\.0'/);
 
 const setCoach = extractFn(html, 'setCoachMode');
 assert.match(setCoach, /if \(on\) collectStep\(currentStep\);/);
@@ -83,7 +83,7 @@ assert.match(extractFn(html, 'importData'), /escapeHtml\(file\.name\)/);
 assert.match(extractFn(html, 'coachExListHTML'), /escapeHtml\(name\)/);
 
 assert.match(html, /id="auth-panel-loading"/);
-assert.doesNotMatch(extractFn(html, 'bootFirebase'), /auth-panel-login/);
+assert.match(extractFn(html, 'bootFirebase'), /getRedirectResult/);
 assert.match(html, /cali_data_/);
 assert.match(html, /payload: JSON\.stringify/);
 assert.match(extractFn(html, 'sessKey'), /_authUid/);
@@ -111,7 +111,35 @@ assert.match(rules, /function roleOf/);
 assert.match(rules, /role == 'athlete'/);
 assert.match(rules, /roleOf\(request\.resource\.data\) == roleOf\(resource\.data\)/);
 assert.match(rules, /function isAdmin/);
+assert.match(html, /KEY_SETTINGS = 'cali_settings'/);
+assert.match(html, /function openSettingsModal\(/);
+assert.match(html, /id="settings-modal"/);
+assert.match(extractFn(html, 'getSettings'), /timerCue/);
+assert.match(extractFn(html, 'getSettings'), /cueVolume/);
+assert.match(extractFn(html, 'getSettings'), /Math\.max\(0\.5/);
+assert.match(extractFn(html, 'timerBeep'), /playCueWav/);
+assert.match(extractFn(html, 'timerBeep'), /vibrate\(\[80, 40, 120\]\)/);
+assert.match(extractFn(html, 'timerSpeak'), /preparati/);
+assert.match(extractFn(html, 'timerSpeak'), /get ready/);
+assert.match(extractFn(html, 'timerSpeak'), /speechSynthesis\.cancel/);
+assert.match(extractFn(html, 'timerStartPhase'), /phase\.type === 'prep'/);
+assert.match(extractFn(html, 'timerCheckRestReadyCue'), /phase\.seconds <= 10/);
+assert.match(extractFn(html, 'timerCheckCountdownBeeps'), /phase\.type !== 'prep'/);
+assert.match(extractFn(html, 'primeTimerAudio'), /getVoices/);
+assert.match(extractFn(html, 'primeTimerAudio'), /SpeechSynthesisUtterance/);
+assert.match(extractFn(html, 'startPairTimer'), /if \(!chained\) primeTimerAudio/);
+assert.doesNotMatch(html, /createOscillator/);
+assert.match(html, /data-cue="beep"/);
+assert.match(html, /data-cue="voice"/);
+assert.match(html, /id="settings-vol"/);
+assert.match(html, /Impostazioni<\/b> i segnali sono <b>Beep<\/b>/);
+
+const makeToneWavDataUri = new Function(`return (${extractFn(html, 'makeToneWavDataUri')})`)();
+const wavUri = makeToneWavDataUri(660, 0.15);
+assert.match(wavUri, /^data:audio\/wav;base64,/);
+assert.ok(wavUri.length > 100);
+
 const fbCfg = readFileSync(join(root, 'firebase-config.js'), 'utf8');
 assert.match(fbCfg, /adminEmails/);
 
-console.log('ok: v4.1.0 review fixes');
+console.log('ok: v4.2.0 review fixes');

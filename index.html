@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v4.1.0
+  Cali Tracker v4.2.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -84,6 +84,11 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); widt
 .user-menu-item { padding: 11px 14px; font-size: 13px; font-family: var(--sans); color: var(--text); cursor: pointer; border-bottom: 1px solid var(--border); }
 .user-menu-item:last-child { border-bottom: none; }
 .user-menu-item:active { background: var(--surface2); }
+
+.settings-row { margin-bottom: 16px; }
+.settings-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.settings-hint { font-size: 11px; color: var(--muted2); line-height: 1.45; margin: 0 0 4px; }
+.settings-vol { width: 100%; accent-color: var(--accent); }
 
 .tabs { display: flex; border-bottom: 1px solid var(--border); }
 .tab { flex: 1; padding: 11px 4px; text-align: center; font-size: 12px; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; }
@@ -519,14 +524,14 @@ body.coach-mode { max-width: 960px; }
     </div>
     <div class="auth-panel" id="auth-panel-revoked">
       <h2>Accesso revocato</h2>
-      <p>Questo account non può più usare l'app. Contatta chi gestisce la palestra.</p>
+      <p>Questo account non può più usare l'app. Contatta l'amministratore.</p>
       <button type="button" class="modal-btn-ghost" onclick="signOutUser()">Esci</button>
     </div>
   </div>
 </div>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.1.0</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.2.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="header-seg header-seg-lang" id="lang-seg" role="group" title="Lingua esercizi / Exercise language">
     <button type="button" class="header-seg-opt" data-lang="it" onclick="setLang('it')">IT</button>
@@ -544,6 +549,7 @@ body.coach-mode { max-width: 960px; }
     <div class="user-menu" id="user-menu">
       <div class="user-menu-item" onclick="openRenameModal()">✎ Rinomina</div>
       <div class="user-menu-item" id="coach-menu-item" onclick="toggleCoachMode()" style="display:none">Modalità coach</div>
+      <div class="user-menu-item" onclick="openSettingsModal()">⚙ Impostazioni</div>
       <div class="user-menu-item" onclick="exportData()">↓ Esporta dati</div>
       <div class="user-menu-item" onclick="document.getElementById('import-file').click()">↑ Importa dati</div>
       <div class="user-menu-item" onclick="openHelpModal()">? Aiuto</div>
@@ -657,7 +663,7 @@ body.coach-mode { max-width: 960px; }
       <p>L'intestazione di ogni coppia indica i tempi previsti dalla sessione del giorno. Due metodi: <b>a blocchi</b> (3 set di S1, poi 3 di S2) oppure <b>alternato</b> — la sequenza a colori mostra il giro: lavoro S1 › <span style="color:var(--amber)">cambio</span> › lavoro S2 › <span style="color:var(--teal)">rest</span>, ripetuto per N giri. P0 e il circuito P1–P4 possono usare metodi diversi, e un blocco a 3 esercizi può essere <b>misto</b> (es. S1↔S2 alternato, poi S3 a blocchi). Tempo di lavoro e rest possono variare per singolo esercizio.</p>
       <div class="help-h">Timer e durata</div>
       <p>Sotto i chip postazione: <b>Durata</b> stimata del workout (timer, prep 10" una sola volta) e <b>Anello ×N</b> — quante volte ripetere il circuito P1–P4. Nelle sessioni <b>personali</b> usi <b>− / +</b> per cambiare N; nel <b>★ WOD</b> il numero di giri è <b>bloccato</b>.</p>
-      <p>Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nel WOD restano bloccati. Con <b>lavoro</b> e <b>rest</b> compare <b>▶ Timer</b>: countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), <span style="color:#ee412a">rosso</span> lavoro (doppio beep a metà), <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b>, Salta e Stop. Beep a 3-2-1 e vibrazione a fine fase. In <b>classe</b> l'ultimo rest di un blocco (rotazione) è <span style="color:var(--amber)">giallo</span>.</p>
+      <p>Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nel WOD restano bloccati. Con <b>lavoro</b> e <b>rest</b> compare <b>▶ Timer</b>: countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), <span style="color:#ee412a">rosso</span> lavoro, <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b>, Salta e Stop. In <b>Impostazioni</b> i segnali sono <b>Beep</b> o <b>Voce</b> (preparati, metà lavoro, tre-due-uno) e un volume fino al 100% del browser. Fine fase: beep + vibrazione. Con Spotify i segnali possono restare più bassi della musica. In <b>classe</b> l'ultimo rest di un blocco (rotazione) è <span style="color:var(--amber)">giallo</span>.</p>
       <p>In <b>P0</b> ogni <b>▶ Timer</b> è indipendente: a fine esercizio si ferma, senza avviare il successivo. Nell'<b>anello P1–P4</b> (modalità allievo) il timer <b>catena</b> automaticamente tra postazioni; all'ultimo rest passi alla successiva; finito l'anello riparte da P1 fino a N giri. Nell'anello puoi cambiare postazione senza fermare il timer. Puoi passare a Storico o Progressi con il timer attivo (usa <b>Stop</b> o <b>Pausa</b> quando serve).</p>
       <div class="help-h">Modalità coach (classe)</div>
       <p>Dal selettore <b>Allievo / Classe</b> in alto (o dal menu utente) passi alla <b>bacheca</b>: tutte le postazioni visibili insieme. Pensata per una classe in cui ogni coppia occupa una postazione. Il selettore è visibile solo a <b>istruttori</b> e admin (ruolo assegnato dalla tab Admin).</p>
@@ -684,10 +690,29 @@ body.coach-mode { max-width: 960px; }
       <p>Accedi con <b>Google</b> o <b>email</b>. Dopo la registrazione un amministratore deve <b>approvare</b> l'account. Dalla tab <b>Admin</b> (solo gestori) si approva o si <b>revoca</b> l'accesso e si assegna il ruolo <b>istruttore</b>.</p>
       <p>Al primo accesso approvato puoi <b>importare tutte le sessioni</b> salvate in precedenza con un nome su questo telefono. Lo storico vive sull'account (stesso utente su più dispositivi). Rinomina cambia solo il nome visibile.</p>
       <div class="help-h">Lingua e dati</div>
-      <p>Il selettore <b>IT / EN</b> nell'header cambia la lingua dei nomi esercizi. Il selettore <b>Allievo / Classe</b> (solo <b>istruttori</b> e admin) passa tra scheda personale e bacheca. Il nome in alto apre il menu utente (rinomina, export/import, aiuto, esci).</p>
+      <p>Il selettore <b>IT / EN</b> nell'header cambia la lingua dei nomi esercizi (e della voce del timer). Il selettore <b>Allievo / Classe</b> (solo <b>istruttori</b> e admin) passa tra scheda personale e bacheca. Il nome in alto apre il menu utente (rinomina, impostazioni, export/import, aiuto, esci).</p>
       <p>Le sessioni <b>salvate</b> sono sul tuo account in cloud e in cache sul dispositivo. <b>↓ Esporta</b> / <b>↑ Importa</b> restano per backup. Un refresh tiene il draft in corso (il timer si ferma).</p>
     </div>
     <button class="modal-btn" onclick="document.getElementById('help-modal').classList.remove('open')">Chiudi</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal">
+    <div class="modal-title">Impostazioni</div>
+    <div class="settings-row">
+      <div class="settings-label">Segnali timer</div>
+      <div class="header-seg" id="settings-cue-seg" role="group">
+        <button type="button" class="header-seg-opt" data-cue="beep" onclick="setTimerCue('beep')">Beep</button>
+        <button type="button" class="header-seg-opt" data-cue="voice" onclick="setTimerCue('voice')">Voce</button>
+      </div>
+    </div>
+    <div class="settings-row">
+      <div class="settings-label">Volume segnali <span id="settings-vol-val">100%</span></div>
+      <input class="settings-vol" id="settings-vol" type="range" min="50" max="100" step="5" value="100" oninput="onCueVolumeInput(this.value)">
+    </div>
+    <p class="settings-hint">100% è il massimo del browser. Con musica in sottofondo i segnali possono restare più bassi.</p>
+    <button class="modal-btn" onclick="document.getElementById('settings-modal').classList.remove('open')">Chiudi</button>
   </div>
 </div>
 
@@ -716,14 +741,29 @@ body.coach-mode { max-width: 960px; }
 <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
-const VERSION = '4.1.0';
+const VERSION = '4.2.0';
 const KEY_NAME = 'cali_name';
 const KEY_COACH = 'cali_coach';
+const KEY_SETTINGS = 'cali_settings';
 const MAX_SETS = 6;
 const MAX_CIRCUIT_ROUNDS = 6;
 const DEFAULT_CIRCUIT_ROUNDS = 1;
-const TIMER_BEEP_GAIN = 0.12;
-const TIMER_TICK_GAIN = 0.12;
+function getSettings() {
+  let raw = {};
+  try { raw = JSON.parse(localStorage.getItem(KEY_SETTINGS) || '{}') || {}; } catch (e) { raw = {}; }
+  const timerCue = raw.timerCue === 'voice' ? 'voice' : 'beep';
+  let cueVolume = Number(raw.cueVolume);
+  if (!Number.isFinite(cueVolume)) cueVolume = 1;
+  cueVolume = Math.max(0.5, Math.min(1, cueVolume));
+  return { timerCue, cueVolume };
+}
+function patchSettings(partial) {
+  const next = { ...getSettings(), ...partial };
+  localStorage.setItem(KEY_SETTINGS, JSON.stringify(next));
+  return next;
+}
+function getCueVolume() { return getSettings().cueVolume; }
+function isVoiceCue() { return getSettings().timerCue === 'voice'; }
 // Righe set di default per una sessione vuota: p0s1 fa eccezione, il resto 3
 const DEFAULT_SETS_BY_STATION = { p0s1: 2 };
 const DEFAULT_NUM_SETS = 3;
@@ -1153,7 +1193,12 @@ function bootFirebase() {
     _fs = firebase.firestore();
     _fs.enablePersistence({ synchronizeTabs: true }).catch(() => {});
     _fbReady = true;
-    firebase.auth().getRedirectResult().catch(() => {});
+    firebase.auth().getRedirectResult().catch(e => {
+      if (e && e.code && e.code !== 'auth/redirect-cancelled-by-user') {
+        showAuthPanel('auth-panel-login');
+        setAuthErr(e.message);
+      }
+    });
     firebase.auth().onAuthStateChanged(user => {
       handleAuthUser(user).catch(e => console.error('auth user', e));
     });
@@ -2878,7 +2923,8 @@ function buildTimerPlan(stepIdx, blockIdx, s) {
 let _timer = null;
 let _timerRaf = null;
 let _wakeLock = null;
-let _audioCtx = null;
+let _beepWavUri = null;
+let _tickWavUri = null;
 
 function timerIsActive() {
   return _timer && _timer.active && (_timer.paused || _timer.phaseIdx < _timer.phases.length);
@@ -3006,35 +3052,92 @@ function formatTimerSec(sec) {
   return m + ':' + String(r).padStart(2, '0');
 }
 
-function timerBeep() {
+function makeToneWavDataUri(freqHz, durSec) {
+  const sr = 22050;
+  const n = Math.max(1, Math.floor(sr * durSec));
+  const bytes = n * 2;
+  const buf = new ArrayBuffer(44 + bytes);
+  const v = new DataView(buf);
+  const ascii = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  ascii(0, 'RIFF'); v.setUint32(4, 36 + bytes, true); ascii(8, 'WAVE'); ascii(12, 'fmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+  ascii(36, 'data'); v.setUint32(40, bytes, true);
+  const att = Math.max(1, Math.floor(sr * 0.008));
+  const rel = Math.max(1, Math.floor(sr * 0.02));
+  for (let i = 0; i < n; i++) {
+    const env = Math.min(1, i / att, (n - i) / rel);
+    const s = Math.sin(2 * Math.PI * freqHz * i / sr) * env * 0.95;
+    v.setInt16(44 + i * 2, Math.round(s * 32767), true);
+  }
+  const arr = new Uint8Array(buf);
+  let bin = '';
+  for (let i = 0; i < arr.length; i++) bin += String.fromCharCode(arr[i]);
+  return 'data:audio/wav;base64,' + btoa(bin);
+}
+function ensureCueWavs() {
+  if (!_beepWavUri) _beepWavUri = makeToneWavDataUri(660, 0.15);
+  if (!_tickWavUri) _tickWavUri = makeToneWavDataUri(880, 0.1);
+}
+function playCueWav(uri) {
   try {
-    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const ctx = _audioCtx;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.frequency.value = 660;
-    gain.gain.value = TIMER_BEEP_GAIN;
-    osc.start();
-    osc.stop(ctx.currentTime + 0.15);
+    ensureCueWavs();
+    const a = new Audio(uri);
+    a.volume = getCueVolume();
+    a.play().catch(() => {});
   } catch (e) { /* no audio */ }
-  if (navigator.vibrate) navigator.vibrate(200);
+}
+function primeTimerAudio() {
+  ensureCueWavs();
+  try {
+    const a = new Audio(_beepWavUri);
+    a.volume = getCueVolume();
+    const p = a.play();
+    if (p && p.then) p.then(() => { a.pause(); a.currentTime = 0; }).catch(() => {});
+  } catch (e) { /* no audio */ }
+  try {
+    if (window.speechSynthesis) {
+      speechSynthesis.getVoices();
+      const u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0;
+      speechSynthesis.speak(u);
+    }
+  } catch (e) { /* no tts */ }
+}
+function timerStopSpeech() {
+  try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+}
+function timerSpeak(key) {
+  if (!window.speechSynthesis) return;
+  const en = getLang() === 'en';
+  const phrases = {
+    ready: en ? 'get ready' : 'preparati',
+    half: en ? 'halfway' : 'sei a metà',
+    3: en ? 'three' : 'tre',
+    2: en ? 'two' : 'due',
+    1: en ? 'one' : 'uno'
+  };
+  const text = phrases[key];
+  if (!text) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = en ? 'en-US' : 'it-IT';
+    u.volume = getCueVolume();
+    u.rate = 1.05;
+    speechSynthesis.speak(u);
+  } catch (e) { /* no tts */ }
+}
+
+function timerBeep() {
+  playCueWav(_beepWavUri || makeToneWavDataUri(660, 0.15));
+  if (navigator.vibrate) navigator.vibrate([80, 40, 120]);
 }
 
 function timerPlayTickBeep(offset) {
-  try {
-    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const ctx = _audioCtx;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.frequency.value = 880;
-    gain.gain.value = TIMER_TICK_GAIN;
-    osc.start(ctx.currentTime + offset);
-    osc.stop(ctx.currentTime + offset + 0.1);
-  } catch (e) { /* no audio */ }
+  const play = () => playCueWav(_tickWavUri || makeToneWavDataUri(880, 0.1));
+  if (offset) setTimeout(play, offset * 1000);
+  else play();
 }
 
 function timerTickBeep() {
@@ -3052,7 +3155,18 @@ function timerCheckWorkHalfwayBeep(remaining) {
   if (phase.type !== 'work') return;
   if (remaining > phase.seconds / 2) return;
   _timer.halfwayBeeped = true;
-  timerDoubleBeep();
+  if (isVoiceCue()) timerSpeak('half');
+  else timerDoubleBeep();
+}
+
+function timerCheckRestReadyCue(remaining) {
+  if (!_timer || _timer.paused || _timer.restReadySpoken) return;
+  if (!isVoiceCue()) return;
+  const phase = _timer.phases[_timer.phaseIdx];
+  if (phase.type !== 'rest' || phase.seconds <= 10) return;
+  if (remaining > 10) return;
+  _timer.restReadySpoken = true;
+  timerSpeak('ready');
 }
 
 function timerCheckCountdownBeeps(remaining) {
@@ -3061,7 +3175,13 @@ function timerCheckCountdownBeeps(remaining) {
   if (sec > 3 || sec < 1) return;
   if (_timer.lastBeepSec === sec) return;
   _timer.lastBeepSec = sec;
-  timerTickBeep();
+  const phase = _timer.phases[_timer.phaseIdx];
+  if (isVoiceCue()) {
+    if (phase.type !== 'prep' && phase.type !== 'work' && phase.type !== 'rest') return;
+    timerSpeak(String(sec));
+  } else {
+    timerTickBeep();
+  }
 }
 
 function timerStartPhase() {
@@ -3069,6 +3189,8 @@ function timerStartPhase() {
   _timer.endsAt = Date.now() + phase.seconds * 1000;
   _timer.lastBeepSec = null;
   _timer.halfwayBeeped = false;
+  _timer.restReadySpoken = false;
+  if (isVoiceCue() && phase.type === 'prep') timerSpeak('ready');
 }
 
 function renderTimerBar() {
@@ -3153,6 +3275,7 @@ function timerTick() {
     return;
   }
   timerCheckWorkHalfwayBeep(remaining);
+  timerCheckRestReadyCue(remaining);
   timerCheckCountdownBeeps(remaining);
   renderTimerBar();
   _timerRaf = requestAnimationFrame(timerTick);
@@ -3184,10 +3307,7 @@ function startPairTimer(stepIdx, blockIdx, chained, circuitLap) {
     ? (circuitLap || _timer?.circuitLap || 1)
     : (isRingStepIdx(stepIdx) ? 1 : 0);
 
-  try {
-    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    _audioCtx.resume();
-  } catch (e) { /* no audio */ }
+  if (!chained) primeTimerAudio();
 
   _timer = {
     active: true,
@@ -3212,10 +3332,7 @@ function startClassCircuitTimer() {
   stopTimer(false);
   const plan = buildClassCircuitPlan(draftSession || {});
   if (!plan) return;
-  try {
-    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    _audioCtx.resume();
-  } catch (e) { /* no audio */ }
+  primeTimerAudio();
   _timer = {
     active: true,
     paused: false,
@@ -3242,6 +3359,7 @@ function resetTimerPhase() {
   if (!_timer || !_timer.active) return;
   _timer.paused = false;
   _timer.remainingPaused = 0;
+  timerStopSpeech();
   timerStartPhase();
   renderTimerBar();
   if (_timerRaf) cancelAnimationFrame(_timerRaf);
@@ -3258,6 +3376,7 @@ function pauseTimer() {
   } else {
     _timer.paused = true;
     _timer.remainingPaused = (_timer.endsAt - Date.now()) / 1000;
+    timerStopSpeech();
     if (_timerRaf) cancelAnimationFrame(_timerRaf);
     _timerRaf = null;
   }
@@ -3276,6 +3395,7 @@ function stopTimer(completed) {
   if (_timerRaf) cancelAnimationFrame(_timerRaf);
   _timerRaf = null;
   _timer = null;
+  timerStopSpeech();
   releaseWakeLock();
   renderTimerBar();
   if (completed) {
@@ -4659,6 +4779,33 @@ function closeUserMenu() { document.getElementById('user-menu').classList.remove
 function openHelpModal() {
   closeUserMenu();
   document.getElementById('help-modal').classList.add('open');
+}
+
+function syncSettingsModal() {
+  const s = getSettings();
+  document.querySelectorAll('#settings-cue-seg .header-seg-opt').forEach(btn => {
+    btn.classList.toggle('on', btn.dataset.cue === s.timerCue);
+  });
+  const pct = Math.round(s.cueVolume * 100);
+  const vol = document.getElementById('settings-vol');
+  const lbl = document.getElementById('settings-vol-val');
+  if (vol) vol.value = pct;
+  if (lbl) lbl.textContent = pct + '%';
+}
+function openSettingsModal() {
+  closeUserMenu();
+  syncSettingsModal();
+  document.getElementById('settings-modal').classList.add('open');
+}
+function setTimerCue(cue) {
+  patchSettings({ timerCue: cue === 'voice' ? 'voice' : 'beep' });
+  syncSettingsModal();
+}
+function onCueVolumeInput(pct) {
+  const v = Math.max(0.5, Math.min(1, Number(pct) / 100));
+  patchSettings({ cueVolume: v });
+  const lbl = document.getElementById('settings-vol-val');
+  if (lbl) lbl.textContent = Math.round(v * 100) + '%';
 }
 
 // ── NAME MODAL ──
