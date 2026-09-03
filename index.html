@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v4.0.0
+  Cali Tracker v4.0.1
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -489,7 +489,10 @@ body.coach-mode { max-width: 960px; }
 <div id="auth-gate">
   <div class="auth-card">
     <h1>Cali Tracker</h1>
-    <div class="auth-panel on" id="auth-panel-setup">
+    <div class="auth-panel on" id="auth-panel-loading">
+      <p>Caricamento…</p>
+    </div>
+    <div class="auth-panel" id="auth-panel-setup">
       <h2>Configurazione</h2>
       <p>Firebase non è ancora configurato. Compila <b>firebase-config.js</b> e le rules (vedi FIREBASE.md), poi ricarica.</p>
     </div>
@@ -522,7 +525,7 @@ body.coach-mode { max-width: 960px; }
 </div>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.0.0</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.0.1</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="header-seg header-seg-lang" id="lang-seg" role="group" title="Lingua esercizi / Exercise language">
     <button type="button" class="header-seg-opt" data-lang="it" onclick="setLang('it')">IT</button>
@@ -712,7 +715,7 @@ body.coach-mode { max-width: 960px; }
 <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
-const VERSION = '4.0.0';
+const VERSION = '4.0.1';
 const KEY_NAME = 'cali_name';
 const KEY_COACH = 'cali_coach';
 const MAX_SETS = 6;
@@ -1133,7 +1136,6 @@ function bootFirebase() {
     firebase.auth().onAuthStateChanged(user => {
       handleAuthUser(user).catch(e => console.error('auth user', e));
     });
-    showAuthPanel('auth-panel-login');
   } catch (e) {
     showAuthPanel('auth-panel-setup');
     console.error(e);

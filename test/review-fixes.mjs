@@ -34,9 +34,9 @@ assert.equal(escapeHtml("it's"), 'it&#39;s');
 assert.equal(escapeHtml(null), '');
 
 const version = html.match(/const VERSION = '([^']+)'/)[1];
-assert.equal(version, '4.0.0');
-assert.match(html, /Cali Tracker v4\.0\.0/);
-assert.match(sw, /const CACHE_VERSION = '4\.0\.0'/);
+assert.equal(version, '4.0.1');
+assert.match(html, /Cali Tracker v4\.0\.1/);
+assert.match(sw, /const CACHE_VERSION = '4\.0\.1'/);
 
 const setCoach = extractFn(html, 'setCoachMode');
 assert.match(setCoach, /if \(on\) collectStep\(currentStep\);/);
@@ -82,8 +82,8 @@ assert.match(html, /--combo: #c8f060/);
 assert.match(extractFn(html, 'importData'), /escapeHtml\(file\.name\)/);
 assert.match(extractFn(html, 'coachExListHTML'), /escapeHtml\(name\)/);
 
-assert.match(html, /id="auth-gate"/);
-assert.match(html, /function bootFirebase\(/);
+assert.match(html, /id="auth-panel-loading"/);
+assert.doesNotMatch(extractFn(html, 'bootFirebase'), /auth-panel-login/);
 assert.match(html, /cali_data_/);
 assert.match(html, /payload: JSON\.stringify/);
 assert.match(extractFn(html, 'sessKey'), /_authUid/);
@@ -108,4 +108,4 @@ assert.match(rules, /function isAdmin/);
 const fbCfg = readFileSync(join(root, 'firebase-config.js'), 'utf8');
 assert.match(fbCfg, /adminEmails/);
 
-console.log('ok: v4.0.0 review fixes');
+console.log('ok: v4.0.1 review fixes');

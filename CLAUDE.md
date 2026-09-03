@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 4.0.0
+- **Versione corrente:** 4.0.1
 - **fetchWod cache-bust**: `★ Oggi` scarica `wod.json?t=Date.now()` con `cache:'no-store'` → wod sempre fresco a prescindere dalla versione del SW; fallback a `wod.json` (cache SW) se offline
 - **SW fetch JSON/manifest**: network-first con `fetch(req, {cache:'reload'})` per bypassare la cache HTTP del browser (GitHub Pages serve con `max-age=600`); senza, wod/exercises aggiornati arriverebbero solo dopo ~10 min. Con il fix `★ Oggi` prende sempre il wod fresco (vale dai dispositivi con SW ≥ 3.18.2)
 
