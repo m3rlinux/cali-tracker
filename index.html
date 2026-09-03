@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v4.2.2
+  Cali Tracker v4.2.3
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -531,7 +531,7 @@ body.coach-mode { max-width: 960px; }
 </div>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.2.2</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.2.3</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="header-seg header-seg-lang" id="lang-seg" role="group" title="Lingua esercizi / Exercise language">
     <button type="button" class="header-seg-opt" data-lang="it" onclick="setLang('it')">IT</button>
@@ -741,7 +741,7 @@ body.coach-mode { max-width: 960px; }
 <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
-const VERSION = '4.2.2';
+const VERSION = '4.2.3';
 const KEY_NAME = 'cali_name';
 const KEY_COACH = 'cali_coach';
 const KEY_SETTINGS = 'cali_settings';
@@ -3257,9 +3257,12 @@ function renderTimerBar() {
 }
 
 function timerAdvancePhase() {
-  timerBeep();
   _timer.phaseIdx++;
-  if (_timer.phaseIdx >= _timer.phases.length) {
+  const isLast = _timer.phaseIdx >= _timer.phases.length;
+  // In voice mode skip end-of-phase beep when the next phase already announces
+  // itself (work→go, change→cambio, rest→riposo). Always beep at block end.
+  if (!isVoiceCue() || isLast) timerBeep();
+  if (isLast) {
     timerOnBlockComplete();
     return;
   }

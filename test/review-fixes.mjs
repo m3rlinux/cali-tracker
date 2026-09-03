@@ -34,9 +34,9 @@ assert.equal(escapeHtml("it's"), 'it&#39;s');
 assert.equal(escapeHtml(null), '');
 
 const version = html.match(/const VERSION = '([^']+)'/)[1];
-assert.equal(version, '4.2.2');
-assert.match(html, /Cali Tracker v4\.2\.2/);
-assert.match(sw, /const CACHE_VERSION = '4\.2\.2'/);
+assert.equal(version, '4.2.3');
+assert.match(html, /Cali Tracker v4\.2\.3/);
+assert.match(sw, /const CACHE_VERSION = '4\.2\.3'/);
 
 const setCoach = extractFn(html, 'setCoachMode');
 assert.match(setCoach, /if \(on\) collectStep\(currentStep\);/);
@@ -117,6 +117,7 @@ assert.match(html, /id="settings-modal"/);
 assert.match(extractFn(html, 'getSettings'), /timerCue/);
 assert.match(extractFn(html, 'getSettings'), /cueVolume/);
 assert.match(extractFn(html, 'getSettings'), /Math\.max\(0\.5/);
+assert.match(extractFn(html, 'timerAdvancePhase'), /isVoiceCue\(\) \|\| isLast/);
 assert.match(extractFn(html, 'timerBeep'), /playCueWav/);
 assert.match(extractFn(html, 'timerBeep'), /vibrate\(\[80, 40, 120\]\)/);
 assert.match(extractFn(html, 'timerSpeak'), /preparati/);
@@ -151,4 +152,4 @@ assert.ok(wavUri.length > 100);
 const fbCfg = readFileSync(join(root, 'firebase-config.js'), 'utf8');
 assert.match(fbCfg, /adminEmails/);
 
-console.log('ok: v4.2.2 review fixes');
+console.log('ok: v4.2.3 review fixes');
