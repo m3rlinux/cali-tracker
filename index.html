@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.31.1
+  Cali Tracker v3.31.2
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -58,9 +58,18 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); min-
 .app-header { padding: 18px 16px 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
 .app-title { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; min-width: 0; }
 
-/* USER MENU */
+/* USER MENU + HEADER SELECTORS */
 .user-menu-wrap { position: relative; flex-shrink: 0; }
-.name-badge { font-size: 12px; color: var(--muted); font-family: var(--mono); cursor: pointer; border: 1px solid var(--border2); border-radius: 20px; padding: 4px 10px; user-select: none; max-width: 42vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.header-seg { display: inline-flex; align-items: stretch; border: 1px solid var(--border2); border-radius: 20px; overflow: hidden; flex-shrink: 0; }
+.header-seg-opt { appearance: none; -webkit-appearance: none; font-size: 10px; font-family: var(--mono); color: var(--muted); background: transparent; border: none; padding: 4px 8px; cursor: pointer; user-select: none; white-space: nowrap; line-height: 1.3; }
+.header-seg-opt:not(:last-child) { border-right: 1px solid var(--border2); }
+.header-seg-opt.on { color: var(--text); background: var(--surface2); font-weight: 500; }
+.header-seg-mode .header-seg-opt.on.mode-student { color: var(--teal); background: color-mix(in srgb, var(--teal) 14%, var(--surface2)); }
+.header-seg-mode .header-seg-opt.on.mode-class { color: var(--amber); background: color-mix(in srgb, var(--amber) 14%, var(--surface2)); }
+.name-badge { font-size: 12px; color: var(--text); font-family: var(--mono); cursor: pointer; border: 1px solid var(--border2); border-radius: 20px; padding: 4px 10px; user-select: none; display: inline-flex; align-items: center; gap: 4px; max-width: 42vw; }
+.name-badge-menu { min-width: 0; }
+#name-badge-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.badge-caret { color: var(--muted); font-size: 9px; flex-shrink: 0; line-height: 1; }
 .user-menu { position: absolute; right: 0; top: calc(100% + 6px); background: var(--surface); border: 1px solid var(--border2); border-radius: var(--r); min-width: 180px; z-index: 50; overflow: hidden; display: none; }
 .user-menu.open { display: block; }
 .user-menu-item { padding: 11px 14px; font-size: 13px; font-family: var(--sans); color: var(--text); cursor: pointer; border-bottom: 1px solid var(--border); }
@@ -397,11 +406,12 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
   .stepper-input, .time-set-input, .ex-vc-input { font-size: 20px; }
   .time-total-bar { flex-wrap: wrap; }
   .time-total-target { width: 100%; }
+  .header-seg-opt { padding: 4px 6px; font-size: 9px; }
+  .name-badge { max-width: 28vw; }
 }
 
 body.coach-mode { max-width: 960px; }
 
-.coach-badge.coach-on { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 55%, var(--border2)); }
 .coach-board { display: flex; flex-direction: column; gap: 18px; padding-bottom: 8px; }
 .coach-section-label { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
 .coach-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
@@ -447,10 +457,19 @@ body.coach-mode { max-width: 960px; }
 <div class="app-header">
   <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.29.1</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-  <div class="name-badge" id="lang-badge" onclick="toggleLang()" title="Lingua esercizi / Exercise language">IT</div>
-  <div class="name-badge coach-badge" id="coach-badge" onclick="toggleCoachMode()" title="Modalità allievo / coach">Allievo</div>
+  <div class="header-seg header-seg-lang" id="lang-seg" role="group" title="Lingua esercizi / Exercise language">
+    <button type="button" class="header-seg-opt" data-lang="it" onclick="setLang('it')">IT</button>
+    <button type="button" class="header-seg-opt" data-lang="en" onclick="setLang('en')">EN</button>
+  </div>
+  <div class="header-seg header-seg-mode" id="coach-seg" role="group" title="Modalità allievo / coach">
+    <button type="button" class="header-seg-opt" data-coach="0" onclick="setCoachMode(false)">Allievo</button>
+    <button type="button" class="header-seg-opt" data-coach="1" onclick="setCoachMode(true)">Classe</button>
+  </div>
   <div class="user-menu-wrap">
-    <div class="name-badge" id="name-badge" onclick="toggleUserMenu()">— imposta nome</div>
+    <div class="name-badge name-badge-menu" id="name-badge" onclick="toggleUserMenu()">
+      <span id="name-badge-text">— imposta nome</span>
+      <span class="badge-caret" aria-hidden="true">▾</span>
+    </div>
     <div class="user-menu" id="user-menu">
       <div class="user-menu-item" onclick="openRenameModal()">✎ Rinomina</div>
       <div class="user-menu-item" id="coach-menu-item" onclick="toggleCoachMode()">Modalità coach</div>
@@ -558,9 +577,9 @@ body.coach-mode { max-width: 960px; }
       <div class="help-h">Timer e durata</div>
       <p>Sotto i chip postazione: <b>Durata</b> stimata del workout (timer, prep 10" una sola volta) e <b>Anello ×N</b> — quante volte ripetere il circuito P1–P4. Nelle sessioni <b>personali</b> usi <b>− / +</b> per cambiare N; nel <b>★ WOD</b> il numero di giri è <b>bloccato</b>.</p>
       <p>Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nel WOD restano bloccati. Con <b>lavoro</b> e <b>rest</b> compare <b>▶ Timer</b>: countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), <span style="color:#ee412a">rosso</span> lavoro (doppio beep a metà), <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b>, Salta e Stop. Beep a 3-2-1 e vibrazione a fine fase. In <b>classe</b> l'ultimo rest di un blocco (rotazione) è <span style="color:var(--amber)">giallo</span>.</p>
-      <p>In <b>modalità allievo</b> il timer <b>catena</b> automaticamente: blocchi sequenziali P0 (s1→s2→s3), poi postazioni P1→P2→…; all'ultimo rest di una postazione passi alla successiva; finito l'anello riparte da P1 fino a N giri. Nell'anello P1–P4 puoi cambiare postazione senza fermare il timer. Puoi passare a Storico o Progressi con il timer attivo (usa <b>Stop</b> o <b>Pausa</b> quando serve).</p>
+      <p>In <b>P0</b> ogni <b>▶ Timer</b> è indipendente: a fine esercizio si ferma, senza avviare il successivo. Nell'<b>anello P1–P4</b> (modalità allievo) il timer <b>catena</b> automaticamente tra postazioni; all'ultimo rest passi alla successiva; finito l'anello riparte da P1 fino a N giri. Nell'anello puoi cambiare postazione senza fermare il timer. Puoi passare a Storico o Progressi con il timer attivo (usa <b>Stop</b> o <b>Pausa</b> quando serve).</p>
       <div class="help-h">Modalità coach (classe)</div>
-      <p>Dal menu utente (o dal badge <b>Allievo / Classe</b> in alto) passi alla <b>bacheca</b>: tutte le postazioni visibili insieme. Pensata per una classe in cui ogni coppia occupa una postazione.</p>
+      <p>Dal selettore <b>Allievo / Classe</b> in alto (o dal menu utente) passi alla <b>bacheca</b>: tutte le postazioni visibili insieme. Pensata per una classe in cui ogni coppia occupa una postazione.</p>
       <p><b>P0</b> si fa tutti insieme, col timer della verticale (non concatena a P1). Poi <b>▶ Via circuito</b> avvia un <b>timer master</b> unico — stessi tempi globali (lavoro / cambio / rest) per tutte le postazioni occupate. In <b>alternato</b> il blocco è S1 › cambio › S2 › rest ×N; in <b>sequenziale</b> sono N set di S1 poi N di S2, come le due righe-chip. All'ultimo rest di ogni blocco le persone <b>ruotano</b> (barra gialla, chi era in P1 va in P2); non c'è tempo extra. Il giro completo di rotazioni si ripete per <b>Anello ×N</b>.</p>
       <p>La durata stimata in classe conta P0 in sequenza e il circuito <b>in parallelo</b> (un blocco × numero postazioni × N giri). I tempi per-esercizio del WOD restano visibili in bacheca ma l'orologio di classe usa i tempi <b>globali</b>.</p>
       <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono se previste nel WOD o già presenti nella sessione. Nelle sessioni <b>personali</b> puoi aggiungere o togliere <b>P4</b> con <b>+ P4</b> / <b>×</b> accanto ai chip.</p>
@@ -581,7 +600,7 @@ body.coach-mode { max-width: 960px; }
       <p>In alto: <b>Tutto</b> / <b>Anno</b> / <b>Mese</b> + navigazione <b>freccette</b>. <b>Tap</b> su un minigrafico → dettaglio con grafico grande + lista sessioni.</p>
       <p>Intensità: isometrie = <b>Hold max</b>, reps = <b>Media/set</b>.</p>
       <div class="help-h">Lingua e dati</div>
-      <p>Il badge <b>IT/EN</b> nell'header cambia la lingua dei nomi esercizi.</p>
+      <p>Il selettore <b>IT / EN</b> nell'header cambia la lingua dei nomi esercizi. Il selettore <b>Allievo / Classe</b> passa tra scheda personale e bacheca. Il nome in alto apre il menu utente (rinomina, export/import, aiuto).</p>
       <p>I dati restano <b>solo su questo dispositivo</b>. Usa <b>↓ Esporta</b> / <b>↑ Importa</b> dal menu per backup o per passare a un altro dispositivo. L'app si aggiorna da sola senza toccare i dati.</p>
     </div>
     <button class="modal-btn" onclick="document.getElementById('help-modal').classList.remove('open')">Chiudi</button>
@@ -598,7 +617,7 @@ body.coach-mode { max-width: 960px; }
 </div>
 
 <script>
-const VERSION = '3.31.1';
+const VERSION = '3.31.2';
 const KEY_NAME = 'cali_name';
 const KEY_COACH = 'cali_coach';
 const MAX_SETS = 6;
@@ -829,18 +848,49 @@ const KEY_LANG = 'cali_lang';
 function getLang() { return localStorage.getItem(KEY_LANG) || 'it'; }
 
 function isCoachMode() { return localStorage.getItem(KEY_COACH) === '1'; }
+function setNameBadge(name) {
+  const el = document.getElementById('name-badge-text');
+  if (el) el.textContent = name;
+}
+function renderHeaderControls() {
+  const lang = getLang();
+  const en = lang === 'en';
+  const coach = isCoachMode();
+  document.querySelectorAll('#lang-seg .header-seg-opt').forEach(btn => {
+    const on = btn.dataset.lang === lang;
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  const studentBtn = document.querySelector('#coach-seg [data-coach="0"]');
+  const classBtn = document.querySelector('#coach-seg [data-coach="1"]');
+  if (studentBtn) {
+    studentBtn.textContent = en ? 'Solo' : 'Allievo';
+    studentBtn.classList.toggle('on', !coach);
+    studentBtn.classList.toggle('mode-student', !coach);
+    studentBtn.classList.toggle('mode-class', false);
+    studentBtn.setAttribute('aria-pressed', coach ? 'false' : 'true');
+  }
+  if (classBtn) {
+    classBtn.textContent = en ? 'Class' : 'Classe';
+    classBtn.classList.toggle('on', coach);
+    classBtn.classList.toggle('mode-class', coach);
+    classBtn.classList.toggle('mode-student', false);
+    classBtn.setAttribute('aria-pressed', coach ? 'true' : 'false');
+  }
+  const langSeg = document.getElementById('lang-seg');
+  if (langSeg) langSeg.title = en ? 'Exercise language' : 'Lingua esercizi';
+  const coachSeg = document.getElementById('coach-seg');
+  if (coachSeg) {
+    coachSeg.title = en
+      ? (coach ? 'Switch to student mode' : 'Switch to coach / class mode')
+      : (coach ? 'Passa alla modalità allievo' : 'Passa alla modalità coach / classe');
+  }
+}
 function applyCoachMode() {
   const on = isCoachMode();
   document.body.classList.toggle('coach-mode', on);
   const en = getLang() === 'en';
-  const badge = document.getElementById('coach-badge');
-  if (badge) {
-    badge.textContent = on ? (en ? 'Class' : 'Classe') : (en ? 'Solo' : 'Allievo');
-    badge.classList.toggle('coach-on', on);
-    badge.title = on
-      ? (en ? 'Switch to student mode' : 'Passa alla modalità allievo')
-      : (en ? 'Switch to coach / class mode' : 'Passa alla modalità coach / classe');
-  }
+  renderHeaderControls();
   const menu = document.getElementById('coach-menu-item');
   if (menu) {
     menu.textContent = on
@@ -848,15 +898,19 @@ function applyCoachMode() {
       : (en ? 'Coach mode' : 'Modalità coach');
   }
 }
-function toggleCoachMode() {
+function setCoachMode(on) {
+  if (isCoachMode() === !!on) return;
   closeUserMenu();
   // Raccogli il form allievo prima di spegnere i campi (Classe non ha input).
-  if (!isCoachMode()) collectStep(currentStep);
-  localStorage.setItem(KEY_COACH, isCoachMode() ? '0' : '1');
+  if (on) collectStep(currentStep);
+  localStorage.setItem(KEY_COACH, on ? '1' : '0');
   stopTimer(false);
   applyCoachMode();
   renderStepDots();
   renderStep();
+}
+function toggleCoachMode() {
+  setCoachMode(!isCoachMode());
 }
 
 // pair color map
@@ -1216,8 +1270,7 @@ async function init() {
   runVariantMigration();
   const name = getName();
   if (!name) openNameModal();
-  else document.getElementById('name-badge').textContent = name;
-  document.getElementById('lang-badge').textContent = getLang().toUpperCase();
+  else setNameBadge(name);
   applyCoachMode();
   await loadExercises();
   const hadTemp = restoreTempState();
@@ -2378,6 +2431,11 @@ function tryChainToNextStep() {
 
 function timerOnBlockComplete() {
   const s = draftSession || {};
+  // P0: ogni blocco/esercizio è indipendente — non avviare il successivo
+  if (!isRingStepIdx(_timer.stepIdx)) {
+    stopTimer(true);
+    return;
+  }
   const nextBlock = nextTimerBlockIdx(_timer.stepIdx, _timer.blockIdx, s);
   if (nextBlock >= 0) {
     startPairTimer(_timer.stepIdx, nextBlock, true, _timer.circuitLap || 1);
@@ -2388,6 +2446,7 @@ function timerOnBlockComplete() {
 
 function timerIsLastRestOfStep() {
   if (!_timer || _timer.coachCircuit) return false;
+  if (!isRingStepIdx(_timer.stepIdx)) return false;
   const phase = _timer.phases[_timer.phaseIdx];
   if (phase.type !== 'rest') return false;
   let lastRestIdx = -1;
@@ -4047,10 +4106,10 @@ function renderProgress() {
 }
 
 // ── LANGUAGE ──
-async function toggleLang() {
-  const next = getLang() === 'it' ? 'en' : 'it';
+async function setLang(next) {
+  if (next !== 'it' && next !== 'en') return;
+  if (getLang() === next) return;
   localStorage.setItem(KEY_LANG, next);
-  document.getElementById('lang-badge').textContent = next.toUpperCase();
   applyCoachMode();
   // Preserva i valori del form corrente prima del re-render
   collectStep(currentStep);
@@ -4059,6 +4118,9 @@ async function toggleLang() {
   renderStep();
   renderHistory();
   renderProgress();
+}
+async function toggleLang() {
+  await setLang(getLang() === 'it' ? 'en' : 'it');
 }
 
 // ── USER MENU ──
@@ -4087,7 +4149,7 @@ function saveName() {
   const v = document.getElementById('name-input').value.trim();
   if (!v) return;
   localStorage.setItem(KEY_NAME, v);
-  document.getElementById('name-badge').textContent = v;
+  setNameBadge(v);
   document.getElementById('name-modal').classList.remove('open');
   resetDraftSession();
   renderStepDots(); renderStep(); renderHistory(); renderProgress();
@@ -4119,7 +4181,7 @@ function saveRename(carryData) {
     localStorage.removeItem('cali_sessions_' + oldName.toLowerCase().replace(/\s+/g,'_'));
   }
   localStorage.setItem(KEY_NAME, newName);
-  document.getElementById('name-badge').textContent = newName;
+  setNameBadge(newName);
   document.getElementById('rename-modal').classList.remove('open');
   resetDraftSession();
   renderStepDots(); renderStep(); renderHistory(); renderProgress();

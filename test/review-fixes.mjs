@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Regression checks for v3.31.1 review fixes (no DOM required).
+// Regression checks for review fixes (no DOM required).
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -34,16 +34,21 @@ assert.equal(escapeHtml("it's"), 'it&#39;s');
 assert.equal(escapeHtml(null), '');
 
 const version = html.match(/const VERSION = '([^']+)'/)[1];
-assert.equal(version, '3.31.1');
-assert.match(html, /Cali Tracker v3\.31\.1/);
-assert.match(sw, /const CACHE_VERSION = '3\.31\.1'/);
+assert.equal(version, '3.31.2');
+assert.match(html, /Cali Tracker v3\.31\.2/);
+assert.match(sw, /const CACHE_VERSION = '3\.31\.2'/);
 
-const toggle = extractFn(html, 'toggleCoachMode');
-assert.match(toggle, /if \(!isCoachMode\(\)\) collectStep\(currentStep\);/);
+const setCoach = extractFn(html, 'setCoachMode');
+assert.match(setCoach, /if \(on\) collectStep\(currentStep\);/);
 assert.ok(
-  toggle.indexOf('collectStep') < toggle.indexOf('KEY_COACH'),
+  setCoach.indexOf('collectStep') < setCoach.indexOf('KEY_COACH'),
   'collectStep must run before flipping cali_coach'
 );
+
+assert.match(extractFn(html, 'timerOnBlockComplete'), /!isRingStepIdx\(_timer\.stepIdx\)/);
+assert.match(html, /header-seg header-seg-lang/);
+assert.match(html, /header-seg header-seg-mode/);
+assert.match(html, /id="name-badge-text"/);
 
 assert.match(extractFn(html, 'onCategoryChange'), /collectStep\(currentStep\)/);
 assert.match(extractFn(html, 'saveTimingEdit'), /collectStep\(currentStep\)/);
@@ -65,4 +70,4 @@ assert.match(html, /--combo: #c8f060/);
 assert.match(extractFn(html, 'importData'), /escapeHtml\(file\.name\)/);
 assert.match(extractFn(html, 'coachExListHTML'), /escapeHtml\(name\)/);
 
-console.log('ok: v3.31.1 review fixes');
+console.log('ok: v3.31.2 review fixes');
