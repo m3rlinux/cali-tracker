@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.31.2
+- **Versione corrente:** 3.31.3
 - **fetchWod cache-bust**: `★ Oggi` scarica `wod.json?t=Date.now()` con `cache:'no-store'` → wod sempre fresco a prescindere dalla versione del SW; fallback a `wod.json` (cache SW) se offline
 - **SW fetch JSON/manifest**: network-first con `fetch(req, {cache:'reload'})` per bypassare la cache HTTP del browser (GitHub Pages serve con `max-age=600`); senza, wod/exercises aggiornati arriverebbero solo dopo ~10 min. Con il fix `★ Oggi` prende sempre il wod fresco (vale dai dispositivi con SW ≥ 3.18.2)
 
@@ -155,8 +155,9 @@ Il verde (`--teal: #4dd9a0`) è riservato agli indicatori di progressione (frecc
 ### Service Worker
 - Cache-first per `index.html`, network-first per `exercises.json`
 - Quando SW si aggiorna, manda `SW_UPDATED` all'app
-- L'app salva lo stato form in `sessionStorage` e ricarica
-- Check aggiornamento SW anche al click di `+ Nuova`
+- L'app salva il draft in `sessionStorage` (`cali_temp_state`) e ricarica **una sola volta** (`reloadForUpdate`); `checkRemoteAppVersion` e `SW_UPDATED` condividono il mutex `_reloadingForUpdate`
+- Snapshot anche su `pagehide` / `beforeunload` / tab hidden (pull-to-refresh e kill del processo). `restoreTempState` non cancella la chiave: `clearTempState` solo dopo `renderStep` riuscito. `saveTempState` no-op finché `_initDone`
+- Check aggiornamento SW anche al click di `↺ Reset`
 
 ## Convenzioni codice
 - Tutto in un singolo file HTML (CSS + JS inline)
