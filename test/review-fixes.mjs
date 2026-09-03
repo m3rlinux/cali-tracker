@@ -34,9 +34,9 @@ assert.equal(escapeHtml("it's"), 'it&#39;s');
 assert.equal(escapeHtml(null), '');
 
 const version = html.match(/const VERSION = '([^']+)'/)[1];
-assert.equal(version, '4.2.0');
-assert.match(html, /Cali Tracker v4\.2\.0/);
-assert.match(sw, /const CACHE_VERSION = '4\.2\.0'/);
+assert.equal(version, '4.2.1');
+assert.match(html, /Cali Tracker v4\.2\.1/);
+assert.match(sw, /const CACHE_VERSION = '4\.2\.1'/);
 
 const setCoach = extractFn(html, 'setCoachMode');
 assert.match(setCoach, /if \(on\) collectStep\(currentStep\);/);
@@ -123,8 +123,11 @@ assert.match(extractFn(html, 'timerSpeak'), /preparati/);
 assert.match(extractFn(html, 'timerSpeak'), /get ready/);
 assert.match(extractFn(html, 'timerSpeak'), /speechSynthesis\.cancel/);
 assert.match(extractFn(html, 'timerStartPhase'), /phase\.type === 'prep'/);
+assert.match(extractFn(html, 'timerStartPhase'), /phase\.type === 'change'/);
 assert.match(extractFn(html, 'timerCheckRestReadyCue'), /phase\.seconds <= 10/);
-assert.match(extractFn(html, 'timerCheckCountdownBeeps'), /phase\.type !== 'prep'/);
+assert.match(extractFn(html, 'timerCheckRestReadyCue'), /phase\.type !== 'change'/);
+assert.match(extractFn(html, 'timerCheckCountdownBeeps'), /isVoiceCue\(\)/);
+assert.doesNotMatch(extractFn(html, 'timerCheckCountdownBeeps'), /phase\.type !== 'prep'/);
 assert.match(extractFn(html, 'primeTimerAudio'), /getVoices/);
 assert.match(extractFn(html, 'primeTimerAudio'), /SpeechSynthesisUtterance/);
 assert.match(extractFn(html, 'startPairTimer'), /if \(!chained\) primeTimerAudio/);
@@ -133,6 +136,7 @@ assert.match(html, /data-cue="beep"/);
 assert.match(html, /data-cue="voice"/);
 assert.match(html, /id="settings-vol"/);
 assert.match(html, /Impostazioni<\/b> i segnali sono <b>Beep<\/b>/);
+assert.match(html, /preparati su prep, cambio e rest/);
 
 const makeToneWavDataUri = new Function(`return (${extractFn(html, 'makeToneWavDataUri')})`)();
 const wavUri = makeToneWavDataUri(660, 0.15);
@@ -142,4 +146,4 @@ assert.ok(wavUri.length > 100);
 const fbCfg = readFileSync(join(root, 'firebase-config.js'), 'utf8');
 assert.match(fbCfg, /adminEmails/);
 
-console.log('ok: v4.2.0 review fixes');
+console.log('ok: v4.2.1 review fixes');
