@@ -4,7 +4,7 @@
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
 */
-const CACHE_VERSION = '3.31.4'; // Update this to invalidate old caches
+const CACHE_VERSION = '4.0.0'; // Update this to invalidate old caches
 const CACHE_NAME = `cali-tracker-${CACHE_VERSION}`;
 const ASSETS = [
   './',
@@ -13,6 +13,7 @@ const ASSETS = [
   './exercises.en.json',
   './wod.json',
   './manifest.webmanifest',
+  './firebase-config.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
@@ -49,6 +50,14 @@ self.addEventListener('activate', e => {
 // Fetch: network-first for app shell + JSON; cache-first for static assets
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
+  const host = url.hostname;
+  if (host.includes('googleapis.com') || host.includes('gstatic.com')
+      || host.includes('google.com') || host.includes('firebaseio.com')
+      || host.includes('firebaseapp.com') || host.includes('cloud.google.com')) {
+    return;
+  }
+
   const isAppShell = e.request.mode === 'navigate'
     || url.pathname.endsWith('/index.html')
     || url.pathname.endsWith('/cali-tracker')
@@ -70,7 +79,8 @@ self.addEventListener('fetch', e => {
   // Always revalidate JSON data (exercises.json, exercises.en.json) and the
   // manifest, così cambi a nome/icone vengono letti subito dal browser
   // (l'auto-update PWA non parte se il manifest è servito stantio dalla cache)
-  if (url.pathname.endsWith('.json') || url.pathname.endsWith('.webmanifest')) {
+  if (url.pathname.endsWith('.json') || url.pathname.endsWith('.webmanifest')
+      || url.pathname.endsWith('firebase-config.js')) {
     // cache: 'reload' bypassa la cache HTTP del browser (GitHub Pages serve i
     // file con max-age=600): senza, il wod/exercises aggiornati arriverebbero
     // solo dopo ~10 min. Così ★ Oggi prende sempre il file fresco dalla rete.

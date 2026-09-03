@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.31.4
+  Cali Tracker v4.0.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -344,6 +344,29 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
 .modal-btn { width: 100%; margin-top: 12px; padding: 12px; background: var(--accent); color: #0c0c0c; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--sans); }
 .modal-btn-ghost { width: 100%; margin-top: 8px; padding: 12px; background: var(--surface); color: var(--text); border: 1px solid var(--border2); border-radius: 8px; font-size: 14px; cursor: pointer; font-family: var(--sans); }
 
+#auth-gate { position: fixed; inset: 0; z-index: 200; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 24px; }
+#auth-gate.hidden { display: none; }
+.auth-card { width: 100%; max-width: 360px; }
+.auth-card h1 { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px; }
+.auth-card h2 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+.auth-card p { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 14px; }
+.auth-err { font-size: 12px; color: var(--coral); min-height: 18px; margin: 8px 0; font-family: var(--mono); }
+.auth-panel { display: none; }
+.auth-panel.on { display: block; }
+.auth-divider { text-align: center; font-size: 11px; color: var(--muted2); font-family: var(--mono); margin: 14px 0; }
+.auth-user-row { display: flex; gap: 8px; margin-top: 8px; }
+.auth-user-row .modal-input { margin: 0; }
+.admin-user { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 12px 14px; margin-bottom: 10px; }
+.admin-user-top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.admin-status { font-family: var(--mono); font-size: 10px; text-transform: uppercase; }
+.admin-status.pending { color: var(--amber); }
+.admin-status.approved { color: var(--teal); }
+.admin-status.revoked { color: var(--coral); }
+.admin-actions { display: flex; gap: 8px; margin-top: 10px; }
+.admin-actions button { flex: 1; padding: 8px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: var(--sans); }
+.migrate-opt { display: block; padding: 10px 12px; border: 1px solid var(--border2); border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
+.migrate-opt input { margin-right: 8px; }
+
 /* HELP MODAL */
 .help-modal { max-width: 420px; max-height: 85vh; display: flex; flex-direction: column; }
 .help-body { overflow-y: auto; font-size: 13px; line-height: 1.6; }
@@ -463,8 +486,43 @@ body.coach-mode { max-width: 960px; }
 </head>
 <body>
 
+<div id="auth-gate">
+  <div class="auth-card">
+    <h1>Cali Tracker</h1>
+    <div class="auth-panel on" id="auth-panel-setup">
+      <h2>Configurazione</h2>
+      <p>Firebase non è ancora configurato. Compila <b>firebase-config.js</b> e le rules (vedi FIREBASE.md), poi ricarica.</p>
+    </div>
+    <div class="auth-panel" id="auth-panel-login">
+      <h2>Accedi</h2>
+      <p>Solo gli account registrati e approvati possono usare l'app.</p>
+      <button type="button" class="modal-btn" onclick="signInGoogle()" style="margin-top:0">Continua con Google</button>
+      <div class="auth-divider">oppure email</div>
+      <input class="modal-input" id="auth-email" type="email" placeholder="Email" autocomplete="username">
+      <div class="auth-user-row">
+        <input class="modal-input" id="auth-pass" type="password" placeholder="Password" autocomplete="current-password">
+      </div>
+      <div class="auth-err" id="auth-err"></div>
+      <button type="button" class="modal-btn" onclick="signInEmail()">Accedi</button>
+      <button type="button" class="modal-btn-ghost" onclick="registerEmail()">Registrati</button>
+      <button type="button" class="modal-btn-ghost" onclick="resetPasswordEmail()">Password dimenticata</button>
+    </div>
+    <div class="auth-panel" id="auth-panel-pending">
+      <h2>In attesa</h2>
+      <p>Il tuo account è stato creato. Un amministratore deve approvare l'accesso prima che tu possa usare Cali Tracker.</p>
+      <p id="auth-pending-mail" style="font-family:var(--mono);font-size:12px;color:var(--text)"></p>
+      <button type="button" class="modal-btn-ghost" onclick="signOutUser()">Esci</button>
+    </div>
+    <div class="auth-panel" id="auth-panel-revoked">
+      <h2>Accesso revocato</h2>
+      <p>Questo account non può più usare l'app. Contatta chi gestisce la palestra.</p>
+      <button type="button" class="modal-btn-ghost" onclick="signOutUser()">Esci</button>
+    </div>
+  </div>
+</div>
+
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v3.29.1</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.0.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="header-seg header-seg-lang" id="lang-seg" role="group" title="Lingua esercizi / Exercise language">
     <button type="button" class="header-seg-opt" data-lang="it" onclick="setLang('it')">IT</button>
@@ -485,6 +543,7 @@ body.coach-mode { max-width: 960px; }
       <div class="user-menu-item" onclick="exportData()">↓ Esporta dati</div>
       <div class="user-menu-item" onclick="document.getElementById('import-file').click()">↑ Importa dati</div>
       <div class="user-menu-item" onclick="openHelpModal()">? Aiuto</div>
+      <div class="user-menu-item" onclick="signOutUser()">Esci</div>
     </div>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
   </div>
@@ -492,9 +551,10 @@ body.coach-mode { max-width: 960px; }
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="switchTab('log')">Inserisci</div>
-  <div class="tab" onclick="switchTab('history')">Storico</div>
-  <div class="tab" onclick="switchTab('progress')">Progressi</div>
+  <div class="tab active" data-tab="log" onclick="switchTab('log')">Inserisci</div>
+  <div class="tab" data-tab="history" onclick="switchTab('history')">Storico</div>
+  <div class="tab" data-tab="progress" onclick="switchTab('progress')">Progressi</div>
+  <div class="tab" data-tab="admin" id="admin-tab" onclick="switchTab('admin')" style="display:none">Admin</div>
 </div>
 
 <div class="page active" id="page-log">
@@ -526,6 +586,14 @@ body.coach-mode { max-width: 960px; }
   <div id="progress-content"><div class="history-empty">Inserisci almeno 2 sessioni<br>per vedere i progressi.</div></div>
 </div>
 
+<div class="page" id="page-admin">
+  <div style="padding:14px 16px 24px">
+    <div class="help-h" style="margin-top:0">Utenti</div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Approva chi può usare l'app o revoca l'accesso. I dati in cloud restano, ma le rules bloccano lettura e scrittura.</p>
+    <div id="admin-list"><div class="history-empty">Caricamento…</div></div>
+  </div>
+</div>
+
 <div id="timer-bar" class="timer-bar" aria-live="polite">
   <div class="timer-bar-main">
     <div id="timer-phase" class="timer-phase">—</div>
@@ -551,11 +619,11 @@ body.coach-mode { max-width: 960px; }
 
 <div class="modal-overlay" id="rename-modal">
   <div class="modal">
-    <div class="modal-title">Rinomina utente</div>
-    <input class="modal-input" id="rename-input" type="text" placeholder="Nuovo nome" maxlength="30">
-    <div id="rename-hint" style="font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;line-height:1.5"></div>
-    <button class="modal-btn" id="rename-btn-carry" onclick="saveRename(true)">Rinomina e porta i dati</button>
-    <button class="modal-btn-ghost" onclick="saveRename(false)">Rinomina senza dati</button>
+    <div class="modal-title">Rinomina</div>
+    <input class="modal-input" id="rename-input" type="text" placeholder="Nome visualizzato" maxlength="30">
+    <div id="rename-hint" style="font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px;line-height:1.5">Cambia solo il nome in app. Lo storico resta sul tuo account.</div>
+    <button class="modal-btn" onclick="saveRename()">Salva</button>
+    <button class="modal-btn-ghost" onclick="document.getElementById('rename-modal').classList.remove('open')">Annulla</button>
   </div>
 </div>
 
@@ -608,11 +676,25 @@ body.coach-mode { max-width: 960px; }
       <p>Mini-grafici <b>andamento</b> (intensità nel tempo) per <b>variante</b>, raggruppati per categoria. Asse orizzontale = sessioni nel periodo filtrato, verticale = intensità.</p>
       <p>In alto: <b>Tutto</b> / <b>Anno</b> / <b>Mese</b> + navigazione <b>freccette</b>. <b>Tap</b> su un minigrafico → dettaglio con grafico grande + lista sessioni.</p>
       <p>Intensità: isometrie = <b>Hold max</b>, reps = <b>Media/set</b>.</p>
+      <div class="help-h">Account</div>
+      <p>Accedi con <b>Google</b> o <b>email</b>. Dopo la registrazione un amministratore deve <b>approvare</b> l'account. Dalla tab <b>Admin</b> (solo gestori) si approva o si <b>revoca</b> l'accesso.</p>
+      <p>Al primo accesso approvato puoi <b>importare tutte le sessioni</b> salvate in precedenza con un nome su questo telefono. Lo storico vive sull'account (stesso utente su più dispositivi). Rinomina cambia solo il nome visibile.</p>
       <div class="help-h">Lingua e dati</div>
-      <p>Il selettore <b>IT / EN</b> nell'header cambia la lingua dei nomi esercizi. Il selettore <b>Allievo / Classe</b> passa tra scheda personale e bacheca. Il nome in alto apre il menu utente (rinomina, export/import, aiuto).</p>
-      <p>I dati restano <b>solo su questo dispositivo</b>. Usa <b>↓ Esporta</b> / <b>↑ Importa</b> dal menu per backup o per passare a un altro dispositivo. L'app si aggiorna da sola senza toccare i dati.</p>
+      <p>Il selettore <b>IT / EN</b> nell'header cambia la lingua dei nomi esercizi. Il selettore <b>Allievo / Classe</b> passa tra scheda personale e bacheca. Il nome in alto apre il menu utente (rinomina, export/import, aiuto, esci).</p>
+      <p>Le sessioni <b>salvate</b> sono sul tuo account in cloud e in cache sul dispositivo. <b>↓ Esporta</b> / <b>↑ Importa</b> restano per backup. Un refresh tiene il draft in corso (il timer si ferma).</p>
     </div>
     <button class="modal-btn" onclick="document.getElementById('help-modal').classList.remove('open')">Chiudi</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="migrate-modal">
+  <div class="modal" style="max-width:360px">
+    <div class="modal-title">Importa storico locale</div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:12px">Su questo telefono ci sono sessioni salvate con un nome. Scegli quale storico portare sul tuo account (tutte le sessioni, WOD incluse).</p>
+    <div id="migrate-opts"></div>
+    <label class="migrate-opt" style="margin-top:4px"><input type="checkbox" id="migrate-delete-local"> Elimina la copia locale dopo l'import</label>
+    <button class="modal-btn" onclick="confirmMigrateLocal()">Importa tutte le sessioni</button>
+    <button class="modal-btn-ghost" onclick="skipMigrateLocal()">Non ora</button>
   </div>
 </div>
 
@@ -625,8 +707,12 @@ body.coach-mode { max-width: 960px; }
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 <script>
-const VERSION = '3.31.4';
+const VERSION = '4.0.0';
 const KEY_NAME = 'cali_name';
 const KEY_COACH = 'cali_coach';
 const MAX_SETS = 6;
@@ -658,9 +744,15 @@ const DIFFICULTY_LEVELS = [
   { key: 'difficile', emoji: '😓', title: 'Difficile' },
   { key: 'limite', emoji: '🥵', title: 'Limite' }
 ];
-function sessKey() { return 'cali_sessions_' + (getName().toLowerCase().replace(/\s+/g,'_') || 'default'); }
-function getData() { try { return JSON.parse(localStorage.getItem(sessKey())) || {}; } catch(e) { return {}; } }
-function saveData(d) { localStorage.setItem(sessKey(), JSON.stringify(d)); }
+function sessKey() {
+  if (_authUid) return 'cali_data_' + _authUid;
+  return 'cali_sessions_' + (getName().toLowerCase().replace(/\s+/g, '_') || 'default');
+}
+function getData() { try { return JSON.parse(localStorage.getItem(sessKey())) || {}; } catch (e) { return {}; } }
+function saveData(d) {
+  localStorage.setItem(sessKey(), JSON.stringify(d));
+  queueCloudSave(d);
+}
 function getName() { return localStorage.getItem(KEY_NAME) || ''; }
 function escapeHtml(s) {
   return String(s ?? '')
@@ -669,6 +761,383 @@ function escapeHtml(s) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+let _authUid = '';
+let _authStatus = '';
+let _authEmail = '';
+let _authProfile = null;
+let _appStarted = false;
+let _fbReady = false;
+let _fs = null;
+let _unsubUser = null;
+let _unsubSessions = null;
+let _cloudSaveTimer = 0;
+let _migrateChoice = '';
+let _approvedRun = false;
+
+function firebaseConfigured() {
+  const c = window.CALI_FIREBASE && window.CALI_FIREBASE.config;
+  return !!(c && c.apiKey && c.projectId);
+}
+function isAdminEmail(email) {
+  const list = (window.CALI_FIREBASE && window.CALI_FIREBASE.adminEmails) || [];
+  return !!(email && list.map(e => String(e).toLowerCase()).includes(String(email).toLowerCase()));
+}
+function showAuthPanel(id) {
+  document.querySelectorAll('.auth-panel').forEach(p => p.classList.toggle('on', p.id === id));
+}
+function setAuthErr(msg) {
+  const el = document.getElementById('auth-err');
+  if (el) el.textContent = msg || '';
+}
+function userDocRef(uid) {
+  return _fs.collection('users').doc(uid || _authUid);
+}
+function sessionsDocRef(uid) {
+  return userDocRef(uid).collection('state').doc('sessions');
+}
+function persistCloudSave(d) {
+  if (!_fbReady || !_authUid || _authStatus !== 'approved') return Promise.resolve();
+  return sessionsDocRef().set({
+    payload: JSON.stringify(d || {}),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+}
+function queueCloudSave(d) {
+  if (!_fbReady || !_authUid || _authStatus !== 'approved') return;
+  clearTimeout(_cloudSaveTimer);
+  _cloudSaveTimer = setTimeout(() => {
+    persistCloudSave(d).catch(e => console.error('cloud save', e));
+  }, 400);
+}
+async function pullCloudSessions() {
+  if (!_fbReady || !_authUid) return {};
+  const snap = await sessionsDocRef().get();
+  if (!snap.exists) return {};
+  const payload = snap.data().payload;
+  if (!payload) return {};
+  try { return JSON.parse(payload) || {}; } catch (e) { return {}; }
+}
+function applySessionsCache(data) {
+  localStorage.setItem(sessKey(), JSON.stringify(data || {}));
+}
+
+function listLegacySessionBuckets() {
+  const out = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith('cali_sessions_')) continue;
+    let data;
+    try { data = JSON.parse(localStorage.getItem(key) || '{}'); } catch (e) { continue; }
+    const nums = Object.keys(data).filter(k => !isNaN(Number(k)));
+    if (!nums.length) continue;
+    const slug = key.slice('cali_sessions_'.length);
+    out.push({
+      key,
+      slug,
+      label: slug.replace(/_/g, ' ') || 'default',
+      count: nums.length,
+      data
+    });
+  }
+  return out;
+}
+function mergeSessionMaps(cloud, local) {
+  const cloudNums = Object.keys(cloud || {}).map(Number).filter(n => !isNaN(n));
+  const max = cloudNums.length ? Math.max(...cloudNums) : 0;
+  const localNums = Object.keys(local || {}).map(Number).filter(n => !isNaN(n)).sort((a, b) => a - b);
+  const out = { ...(cloud || {}) };
+  localNums.forEach((n, i) => { out[String(max + i + 1)] = local[n]; });
+  return out;
+}
+function migratedFlag() { return 'cali_migrated_' + _authUid; }
+function maybeOpenMigrateWizard() {
+  if (!_authUid || localStorage.getItem(migratedFlag())) return;
+  const buckets = listLegacySessionBuckets();
+  if (!buckets.length) {
+    localStorage.setItem(migratedFlag(), '1');
+    return;
+  }
+  const cur = (getName() || '').toLowerCase().replace(/\s+/g, '_');
+  const opts = document.getElementById('migrate-opts');
+  opts.innerHTML = buckets.map((b, i) => {
+    const sel = (cur && b.slug === cur) || (!cur && i === 0);
+    if (sel) _migrateChoice = b.key;
+    return `<label class="migrate-opt"><input type="radio" name="migrate-bucket" value="${escapeHtml(b.key)}"${sel ? ' checked' : ''} onchange="_migrateChoice=this.value"> <b>${escapeHtml(b.label)}</b> · ${b.count} sessioni</label>`;
+  }).join('');
+  document.getElementById('migrate-modal').classList.add('open');
+}
+async function confirmMigrateLocal() {
+  const buckets = listLegacySessionBuckets();
+  const b = buckets.find(x => x.key === _migrateChoice) || buckets[0];
+  if (!b) { skipMigrateLocal(); return; }
+  const cloud = await pullCloudSessions();
+  const cloudCount = Object.keys(cloud).filter(k => !isNaN(Number(k))).length;
+  const merged = cloudCount ? mergeSessionMaps(cloud, b.data) : { ...b.data };
+  const migrated = migrateAllSessions(merged);
+  applySessionsCache(migrated);
+  localStorage.setItem(sessKey(), JSON.stringify(migrated));
+  try { await persistCloudSave(migrated); } catch (e) { console.error('migrate save', e); }
+  if (b.label && b.label !== 'default') {
+    localStorage.setItem(KEY_NAME, b.label);
+    setNameBadge(b.label);
+    updateProfileName(b.label);
+  }
+  if (document.getElementById('migrate-delete-local').checked) {
+    localStorage.removeItem(b.key);
+  }
+  localStorage.setItem(migratedFlag(), '1');
+  document.getElementById('migrate-modal').classList.remove('open');
+  resetDraftSession();
+  renderSessBar(); renderStepDots(); renderStep(); renderHistory(); renderProgress();
+}
+function skipMigrateLocal() {
+  localStorage.setItem(migratedFlag(), '1');
+  document.getElementById('migrate-modal').classList.remove('open');
+}
+
+async function ensureUserProfile(user) {
+  const ref = userDocRef(user.uid);
+  const snap = await ref.get();
+  const email = user.email || '';
+  const displayName = user.displayName || localStorage.getItem(KEY_NAME) || (email.split('@')[0] || 'Utente');
+  if (!snap.exists) {
+    const status = isAdminEmail(email) ? 'approved' : 'pending';
+    const profile = {
+      displayName,
+      email,
+      status,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    await ref.set(profile);
+    return { ...profile, status };
+  }
+  return snap.data();
+}
+async function updateProfileName(name) {
+  if (!_fbReady || !_authUid || _authStatus !== 'approved') return;
+  try { await userDocRef().update({ displayName: name }); } catch (e) { console.error(e); }
+}
+
+function lockApp(panel) {
+  document.getElementById('auth-gate').classList.remove('hidden');
+  showAuthPanel(panel);
+  try { stopTimer(false); } catch (e) { /* timer maybe not ready */ }
+}
+function unlockApp() {
+  document.getElementById('auth-gate').classList.add('hidden');
+}
+
+function wipeRuntimeSession() {
+  try { stopTimer(false); } catch (e) { /* timer maybe not ready */ }
+  try { clearTempState(); } catch (e) { /* temp helpers later in file */ }
+  draftSession = {};
+  draftDirty = false;
+  currentSess = 1;
+  currentStep = 0;
+  try { editingSession = false; } catch (e) { /* declared later */ }
+}
+
+async function onApproved(user, profile) {
+  if (_approvedRun) return;
+  _approvedRun = true;
+  _authStatus = 'approved';
+  _authProfile = profile;
+  const name = profile.displayName || user.displayName || getName() || (user.email || '').split('@')[0] || 'Utente';
+  localStorage.setItem(KEY_NAME, name);
+  setNameBadge(name);
+  const cloud = await pullCloudSessions();
+  if (Object.keys(cloud).length) applySessionsCache(migrateAllSessions(cloud));
+  const adminTab = document.getElementById('admin-tab');
+  if (adminTab) adminTab.style.display = isAdminEmail(user.email) ? '' : 'none';
+  unlockApp();
+  if (!_appStarted) {
+    _appStarted = true;
+    await init();
+  } else {
+    resetDraftSession();
+    renderSessBar(); renderStepDots(); renderStep(); renderHistory(); renderProgress();
+  }
+  maybeOpenMigrateWizard();
+  if (_unsubSessions) _unsubSessions();
+  _unsubSessions = sessionsDocRef().onSnapshot(snap => {
+    if (!snap.exists || draftDirty) return;
+    try {
+      const data = JSON.parse(snap.data().payload || '{}');
+      applySessionsCache(migrateAllSessions(data));
+      if (_appStarted) {
+        renderHistory();
+        renderProgress();
+      }
+    } catch (e) { /* ignore */ }
+  }, e => console.error('sessions watch', e));
+}
+
+function listenUserDoc(user) {
+  if (_unsubUser) _unsubUser();
+  _unsubUser = userDocRef(user.uid).onSnapshot(async snap => {
+    if (!snap.exists) return;
+    const profile = snap.data();
+    _authProfile = profile;
+    if (profile.status === 'approved') {
+      if (_authStatus !== 'approved') await onApproved(user, profile);
+    } else if (profile.status === 'revoked') {
+      _approvedRun = false;
+      _authStatus = 'revoked';
+      if (_unsubSessions) { _unsubSessions(); _unsubSessions = null; }
+      wipeRuntimeSession();
+      lockApp('auth-panel-revoked');
+    } else {
+      _approvedRun = false;
+      _authStatus = 'pending';
+      if (_unsubSessions) { _unsubSessions(); _unsubSessions = null; }
+      wipeRuntimeSession();
+      document.getElementById('auth-pending-mail').textContent = user.email || '';
+      lockApp('auth-panel-pending');
+    }
+  }, e => console.error('user watch', e));
+}
+
+async function handleAuthUser(user) {
+  if (!user) {
+    _approvedRun = false;
+    _authUid = '';
+    _authStatus = '';
+    _authEmail = '';
+    _authProfile = null;
+    if (_unsubUser) { _unsubUser(); _unsubUser = null; }
+    if (_unsubSessions) { _unsubSessions(); _unsubSessions = null; }
+    const adminTab = document.getElementById('admin-tab');
+    if (adminTab) adminTab.style.display = 'none';
+    wipeRuntimeSession();
+    showAuthPanel('auth-panel-login');
+    document.getElementById('auth-gate').classList.remove('hidden');
+    return;
+  }
+  if (_authUid && _authUid !== user.uid) {
+    _approvedRun = false;
+    _appStarted = false;
+    wipeRuntimeSession();
+  }
+  _authUid = user.uid;
+  _authEmail = user.email || '';
+  const profile = await ensureUserProfile(user);
+  listenUserDoc(user);
+  if (profile.status === 'approved') await onApproved(user, profile);
+  else if (profile.status === 'revoked') lockApp('auth-panel-revoked');
+  else {
+    document.getElementById('auth-pending-mail').textContent = user.email || '';
+    lockApp('auth-panel-pending');
+  }
+}
+
+async function signInGoogle() {
+  setAuthErr('');
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    await firebase.auth().signInWithPopup(provider);
+  } catch (e) {
+    if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') {
+      try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        await firebase.auth().signInWithRedirect(provider);
+        return;
+      } catch (e2) { setAuthErr(e2.message); return; }
+    }
+    setAuthErr(e.message);
+  }
+}
+async function signInEmail() {
+  setAuthErr('');
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  if (!email || !pass) { setAuthErr('Email e password obbligatori'); return; }
+  try { await firebase.auth().signInWithEmailAndPassword(email, pass); }
+  catch (e) { setAuthErr(e.message); }
+}
+async function registerEmail() {
+  setAuthErr('');
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  if (!email || pass.length < 6) { setAuthErr('Password di almeno 6 caratteri'); return; }
+  try { await firebase.auth().createUserWithEmailAndPassword(email, pass); }
+  catch (e) { setAuthErr(e.message); }
+}
+async function resetPasswordEmail() {
+  setAuthErr('');
+  const email = document.getElementById('auth-email').value.trim();
+  if (!email) { setAuthErr('Inserisci l\'email, poi tocca Password dimenticata'); return; }
+  try {
+    await firebase.auth().sendPasswordResetEmail(email);
+    setAuthErr('Email di reset inviata');
+  } catch (e) { setAuthErr(e.message); }
+}
+async function signOutUser() {
+  closeUserMenu();
+  try { if (_fbReady) await firebase.auth().signOut(); } catch (e) { /* ignore */ }
+}
+
+async function renderAdminList() {
+  const box = document.getElementById('admin-list');
+  if (!box || !_fbReady) return;
+  box.innerHTML = '<div class="history-empty">Caricamento…</div>';
+  try {
+    const snap = await _fs.collection('users').get();
+    const rows = [];
+    snap.forEach(doc => {
+      const u = doc.data();
+      const st = u.status || 'pending';
+      rows.push({ id: doc.id, ...u, status: st });
+    });
+    rows.sort((a, b) => String(a.email || '').localeCompare(String(b.email || '')));
+    if (!rows.length) { box.innerHTML = '<div class="history-empty">Nessun utente.</div>'; return; }
+    box.innerHTML = rows.map(u => `
+      <div class="admin-user">
+        <div class="admin-user-top">
+          <div>
+            <div style="font-weight:500">${escapeHtml(u.displayName || '—')}</div>
+            <div style="font-size:11px;color:var(--muted);font-family:var(--mono)">${escapeHtml(u.email || u.id)}</div>
+          </div>
+          <span class="admin-status ${escapeHtml(u.status)}">${escapeHtml(u.status)}</span>
+        </div>
+        <div class="admin-actions">
+          ${u.status !== 'approved' ? `<button type="button" class="modal-btn" style="margin:0" onclick="adminSetStatus('${u.id}','approved')">Approva</button>` : ''}
+          ${u.status !== 'revoked' ? `<button type="button" class="modal-btn-ghost" style="margin:0" onclick="adminSetStatus('${u.id}','revoked')">Revoca</button>` : ''}
+          ${u.status === 'revoked' ? `<button type="button" class="modal-btn-ghost" style="margin:0" onclick="adminSetStatus('${u.id}','pending')">Ripristina attesa</button>` : ''}
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    box.innerHTML = `<div class="history-empty" style="color:var(--coral)">${escapeHtml(e.message)}</div>`;
+  }
+}
+async function adminSetStatus(uid, status) {
+  if (!_fbReady) return;
+  try {
+    await userDocRef(uid).update({ status });
+    await renderAdminList();
+  } catch (e) { alert(e.message); }
+}
+
+function bootFirebase() {
+  if (!firebaseConfigured()) {
+    showAuthPanel('auth-panel-setup');
+    return;
+  }
+  try {
+    firebase.initializeApp(window.CALI_FIREBASE.config);
+    _fs = firebase.firestore();
+    _fs.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+    _fbReady = true;
+    firebase.auth().getRedirectResult().catch(() => {});
+    firebase.auth().onAuthStateChanged(user => {
+      handleAuthUser(user).catch(e => console.error('auth user', e));
+    });
+    showAuthPanel('auth-panel-login');
+  } catch (e) {
+    showAuthPanel('auth-panel-setup');
+    console.error(e);
+  }
 }
 
 // ── MIGRAZIONE v3 — varianti rinominate in italiano ──
@@ -780,7 +1249,7 @@ function runVariantMigration() {
   if (localStorage.getItem(VARIANT_MIGRATION_FLAG)) return;
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
-    if (!key || !key.startsWith('cali_sessions_')) continue;
+    if (!key || (!key.startsWith('cali_sessions_') && !key.startsWith('cali_data_'))) continue;
     try {
       const data = JSON.parse(localStorage.getItem(key)) || {};
       localStorage.setItem(key, JSON.stringify(migrateAllSessions(data)));
@@ -4163,43 +4632,27 @@ function saveName() {
   if (!v) return;
   localStorage.setItem(KEY_NAME, v);
   setNameBadge(v);
+  updateProfileName(v);
   document.getElementById('name-modal').classList.remove('open');
-  resetDraftSession();
-  renderStepDots(); renderStep(); renderHistory(); renderProgress();
 }
 document.getElementById('name-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
 
 // ── RENAME ──
 function openRenameModal() {
   closeUserMenu();
-  const current = getName();
-  document.getElementById('rename-input').value = current;
-  const hasData = Object.keys(getData()).some(k => !isNaN(Number(k)));
-  const count = Object.keys(getData()).filter(k => !isNaN(Number(k))).length;
-  document.getElementById('rename-hint').textContent = hasData
-    ? `Hai ${count} sessioni salvate come "${current}".`
-    : `Nessun dato salvato come "${current}".`;
-  document.getElementById('rename-btn-carry').style.display = hasData ? '' : 'none';
+  document.getElementById('rename-input').value = getName();
   document.getElementById('rename-modal').classList.add('open');
   setTimeout(() => document.getElementById('rename-input').focus(), 100);
 }
-function saveRename(carryData) {
+function saveRename() {
   const newName = document.getElementById('rename-input').value.trim();
   if (!newName) return;
-  const oldName = getName();
-  if (newName !== oldName && carryData) {
-    const oldData = getData();
-    const newKey = 'cali_sessions_' + newName.toLowerCase().replace(/\s+/g,'_');
-    localStorage.setItem(newKey, JSON.stringify(oldData));
-    localStorage.removeItem('cali_sessions_' + oldName.toLowerCase().replace(/\s+/g,'_'));
-  }
   localStorage.setItem(KEY_NAME, newName);
   setNameBadge(newName);
+  updateProfileName(newName);
   document.getElementById('rename-modal').classList.remove('open');
-  resetDraftSession();
-  renderStepDots(); renderStep(); renderHistory(); renderProgress();
 }
-document.getElementById('rename-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveRename(true); });
+document.getElementById('rename-input').addEventListener('keydown', e => { if (e.key === 'Enter') saveRename(); });
 
 // ── EXPORT ──
 function exportData() {
@@ -4258,15 +4711,17 @@ function confirmImport() {
 
 // ── TABS ──
 function activateTab(t) {
-  document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active', ['log','history','progress'][i] === t));
+  document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.dataset.tab === t));
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
   document.getElementById('page-'+t).classList.add('active');
   if (t === 'history') renderHistory();
   if (t === 'progress') renderProgress();
+  if (t === 'admin') renderAdminList();
 }
 
 function switchTab(t) {
-  const activeTab = ['log','history','progress'][Array.from(document.querySelectorAll('.tab')).findIndex(el => el.classList.contains('active'))] || 'log';
+  const activeEl = Array.from(document.querySelectorAll('.tab')).find(el => el.classList.contains('active'));
+  const activeTab = (activeEl && activeEl.dataset.tab) || 'log';
 
   if (!_suppressTabGuard && activeTab === 'log' && t !== 'log' && draftDirty) {
     const ok = confirm('La sessione corrente non è salvata. Uscendo da Inserisci i dati inseriti verranno persi. Continuare?');
@@ -4310,7 +4765,7 @@ function switchTab(t) {
 const TEMP_KEY = 'cali_temp_state';
 
 function saveTempState() {
-  if (!_initDone) return;
+  if (!_initDone || _authStatus !== 'approved') return;
   collectStep(currentStep);
   try {
     sessionStorage.setItem(TEMP_KEY, JSON.stringify({
@@ -4419,7 +4874,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-init();
+bootFirebase();
 </script>
   <div style="text-align:center;padding:16px 0 24px;font-family:var(--mono);font-size:10px;color:var(--muted2)">
     © 2026 Davide Gibilisco · MIT License

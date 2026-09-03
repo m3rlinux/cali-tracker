@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 3.31.4
+- **Versione corrente:** 4.0.0
 - **fetchWod cache-bust**: `★ Oggi` scarica `wod.json?t=Date.now()` con `cache:'no-store'` → wod sempre fresco a prescindere dalla versione del SW; fallback a `wod.json` (cache SW) se offline
 - **SW fetch JSON/manifest**: network-first con `fetch(req, {cache:'reload'})` per bypassare la cache HTTP del browser (GitHub Pages serve con `max-age=600`); senza, wod/exercises aggiornati arriverebbero solo dopo ~10 min. Con il fix `★ Oggi` prende sempre il wod fresco (vale dai dispositivi con SW ≥ 3.18.2)
 
@@ -17,6 +17,9 @@ App web per tracciare le progressioni di allenamento calisthenico.
 
 ## File del progetto
 - `index.html` — app completa (single file, no build step)
+- `firebase-config.js` — config pubblica Firebase + `adminEmails` (vedi `FIREBASE.md`)
+- `firestore.rules` — cancello approved/pending/revoked
+- `FIREBASE.md` — setup progetto Auth + Firestore (EU, authorized domains, admin)
 - `exercises.json` — definizione esercizi, varianti e metriche (file canonico, italiano)
 - `exercises.en.json` — traduzioni inglesi di label e varianti (solo display)
 - `wod.json` — sessione del giorno condivisa (template pre-caricabile)
@@ -30,6 +33,8 @@ Segue **semver** (`MAJOR.MINOR.PATCH`):
 - **MINOR** — nuove feature
 - **PATCH** — bugfix e modifiche minori
 
+**MAJOR 4.0.0:** identità = UID Firebase; sessioni in `users/{uid}/state/sessions` (`payload` JSON string, Firestore non ammette array nidificati). Cache `cali_data_[uid]`. Wizard migrazione da `cali_sessions_[nome]`.
+
 **Regola critica:** ad ogni modifica incrementare `PATCH` in:
 1. `const VERSION` in `index.html`
 2. Header `Cali Tracker vX.Y.Z` nel commento in cima a `index.html`
@@ -40,7 +45,9 @@ Se si aggiorna solo `exercises.json` senza toccare l'app, incrementare `CACHE_VE
 ## Architettura
 
 ### Storage
-- Dati sessioni in `localStorage` con chiave `cali_sessions_[nome_utente]`
+- **Auth:** Firebase Authentication (Google + email/password). Gate prima di `init()`: pending / approved / revoked. Tab Admin se `adminEmails`.
+- **Cloud:** `users/{uid}` profilo; `users/{uid}/state/sessions` con `{ payload: JSON.stringify(sessioni) }`. `saveData()` scrive cache + Firestore (debounce). `getData()` legge la cache.
+- **Cache locale:** `cali_data_[uid]`. Legacy pre-4.0: `cali_sessions_[nome]` — wizard di migrazione importa tutte le sessioni sull’UID.
 - Ogni sessione è un oggetto con chiavi `pXsY` (es. `p0s1`, `p1s2` ecc.)
 - Struttura sessione: `{ date, circuit_rounds?, wod?, set_time?, rest?, change_time?, mode?, modes?, p0s1: { variant, sets, hold_max? }, ... }` — `circuit_rounds` a livello sessione; su P1–P4 `pool` è la chiave categoria (es. `tirata_verticale`); se assente si inferisce dalla variante o dallo slot
 - `sets` per reps: `[[reps, cluster], ...]`
@@ -95,7 +102,7 @@ I nomi variante sono chiavi nei dati localStorage: rinominarli in `exercises.jso
 1. cambiare il nome in `exercises.json` (stessa posizione) e in `exercises.en.json`
 2. aggiungere la coppia `'vecchio nome': 'nuovo nome'` in `LEGACY_VARIANT_MAP` (per station) in `index.html`
 3. creare un nuovo flag di migrazione (es. `cali_variants_v4`) o azzerare quello esistente, e collegare la nuova mappa in `runVariantMigration()`
-In v3.0.0 tutte le varianti sono state tradotte in italiano (flag `cali_variants_v3`); la migrazione gira su tutti gli utenti (`cali_sessions_*`), sugli import e sul draft temporaneo.
+In v3.0.0 tutte le varianti sono state tradotte in italiano (flag `cali_variants_v3`); la migrazione gira su tutti i bucket (`cali_sessions_*` e `cali_data_*`), sugli import e sul draft temporaneo.
 
 ### Gruppi attuali
 | station | gruppo | label |
@@ -153,7 +160,7 @@ Il verde (`--teal: #4dd9a0`) è riservato agli indicatori di progressione (frecc
 - Voce `? Aiuto` nel menu utente: modale con guida rapida all'uso (`help-modal`); va tenuta aggiornata quando cambiano le funzionalità
 
 ### Service Worker
-- Cache-first per `index.html`, network-first per `exercises.json`
+- Network-first per `exercises.json` / `firebase-config.js`; **non** intercetta `googleapis` / `gstatic` / Firebase
 - Quando SW si aggiorna, manda `SW_UPDATED` all'app
 - L'app salva il draft in `sessionStorage` (`cali_temp_state`) e ricarica **una sola volta** (`reloadForUpdate`); `checkRemoteAppVersion` e `SW_UPDATED` condividono il mutex `_reloadingForUpdate`
 - Snapshot anche su `pagehide` / `beforeunload` / tab hidden (pull-to-refresh e kill del processo). `restoreTempState` non cancella la chiave: `clearTempState` solo dopo `renderStep` riuscito. `saveTempState` no-op finché `_initDone`
@@ -165,7 +172,7 @@ Il verde (`--teal: #4dd9a0`) è riservato agli indicatori di progressione (frecc
 - Nessun framework, nessun build step
 - Funzioni JS in snake_case, variabili camelCase
 - Template literals per HTML generato
-- `getData()` / `saveData()` per tutti gli accessi a localStorage
+- `getData()` / `saveData()` cache localStorage; `saveData` sincronizza Firestore se approved
 - `collectStep()` scrive in localStorage **solo** se la sessione ha già una data (evita salvataggi accidentali)
 
 ## Decisioni di design

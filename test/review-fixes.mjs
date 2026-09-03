@@ -34,9 +34,9 @@ assert.equal(escapeHtml("it's"), 'it&#39;s');
 assert.equal(escapeHtml(null), '');
 
 const version = html.match(/const VERSION = '([^']+)'/)[1];
-assert.equal(version, '3.31.4');
-assert.match(html, /Cali Tracker v3\.31\.4/);
-assert.match(sw, /const CACHE_VERSION = '3\.31\.4'/);
+assert.equal(version, '4.0.0');
+assert.match(html, /Cali Tracker v4\.0\.0/);
+assert.match(sw, /const CACHE_VERSION = '4\.0\.0'/);
 
 const setCoach = extractFn(html, 'setCoachMode');
 assert.match(setCoach, /if \(on\) collectStep\(currentStep\);/);
@@ -57,7 +57,7 @@ assert.match(html, /function nudgeViewport\(/);
 const restoreTemp = extractFn(html, 'restoreTempState');
 assert.doesNotMatch(restoreTemp, /removeItem/);
 assert.match(extractFn(html, 'clearTempState'), /removeItem\(TEMP_KEY\)/);
-assert.match(extractFn(html, 'saveTempState'), /if \(!_initDone\) return/);
+assert.match(extractFn(html, 'saveTempState'), /if \(!_initDone \|\| _authStatus !== 'approved'\) return/);
 assert.match(extractFn(html, 'reloadForUpdate'), /if \(_reloadingForUpdate\) return/);
 assert.match(html, /addEventListener\('pagehide', saveTempState\)/);
 assert.match(html, /if \(hadTemp\) clearTempState\(\)/);
@@ -82,4 +82,30 @@ assert.match(html, /--combo: #c8f060/);
 assert.match(extractFn(html, 'importData'), /escapeHtml\(file\.name\)/);
 assert.match(extractFn(html, 'coachExListHTML'), /escapeHtml\(name\)/);
 
-console.log('ok: v3.31.4 review fixes');
+assert.match(html, /id="auth-gate"/);
+assert.match(html, /function bootFirebase\(/);
+assert.match(html, /cali_data_/);
+assert.match(html, /payload: JSON\.stringify/);
+assert.match(extractFn(html, 'sessKey'), /_authUid/);
+assert.match(extractFn(html, 'saveRename'), /updateProfileName/);
+assert.doesNotMatch(extractFn(html, 'saveRename'), /carryData/);
+assert.match(html, /function signOutUser\(/);
+assert.match(html, /function adminSetStatus\(/);
+assert.match(html, /function maybeOpenMigrateWizard\(/);
+assert.match(html, /id="admin-tab"/);
+assert.match(sw, /googleapis\.com/);
+assert.match(sw, /firebase-config\.js/);
+
+const mergeSessionMaps = new Function(`return (${extractFn(html, 'mergeSessionMaps')})`)();
+const merged = mergeSessionMaps({ 1: { date: 'a' } }, { 1: { date: 'b' }, 2: { date: 'c' } });
+assert.equal(merged[1].date, 'a');
+assert.equal(merged['2'].date, 'b');
+assert.equal(merged['3'].date, 'c');
+
+const rules = readFileSync(join(root, 'firestore.rules'), 'utf8');
+assert.match(rules, /status == 'approved'/);
+assert.match(rules, /function isAdmin/);
+const fbCfg = readFileSync(join(root, 'firebase-config.js'), 'utf8');
+assert.match(fbCfg, /adminEmails/);
+
+console.log('ok: v4.0.0 review fixes');
