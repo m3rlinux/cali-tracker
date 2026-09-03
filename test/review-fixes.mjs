@@ -34,9 +34,9 @@ assert.equal(escapeHtml("it's"), 'it&#39;s');
 assert.equal(escapeHtml(null), '');
 
 const version = html.match(/const VERSION = '([^']+)'/)[1];
-assert.equal(version, '3.31.3');
-assert.match(html, /Cali Tracker v3\.31\.3/);
-assert.match(sw, /const CACHE_VERSION = '3\.31\.3'/);
+assert.equal(version, '3.31.4');
+assert.match(html, /Cali Tracker v3\.31\.4/);
+assert.match(sw, /const CACHE_VERSION = '3\.31\.4'/);
 
 const setCoach = extractFn(html, 'setCoachMode');
 assert.match(setCoach, /if \(on\) collectStep\(currentStep\);/);
@@ -50,8 +50,9 @@ assert.match(html, /header-seg header-seg-lang/);
 assert.match(html, /header-seg header-seg-mode/);
 assert.match(html, /id="name-badge-text"/);
 
-assert.match(html, /html \{ background: var\(--bg\)/);
+assert.match(html, /html \{ background-color: #0c0c0c/);
 assert.match(html, /interactive-widget=overlays-content/);
+assert.match(html, /function nudgeViewport\(/);
 
 const restoreTemp = extractFn(html, 'restoreTempState');
 assert.doesNotMatch(restoreTemp, /removeItem/);
@@ -81,4 +82,4 @@ assert.match(html, /--combo: #c8f060/);
 assert.match(extractFn(html, 'importData'), /escapeHtml\(file\.name\)/);
 assert.match(extractFn(html, 'coachExListHTML'), /escapeHtml\(name\)/);
 
-console.log('ok: v3.31.3 review fixes');
+console.log('ok: v3.31.4 review fixes');

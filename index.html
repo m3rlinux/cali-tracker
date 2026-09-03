@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v3.31.3
+  Cali Tracker v3.31.4
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -51,8 +51,17 @@
   --combo: #c8f060;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; min-height: 100%; min-height: 100dvh; overflow-x: hidden; }
-html { background: var(--bg); color-scheme: dark; -webkit-text-size-adjust: 100%; }
+html, body { min-height: 100%; min-height: 100dvh; overflow-x: hidden; overscroll-behavior-x: none; }
+html { background-color: #0c0c0c; background: var(--bg); color-scheme: dark; -webkit-text-size-adjust: 100%; width: 100%; scrollbar-width: none; }
+html::-webkit-scrollbar { width: 0; height: 0; }
+html::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #0c0c0c;
+  pointer-events: none;
+}
 body { background: var(--bg); color: var(--text); font-family: var(--sans); width: 100%; max-width: 560px; margin: 0 auto; }
 
 .app-header { padding: 18px 16px 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
@@ -617,7 +626,7 @@ body.coach-mode { max-width: 960px; }
 </div>
 
 <script>
-const VERSION = '3.31.3';
+const VERSION = '3.31.4';
 const KEY_NAME = 'cali_name';
 const KEY_COACH = 'cali_coach';
 const MAX_SETS = 6;
@@ -4344,6 +4353,26 @@ function reloadForUpdate() {
 window.addEventListener('pagehide', saveTempState);
 window.addEventListener('beforeunload', saveTempState);
 
+// Android volume/ringer overlay can shrink the visual viewport and leave a
+// white strip until a full reload. Force a compositor/layout pass when it changes.
+let _viewportNudgeTimer = 0;
+function nudgeViewport() {
+  clearTimeout(_viewportNudgeTimer);
+  _viewportNudgeTimer = setTimeout(() => {
+    const root = document.documentElement;
+    root.style.transform = 'translateZ(0)';
+    void root.offsetWidth;
+    root.style.transform = '';
+    root.style.width = '';
+    root.style.minHeight = '';
+  }, 80);
+}
+window.addEventListener('resize', nudgeViewport);
+window.addEventListener('focus', nudgeViewport);
+window.addEventListener('orientationchange', nudgeViewport);
+window.visualViewport?.addEventListener('resize', nudgeViewport);
+window.visualViewport?.addEventListener('scroll', nudgeViewport);
+
 let _tempFormRestore = null;
 
 // ── SERVICE WORKER ──
@@ -4378,7 +4407,8 @@ if ('serviceWorker' in navigator) {
       saveTempState();
       return;
     }
-    if (document.visibilityState === 'visible' && window._swReg && !_reloadingForUpdate) {
+    nudgeViewport();
+    if (window._swReg && !_reloadingForUpdate) {
       window._swReg.update();
       checkRemoteAppVersion();
     }
