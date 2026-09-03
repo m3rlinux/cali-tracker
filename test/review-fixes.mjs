@@ -34,9 +34,9 @@ assert.equal(escapeHtml("it's"), 'it&#39;s');
 assert.equal(escapeHtml(null), '');
 
 const version = html.match(/const VERSION = '([^']+)'/)[1];
-assert.equal(version, '4.0.1');
-assert.match(html, /Cali Tracker v4\.0\.1/);
-assert.match(sw, /const CACHE_VERSION = '4\.0\.1'/);
+assert.equal(version, '4.1.0');
+assert.match(html, /Cali Tracker v4\.1\.0/);
+assert.match(sw, /const CACHE_VERSION = '4\.1\.0'/);
 
 const setCoach = extractFn(html, 'setCoachMode');
 assert.match(setCoach, /if \(on\) collectStep\(currentStep\);/);
@@ -90,7 +90,11 @@ assert.match(extractFn(html, 'sessKey'), /_authUid/);
 assert.match(extractFn(html, 'saveRename'), /updateProfileName/);
 assert.doesNotMatch(extractFn(html, 'saveRename'), /carryData/);
 assert.match(html, /function signOutUser\(/);
-assert.match(html, /function adminSetStatus\(/);
+assert.match(html, /function canUseClass\(/);
+assert.match(extractFn(html, 'canUseClass'), /instructor/);
+assert.match(extractFn(html, 'setCoachMode'), /canUseClass/);
+assert.match(html, /function adminSetRole\(/);
+assert.match(html, /role: 'athlete'/);
 assert.match(html, /function maybeOpenMigrateWizard\(/);
 assert.match(html, /id="admin-tab"/);
 assert.match(sw, /googleapis\.com/);
@@ -103,9 +107,11 @@ assert.equal(merged['2'].date, 'b');
 assert.equal(merged['3'].date, 'c');
 
 const rules = readFileSync(join(root, 'firestore.rules'), 'utf8');
-assert.match(rules, /status == 'approved'/);
+assert.match(rules, /function roleOf/);
+assert.match(rules, /role == 'athlete'/);
+assert.match(rules, /roleOf\(request\.resource\.data\) == roleOf\(resource\.data\)/);
 assert.match(rules, /function isAdmin/);
 const fbCfg = readFileSync(join(root, 'firebase-config.js'), 'utf8');
 assert.match(fbCfg, /adminEmails/);
 
-console.log('ok: v4.0.1 review fixes');
+console.log('ok: v4.1.0 review fixes');

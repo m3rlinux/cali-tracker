@@ -6,7 +6,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - **Repo:** https://github.com/m3rlinux/cali-tracker
 - **Live:** https://m3rlinux.github.io/cali-tracker/
 - **Licenza:** MIT
-- **Versione corrente:** 4.0.1
+- **Versione corrente:** 4.1.0
 - **fetchWod cache-bust**: `★ Oggi` scarica `wod.json?t=Date.now()` con `cache:'no-store'` → wod sempre fresco a prescindere dalla versione del SW; fallback a `wod.json` (cache SW) se offline
 - **SW fetch JSON/manifest**: network-first con `fetch(req, {cache:'reload'})` per bypassare la cache HTTP del browser (GitHub Pages serve con `max-age=600`); senza, wod/exercises aggiornati arriverebbero solo dopo ~10 min. Con il fix `★ Oggi` prende sempre il wod fresco (vale dai dispositivi con SW ≥ 3.18.2)
 
@@ -35,6 +35,8 @@ Segue **semver** (`MAJOR.MINOR.PATCH`):
 
 **MAJOR 4.0.0:** identità = UID Firebase; sessioni in `users/{uid}/state/sessions` (`payload` JSON string, Firestore non ammette array nidificati). Cache `cali_data_[uid]`. Wizard migrazione da `cali_sessions_[nome]`.
 
+**MINOR 4.1.0:** ruolo istruttore (`users/{uid}.role`); modalità Classe solo istruttori e admin.
+
 **Regola critica:** ad ogni modifica incrementare `PATCH` in:
 1. `const VERSION` in `index.html`
 2. Header `Cali Tracker vX.Y.Z` nel commento in cima a `index.html`
@@ -45,7 +47,7 @@ Se si aggiorna solo `exercises.json` senza toccare l'app, incrementare `CACHE_VE
 ## Architettura
 
 ### Storage
-- **Auth:** Firebase Authentication (Google + email/password). Gate prima di `init()`: pending / approved / revoked. Tab Admin se `adminEmails`.
+- **Auth:** Firebase Authentication (Google + email/password). Gate prima di `init()`: pending / approved / revoked. Tab Admin se `adminEmails`. Ruolo `role: athlete|instructor` sul profilo; **Classe** solo istruttori e admin (`canUseClass`).
 - **Cloud:** `users/{uid}` profilo; `users/{uid}/state/sessions` con `{ payload: JSON.stringify(sessioni) }`. `saveData()` scrive cache + Firestore (debounce). `getData()` legge la cache.
 - **Cache locale:** `cali_data_[uid]`. Legacy pre-4.0: `cali_sessions_[nome]` — wizard di migrazione importa tutte le sessioni sull’UID.
 - Ogni sessione è un oggetto con chiavi `pXsY` (es. `p0s1`, `p1s2` ecc.)
@@ -88,7 +90,7 @@ Ogni gruppo esercizi ha:
 - `rest` (secondi): tempo di recupero mostrato nell'header del pair accanto al tempo di lavoro; opzionale, mostrato solo se presente. Salvato/ereditato come `set_time`
 - `change_time` (secondi) + `mode` (`"alternato"` | `"sequenziale"`): metodo di esecuzione della coppia. `alternato` = S1 lavoro › cambio › S2 lavoro › rest per N giri (sequenza a chip colorati, richiede 2 station); `sequenziale`/assente = N set di S1 poi N di S2. Con **lavoro** e **rest** impostati, ogni riga-chip mostra **▶ Timer** (vedi sotto)
 - **Timer** (`buildTimerPlan`, `#timer-bar` fisso in basso): prep 10" (solo all'avvio), fasi lavoro/cambio/rest colorate. Beep doppio a metà fase **lavoro**; beep 3-2-1; beep+vibrazione a fine fase. Pausa / Reset / Salta / Stop. **P0**: ogni ▶ Timer è indipendente — a fine blocco `stopTimer`, senza concatenare s1→s2→s3 né l'anello. **Catena automatica** (modalità allievo, solo anello P1–P4): fine blocco → blocco o postazione seguente senza prep; ultimo rest postazione → UI postazione successiva; fine anello → riparte da P1 fino a `circuit_rounds`. Navigazione manuale P1–P4 non ferma il timer; cambio scheda chiede conferma. Sessioni personali: chip tempi editabili; WOD: bloccati
-- **Modalità coach (classe)**: selettore Allievo/Classe nell'header e voce nel menu utente (`cali_coach` in localStorage). Prima di passare ad allievo→classe, `setCoachMode` chiama `collectStep` (i valori nel form non vanno persi). Bacheca (`renderCoachBoard`) con tutte le postazioni visibili: P0 tutti insieme (timer esistenti, ciascuno indipendente, senza catena verso P1), poi **▶ Via circuito** avvia `buildClassCircuitPlan` — un timer master con i tempi **globali** (`set_time` / `change_time` / `rest` / `mode`). In **alternato** il blocco è S1 › cambio › S2 › rest ×N; in **sequenziale** N set di S1 poi N di S2 (come le due righe-chip). Le persone ruotano all'**ultimo rest** di ogni blocco (label `rest · rotazione`, barra ambra `.timer-rotate`; niente tempo extra). Il giro di rotazioni si ripete per il numero di postazioni dell'anello × `circuit_rounds`. Durata stimata in classe: P0 sequenziale + un blocco parallelo × postazioni × N (con prep circuito). `collectStep` non legge il DOM in coach (niente form). Chip P0…P4 fanno scroll alla card. Fuori scope v1: timer per-postazione, logging classe, sync multi-dispositivo
+- **Modalità coach (classe)**: visibile solo se `canUseClass()` (admin email o `role === 'instructor'`). Selettore Allievo/Classe nell'header e voce nel menu utente (`cali_coach` in localStorage). Prima di passare ad allievo→classe, `setCoachMode` chiama `collectStep` (i valori nel form non vanno persi). Bacheca (`renderCoachBoard`) con tutte le postazioni visibili: P0 tutti insieme (timer esistenti, ciascuno indipendente, senza catena verso P1), poi **▶ Via circuito** avvia `buildClassCircuitPlan` — un timer master con i tempi **globali** (`set_time` / `change_time` / `rest` / `mode`). In **alternato** il blocco è S1 › cambio › S2 › rest ×N; in **sequenziale** N set di S1 poi N di S2 (come le due righe-chip). Le persone ruotano all'**ultimo rest** di ogni blocco (label `rest · rotazione`, barra ambra `.timer-rotate`; niente tempo extra). Il giro di rotazioni si ripete per il numero di postazioni dell'anello × `circuit_rounds`. Durata stimata in classe: P0 sequenziale + un blocco parallelo × postazioni × N (con prep circuito). `collectStep` non legge il DOM in coach (niente form). Chip P0…P4 fanno scroll alla card. Fuori scope v1: timer per-postazione, logging classe, sync multi-dispositivo
 - `modes` (oggetto keyed by px): override del metodo per zona. Valore = **stringa** (`"alternato"`/`"sequenziale"`, tutto il blocco) **o array** di N-1 valori (uno per giunzione tra esercizi consecutivi → metodo **misto**, es. `{"p0":["alternato","sequenziale"]}`)
 - **Rendering a sotto-blocchi interlacciati** (`renderPairStep`): ogni sotto-blocco ha la sua **riga-chip** (`.chip-row`, sempre chip colorati) subito sopra le card a cui si riferisce. Superset (run collegati da `alternato`, anche 3) = UNA riga `×N giri · S1 › cambio › S2 › rest`; esercizio sequenziale = riga dedicata `×N set · lavoro › rest` sopra la sua card. Niente più riga compatta unica in cima
 - **Tempi per esercizio**: una stazione del wod può avere `set_time`/`rest` propri (override dei globali), mostrati nella riga-chip del rispettivo blocco

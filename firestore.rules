@@ -16,18 +16,27 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/users/$(uid))
         && get(/databases/$(database)/documents/users/$(uid)).data.status == 'approved';
     }
+    function roleOf(data) {
+      return data.get('role', 'athlete');
+    }
+    function createRoleOk() {
+      return !('role' in request.resource.data)
+        || request.resource.data.role == 'athlete';
+    }
 
     match /users/{userId} {
       allow get: if signedIn() && (request.auth.uid == userId || isAdmin());
       allow list: if isAdmin();
       allow create: if signedIn()
         && request.auth.uid == userId
+        && createRoleOk()
         && (request.resource.data.status == 'pending'
             || (isAdmin() && request.resource.data.status == 'approved'));
       allow update: if isAdmin()
         || (isApprovedOwner(userId)
             && request.resource.data.status == resource.data.status
-            && request.resource.data.email == resource.data.email);
+            && request.resource.data.email == resource.data.email
+            && roleOf(request.resource.data) == roleOf(resource.data));
       allow delete: if false;
     }
 

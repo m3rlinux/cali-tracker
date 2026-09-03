@@ -22,6 +22,8 @@ usa la stessa email Google/login con cui approvi gli allievi. Pubblica di nuovo 
 
 Il primo accesso con un'email in `adminEmails` crea il profilo già **approved** (le rules lo permettono solo se il token ha quella email). Gli altri restano `pending` finché un admin non li approva dalla tab **Admin**.
 
+Dalla tab Admin si assegna anche il ruolo **istruttore** (`role: instructor`): solo istruttori e admin vedono la modalità Classe. I nuovi profili nascono `role: athlete`; l’owner non può cambiare `role` (solo l’admin). Dopo aver modificato `firestore.rules`, pubblicarle di nuovo.
+
 Se l'email admin non coincide ancora tra config e rules, il profilo nasce `pending`: in Firestore imposta `status: approved`, oppure usa un altro account già admin.
 
 ## 3. Deploy

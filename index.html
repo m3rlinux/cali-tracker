@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v4.0.1
+  Cali Tracker v4.1.0
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -362,7 +362,8 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
 .admin-status.pending { color: var(--amber); }
 .admin-status.approved { color: var(--teal); }
 .admin-status.revoked { color: var(--coral); }
-.admin-actions { display: flex; gap: 8px; margin-top: 10px; }
+.admin-status.instructor { color: var(--purple); margin-left: 6px; }
+.admin-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 .admin-actions button { flex: 1; padding: 8px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: var(--sans); }
 .migrate-opt { display: block; padding: 10px 12px; border: 1px solid var(--border2); border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
 .migrate-opt input { margin-right: 8px; }
@@ -525,13 +526,13 @@ body.coach-mode { max-width: 960px; }
 </div>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.0.1</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.1.0</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="header-seg header-seg-lang" id="lang-seg" role="group" title="Lingua esercizi / Exercise language">
     <button type="button" class="header-seg-opt" data-lang="it" onclick="setLang('it')">IT</button>
     <button type="button" class="header-seg-opt" data-lang="en" onclick="setLang('en')">EN</button>
   </div>
-  <div class="header-seg header-seg-mode" id="coach-seg" role="group" title="Modalità allievo / coach">
+  <div class="header-seg header-seg-mode" id="coach-seg" role="group" title="Modalità allievo / coach" style="display:none">
     <button type="button" class="header-seg-opt" data-coach="0" onclick="setCoachMode(false)">Allievo</button>
     <button type="button" class="header-seg-opt" data-coach="1" onclick="setCoachMode(true)">Classe</button>
   </div>
@@ -542,7 +543,7 @@ body.coach-mode { max-width: 960px; }
     </div>
     <div class="user-menu" id="user-menu">
       <div class="user-menu-item" onclick="openRenameModal()">✎ Rinomina</div>
-      <div class="user-menu-item" id="coach-menu-item" onclick="toggleCoachMode()">Modalità coach</div>
+      <div class="user-menu-item" id="coach-menu-item" onclick="toggleCoachMode()" style="display:none">Modalità coach</div>
       <div class="user-menu-item" onclick="exportData()">↓ Esporta dati</div>
       <div class="user-menu-item" onclick="document.getElementById('import-file').click()">↑ Importa dati</div>
       <div class="user-menu-item" onclick="openHelpModal()">? Aiuto</div>
@@ -592,7 +593,7 @@ body.coach-mode { max-width: 960px; }
 <div class="page" id="page-admin">
   <div style="padding:14px 16px 24px">
     <div class="help-h" style="margin-top:0">Utenti</div>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Approva chi può usare l'app o revoca l'accesso. I dati in cloud restano, ma le rules bloccano lettura e scrittura.</p>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Approva chi può usare l'app o revoca l'accesso. Gli <b>istruttori</b> (e gli admin) possono usare la modalità Classe; gli allievi no.</p>
     <div id="admin-list"><div class="history-empty">Caricamento…</div></div>
   </div>
 </div>
@@ -659,7 +660,7 @@ body.coach-mode { max-width: 960px; }
       <p>Nelle sessioni <b>personali</b> puoi toccare i chip <b>lavoro / cambio / rest</b> per modificarli; nel WOD restano bloccati. Con <b>lavoro</b> e <b>rest</b> compare <b>▶ Timer</b>: countdown fisso in basso — <span style="color:var(--blue)">blu</span> preparazione (10"), <span style="color:#ee412a">rosso</span> lavoro (doppio beep a metà), <span style="color:var(--amber)">giallo</span> cambio, <span style="color:var(--teal)">verde</span> rest — con Pausa, <b>Reset</b>, Salta e Stop. Beep a 3-2-1 e vibrazione a fine fase. In <b>classe</b> l'ultimo rest di un blocco (rotazione) è <span style="color:var(--amber)">giallo</span>.</p>
       <p>In <b>P0</b> ogni <b>▶ Timer</b> è indipendente: a fine esercizio si ferma, senza avviare il successivo. Nell'<b>anello P1–P4</b> (modalità allievo) il timer <b>catena</b> automaticamente tra postazioni; all'ultimo rest passi alla successiva; finito l'anello riparte da P1 fino a N giri. Nell'anello puoi cambiare postazione senza fermare il timer. Puoi passare a Storico o Progressi con il timer attivo (usa <b>Stop</b> o <b>Pausa</b> quando serve).</p>
       <div class="help-h">Modalità coach (classe)</div>
-      <p>Dal selettore <b>Allievo / Classe</b> in alto (o dal menu utente) passi alla <b>bacheca</b>: tutte le postazioni visibili insieme. Pensata per una classe in cui ogni coppia occupa una postazione.</p>
+      <p>Dal selettore <b>Allievo / Classe</b> in alto (o dal menu utente) passi alla <b>bacheca</b>: tutte le postazioni visibili insieme. Pensata per una classe in cui ogni coppia occupa una postazione. Il selettore è visibile solo a <b>istruttori</b> e admin (ruolo assegnato dalla tab Admin).</p>
       <p><b>P0</b> si fa tutti insieme, col timer della verticale (non concatena a P1). Poi <b>▶ Via circuito</b> avvia un <b>timer master</b> unico — stessi tempi globali (lavoro / cambio / rest) per tutte le postazioni occupate. In <b>alternato</b> il blocco è S1 › cambio › S2 › rest ×N; in <b>sequenziale</b> sono N set di S1 poi N di S2, come le due righe-chip. All'ultimo rest di ogni blocco le persone <b>ruotano</b> (barra gialla, chi era in P1 va in P2); non c'è tempo extra. Il giro completo di rotazioni si ripete per <b>Anello ×N</b>.</p>
       <p>La durata stimata in classe conta P0 in sequenza e il circuito <b>in parallelo</b> (un blocco × numero postazioni × N giri). I tempi per-esercizio del WOD restano visibili in bacheca ma l'orologio di classe usa i tempi <b>globali</b>.</p>
       <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono se previste nel WOD o già presenti nella sessione. Nelle sessioni <b>personali</b> puoi aggiungere o togliere <b>P4</b> con <b>+ P4</b> / <b>×</b> accanto ai chip.</p>
@@ -680,10 +681,10 @@ body.coach-mode { max-width: 960px; }
       <p>In alto: <b>Tutto</b> / <b>Anno</b> / <b>Mese</b> + navigazione <b>freccette</b>. <b>Tap</b> su un minigrafico → dettaglio con grafico grande + lista sessioni.</p>
       <p>Intensità: isometrie = <b>Hold max</b>, reps = <b>Media/set</b>.</p>
       <div class="help-h">Account</div>
-      <p>Accedi con <b>Google</b> o <b>email</b>. Dopo la registrazione un amministratore deve <b>approvare</b> l'account. Dalla tab <b>Admin</b> (solo gestori) si approva o si <b>revoca</b> l'accesso.</p>
+      <p>Accedi con <b>Google</b> o <b>email</b>. Dopo la registrazione un amministratore deve <b>approvare</b> l'account. Dalla tab <b>Admin</b> (solo gestori) si approva o si <b>revoca</b> l'accesso e si assegna il ruolo <b>istruttore</b>.</p>
       <p>Al primo accesso approvato puoi <b>importare tutte le sessioni</b> salvate in precedenza con un nome su questo telefono. Lo storico vive sull'account (stesso utente su più dispositivi). Rinomina cambia solo il nome visibile.</p>
       <div class="help-h">Lingua e dati</div>
-      <p>Il selettore <b>IT / EN</b> nell'header cambia la lingua dei nomi esercizi. Il selettore <b>Allievo / Classe</b> passa tra scheda personale e bacheca. Il nome in alto apre il menu utente (rinomina, export/import, aiuto, esci).</p>
+      <p>Il selettore <b>IT / EN</b> nell'header cambia la lingua dei nomi esercizi. Il selettore <b>Allievo / Classe</b> (solo <b>istruttori</b> e admin) passa tra scheda personale e bacheca. Il nome in alto apre il menu utente (rinomina, export/import, aiuto, esci).</p>
       <p>Le sessioni <b>salvate</b> sono sul tuo account in cloud e in cache sul dispositivo. <b>↓ Esporta</b> / <b>↑ Importa</b> restano per backup. Un refresh tiene il draft in corso (il timer si ferma).</p>
     </div>
     <button class="modal-btn" onclick="document.getElementById('help-modal').classList.remove('open')">Chiudi</button>
@@ -715,7 +716,7 @@ body.coach-mode { max-width: 960px; }
 <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
-const VERSION = '4.0.1';
+const VERSION = '4.1.0';
 const KEY_NAME = 'cali_name';
 const KEY_COACH = 'cali_coach';
 const MAX_SETS = 6;
@@ -786,6 +787,12 @@ function firebaseConfigured() {
 function isAdminEmail(email) {
   const list = (window.CALI_FIREBASE && window.CALI_FIREBASE.adminEmails) || [];
   return !!(email && list.map(e => String(e).toLowerCase()).includes(String(email).toLowerCase()));
+}
+function profileRole() {
+  return (_authProfile && _authProfile.role) || 'athlete';
+}
+function canUseClass() {
+  return isAdminEmail(_authEmail) || profileRole() === 'instructor';
 }
 function showAuthPanel(id) {
   document.querySelectorAll('.auth-panel').forEach(p => p.classList.toggle('on', p.id === id));
@@ -911,6 +918,7 @@ async function ensureUserProfile(user) {
       displayName,
       email,
       status,
+      role: 'athlete',
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     };
     await ref.set(profile);
@@ -985,6 +993,7 @@ function listenUserDoc(user) {
     _authProfile = profile;
     if (profile.status === 'approved') {
       if (_authStatus !== 'approved') await onApproved(user, profile);
+      else applyCoachMode();
     } else if (profile.status === 'revoked') {
       _approvedRun = false;
       _authStatus = 'revoked';
@@ -1102,12 +1111,17 @@ async function renderAdminList() {
             <div style="font-weight:500">${escapeHtml(u.displayName || '—')}</div>
             <div style="font-size:11px;color:var(--muted);font-family:var(--mono)">${escapeHtml(u.email || u.id)}</div>
           </div>
-          <span class="admin-status ${escapeHtml(u.status)}">${escapeHtml(u.status)}</span>
+          <div>
+            <span class="admin-status ${escapeHtml(u.status)}">${escapeHtml(u.status)}</span>
+            ${u.role === 'instructor' ? '<span class="admin-status instructor">istruttore</span>' : ''}
+          </div>
         </div>
         <div class="admin-actions">
           ${u.status !== 'approved' ? `<button type="button" class="modal-btn" style="margin:0" onclick="adminSetStatus('${u.id}','approved')">Approva</button>` : ''}
           ${u.status !== 'revoked' ? `<button type="button" class="modal-btn-ghost" style="margin:0" onclick="adminSetStatus('${u.id}','revoked')">Revoca</button>` : ''}
           ${u.status === 'revoked' ? `<button type="button" class="modal-btn-ghost" style="margin:0" onclick="adminSetStatus('${u.id}','pending')">Ripristina attesa</button>` : ''}
+          ${u.status === 'approved' && u.role !== 'instructor' ? `<button type="button" class="modal-btn-ghost" style="margin:0" onclick="adminSetRole('${u.id}','instructor')">Istruttore</button>` : ''}
+          ${u.status === 'approved' && u.role === 'instructor' ? `<button type="button" class="modal-btn-ghost" style="margin:0" onclick="adminSetRole('${u.id}','athlete')">Allievo</button>` : ''}
         </div>
       </div>`).join('');
   } catch (e) {
@@ -1118,6 +1132,13 @@ async function adminSetStatus(uid, status) {
   if (!_fbReady) return;
   try {
     await userDocRef(uid).update({ status });
+    await renderAdminList();
+  } catch (e) { alert(e.message); }
+}
+async function adminSetRole(uid, role) {
+  if (!_fbReady) return;
+  try {
+    await userDocRef(uid).update({ role });
     await renderAdminList();
   } catch (e) { alert(e.message); }
 }
@@ -1369,11 +1390,23 @@ function renderHeaderControls() {
   }
 }
 function applyCoachMode() {
+  const allowed = canUseClass();
+  const coachSeg = document.getElementById('coach-seg');
+  const menu = document.getElementById('coach-menu-item');
+  if (coachSeg) coachSeg.style.display = allowed ? '' : 'none';
+  if (menu) menu.style.display = allowed ? '' : 'none';
+  if (!allowed && isCoachMode()) {
+    localStorage.setItem(KEY_COACH, '0');
+    try { stopTimer(false); } catch (e) { /* timer maybe not ready */ }
+    if (_appStarted) {
+      renderStepDots();
+      renderStep();
+    }
+  }
   const on = isCoachMode();
   document.body.classList.toggle('coach-mode', on);
   const en = getLang() === 'en';
   renderHeaderControls();
-  const menu = document.getElementById('coach-menu-item');
   if (menu) {
     menu.textContent = on
       ? (en ? 'Student mode' : 'Modalità allievo')
@@ -1381,6 +1414,7 @@ function applyCoachMode() {
   }
 }
 function setCoachMode(on) {
+  if (on && !canUseClass()) return;
   if (isCoachMode() === !!on) return;
   closeUserMenu();
   // Raccogli il form allievo prima di spegnere i campi (Classe non ha input).
