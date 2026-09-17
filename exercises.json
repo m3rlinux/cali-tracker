@@ -281,5 +281,71 @@
     "variants": [
       "Ponte glutei piedi su rialzo + Crunch tap"
     ]
+  },
+  "appoggio": {
+    "label": "Appoggio",
+    "variants": [
+      "Quadrupede attivo",
+      "Beast hold",
+      "Plank alto con tap",
+      "Mini piegamento ROM corto",
+      "Mini piegamento mezzo ROM",
+      "Eccentrica di piegamento lenta",
+      "Spostamenti di peso in beast",
+      "Tocco spalla in beast",
+      "Passaggio beast-crab sul posto",
+      "Posizione a V attiva",
+      "Spostamenti in pike",
+      "Mini piegamento in pike"
+    ],
+    "metrics": {
+      "Quadrupede attivo": "time",
+      "Beast hold": "time",
+      "Plank alto con tap": "time",
+      "Posizione a V attiva": "time"
+    }
+  },
+  "suolo": {
+    "label": "Suolo",
+    "variants": [
+      "Dead bug una gamba",
+      "Dead bug controlaterale",
+      "Hollow tenuta breve",
+      "Hollow rock",
+      "Ponte a due gambe",
+      "Ponte a una gamba",
+      "Ponte con tenuta lenta",
+      "Arch hold",
+      "Swimmers a terra",
+      "Reverse snow angel",
+      "Mezzo rotolo guidato",
+      "Rotolo completo",
+      "Rotolo senza slancio"
+    ],
+    "metrics": {
+      "Hollow tenuta breve": "time",
+      "Arch hold": "time"
+    }
+  },
+  "salita": {
+    "label": "Salita",
+    "variants": [
+      "Squat assistito",
+      "Squat profondo",
+      "Squat profondo tenuta in fondo",
+      "Step-in da beast",
+      "Step-in con risalita",
+      "Discesa e risalita continue",
+      "Mezzo inginocchiato a in piedi assistito",
+      "Mezzo inginocchiato a in piedi",
+      "Affondo con tenuta",
+      "Da terra a in piedi con una mano",
+      "Da terra a in piedi senza mani",
+      "Alzata da terra a percorso fisso"
+    ],
+    "metrics": {
+      "Squat profondo tenuta in fondo": "time",
+      "Affondo con tenuta": "time"
+    }
   }
 }

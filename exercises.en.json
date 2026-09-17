@@ -221,5 +221,57 @@
     "variants": [
       "Feet-elevated glute bridge + Crunch tap"
     ]
+  },
+  "appoggio": {
+    "label": "Hand support",
+    "variants": [
+      "Active quadruped",
+      "Beast hold",
+      "High plank with taps",
+      "Mini pushup short ROM",
+      "Mini pushup half ROM",
+      "Slow eccentric pushup",
+      "Beast weight shifts",
+      "Beast shoulder tap",
+      "Beast to crab in place",
+      "Active pike position",
+      "Pike weight shifts",
+      "Mini pike pushup"
+    ]
+  },
+  "suolo": {
+    "label": "Ground",
+    "variants": [
+      "Single-leg dead bug",
+      "Contralateral dead bug",
+      "Short hollow hold",
+      "Hollow rock",
+      "Two-leg bridge",
+      "Single-leg bridge",
+      "Bridge with slow hold",
+      "Arch hold",
+      "Floor swimmers",
+      "Reverse snow angel",
+      "Guided half roll",
+      "Full roll",
+      "Roll without momentum"
+    ]
+  },
+  "salita": {
+    "label": "Rise",
+    "variants": [
+      "Assisted squat",
+      "Deep squat",
+      "Deep squat bottom hold",
+      "Beast step-in",
+      "Step-in to half stand",
+      "Continuous down-and-up",
+      "Assisted half-kneel to stand",
+      "Half-kneel to stand",
+      "Lunge hold",
+      "Ground to stand, one hand",
+      "Ground to stand, no hands",
+      "Fixed-path get-up"
+    ]
   }
 }
