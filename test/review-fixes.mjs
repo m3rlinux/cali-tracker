@@ -8,7 +8,6 @@ import assert from 'node:assert/strict';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const html = readFileSync(join(root, 'index.html'), 'utf8');
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
-const wod = JSON.parse(readFileSync(join(root, 'wod.json'), 'utf8'));
 
 function extractFn(src, name) {
   const start = src.indexOf(`function ${name}(`);
@@ -34,9 +33,9 @@ assert.equal(escapeHtml("it's"), 'it&#39;s');
 assert.equal(escapeHtml(null), '');
 
 const version = html.match(/const VERSION = '([^']+)'/)[1];
-assert.equal(version, '4.2.3');
-assert.match(html, /Cali Tracker v4\.2\.3/);
-assert.match(sw, /const CACHE_VERSION = '4\.2\.3'/);
+assert.equal(version, '4.2.4');
+assert.match(html, /Cali Tracker v4\.2\.4/);
+assert.match(sw, /const CACHE_VERSION = '4\.2\.4'/);
 
 const setCoach = extractFn(html, 'setCoachMode');
 assert.match(setCoach, /if \(on\) collectStep\(currentStep\);/);
@@ -73,8 +72,6 @@ assert.match(classPlan, /si === 2 && set === totalRounds/);
 assert.match(html, /\.timer-bar\.timer-phase-rest\.timer-rotate/);
 assert.match(extractFn(html, 'renderTimerBar'), /timer-rotate/);
 
-assert.equal(wod.stations.p2s2.variant, 'Dead bug');
-assert.equal(wod.stations.p2s2.set_time, 20);
 
 assert.match(html, /combo: '--combo'/);
 assert.match(html, /--combo: #c8f060/);
@@ -152,4 +149,4 @@ assert.ok(wavUri.length > 100);
 const fbCfg = readFileSync(join(root, 'firebase-config.js'), 'utf8');
 assert.match(fbCfg, /adminEmails/);
 
-console.log('ok: v4.2.3 review fixes');
+console.log('ok: v4.2.4 review fixes');

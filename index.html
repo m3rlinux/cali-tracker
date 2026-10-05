@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v4.2.3
+  Cali Tracker v4.2.4
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -196,6 +196,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); widt
   transition: background-color .2s ease;
 }
 .timer-bar.open { display: block; }
+.timer-bar.timer-phase-lesson { background: var(--blue); color: #0c0c0c; }
 .timer-bar.timer-phase-prep { background: var(--blue); color: #0c0c0c; }
 .timer-bar.timer-phase-work { background: #ee412a; color: #0c0c0c; }
 .timer-bar.timer-phase-change { background: var(--amber); color: #0c0c0c; }
@@ -450,6 +451,16 @@ button.cycle-chip-edit:active { filter: brightness(.92); }
 
 body.coach-mode { max-width: 960px; }
 
+.coach-lesson-list { display: grid; gap: 10px; }
+.coach-lesson-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 12px; }
+.coach-lesson-card.is-current { border-color: var(--accent); }
+.coach-lesson-card.is-done { opacity: .55; }
+.coach-lesson-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin-bottom: 7px; }
+.coach-lesson-title { font-size: 14px; font-weight: 600; }
+.coach-lesson-meta, .coach-lesson-detail { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.coach-lesson-meta { font-family: var(--mono); white-space: nowrap; }
+.coach-lesson-detail strong { color: var(--text); font-weight: 500; }
+.coach-lesson-current { font-family: var(--mono); color: var(--accent); font-size: 11px; }
 .coach-board { display: flex; flex-direction: column; gap: 18px; padding-bottom: 8px; }
 .coach-section-label { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
 .coach-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
@@ -667,7 +678,8 @@ body.coach-mode { max-width: 960px; }
       <p>In <b>P0</b> ogni <b>▶ Timer</b> è indipendente: a fine esercizio si ferma, senza avviare il successivo. Nell'<b>anello P1–P4</b> (modalità allievo) il timer <b>catena</b> automaticamente tra postazioni; all'ultimo rest passi alla successiva; finito l'anello riparte da P1 fino a N giri. Nell'anello puoi cambiare postazione senza fermare il timer. Puoi passare a Storico o Progressi con il timer attivo (usa <b>Stop</b> o <b>Pausa</b> quando serve).</p>
       <div class="help-h">Modalità coach (classe)</div>
       <p>Dal selettore <b>Allievo / Classe</b> in alto (o dal menu utente) passi alla <b>bacheca</b>: tutte le postazioni visibili insieme. Pensata per una classe in cui ogni coppia occupa una postazione. Il selettore è visibile solo a <b>istruttori</b> e admin (ruolo assegnato dalla tab Admin).</p>
-      <p><b>P0</b> si fa tutti insieme, col timer della verticale (non concatena a P1). Poi <b>▶ Via circuito</b> avvia un <b>timer master</b> unico — stessi tempi globali (lavoro / cambio / rest) per tutte le postazioni occupate. In <b>alternato</b> il blocco è S1 › cambio › S2 › rest ×N; in <b>sequenziale</b> sono N set di S1 poi N di S2, come le due righe-chip. All'ultimo rest di ogni blocco le persone <b>ruotano</b> (barra gialla, chi era in P1 va in P2); non c'è tempo extra. Il giro completo di rotazioni si ripete per <b>Anello ×N</b>.</p>
+      <p>Se <b>★ Oggi</b> include una <b>lezione guidata</b>, la modalità Classe mostra la scaletta al posto del circuito. <b>▶ Via lezione</b> avvia un timer unico: nei blocchi liberi segnala soltanto il passaggio e lo scambio dei due gruppi; serie e recuperi restano individuali. Nel finale scandisce lavoro e recupero per tutti. Pausa, Riprendi, Reset, Salta e Stop restano disponibili; dopo un refresh il draft resta, ma il timer riparte dall'inizio.</p>
+      <p>Quando il WOD non include la lezione guidata, resta la bacheca del circuito: <b>P0</b> si fa tutti insieme, col timer della verticale (non concatena a P1). Poi <b>▶ Via circuito</b> avvia un <b>timer master</b> unico — stessi tempi globali (lavoro / cambio / rest) per tutte le postazioni occupate. In <b>alternato</b> il blocco è S1 › cambio › S2 › rest ×N; in <b>sequenziale</b> sono N set di S1 poi N di S2, come le due righe-chip. All'ultimo rest di ogni blocco le persone <b>ruotano</b> (barra gialla, chi era in P1 va in P2); non c'è tempo extra. Il giro completo di rotazioni si ripete per <b>Anello ×N</b>.</p>
       <p>La durata stimata in classe conta P0 in sequenza e il circuito <b>in parallelo</b> (un blocco × numero postazioni × N giri). I tempi per-esercizio del WOD restano visibili in bacheca ma l'orologio di classe usa i tempi <b>globali</b>.</p>
       <p>Alcune coppie possono avere stazioni <b>supplementari</b>: la terza verticale in P0 e l'intera <b>P4</b> compaiono se previste nel WOD o già presenti nella sessione. Nelle sessioni <b>personali</b> puoi aggiungere o togliere <b>P4</b> con <b>+ P4</b> / <b>×</b> accanto ai chip.</p>
       <p>Per ogni esercizio scegli la <b>variante</b> dal menu e inserisci i valori. Esercizi a ripetizioni: <b>reps</b> consecutive + <b>cluster</b> (ripetizioni extra dopo 5–8" di riposo). Isometrie: secondi per set, con <b>Hold max</b> (il tuo record di tenuta) e target al 65%.</p>
@@ -741,7 +753,7 @@ body.coach-mode { max-width: 960px; }
 <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
-const VERSION = '4.2.3';
+const VERSION = '4.2.4';
 const KEY_NAME = 'cali_name';
 const KEY_COACH = 'cali_coach';
 const KEY_SETTINGS = 'cali_settings';
@@ -1371,6 +1383,7 @@ function resetDraftSession() {
   draftSession = getLastSavedSession();
   delete draftSession.date; // nuova sessione: precompila i valori, ma resta non salvata
   delete draftSession.wod;
+  delete draftSession.class_lesson;
   // Sessione nuova: righe set fisse ai default per station (p0s1: 2, resto 3)
   Object.entries(draftSession).forEach(([stationKey, ex]) => {
     if (ex && typeof ex === 'object' && Array.isArray(ex.sets)) {
@@ -1995,6 +2008,8 @@ function buildSessionFromWod(wod) {
   if (typeof wod.circuit_rounds === 'number' && wod.circuit_rounds >= 1) {
     sess.circuit_rounds = Math.min(MAX_CIRCUIT_ROUNDS, Math.floor(wod.circuit_rounds));
   }
+  const classLesson = getClassLesson(wod.class_lesson);
+  if (classLesson) sess.class_lesson = cloneObj(classLesson);
   return sess;
 }
 
@@ -2110,6 +2125,14 @@ function stepCircuitRounds(delta) {
 }
 
 function renderStepDots() {
+  const guided = isCoachMode() && getClassLesson(draftSession?.class_lesson);
+  if (guided) {
+    const total = buildClassLessonTimerPlan(guided).totalSeconds;
+    document.getElementById('step-dots').innerHTML = '';
+    const metaEl = document.getElementById('step-meta');
+    if (metaEl) metaEl.innerHTML = `<span class="step-meta-group"><span class="step-meta-label">${getLang() === 'en' ? 'Duration' : 'Durata'}</span><span class="timer-total-badge">${formatTimerDuration(total)}</span></span>`;
+    return;
+  }
   const { ringStart } = ringInfo();
   const s = draftSession || {};
   let sepPlaced = false;
@@ -2217,7 +2240,10 @@ function renderStep() {
   const s = draftSession || {};
   renderSessBar();
   if (isCoachMode()) {
-    document.getElementById('step-label').textContent = getLang() === 'en' ? 'Class board' : 'Bacheca classe';
+    const guided = getClassLesson(s.class_lesson);
+    document.getElementById('step-label').textContent = guided
+      ? (getLang() === 'en' ? 'Guided class' : 'Lezione guidata')
+      : (getLang() === 'en' ? 'Class board' : 'Bacheca classe');
     if (btnPrev) btnPrev.style.display = 'none';
     if (btnNext) btnNext.style.display = 'none';
     renderCoachBoard();
@@ -2751,6 +2777,68 @@ function buildClassCircuitPlan(s) {
   return { phases, totalRounds, nStations, maxCircuit, totalBlocks };
 }
 
+// Scaletta opzionale del coach: indipendente dalle postazioni e dallo storico.
+function classLessonText(value, en) {
+  if (typeof value === 'string') return value;
+  if (!value || typeof value !== 'object') return '';
+  return en ? (value.en || value.it || '') : (value.it || value.en || '');
+}
+
+function getClassLesson(value) {
+  if (!value || !Array.isArray(value.blocks) || !value.blocks.length) return null;
+  if (!Number.isInteger(value.participants) || value.participants < 1) return null;
+  const validSeconds = n => Number.isInteger(n) && n > 0;
+  for (const block of value.blocks) {
+    if (!block || !classLessonText(block.title, false)) return null;
+    if (block.type === 'free') {
+      if (!validSeconds(block.seconds)) return null;
+    } else if (block.type === 'pair') {
+      if (!validSeconds(block.seconds) || !validSeconds(block.swap_after) || block.swap_after >= block.seconds) return null;
+      if (!Array.isArray(block.groups) || block.groups.length !== 2) return null;
+      if (block.groups.some(g => !Number.isInteger(g.size) || g.size < 1 || !classLessonText(g.exercise, false))) return null;
+      if (block.groups[0].size + block.groups[1].size !== value.participants) return null;
+    } else if (block.type === 'interval') {
+      if (!validSeconds(block.rounds) || !validSeconds(block.work) || !validSeconds(block.rest)) return null;
+      if (!Array.isArray(block.exercises) || !block.exercises.length ||
+          block.exercises.some(ex => !classLessonText(ex, false))) return null;
+    } else return null;
+  }
+  return value;
+}
+
+function classLessonBlockSeconds(block) {
+  return block.type === 'interval'
+    ? block.rounds * block.exercises.length * (block.work + block.rest)
+    : block.seconds;
+}
+
+function buildClassLessonTimerPlan(lesson) {
+  lesson = getClassLesson(lesson);
+  if (!lesson) return null;
+  const phases = [];
+  lesson.blocks.forEach((block, blockIdx) => {
+    const common = { lessonBlockIdx: blockIdx };
+    if (block.type === 'pair') {
+      phases.push({ ...common, type: 'lesson', label: block.title,
+        seconds: block.swap_after, lessonHalf: 1 });
+      phases.push({ ...common, type: 'lesson', label: block.title,
+        seconds: block.seconds - block.swap_after, lessonHalf: 2 });
+    } else if (block.type === 'interval') {
+      for (let round = 1; round <= block.rounds; round++) {
+        block.exercises.forEach((exercise, exerciseIdx) => {
+          const meta = { ...common, round, exerciseIdx };
+          phases.push({ ...meta, type: 'work', label: exercise, seconds: block.work });
+          phases.push({ ...meta, type: 'rest',
+            label: { it: 'Recupero', en: 'Rest' }, seconds: block.rest });
+        });
+      }
+    } else {
+      phases.push({ ...common, type: 'lesson', label: block.title, seconds: block.seconds });
+    }
+  });
+  return { phases, totalSeconds: phases.reduce((sum, p) => sum + p.seconds, 0) };
+}
+
 function computeP0TimerSeconds(s) {
   let total = 0;
   STEPS.forEach((st, stepIdx) => {
@@ -3033,6 +3121,7 @@ function timerAutoAdvanceStep() {
 }
 
 function timerPhaseClass(type) {
+  if (type === 'lesson') return 'timer-phase-lesson';
   if (type === 'prep') return 'timer-phase-prep';
   if (type === 'change') return 'timer-phase-change';
   if (type === 'rest') return 'timer-phase-rest';
@@ -3040,6 +3129,10 @@ function timerPhaseClass(type) {
 }
 
 function timerPhaseLabel(phase, en) {
+  if (_timer?.classLesson) {
+    const label = classLessonText(phase.label, en);
+    return phase.lessonHalf === 2 ? `${label} · ${en ? 'swapped' : 'scambio'}` : label;
+  }
   if (phase.type === 'prep') return en ? 'Get ready' : 'Preparazione';
   if (phase.rotateRest) return en ? 'rest · rotate' : 'rest · rotazione';
   return phase.label;
@@ -3199,7 +3292,7 @@ function renderTimerBar() {
   const bar = document.getElementById('timer-bar');
   if (!bar) return;
   if (!timerIsActive()) {
-    bar.classList.remove('open', 'timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rest', 'timer-paused', 'timer-rotate');
+    bar.classList.remove('open', 'timer-phase-lesson', 'timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rest', 'timer-paused', 'timer-rotate');
     document.body.classList.remove('timer-active');
     return;
   }
@@ -3210,7 +3303,7 @@ function renderTimerBar() {
     ? _timer.remainingPaused
     : (_timer.endsAt - Date.now()) / 1000;
 
-  bar.classList.remove('timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rest');
+  bar.classList.remove('timer-phase-lesson', 'timer-phase-prep', 'timer-phase-work', 'timer-phase-change', 'timer-phase-rest');
   bar.classList.add(timerPhaseClass(phase.type));
   bar.classList.toggle('timer-paused', !!_timer.paused);
   bar.classList.toggle('timer-rotate', !!phase.rotateRest);
@@ -3223,7 +3316,16 @@ function renderTimerBar() {
   document.getElementById('timer-count').textContent = formatTimerSec(remaining);
 
   const prog = [];
-  if (_timer.coachCircuit) {
+  if (_timer.classLesson) {
+    const lesson = getClassLesson(draftSession?.class_lesson);
+    const block = lesson?.blocks[phase.lessonBlockIdx];
+    prog.push(en ? `Block ${phase.lessonBlockIdx + 1}/${lesson?.blocks.length || 1}` : `Blocco ${phase.lessonBlockIdx + 1}/${lesson?.blocks.length || 1}`);
+    if (phase.lessonHalf === 2) prog.push(en ? 'Groups swapped' : 'Gruppi scambiati');
+    if (block?.type === 'interval') {
+      prog.push(en ? `Round ${phase.round}/${block.rounds}` : `Giro ${phase.round}/${block.rounds}`);
+      prog.push(`${phase.exerciseIdx + 1}/${block.exercises.length}`);
+    }
+  } else if (_timer.coachCircuit) {
     const nSt = phase.nStations || _timer.nStations || 1;
     const rot = phase.stationBlock != null ? ((phase.stationBlock - 1) % nSt) + 1 : 1;
     prog.push(en ? `Rotation ${rot}/${nSt}` : `Rotazione ${rot}/${nSt}`);
@@ -3245,7 +3347,7 @@ function renderTimerBar() {
       else if (phase.setNum != null) prog.push(en ? `Set ${phase.setNum}/${_timer.totalRounds}` : `Set ${phase.setNum}/${_timer.totalRounds}`);
     }
   }
-  prog.push(en ? `Phase ${_timer.phaseIdx + 1}/${_timer.phases.length}` : `Fase ${_timer.phaseIdx + 1}/${_timer.phases.length}`);
+  if (!_timer.classLesson) prog.push(en ? `Phase ${_timer.phaseIdx + 1}/${_timer.phases.length}` : `Fase ${_timer.phaseIdx + 1}/${_timer.phases.length}`);
   document.getElementById('timer-prog').textContent = prog.join(' · ');
 
   document.getElementById('timer-pause-btn').textContent = _timer.paused
@@ -3261,13 +3363,14 @@ function timerAdvancePhase() {
   const isLast = _timer.phaseIdx >= _timer.phases.length;
   // In voice mode skip end-of-phase beep when the next phase already announces
   // itself (work→go, change→cambio, rest→riposo). Always beep at block end.
-  if (!isVoiceCue() || isLast) timerBeep();
+  if (!isVoiceCue() || isLast || (_timer.classLesson && _timer.phases[_timer.phaseIdx]?.type === 'lesson')) timerBeep();
   if (isLast) {
     timerOnBlockComplete();
     return;
   }
   timerStartPhase();
   if (timerIsLastRestOfStep()) timerAutoAdvanceStep();
+  if (_timer.classLesson && isCoachMode()) renderCoachBoard();
   renderTimerBar();
   _timerRaf = requestAnimationFrame(timerTick);
 }
@@ -3329,6 +3432,25 @@ function startPairTimer(stepIdx, blockIdx, chained, circuitLap) {
   };
   timerStartPhase();
   requestWakeLock();
+  renderTimerBar();
+  _timerRaf = requestAnimationFrame(timerTick);
+}
+
+function startClassLessonTimer() {
+  if (!isCoachMode() || !canUseClass()) return;
+  const plan = buildClassLessonTimerPlan(draftSession?.class_lesson);
+  if (!plan) return;
+  stopTimer(false);
+  primeTimerAudio();
+  _timer = {
+    active: true, paused: false, classLesson: true,
+    phases: plan.phases, phaseIdx: 0,
+    stepIdx: -1, blockIdx: 0, endsAt: 0,
+    remainingPaused: 0, lastBeepSec: null
+  };
+  timerStartPhase();
+  requestWakeLock();
+  renderCoachBoard();
   renderTimerBar();
   _timerRaf = requestAnimationFrame(timerTick);
 }
@@ -3397,12 +3519,14 @@ function skipTimerPhase() {
 }
 
 function stopTimer(completed) {
+  const wasClassLesson = !!_timer?.classLesson;
   if (_timerRaf) cancelAnimationFrame(_timerRaf);
   _timerRaf = null;
   _timer = null;
   timerStopSpeech();
   releaseWakeLock();
   renderTimerBar();
+  if (wasClassLesson && isCoachMode()) renderCoachBoard();
   if (completed) {
     const toast = document.getElementById('toast');
     toast.textContent = getLang() === 'en' ? '✓ Timer done' : '✓ Timer completato';
@@ -3481,7 +3605,53 @@ function coachExListHTML(ctx, s) {
   }).join('');
 }
 
+function classLessonCardHTML(block, index, activeIdx, currentPhase, en) {
+  const title = escapeHtml(classLessonText(block.title, en));
+  const minutes = formatTimerDuration(classLessonBlockSeconds(block));
+  const state = index === activeIdx ? ' is-current' : (index < activeIdx ? ' is-done' : '');
+  const status = index === activeIdx
+    ? (en ? 'Now' : 'Ora')
+    : (index === activeIdx + 1 ? (en ? 'Next' : 'Dopo') : '');
+  let details = '';
+  if (block.type === 'pair') {
+    const [a, b] = block.groups;
+    const first = `${a.size} → ${escapeHtml(classLessonText(a.exercise, en))} · ${b.size} → ${escapeHtml(classLessonText(b.exercise, en))}`;
+    const second = `${a.size} → ${escapeHtml(classLessonText(b.exercise, en))} · ${b.size} → ${escapeHtml(classLessonText(a.exercise, en))}`;
+    const half = currentPhase?.lessonBlockIdx === index ? currentPhase.lessonHalf : 0;
+    details = `<div class="coach-lesson-detail"><strong>${en ? 'Start' : 'Inizio'}:</strong> ${first}</div>
+      <div class="coach-lesson-detail"><strong>${en ? 'After' : 'Dopo'} ${formatTimerDuration(block.swap_after)}${half === 2 ? ' ✓' : ''}:</strong> ${second}</div>
+      ${block.target ? `<div class="coach-lesson-detail">${escapeHtml(classLessonText(block.target, en))}</div>` : ''}`;
+  } else if (block.type === 'interval') {
+    details = `<div class="coach-lesson-detail">${block.rounds} ${en ? 'rounds' : 'giri'} · ${block.work}" ${en ? 'work' : 'lavoro'} / ${block.rest}" ${en ? 'rest' : 'recupero'}</div>
+      <div class="coach-lesson-detail">${block.exercises.map(ex => escapeHtml(classLessonText(ex, en))).join(' → ')}</div>`;
+  }
+  return `<div class="coach-lesson-card${state}">
+    <div class="coach-lesson-head"><span class="coach-lesson-title">${index + 1}. ${title}</span><span class="coach-lesson-meta">${minutes}</span></div>
+    ${status ? `<div class="coach-lesson-current">${status}</div>` : ''}${details}
+  </div>`;
+}
+
+function renderClassLessonBoard(lesson) {
+  const en = getLang() === 'en';
+  const running = !!(_timer?.active && _timer.classLesson);
+  const phase = running ? _timer.phases[_timer.phaseIdx] : null;
+  const activeIdx = phase?.lessonBlockIdx ?? 0;
+  const next = lesson.blocks[activeIdx + 1];
+  const nextLabel = next ? `${en ? 'Next' : 'Dopo'}: ${classLessonText(next.title, en)}` : '';
+  const cards = lesson.blocks.map((block, i) => classLessonCardHTML(block, i, activeIdx, phase, en)).join('');
+  document.getElementById('step-content').innerHTML = `<div class="coach-board">
+    <div>
+      <div class="coach-section-label">${en ? 'Guided class · ' : 'Lezione guidata · '}${lesson.participants} ${en ? 'students' : 'allievi'}</div>
+      ${nextLabel ? `<div class="coach-lesson-detail">${escapeHtml(nextLabel)}</div>` : ''}
+    </div>
+    <div class="coach-lesson-list">${cards}</div>
+    ${running ? '' : `<div class="coach-via"><button type="button" class="timer-start-btn" onclick="startClassLessonTimer()">${en ? '▶ Start class' : '▶ Via lezione'}</button></div>`}
+  </div>`;
+}
+
 function renderCoachBoard() {
+  const guided = getClassLesson(draftSession?.class_lesson);
+  if (guided) { renderClassLessonBoard(guided); return; }
   const content = document.getElementById('step-content');
   const s = draftSession || {};
   const en = getLang() === 'en';
@@ -3699,7 +3869,9 @@ function saveSession() {
   if (!editingSession || !draftSession.date) {
     draftSession.date = new Date().toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit', year:'2-digit' });
   }
-  data[currentSess] = cloneObj(draftSession);
+  const savedSession = cloneObj(draftSession);
+  delete savedSession.class_lesson; // scaletta coach solo nel draft temporaneo
+  data[currentSess] = savedSession;
   saveData(data);
   draftDirty = false;
   editingSession = false;
@@ -4759,6 +4931,7 @@ async function setLang(next) {
   await loadExercises();
   renderStepDots();
   renderStep();
+  renderTimerBar();
   renderHistory();
   renderProgress();
 }

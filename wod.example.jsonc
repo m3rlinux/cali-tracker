@@ -43,6 +43,123 @@
   // in app moltiplica i tempi dell'anello per questo valore.
   "circuit_rounds": 1,    // opzionale, intero 1–6
 
+  // ── LEZIONE GUIDATA CLASSE (opzionale) ──
+  // Visibile solo al coach dopo ★ Oggi. Se assente, resta il circuito Classe.
+  // free: durata del blocco; pair: due gruppi, segnale a swap_after secondi;
+  // interval: ogni esercizio alterna work/rest per rounds giri.
+  // Non modifica le postazioni, la vista Allievo o lo storico.
+  "class_lesson": {
+    "participants": 5,
+    "blocks": [
+      {
+        "type": "free",
+        "seconds": 480,
+        "title": {
+          "it": "Riscaldamento",
+          "en": "Warm-up"
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 240,
+        "title": {
+          "it": "Spiegazione",
+          "en": "Briefing"
+        }
+      },
+      {
+        "type": "pair",
+        "seconds": 840,
+        "swap_after": 420,
+        "title": {
+          "it": "Blocco A",
+          "en": "Block A"
+        },
+        "target": {
+          "it": "2–3 serie da 6–10 ripetizioni, recupero libero",
+          "en": "2–3 sets of 6–10 reps, rest as needed"
+        },
+        "groups": [
+          {
+            "size": 3,
+            "exercise": {
+              "it": "Rematore agli anelli",
+              "en": "Ring rows"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Goblet squat",
+              "en": "Goblet squat"
+            }
+          }
+        ]
+      },
+      {
+        "type": "pair",
+        "seconds": 840,
+        "swap_after": 420,
+        "title": {
+          "it": "Blocco B",
+          "en": "Block B"
+        },
+        "target": {
+          "it": "2–3 serie da 6–10 ripetizioni, recupero libero",
+          "en": "2–3 sets of 6–10 reps, rest as needed"
+        },
+        "groups": [
+          {
+            "size": 3,
+            "exercise": {
+              "it": "Piegamenti a terra o sulle parallettes",
+              "en": "Floor or parallette push-ups"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Stacco rumeno con manubri",
+              "en": "Dumbbell Romanian deadlift"
+            }
+          }
+        ]
+      },
+      {
+        "type": "interval",
+        "rounds": 4,
+        "work": 40,
+        "rest": 20,
+        "title": {
+          "it": "Finale tutti insieme",
+          "en": "Group finisher"
+        },
+        "exercises": [
+          {
+            "it": "Affondi indietro alternati",
+            "en": "Alternating reverse lunges"
+          },
+          {
+            "it": "Mountain climber",
+            "en": "Mountain climbers"
+          },
+          {
+            "it": "Bear crawl avanti e indietro",
+            "en": "Bear crawl forward and back"
+          }
+        ]
+      },
+      {
+        "type": "free",
+        "seconds": 480,
+        "title": {
+          "it": "Defaticamento",
+          "en": "Cool-down"
+        }
+      }
+    ]
+  },
+
   // ── STAZIONI ──
   // Chiave = stationKey (pXsY). Devono esistere in exercises.json.
   // P0 = blocco verticale (3 slot intercambiabili, p0s3 opzionale).
