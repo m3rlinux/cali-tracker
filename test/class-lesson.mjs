@@ -29,7 +29,7 @@ const lesson = wod.class_lesson;
 assert.ok(model.getClassLesson(lesson));
 const plan = model.buildClassLessonTimerPlan(lesson);
 assert.equal(plan.totalSeconds, 3600);
-assert.equal(plan.phases.length, 33);
+assert.equal(plan.phases.length, 28);
 assert.equal(lesson.participants, 8);
 assert.deepEqual(lesson.blocks.filter(b => b.type === 'groups').map(b => b.groups.map(g => g.size)), [[3, 3, 2], [3, 3, 2]]);
 assert.ok(plan.phases.every(p => p.type !== 'prep'));
@@ -41,13 +41,15 @@ plan.phases.forEach((phase, i) => {
   if (next?.lessonBlockIdx !== phase.lessonBlockIdx ||
       next?.lessonRotation > phase.lessonRotation) boundaries.push(elapsed);
 });
-assert.deepEqual(boundaries, [480, 720, 1020, 1320, 1620, 1920, 2220, 2520, 3240, 3600]);
-const finisher = plan.phases.filter(p => p.lessonBlockIdx === 4);
-assert.equal(finisher.length, 24);
+assert.deepEqual(boundaries, [480, 600, 900, 1200, 1500, 1620, 1920, 2220, 2520, 3060, 3600]);
+const finisher = plan.phases.filter(p => p.lessonBlockIdx === 5);
+assert.equal(finisher.length, 18);
 assert.deepEqual(Array.from(finisher, p => p.type),
-  Array.from({ length: 12 }, () => ['work', 'rest']).flat());
+  Array.from({ length: 9 }, () => ['work', 'rest']).flat());
 assert.ok(finisher.every(p => p.seconds === (p.type === 'work' ? 40 : 20)));
-assert.equal(finisher.at(-1).round, 4);
+assert.equal(finisher.at(-1).round, 3);
+assert.ok(lesson.blocks[5].exercises.every(ex => ex.en && ex.en.trim()));
+assert.ok(lesson.blocks[5].target.en);
 assert.equal(model.getClassLesson(undefined), null);
 assert.equal(model.buildClassLessonTimerPlan({ participants: 5, blocks: [] }), null);
 
@@ -100,19 +102,22 @@ runInNewContext('pauseTimer()', timerContext);
 assert.equal(timerContext._timer.endsAt, 980000);
 runInNewContext('skipTimerPhase()', timerContext);
 assert.equal(timerContext._timer.phaseIdx, 1);
-assert.equal(timerContext._timer.endsAt, 840000);
+assert.equal(timerContext._timer.endsAt, 720000);
 timerContext._timer = null; // stop
-runInNewContext('startClassLessonTimer(3)', timerContext); // Block B starts at its first rotation
+runInNewContext('startClassLessonTimer(3)', timerContext); // Block B briefing
 assert.equal(timerContext._timer.phaseIdx, 5);
+assert.equal(timerContext._timer.endsAt, 720000);
+runInNewContext('startClassLessonTimer(4)', timerContext); // Block B first rotation
+assert.equal(timerContext._timer.phaseIdx, 6);
 assert.equal(timerContext._timer.endsAt, 900000);
-runInNewContext('startClassLessonTimer(4)', timerContext); // finisher starts with work, round 1
-assert.equal(timerContext._timer.phaseIdx, 8);
-assert.equal(timerContext._timer.phases[8].round, 1);
-assert.equal(timerContext._timer.phases[8].type, 'work');
-runInNewContext('startClassLessonTimer(5)', timerContext); // cooldown
-assert.equal(timerContext._timer.phaseIdx, 32);
-runInNewContext('startClassLessonTimer(6)', timerContext); // invalid block
-assert.equal(timerContext._timer.phaseIdx, 32);
+runInNewContext('startClassLessonTimer(5)', timerContext); // finisher starts with work, round 1
+assert.equal(timerContext._timer.phaseIdx, 9);
+assert.equal(timerContext._timer.phases[9].round, 1);
+assert.equal(timerContext._timer.phases[9].type, 'work');
+runInNewContext('startClassLessonTimer(6)', timerContext); // cooldown
+assert.equal(timerContext._timer.phaseIdx, 27);
+runInNewContext('startClassLessonTimer(7)', timerContext); // invalid block
+assert.equal(timerContext._timer.phaseIdx, 27);
 
 let saved;
 let saveCount = 0;
@@ -175,10 +180,18 @@ assert.match(boardHtml, /Via lezione/);
 assert.match(boardHtml, /Avvia da qui/);
 assert.equal((boardHtml.match(/class="coach-lesson-start"/g) || []).length, lesson.blocks.length);
 assert.match(boardHtml, /startClassLessonTimer\(3\)/);
-assert.doesNotMatch(boardHtml, /startClassLessonTimer\(6\)/);
-assert.match(boardHtml, /Crab walk/);
+assert.doesNotMatch(boardHtml, /startClassLessonTimer\(7\)/);
+assert.match(boardHtml, /Table toe taps → Hollow/);
 assert.match(boardHtml, /Mobilità di polsi, spalle e anche/);
+assert.match(boardHtml, /Spiegazione blocco A/);
+assert.match(boardHtml, /Spiegazione blocco B/);
 assert.match(boardHtml, /Gruppo 3 \(2\)/);
+viewContext.getLang = () => 'en';
+runInNewContext('renderClassLessonBoard(lesson)', viewContext);
+assert.match(boardHtml, /High plank → push-up → high plank → shoulder taps/);
+assert.match(boardHtml, /Tabletop toe taps → Hollow hold/);
+assert.doesNotMatch(boardHtml, /squat thrust/i);
+viewContext.getLang = () => 'it';
 viewContext._timer = { active: true, classLesson: true, phases: plan.phases, phaseIdx: 3 };
 runInNewContext('renderClassLessonBoard(lesson)', viewContext);
 assert.match(boardHtml, /Dopo 5 min/);

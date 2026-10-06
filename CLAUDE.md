@@ -23,6 +23,7 @@ App web per tracciare le progressioni di allenamento calisthenico.
 - `exercises.json` — definizione esercizi, varianti e metriche (file canonico, italiano)
 - `exercises.en.json` — traduzioni inglesi di label e varianti (solo display)
 - `wod.json` — sessione del giorno condivisa (template pre-caricabile)
+- `wod-archive/` — snapshot cronologici delle scalette Classe per progettare lezioni progressive; escluso dal deploy Pages. Leggere `wod-archive/README.md` prima di creare un nuovo WOD guidato.
 - `sw.js` — Service Worker per caching e auto-update
 - `LICENSE` — MIT License
 - `CLAUDE.md` — questo file

@@ -1,0 +1,122 @@
+{
+  "metadata": {
+    "sequence": 1,
+    "status": "completed",
+    "planned_for": null,
+    "performed_on": null,
+    "date_note": "Data di svolgimento non indicata.",
+    "source": "d34263b:wod.json",
+    "coach_feedback": "L'istruttore ha riferito che la lezione è piaciuta."
+  },
+  "class_lesson": {
+    "participants": 5,
+    "blocks": [
+      {
+        "type": "free",
+        "seconds": 480,
+        "title": {
+          "it": "Riscaldamento",
+          "en": "Warm-up"
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 240,
+        "title": {
+          "it": "Spiegazione",
+          "en": "Briefing"
+        }
+      },
+      {
+        "type": "groups",
+        "seconds": 840,
+        "swap_after": 420,
+        "title": {
+          "it": "Blocco A",
+          "en": "Block A"
+        },
+        "target": {
+          "it": "2–3 serie da 6–10 ripetizioni, recupero libero",
+          "en": "2–3 sets of 6–10 reps, rest as needed"
+        },
+        "groups": [
+          {
+            "size": 3,
+            "exercise": {
+              "it": "Rematore agli anelli",
+              "en": "Ring rows"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Goblet squat",
+              "en": "Goblet squat"
+            }
+          }
+        ]
+      },
+      {
+        "type": "groups",
+        "seconds": 840,
+        "swap_after": 420,
+        "title": {
+          "it": "Blocco B",
+          "en": "Block B"
+        },
+        "target": {
+          "it": "2–3 serie da 6–10 ripetizioni, recupero libero",
+          "en": "2–3 sets of 6–10 reps, rest as needed"
+        },
+        "groups": [
+          {
+            "size": 3,
+            "exercise": {
+              "it": "Piegamenti a terra o sulle parallettes",
+              "en": "Floor or parallette push-ups"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Stacco rumeno con manubri",
+              "en": "Dumbbell Romanian deadlift"
+            }
+          }
+        ]
+      },
+      {
+        "type": "interval",
+        "rounds": 4,
+        "work": 40,
+        "rest": 20,
+        "title": {
+          "it": "Finale tutti insieme",
+          "en": "Group finisher"
+        },
+        "exercises": [
+          {
+            "it": "Affondi indietro alternati",
+            "en": "Alternating reverse lunges"
+          },
+          {
+            "it": "Mountain climber",
+            "en": "Mountain climbers"
+          },
+          {
+            "it": "Bear crawl avanti e indietro",
+            "en": "Bear crawl forward and back"
+          }
+        ]
+      },
+      {
+        "type": "free",
+        "seconds": 480,
+        "title": {
+          "it": "Defaticamento",
+          "en": "Cool-down"
+        }
+      }
+    ]
+  }
+}

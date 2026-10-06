@@ -16,9 +16,9 @@
         "target": { "it": "Mobilità di polsi, spalle e anche → squat su box a due gambe → hip hinge monopodalico assistito → breve pike su box.", "en": "Wrist, shoulder and hip mobility → two-leg box squats → assisted single-leg hip hinges → short box pike hold." }
       },
       {
-        "type": "free", "seconds": 240,
-        "title": { "it": "Spiegazione e gruppi", "en": "Briefing and groups" },
-        "target": { "it": "Tre gruppi da 3, 3 e 2. Mostra le varianti e la qualità del movimento; nei blocchi si cambia stazione ogni 5′.", "en": "Three groups of 3, 3 and 2. Demonstrate options and movement quality; rotate stations every 5 min in the main blocks." }
+        "type": "free", "seconds": 120,
+        "title": { "it": "Spiegazione blocco A", "en": "Block A briefing" },
+        "target": { "it": "Dividi in gruppi da 3, 3 e 2. Mostra rematore, stacco monopodalico e pike hold; cambio stazione ogni 5′.", "en": "Split into groups of 3, 3 and 2. Demonstrate ring rows, single-leg deadlift and pike hold; rotate every 5 min." }
       },
       {
         "type": "groups", "seconds": 900, "swap_after": 300,
@@ -31,6 +31,11 @@
         ]
       },
       {
+        "type": "free", "seconds": 120,
+        "title": { "it": "Spiegazione blocco B", "en": "Block B briefing" },
+        "target": { "it": "Mostra piegamenti, pistol squat seated su box e hollow; riparti con gli stessi tre gruppi e cambi ogni 5′.", "en": "Demonstrate push-ups, seated pistol squats to a box and hollow holds; keep the same three groups and rotate every 5 min." }
+      },
+      {
         "type": "groups", "seconds": 900, "swap_after": 300,
         "title": { "it": "Blocco B · spinta, squat, core", "en": "Block B · push, squat, core" },
         "target": { "it": "Circa 2 serie tecniche per stazione, recupero libero. Riduci la difficoltà se perdi controllo o ampiezza.", "en": "About 2 controlled sets per station, rest as needed. Scale down if control or range of motion drops." },
@@ -41,19 +46,19 @@
         ]
       },
       {
-        "type": "interval", "rounds": 4, "work": 40, "rest": 20,
+        "type": "interval", "rounds": 3, "work": 40, "rest": 20,
         "title": { "it": "Finale tutti insieme", "en": "Group finisher" },
-        "target": { "it": "Ritmo sostenibile e tecnica pulita; nello squat thrust si può fare un passo alla volta, senza salto.", "en": "Keep a sustainable pace and clean form; step one foot at a time in the squat thrust, without jumping." },
+        "target": { "it": "Tre giri in sincrono: transizioni fluide e ritmo controllato; adatta push-up e hollow senza perdere la forma.", "en": "Three synchronized rounds: smooth transitions and a controlled pace; scale the push-up and hollow hold while keeping good form." },
         "exercises": [
-          { "it": "Squat thrust senza salto", "en": "Squat thrust without jump" },
-          { "it": "Affondo laterale alternato", "en": "Alternating lateral lunge" },
-          { "it": "Crab walk · due passi avanti e indietro", "en": "Crab walk · two steps forward and back" }
+          { "it": "Squat → Lunge Switch", "en": "Squat → Lunge Switch" },
+          { "it": "plank alto → push-up → ritorno in plank → shoulder tap dx/sx", "en": "High plank → push-up → high plank → shoulder taps (right/left)" },
+          { "it": "Table toe taps → Hollow", "en": "Tabletop toe taps → Hollow hold" }
         ]
       },
       {
-        "type": "free", "seconds": 360,
+        "type": "free", "seconds": 540,
         "title": { "it": "Defaticamento", "en": "Cool-down" },
-        "target": { "it": "Respirazione lenta, mobilità dorsale e delle anche, allungamento leggero del petto.", "en": "Slow breathing, thoracic and hip mobility, gentle chest stretch." }
+        "target": { "it": "Respirazione lenta, mobilità dorsale e delle anche, allungamento leggero di petto e spalle.", "en": "Slow breathing, thoracic and hip mobility, gentle chest and shoulder stretches." }
       }
     ]
   },
