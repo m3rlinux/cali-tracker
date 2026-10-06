@@ -29,7 +29,9 @@ const lesson = wod.class_lesson;
 assert.ok(model.getClassLesson(lesson));
 const plan = model.buildClassLessonTimerPlan(lesson);
 assert.equal(plan.totalSeconds, 3600);
-assert.equal(plan.phases.length, 31);
+assert.equal(plan.phases.length, 33);
+assert.equal(lesson.participants, 8);
+assert.deepEqual(lesson.blocks.filter(b => b.type === 'groups').map(b => b.groups.map(g => g.size)), [[3, 3, 2], [3, 3, 2]]);
 assert.ok(plan.phases.every(p => p.type !== 'prep'));
 let elapsed = 0;
 const boundaries = [];
@@ -39,7 +41,7 @@ plan.phases.forEach((phase, i) => {
   if (next?.lessonBlockIdx !== phase.lessonBlockIdx ||
       next?.lessonRotation > phase.lessonRotation) boundaries.push(elapsed);
 });
-assert.deepEqual(boundaries, [480, 720, 1140, 1560, 1980, 2400, 3120, 3600]);
+assert.deepEqual(boundaries, [480, 720, 1020, 1320, 1620, 1920, 2220, 2520, 3240, 3600]);
 const finisher = plan.phases.filter(p => p.lessonBlockIdx === 4);
 assert.equal(finisher.length, 24);
 assert.deepEqual(Array.from(finisher, p => p.type),
@@ -66,8 +68,9 @@ assert.equal(model.getClassLesson({ participants: 8, blocks: [{ ...groupBlock,
 const one = { participants: 1, blocks: [{ type: 'groups', title: 'Solo',
   seconds: 120, groups: [{ size: 1, exercise: 'Push-up' }] }] };
 assert.equal(model.buildClassLessonTimerPlan(one).phases.length, 1);
-assert.ok(model.getClassLesson({ participants: 5, blocks: [
-  { ...clone(lesson.blocks[2]), type: 'pair' }
+assert.ok(model.getClassLesson({ participants: 8, blocks: [
+  { ...clone(lesson.blocks[2]), type: 'pair',
+    groups: [{ size: 3, exercise: 'Ring rows' }, { size: 5, exercise: 'Squats' }] }
 ] }));
 
 const timerSource = modelSource + '\n' + [
@@ -100,16 +103,16 @@ assert.equal(timerContext._timer.phaseIdx, 1);
 assert.equal(timerContext._timer.endsAt, 840000);
 timerContext._timer = null; // stop
 runInNewContext('startClassLessonTimer(3)', timerContext); // Block B starts at its first rotation
-assert.equal(timerContext._timer.phaseIdx, 4);
-assert.equal(timerContext._timer.endsAt, 1020000);
+assert.equal(timerContext._timer.phaseIdx, 5);
+assert.equal(timerContext._timer.endsAt, 900000);
 runInNewContext('startClassLessonTimer(4)', timerContext); // finisher starts with work, round 1
-assert.equal(timerContext._timer.phaseIdx, 6);
-assert.equal(timerContext._timer.phases[6].round, 1);
-assert.equal(timerContext._timer.phases[6].type, 'work');
+assert.equal(timerContext._timer.phaseIdx, 8);
+assert.equal(timerContext._timer.phases[8].round, 1);
+assert.equal(timerContext._timer.phases[8].type, 'work');
 runInNewContext('startClassLessonTimer(5)', timerContext); // cooldown
-assert.equal(timerContext._timer.phaseIdx, 30);
+assert.equal(timerContext._timer.phaseIdx, 32);
 runInNewContext('startClassLessonTimer(6)', timerContext); // invalid block
-assert.equal(timerContext._timer.phaseIdx, 30);
+assert.equal(timerContext._timer.phaseIdx, 32);
 
 let saved;
 let saveCount = 0;
@@ -173,10 +176,12 @@ assert.match(boardHtml, /Avvia da qui/);
 assert.equal((boardHtml.match(/class="coach-lesson-start"/g) || []).length, lesson.blocks.length);
 assert.match(boardHtml, /startClassLessonTimer\(3\)/);
 assert.doesNotMatch(boardHtml, /startClassLessonTimer\(6\)/);
-assert.match(boardHtml, /Bear crawl avanti e indietro/);
+assert.match(boardHtml, /Crab walk/);
+assert.match(boardHtml, /Mobilità di polsi, spalle e anche/);
+assert.match(boardHtml, /Gruppo 3 \(2\)/);
 viewContext._timer = { active: true, classLesson: true, phases: plan.phases, phaseIdx: 3 };
 runInNewContext('renderClassLessonBoard(lesson)', viewContext);
-assert.match(boardHtml, /Dopo 7 min/);
+assert.match(boardHtml, /Dopo 5 min/);
 assert.doesNotMatch(boardHtml, /Via lezione/);
 assert.doesNotMatch(boardHtml, /Avvia da qui/);
 viewContext._timer = null;
@@ -220,6 +225,6 @@ runInNewContext(extractFn('saveTempState') + '\n' +
 assert.ok(JSON.parse(sessionValues.get('cali_temp_state')).draft.class_lesson);
 reloadContext.draftSession = {};
 assert.equal(runInNewContext('restoreTempState()', reloadContext), true);
-assert.equal(reloadContext.draftSession.class_lesson.participants, 5);
+assert.equal(reloadContext.draftSession.class_lesson.participants, 8);
 
 console.log('class lesson checks passed');

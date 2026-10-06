@@ -8,38 +8,53 @@
   "force_values": true,
   "circuit_rounds": 1,
   "class_lesson": {
-    "participants": 5,
+    "participants": 8,
     "blocks": [
-      { "type": "free", "seconds": 480, "title": { "it": "Riscaldamento", "en": "Warm-up" } },
-      { "type": "free", "seconds": 240, "title": { "it": "Spiegazione", "en": "Briefing" } },
       {
-        "type": "groups", "seconds": 840, "swap_after": 420,
-        "title": { "it": "Blocco A", "en": "Block A" },
-        "target": { "it": "2–3 serie da 6–10 ripetizioni, recupero libero", "en": "2–3 sets of 6–10 reps, rest as needed" },
+        "type": "free", "seconds": 480,
+        "title": { "it": "Riscaldamento", "en": "Warm-up" },
+        "target": { "it": "Mobilità di polsi, spalle e anche → squat su box a due gambe → hip hinge monopodalico assistito → breve pike su box.", "en": "Wrist, shoulder and hip mobility → two-leg box squats → assisted single-leg hip hinges → short box pike hold." }
+      },
+      {
+        "type": "free", "seconds": 240,
+        "title": { "it": "Spiegazione e gruppi", "en": "Briefing and groups" },
+        "target": { "it": "Tre gruppi da 3, 3 e 2. Mostra le varianti e la qualità del movimento; nei blocchi si cambia stazione ogni 5′.", "en": "Three groups of 3, 3 and 2. Demonstrate options and movement quality; rotate stations every 5 min in the main blocks." }
+      },
+      {
+        "type": "groups", "seconds": 900, "swap_after": 300,
+        "title": { "it": "Blocco A · tirata, anca, pike", "en": "Block A · pull, hinge, pike" },
+        "target": { "it": "Circa 2 serie tecniche per stazione, recupero libero. Controllo del movimento prima della difficoltà.", "en": "About 2 controlled sets per station, rest as needed. Prioritize control over difficulty." },
         "groups": [
-          { "size": 3, "exercise": { "it": "Rematore agli anelli", "en": "Ring rows" } },
-          { "size": 2, "exercise": { "it": "Goblet squat", "en": "Goblet squat" } }
+          { "size": 3, "exercise": { "it": "Rematore agli anelli · 6–8 ripetizioni, discesa lenta 2″", "en": "Ring rows · 6–8 reps, 2-sec lowering" } },
+          { "size": 3, "exercise": { "it": "Stacco rumeno monopodalico con manubrio · 6–8 per lato, 3″ in discesa; mano libera alla parete se serve", "en": "Single-leg dumbbell Romanian deadlift · 6–8 each side, 3-sec lowering; free hand on wall if needed" } },
+          { "size": 2, "exercise": { "it": "Pike hold su box · 15–25″, spalle attive", "en": "Box pike hold · 15–25 sec, active shoulders" } }
         ]
       },
       {
-        "type": "groups", "seconds": 840, "swap_after": 420,
-        "title": { "it": "Blocco B", "en": "Block B" },
-        "target": { "it": "2–3 serie da 6–10 ripetizioni, recupero libero", "en": "2–3 sets of 6–10 reps, rest as needed" },
+        "type": "groups", "seconds": 900, "swap_after": 300,
+        "title": { "it": "Blocco B · spinta, squat, core", "en": "Block B · push, squat, core" },
+        "target": { "it": "Circa 2 serie tecniche per stazione, recupero libero. Riduci la difficoltà se perdi controllo o ampiezza.", "en": "About 2 controlled sets per station, rest as needed. Scale down if control or range of motion drops." },
         "groups": [
-          { "size": 3, "exercise": { "it": "Piegamenti a terra o sulle parallettes", "en": "Floor or parallette push-ups" } },
-          { "size": 2, "exercise": { "it": "Stacco rumeno con manubri", "en": "Dumbbell Romanian deadlift" } }
+          { "size": 3, "exercise": { "it": "Piegamenti a terra o inclinati · 5–8 ripetizioni, pausa 1″ in basso", "en": "Floor or incline push-ups · 5–8 reps, 1-sec pause at the bottom" } },
+          { "size": 3, "exercise": { "it": "Pistol squat seated su box · 5–6 per lato, assistiti se serve", "en": "Seated pistol squat to box · 5–6 each side, assisted if needed" } },
+          { "size": 2, "exercise": { "it": "Hollow hold · 20–30″, gambe raccolte se serve", "en": "Hollow hold · 20–30 sec, tuck legs if needed" } }
         ]
       },
       {
         "type": "interval", "rounds": 4, "work": 40, "rest": 20,
         "title": { "it": "Finale tutti insieme", "en": "Group finisher" },
+        "target": { "it": "Ritmo sostenibile e tecnica pulita; nello squat thrust si può fare un passo alla volta, senza salto.", "en": "Keep a sustainable pace and clean form; step one foot at a time in the squat thrust, without jumping." },
         "exercises": [
-          { "it": "Affondi indietro alternati", "en": "Alternating reverse lunges" },
-          { "it": "Mountain climber", "en": "Mountain climbers" },
-          { "it": "Bear crawl avanti e indietro", "en": "Bear crawl forward and back" }
+          { "it": "Squat thrust senza salto", "en": "Squat thrust without jump" },
+          { "it": "Affondo laterale alternato", "en": "Alternating lateral lunge" },
+          { "it": "Crab walk · due passi avanti e indietro", "en": "Crab walk · two steps forward and back" }
         ]
       },
-      { "type": "free", "seconds": 480, "title": { "it": "Defaticamento", "en": "Cool-down" } }
+      {
+        "type": "free", "seconds": 360,
+        "title": { "it": "Defaticamento", "en": "Cool-down" },
+        "target": { "it": "Respirazione lenta, mobilità dorsale e delle anche, allungamento leggero del petto.", "en": "Slow breathing, thoracic and hip mobility, gentle chest stretch." }
+      }
     ]
   },
   "stations": {
