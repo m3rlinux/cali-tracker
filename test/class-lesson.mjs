@@ -99,9 +99,17 @@ runInNewContext('skipTimerPhase()', timerContext);
 assert.equal(timerContext._timer.phaseIdx, 1);
 assert.equal(timerContext._timer.endsAt, 840000);
 timerContext._timer = null; // stop
-runInNewContext('startClassLessonTimer(3)', timerContext); // restart at second half of A
-assert.equal(timerContext._timer.phaseIdx, 3);
+runInNewContext('startClassLessonTimer(3)', timerContext); // Block B starts at its first rotation
+assert.equal(timerContext._timer.phaseIdx, 4);
 assert.equal(timerContext._timer.endsAt, 1020000);
+runInNewContext('startClassLessonTimer(4)', timerContext); // finisher starts with work, round 1
+assert.equal(timerContext._timer.phaseIdx, 6);
+assert.equal(timerContext._timer.phases[6].round, 1);
+assert.equal(timerContext._timer.phases[6].type, 'work');
+runInNewContext('startClassLessonTimer(5)', timerContext); // cooldown
+assert.equal(timerContext._timer.phaseIdx, 30);
+runInNewContext('startClassLessonTimer(6)', timerContext); // invalid block
+assert.equal(timerContext._timer.phaseIdx, 30);
 
 let saved;
 let saveCount = 0;
@@ -157,17 +165,20 @@ const viewContext = {
   document: { getElementById: () => host }
 };
 const viewSource = modelSource + '\n' + [
-  'classLessonPhaseName', 'classLessonCardHTML', 'renderClassLessonBoard'
+  'classLessonCardHTML', 'renderClassLessonBoard'
 ].map(extractFn).join('\n');
 runInNewContext(viewSource + '\nrenderClassLessonBoard(lesson)', viewContext);
 assert.match(boardHtml, /Via lezione/);
-assert.match(boardHtml, /Scegli fase/);
+assert.match(boardHtml, /Avvia da qui/);
+assert.equal((boardHtml.match(/class="coach-lesson-start"/g) || []).length, lesson.blocks.length);
 assert.match(boardHtml, /startClassLessonTimer\(3\)/);
+assert.doesNotMatch(boardHtml, /startClassLessonTimer\(6\)/);
 assert.match(boardHtml, /Bear crawl avanti e indietro/);
 viewContext._timer = { active: true, classLesson: true, phases: plan.phases, phaseIdx: 3 };
 runInNewContext('renderClassLessonBoard(lesson)', viewContext);
-assert.match(boardHtml, /Rotazione 2/);
+assert.match(boardHtml, /Dopo 7 min/);
 assert.doesNotMatch(boardHtml, /Via lezione/);
+assert.doesNotMatch(boardHtml, /Avvia da qui/);
 viewContext._timer = null;
 viewContext.lesson = eight;
 runInNewContext('renderClassLessonBoard(lesson)', viewContext);

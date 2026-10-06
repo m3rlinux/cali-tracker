@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v4.2.5
+  Cali Tracker v4.2.6
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -461,11 +461,7 @@ body.coach-mode { max-width: 960px; }
 .coach-lesson-meta { font-family: var(--mono); white-space: nowrap; }
 .coach-lesson-detail strong { color: var(--text); font-weight: 500; }
 .coach-lesson-current { font-family: var(--mono); color: var(--accent); font-size: 11px; }
-.coach-lesson-phases { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 8px; }
-.coach-lesson-phases summary { font-family: var(--mono); font-size: 11px; color: var(--accent); cursor: pointer; }
-.coach-lesson-phase-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
-.coach-lesson-phase { border: 1px solid var(--border2); border-radius: 6px; background: var(--surface2); color: var(--text); font-family: var(--mono); font-size: 10px; padding: 7px 9px; cursor: pointer; text-align: left; }
-.coach-lesson-phase.is-active { border-color: var(--accent); color: var(--accent); }
+.coach-lesson-start { margin-top: 10px; border: 1px solid var(--accent); border-radius: 6px; background: var(--surface2); color: var(--accent); font-family: var(--mono); font-size: 11px; padding: 8px 10px; cursor: pointer; }
 .class-history-entry { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 10px; padding: 12px; }
 .class-history-entry summary { cursor: pointer; font-size: 13px; font-weight: 500; }
 .class-history-entry .coach-lesson-list { margin-top: 12px; }
@@ -551,7 +547,7 @@ body.coach-mode { max-width: 960px; }
 </div>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.2.5</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.2.6</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="header-seg header-seg-lang" id="lang-seg" role="group" title="Lingua esercizi / Exercise language">
     <button type="button" class="header-seg-opt" data-lang="it" onclick="setLang('it')">IT</button>
@@ -688,7 +684,7 @@ body.coach-mode { max-width: 960px; }
       <p>In <b>P0</b> ogni <b>▶ Timer</b> è indipendente: a fine esercizio si ferma, senza avviare il successivo. Nell'<b>anello P1–P4</b> (modalità allievo) il timer <b>catena</b> automaticamente tra postazioni; all'ultimo rest passi alla successiva; finito l'anello riparte da P1 fino a N giri. Nell'anello puoi cambiare postazione senza fermare il timer. Puoi passare a Storico o Progressi con il timer attivo (usa <b>Stop</b> o <b>Pausa</b> quando serve).</p>
       <div class="help-h">Modalità coach (classe)</div>
       <p>Dal selettore <b>Allievo / Classe</b> in alto (o dal menu utente) passi alla <b>bacheca</b>: tutte le postazioni visibili insieme. Pensata per una classe in cui ogni coppia occupa una postazione. Il selettore è visibile solo a <b>istruttori</b> e admin (ruolo assegnato dalla tab Admin).</p>
-      <p>Se <b>★ Oggi</b> include una <b>lezione guidata</b>, la modalità Classe mostra la scaletta al posto del circuito. I blocchi possono dividere gli allievi in <b>1–8 gruppi</b>, che ruotano tra gli esercizi all'intervallo indicato; serie e recuperi restano individuali. <b>▶ Via lezione</b> avvia il timer unico; dopo uno Stop puoi aprire <b>Scegli fase</b> e ripartire da qualsiasi fase, dall'inizio del suo tempo. Nel finale il timer scandisce lavoro e recupero per tutti.</p>
+      <p>Se <b>★ Oggi</b> include una <b>lezione guidata</b>, la modalità Classe mostra la scaletta al posto del circuito. I blocchi possono dividere gli allievi in <b>1–8 gruppi</b>, che ruotano tra gli esercizi all'intervallo indicato; serie e recuperi restano individuali. <b>▶ Via lezione</b> avvia il timer unico; dopo uno Stop puoi premere <b>▶ Avvia da qui</b> sul blocco desiderato e ripartire dall'inizio della sezione. Nel finale il timer scandisce lavoro e recupero per tutti.</p>
       <p>In una lezione guidata, <b>Salva lezione ✓</b> la segna come svolta e registra data e scaletta nello <b>Storico</b> personale dell'istruttore, senza salvare serie, ripetizioni o tempi individuali. Dopo un refresh il draft resta, ma il timer si ferma.</p>
       <p>Quando il WOD non include la lezione guidata, resta la bacheca del circuito: <b>P0</b> si fa tutti insieme, col timer della verticale (non concatena a P1). Poi <b>▶ Via circuito</b> avvia un <b>timer master</b> unico — stessi tempi globali (lavoro / cambio / rest) per tutte le postazioni occupate. In <b>alternato</b> il blocco è S1 › cambio › S2 › rest ×N; in <b>sequenziale</b> sono N set di S1 poi N di S2, come le due righe-chip. All'ultimo rest di ogni blocco le persone <b>ruotano</b> (barra gialla, chi era in P1 va in P2); non c'è tempo extra. Il giro completo di rotazioni si ripete per <b>Anello ×N</b>.</p>
       <p>La durata stimata in classe conta P0 in sequenza e il circuito <b>in parallelo</b> (un blocco × numero postazioni × N giri). I tempi per-esercizio del WOD restano visibili in bacheca ma l'orologio di classe usa i tempi <b>globali</b>.</p>
@@ -764,7 +760,7 @@ body.coach-mode { max-width: 960px; }
 <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
-const VERSION = '4.2.5';
+const VERSION = '4.2.6';
 const KEY_NAME = 'cali_name';
 const KEY_COACH = 'cali_coach';
 const KEY_SETTINGS = 'cali_settings';
@@ -3469,14 +3465,16 @@ function startPairTimer(stepIdx, blockIdx, chained, circuitLap) {
   _timerRaf = requestAnimationFrame(timerTick);
 }
 
-function startClassLessonTimer(startPhaseIdx = 0) {
+function startClassLessonTimer(startBlockIdx = 0) {
   if (!isCoachMode() || !canUseClass()) return;
   const plan = buildClassLessonTimerPlan(draftSession?.class_lesson);
-  if (!plan || !Number.isInteger(startPhaseIdx) ||
-      startPhaseIdx < 0 || startPhaseIdx >= plan.phases.length) return;
+  if (!plan || !Number.isInteger(startBlockIdx) ||
+      startBlockIdx < 0 || startBlockIdx >= draftSession.class_lesson.blocks.length) return;
+  const startPhaseIdx = plan.phases.findIndex(phase => phase.lessonBlockIdx === startBlockIdx);
+  if (startPhaseIdx < 0) return;
   if (_timer?.active && !confirm(getLang() === 'en'
-      ? 'Restart the timer from the selected phase?'
-      : 'Riavviare il timer dalla fase scelta?')) return;
+      ? 'Restart the timer from the selected section?'
+      : 'Riavviare il timer dal blocco scelto?')) return;
   stopTimer(false);
   primeTimerAudio();
   _timer = {
@@ -3642,20 +3640,7 @@ function coachExListHTML(ctx, s) {
   }).join('');
 }
 
-function classLessonPhaseName(phase, block, en) {
-  if (classLessonIsGroupBlock(block)) {
-    return phase.lessonRotation === 0
-      ? (en ? 'Start' : 'Inizio')
-      : `${en ? 'Rotation' : 'Rotazione'} ${phase.lessonRotation + 1}`;
-  }
-  if (block.type === 'interval') {
-    const exercise = classLessonText(block.exercises[phase.exerciseIdx], en);
-    return `${en ? 'Round' : 'Giro'} ${phase.round} · ${exercise} · ${phase.type === 'work' ? (en ? 'work' : 'lavoro') : (en ? 'rest' : 'recupero')}`;
-  }
-  return classLessonText(block.title, en);
-}
-
-function classLessonCardHTML(block, index, activeIdx, currentPhase, en, phaseEntries = [], currentPhaseIdx = -1) {
+function classLessonCardHTML(block, index, activeIdx, currentPhase, en, canStart = false) {
   const title = escapeHtml(classLessonText(block.title, en));
   const minutes = formatTimerDuration(classLessonBlockSeconds(block));
   const state = activeIdx == null ? '' : (index === activeIdx ? ' is-current' : (index < activeIdx ? ' is-done' : ''));
@@ -3681,13 +3666,12 @@ function classLessonCardHTML(block, index, activeIdx, currentPhase, en, phaseEnt
     details = `<div class="coach-lesson-detail">${block.rounds} ${en ? 'rounds' : 'giri'} · ${block.work}" ${en ? 'work' : 'lavoro'} / ${block.rest}" ${en ? 'rest' : 'recupero'}</div>
       <div class="coach-lesson-detail">${block.exercises.map(ex => escapeHtml(classLessonText(ex, en))).join(' → ')}</div>`;
   }
-  const phaseButtons = phaseEntries.length ? `<details class="coach-lesson-phases"${index === activeIdx ? ' open' : ''}>
-    <summary>${en ? 'Choose phase' : 'Scegli fase'} (${phaseEntries.length})</summary>
-    <div class="coach-lesson-phase-list">${phaseEntries.map(({ phase, phaseIdx }) => `<button type="button" class="coach-lesson-phase${phaseIdx === currentPhaseIdx ? ' is-active' : ''}" onclick="startClassLessonTimer(${phaseIdx})">${escapeHtml(classLessonPhaseName(phase, block, en))} · ${formatTimerDuration(phase.seconds)}</button>`).join('')}</div>
-  </details>` : '';
+  const startButton = canStart
+    ? `<button type="button" class="coach-lesson-start" onclick="startClassLessonTimer(${index})">${en ? '▶ Start here' : '▶ Avvia da qui'}</button>`
+    : '';
   return `<div class="coach-lesson-card${state}">
     <div class="coach-lesson-head"><span class="coach-lesson-title">${index + 1}. ${title}</span><span class="coach-lesson-meta">${minutes}</span></div>
-    ${status ? `<div class="coach-lesson-current">${status}</div>` : ''}${details}${phaseButtons}
+    ${status ? `<div class="coach-lesson-current">${status}</div>` : ''}${details}${startButton}
   </div>`;
 }
 
@@ -3695,14 +3679,12 @@ function renderClassLessonBoard(lesson) {
   const en = getLang() === 'en';
   const running = !!(_timer?.active && _timer.classLesson);
   const phase = running ? _timer.phases[_timer.phaseIdx] : null;
-  const activeIdx = phase?.lessonBlockIdx ?? 0;
-  const next = lesson.blocks[activeIdx + 1];
+  const activeIdx = phase?.lessonBlockIdx ?? null;
+  const next = activeIdx == null ? null : lesson.blocks[activeIdx + 1];
   const nextLabel = next ? `${en ? 'Next' : 'Dopo'}: ${classLessonText(next.title, en)}` : '';
-  const plan = buildClassLessonTimerPlan(lesson);
-  const cards = lesson.blocks.map((block, i) => {
-    const entries = plan.phases.flatMap((p, phaseIdx) => p.lessonBlockIdx === i ? [{ phase: p, phaseIdx }] : []);
-    return classLessonCardHTML(block, i, activeIdx, phase, en, entries, running ? _timer.phaseIdx : -1);
-  }).join('');
+  const cards = lesson.blocks
+    .map((block, i) => classLessonCardHTML(block, i, activeIdx, phase, en, !running))
+    .join('');
   document.getElementById('step-content').innerHTML = `<div class="coach-board">
     <div>
       <div class="coach-section-label">${en ? 'Guided class · ' : 'Lezione guidata · '}${lesson.participants} ${en ? 'students' : 'allievi'}</div>
