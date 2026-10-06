@@ -13,7 +13,7 @@
       { "type": "free", "seconds": 480, "title": { "it": "Riscaldamento", "en": "Warm-up" } },
       { "type": "free", "seconds": 240, "title": { "it": "Spiegazione", "en": "Briefing" } },
       {
-        "type": "pair", "seconds": 840, "swap_after": 420,
+        "type": "groups", "seconds": 840, "swap_after": 420,
         "title": { "it": "Blocco A", "en": "Block A" },
         "target": { "it": "2–3 serie da 6–10 ripetizioni, recupero libero", "en": "2–3 sets of 6–10 reps, rest as needed" },
         "groups": [
@@ -22,7 +22,7 @@
         ]
       },
       {
-        "type": "pair", "seconds": 840, "swap_after": 420,
+        "type": "groups", "seconds": 840, "swap_after": 420,
         "title": { "it": "Blocco B", "en": "Block B" },
         "target": { "it": "2–3 serie da 6–10 ripetizioni, recupero libero", "en": "2–3 sets of 6–10 reps, rest as needed" },
         "groups": [

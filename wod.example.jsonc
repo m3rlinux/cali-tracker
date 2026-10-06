@@ -45,9 +45,11 @@
 
   // ── LEZIONE GUIDATA CLASSE (opzionale) ──
   // Visibile solo al coach dopo ★ Oggi. Se assente, resta il circuito Classe.
-  // free: durata del blocco; pair: due gruppi, segnale a swap_after secondi;
+  // free: durata del blocco; groups: da 1 a 8 gruppi, un esercizio ciascuno.
+  // La somma dei size deve essere participants. Con swap_after i gruppi ruotano
+  // ciclicamente agli esercizi successivi ogni N secondi (opzionale con 1 gruppo).
   // interval: ogni esercizio alterna work/rest per rounds giri.
-  // Non modifica le postazioni, la vista Allievo o lo storico.
+  // Salva in Classe registra solo data e scaletta nello storico personale.
   "class_lesson": {
     "participants": 5,
     "blocks": [
@@ -68,7 +70,7 @@
         }
       },
       {
-        "type": "pair",
+        "type": "groups",
         "seconds": 840,
         "swap_after": 420,
         "title": {
@@ -97,7 +99,7 @@
         ]
       },
       {
-        "type": "pair",
+        "type": "groups",
         "seconds": 840,
         "swap_after": 420,
         "title": {
