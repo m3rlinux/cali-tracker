@@ -33,9 +33,9 @@ assert.equal(escapeHtml("it's"), 'it&#39;s');
 assert.equal(escapeHtml(null), '');
 
 const version = html.match(/const VERSION = '([^']+)'/)[1];
-assert.equal(version, '4.2.8');
-assert.match(html, /Cali Tracker v4\.2\.8/);
-assert.match(sw, /const CACHE_VERSION = '4\.2\.8'/);
+assert.equal(version, '4.2.9');
+assert.match(html, /Cali Tracker v4\.2\.9/);
+assert.match(sw, /const CACHE_VERSION = '4\.2\.9'/);
 
 const setCoach = extractFn(html, 'setCoachMode');
 assert.match(setCoach, /if \(on\) collectStep\(currentStep\);/);
@@ -149,4 +149,4 @@ assert.ok(wavUri.length > 100);
 const fbCfg = readFileSync(join(root, 'firebase-config.js'), 'utf8');
 assert.match(fbCfg, /adminEmails/);
 
-console.log('ok: v4.2.8 review fixes');
+console.log('ok: v4.2.9 review fixes');
