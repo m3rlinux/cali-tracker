@@ -4,12 +4,12 @@
     "status": "planned",
     "planned_for": "2026-10-07",
     "performed_on": null,
-    "date_note": "Da aggiornare dopo la lezione, solo con conferma dell'istruttore.",
+    "date_note": "Lezione prevista per il 7 ottobre; svolgimento e numero effettivo di presenti da confermare.",
     "source": "wod.json",
     "coach_feedback": null
   },
   "class_lesson": {
-    "participants": 8,
+    "participants": 5,
     "blocks": [
       {
         "type": "free",
@@ -31,8 +31,8 @@
           "en": "Block A briefing"
         },
         "target": {
-          "it": "Dividi in gruppi da 3, 3 e 2. Mostra rematore, stacco monopodalico e pike hold; cambio stazione ogni 5′.",
-          "en": "Split into groups of 3, 3 and 2. Demonstrate ring rows, single-leg deadlift and pike hold; rotate every 5 min."
+          "it": "Dividi in gruppi da 2, 2 e 1. Mostra rematore, stacco monopodalico e pike hold; cambio stazione ogni 5′.",
+          "en": "Split into groups of 2, 2 and 1. Demonstrate ring rows, single-leg deadlift and pike hold; change stations every 5 min."
         }
       },
       {
@@ -49,21 +49,21 @@
         },
         "groups": [
           {
-            "size": 3,
+            "size": 2,
             "exercise": {
               "it": "Rematore agli anelli · 6–8 ripetizioni, discesa lenta 2″",
               "en": "Ring rows · 6–8 reps, 2-sec lowering"
             }
           },
           {
-            "size": 3,
+            "size": 2,
             "exercise": {
               "it": "Stacco rumeno monopodalico con manubrio · 6–8 per lato, 3″ in discesa; mano libera alla parete se serve",
               "en": "Single-leg dumbbell Romanian deadlift · 6–8 each side, 3-sec lowering; free hand on wall if needed"
             }
           },
           {
-            "size": 2,
+            "size": 1,
             "exercise": {
               "it": "Pike hold su box · 15–25″, spalle attive",
               "en": "Box pike hold · 15–25 sec, active shoulders"
@@ -97,21 +97,21 @@
         },
         "groups": [
           {
-            "size": 3,
+            "size": 2,
             "exercise": {
               "it": "Piegamenti a terra o inclinati · 5–8 ripetizioni, pausa 1″ in basso",
               "en": "Floor or incline push-ups · 5–8 reps, 1-sec pause at the bottom"
             }
           },
           {
-            "size": 3,
+            "size": 2,
             "exercise": {
               "it": "Pistol squat seated su box · 5–6 per lato, assistiti se serve",
               "en": "Seated pistol squat to box · 5–6 each side, assisted if needed"
             }
           },
           {
-            "size": 2,
+            "size": 1,
             "exercise": {
               "it": "Hollow hold · 20–30″, gambe raccolte se serve",
               "en": "Hollow hold · 20–30 sec, tuck legs if needed"

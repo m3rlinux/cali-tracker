@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v4.2.7
+  Cali Tracker v4.2.8
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -460,6 +460,8 @@ body.coach-mode { max-width: 960px; }
 .coach-lesson-meta, .coach-lesson-detail { font-size: 12px; color: var(--muted); line-height: 1.5; }
 .coach-lesson-meta { font-family: var(--mono); white-space: nowrap; }
 .coach-lesson-detail strong { color: var(--text); font-weight: 500; }
+.coach-lesson-exercises { padding-left: 18px; margin: 4px 0 8px; }
+.coach-lesson-exercises li { font-size: 12px; color: var(--muted); line-height: 1.5; margin-top: 4px; }
 .coach-lesson-current { font-family: var(--mono); color: var(--accent); font-size: 11px; }
 .coach-lesson-start { margin-top: 10px; border: 1px solid var(--accent); border-radius: 6px; background: var(--surface2); color: var(--accent); font-family: var(--mono); font-size: 11px; padding: 8px 10px; cursor: pointer; }
 .class-history-entry { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 10px; padding: 12px; }
@@ -547,7 +549,7 @@ body.coach-mode { max-width: 960px; }
 </div>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.2.7</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.2.8</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="header-seg header-seg-lang" id="lang-seg" role="group" title="Lingua esercizi / Exercise language">
     <button type="button" class="header-seg-opt" data-lang="it" onclick="setLang('it')">IT</button>
@@ -760,7 +762,7 @@ body.coach-mode { max-width: 960px; }
 <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
-const VERSION = '4.2.7';
+const VERSION = '4.2.8';
 const KEY_NAME = 'cali_name';
 const KEY_COACH = 'cali_coach';
 const KEY_SETTINGS = 'cali_settings';
@@ -3640,7 +3642,7 @@ function coachExListHTML(ctx, s) {
   }).join('');
 }
 
-function classLessonCardHTML(block, index, activeIdx, currentPhase, en, canStart = false) {
+function classLessonCardHTML(block, index, activeIdx, en, canStart = false) {
   const title = escapeHtml(classLessonText(block.title, en));
   const minutes = formatTimerDuration(classLessonBlockSeconds(block));
   const state = activeIdx == null ? '' : (index === activeIdx ? ' is-current' : (index < activeIdx ? ' is-done' : ''));
@@ -3649,21 +3651,16 @@ function classLessonCardHTML(block, index, activeIdx, currentPhase, en, canStart
     : (index === activeIdx + 1 ? (en ? 'Next' : 'Dopo') : ''));
   let details = '';
   if (classLessonIsGroupBlock(block)) {
-    const rotation = currentPhase?.lessonBlockIdx === index ? currentPhase.lessonRotation || 0 : 0;
-    const assignmentHTML = (step, label) => `<div class="coach-lesson-detail"><strong>${label}:</strong></div>`
-      + block.groups.map((group, i) => {
-        const exercise = block.groups[(i + step) % block.groups.length].exercise;
-        return `<div class="coach-lesson-detail">${en ? 'Group' : 'Gruppo'} ${i + 1} (${group.size}): ${escapeHtml(classLessonText(exercise, en))}</div>`;
-      }).join('');
-    details = assignmentHTML(0, en ? 'Start' : 'Inizio');
+    details = `<div class="coach-lesson-detail"><strong>${en ? 'Start' : 'Inizio'}:</strong></div>`
+      + block.groups.map((group, i) =>
+        `<div class="coach-lesson-detail">${en ? 'Group' : 'Gruppo'} ${i + 1} (${group.size}): ${escapeHtml(classLessonText(group.exercise, en))}</div>`
+      ).join('');
     if (block.swap_after && block.groups.length > 1) {
-      details += assignmentHTML(1, `${en ? 'After' : 'Dopo'} ${formatTimerDuration(block.swap_after)}`);
-      if (rotation > 1) details += assignmentHTML(rotation, `${en ? 'Now' : 'Ora'} · ${en ? 'rotation' : 'rotazione'} ${rotation + 1}`);
-      details += `<div class="coach-lesson-detail">${en ? 'Rotate every' : 'Rotazione ogni'} ${formatTimerDuration(block.swap_after)}</div>`;
+      details += `<div class="coach-lesson-detail">${en ? 'Change stations every' : 'Cambio postazioni ogni'} ${formatTimerDuration(block.swap_after)}</div>`;
     }
   } else if (block.type === 'interval') {
     details = `<div class="coach-lesson-detail">${block.rounds} ${en ? 'rounds' : 'giri'} · ${block.work}" ${en ? 'work' : 'lavoro'} / ${block.rest}" ${en ? 'rest' : 'recupero'}</div>
-      <div class="coach-lesson-detail">${block.exercises.map(ex => escapeHtml(classLessonText(ex, en))).join(' → ')}</div>`;
+      <ol class="coach-lesson-exercises">${block.exercises.map(ex => `<li>${escapeHtml(classLessonText(ex, en))}</li>`).join('')}</ol>`;
   }
   if (block.target) details += `<div class="coach-lesson-detail">${escapeHtml(classLessonText(block.target, en))}</div>`;
   const startButton = canStart
@@ -3683,7 +3680,7 @@ function renderClassLessonBoard(lesson) {
   const next = activeIdx == null ? null : lesson.blocks[activeIdx + 1];
   const nextLabel = next ? `${en ? 'Next' : 'Dopo'}: ${classLessonText(next.title, en)}` : '';
   const cards = lesson.blocks
-    .map((block, i) => classLessonCardHTML(block, i, activeIdx, phase, en, !running))
+    .map((block, i) => classLessonCardHTML(block, i, activeIdx, en, !running))
     .join('');
   document.getElementById('step-content').innerHTML = `<div class="coach-board">
     <div>
@@ -3994,7 +3991,7 @@ function renderClassLessonHistory(data) {
     const date = new Date(record.performed_at).toLocaleString(en ? 'en-GB' : 'it-IT',
       { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     const total = buildClassLessonTimerPlan(lesson).totalSeconds;
-    const cards = lesson.blocks.map((block, i) => classLessonCardHTML(block, i, null, null, en)).join('');
+    const cards = lesson.blocks.map((block, i) => classLessonCardHTML(block, i, null, en)).join('');
     return `<details class="class-history-entry">
       <summary>${escapeHtml(date)} · ${lesson.participants} ${en ? 'students' : 'allievi'} · ${formatTimerDuration(total)}</summary>
       <div class="coach-lesson-list">${cards}</div>

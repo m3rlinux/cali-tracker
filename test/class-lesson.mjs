@@ -30,8 +30,9 @@ assert.ok(model.getClassLesson(lesson));
 const plan = model.buildClassLessonTimerPlan(lesson);
 assert.equal(plan.totalSeconds, 3600);
 assert.equal(plan.phases.length, 28);
-assert.equal(lesson.participants, 8);
-assert.deepEqual(lesson.blocks.filter(b => b.type === 'groups').map(b => b.groups.map(g => g.size)), [[3, 3, 2], [3, 3, 2]]);
+assert.equal(lesson.participants, 5);
+assert.match(lesson.blocks[1].target.en, /2, 2 and 1/);
+assert.deepEqual(lesson.blocks.filter(b => b.type === 'groups').map(b => b.groups.map(g => g.size)), [[2, 2, 1], [2, 2, 1]]);
 assert.ok(plan.phases.every(p => p.type !== 'prep'));
 let elapsed = 0;
 const boundaries = [];
@@ -185,16 +186,20 @@ assert.match(boardHtml, /Table toe taps → Hollow/);
 assert.match(boardHtml, /Mobilità di polsi, spalle e anche/);
 assert.match(boardHtml, /Spiegazione blocco A/);
 assert.match(boardHtml, /Spiegazione blocco B/);
-assert.match(boardHtml, /Gruppo 3 \(2\)/);
+assert.match(boardHtml, /Gruppo 3 \(1\)/);
+assert.match(boardHtml, /<ol class="coach-lesson-exercises">/);
+assert.equal((boardHtml.match(/<li>/g) || []).length, 3);
 viewContext.getLang = () => 'en';
 runInNewContext('renderClassLessonBoard(lesson)', viewContext);
 assert.match(boardHtml, /High plank → push-up → high plank → shoulder taps/);
 assert.match(boardHtml, /Tabletop toe taps → Hollow hold/);
+assert.match(boardHtml, /Change stations every 5 min/);
 assert.doesNotMatch(boardHtml, /squat thrust/i);
 viewContext.getLang = () => 'it';
 viewContext._timer = { active: true, classLesson: true, phases: plan.phases, phaseIdx: 3 };
 runInNewContext('renderClassLessonBoard(lesson)', viewContext);
-assert.match(boardHtml, /Dopo 5 min/);
+assert.match(boardHtml, /Cambio postazioni ogni 5 min/);
+assert.doesNotMatch(boardHtml, /Dopo 5 min:/);
 assert.doesNotMatch(boardHtml, /Via lezione/);
 assert.doesNotMatch(boardHtml, /Avvia da qui/);
 viewContext._timer = null;
@@ -204,7 +209,8 @@ assert.match(boardHtml, /Gruppo 8 \(1\)/);
 viewContext._timer = { active: true, classLesson: true,
   phases: model.buildClassLessonTimerPlan(eight).phases, phaseIdx: 1 };
 runInNewContext('renderClassLessonBoard(lesson)', viewContext);
-assert.match(boardHtml, /Gruppo 1 \(1\): Esercizio 2/);
+assert.match(boardHtml, /Gruppo 1 \(1\): Esercizio 1/);
+assert.doesNotMatch(boardHtml, /Gruppo 1 \(1\): Esercizio 2/);
 
 let historyHtml = '';
 const historyContext = {
@@ -238,6 +244,6 @@ runInNewContext(extractFn('saveTempState') + '\n' +
 assert.ok(JSON.parse(sessionValues.get('cali_temp_state')).draft.class_lesson);
 reloadContext.draftSession = {};
 assert.equal(runInNewContext('restoreTempState()', reloadContext), true);
-assert.equal(reloadContext.draftSession.class_lesson.participants, 8);
+assert.equal(reloadContext.draftSession.class_lesson.participants, 5);
 
 console.log('class lesson checks passed');

@@ -8,7 +8,7 @@
   "force_values": true,
   "circuit_rounds": 1,
   "class_lesson": {
-    "participants": 8,
+    "participants": 5,
     "blocks": [
       {
         "type": "free", "seconds": 480,
@@ -18,16 +18,16 @@
       {
         "type": "free", "seconds": 120,
         "title": { "it": "Spiegazione blocco A", "en": "Block A briefing" },
-        "target": { "it": "Dividi in gruppi da 3, 3 e 2. Mostra rematore, stacco monopodalico e pike hold; cambio stazione ogni 5′.", "en": "Split into groups of 3, 3 and 2. Demonstrate ring rows, single-leg deadlift and pike hold; rotate every 5 min." }
+        "target": { "it": "Dividi in gruppi da 2, 2 e 1. Mostra rematore, stacco monopodalico e pike hold; cambio stazione ogni 5′.", "en": "Split into groups of 2, 2 and 1. Demonstrate ring rows, single-leg deadlift and pike hold; change stations every 5 min." }
       },
       {
         "type": "groups", "seconds": 900, "swap_after": 300,
         "title": { "it": "Blocco A · tirata, anca, pike", "en": "Block A · pull, hinge, pike" },
         "target": { "it": "Circa 2 serie tecniche per stazione, recupero libero. Controllo del movimento prima della difficoltà.", "en": "About 2 controlled sets per station, rest as needed. Prioritize control over difficulty." },
         "groups": [
-          { "size": 3, "exercise": { "it": "Rematore agli anelli · 6–8 ripetizioni, discesa lenta 2″", "en": "Ring rows · 6–8 reps, 2-sec lowering" } },
-          { "size": 3, "exercise": { "it": "Stacco rumeno monopodalico con manubrio · 6–8 per lato, 3″ in discesa; mano libera alla parete se serve", "en": "Single-leg dumbbell Romanian deadlift · 6–8 each side, 3-sec lowering; free hand on wall if needed" } },
-          { "size": 2, "exercise": { "it": "Pike hold su box · 15–25″, spalle attive", "en": "Box pike hold · 15–25 sec, active shoulders" } }
+          { "size": 2, "exercise": { "it": "Rematore agli anelli · 6–8 ripetizioni, discesa lenta 2″", "en": "Ring rows · 6–8 reps, 2-sec lowering" } },
+          { "size": 2, "exercise": { "it": "Stacco rumeno monopodalico con manubrio · 6–8 per lato, 3″ in discesa; mano libera alla parete se serve", "en": "Single-leg dumbbell Romanian deadlift · 6–8 each side, 3-sec lowering; free hand on wall if needed" } },
+          { "size": 1, "exercise": { "it": "Pike hold su box · 15–25″, spalle attive", "en": "Box pike hold · 15–25 sec, active shoulders" } }
         ]
       },
       {
@@ -40,9 +40,9 @@
         "title": { "it": "Blocco B · spinta, squat, core", "en": "Block B · push, squat, core" },
         "target": { "it": "Circa 2 serie tecniche per stazione, recupero libero. Riduci la difficoltà se perdi controllo o ampiezza.", "en": "About 2 controlled sets per station, rest as needed. Scale down if control or range of motion drops." },
         "groups": [
-          { "size": 3, "exercise": { "it": "Piegamenti a terra o inclinati · 5–8 ripetizioni, pausa 1″ in basso", "en": "Floor or incline push-ups · 5–8 reps, 1-sec pause at the bottom" } },
-          { "size": 3, "exercise": { "it": "Pistol squat seated su box · 5–6 per lato, assistiti se serve", "en": "Seated pistol squat to box · 5–6 each side, assisted if needed" } },
-          { "size": 2, "exercise": { "it": "Hollow hold · 20–30″, gambe raccolte se serve", "en": "Hollow hold · 20–30 sec, tuck legs if needed" } }
+          { "size": 2, "exercise": { "it": "Piegamenti a terra o inclinati · 5–8 ripetizioni, pausa 1″ in basso", "en": "Floor or incline push-ups · 5–8 reps, 1-sec pause at the bottom" } },
+          { "size": 2, "exercise": { "it": "Pistol squat seated su box · 5–6 per lato, assistiti se serve", "en": "Seated pistol squat to box · 5–6 each side, assisted if needed" } },
+          { "size": 1, "exercise": { "it": "Hollow hold · 20–30″, gambe raccolte se serve", "en": "Hollow hold · 20–30 sec, tuck legs if needed" } }
         ]
       },
       {

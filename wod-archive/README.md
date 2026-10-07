@@ -5,7 +5,7 @@ Questo archivio conserva le **scalette Classe** nell'ordine in cui sono state cr
 | N. | Scaletta | Stato / data | Continuità didattica |
 | --- | --- | --- | --- |
 | 1 | [Prima classe, 5 partecipanti](001-classe-5.json) | Svolta; data non comunicata | Due gruppi 3+2; rematore e goblet squat, piegamenti e stacco rumeno; finale affondi, mountain climber, bear crawl. L'istruttore ha riferito che è piaciuta. |
-| 2 | [Classe full, 8 partecipanti](002-full-8-2026-10-07.json) | Prevista per 2026-10-07; svolgimento da confermare | Tre gruppi 3+3+2; rematore, stacco monopodalico e pike, poi piegamenti, pistol squat su box e hollow. Finale rivisto su tre giri. |
+| 2 | [Classe pianificata, 5 partecipanti](002-classe-5-2026-10-07.json) | Prevista per 2026-10-07; svolgimento e presenze da confermare | Tre gruppi 2+2+1; rematore, stacco monopodalico e pike, poi piegamenti, pistol squat su box e hollow. Finale su tre giri. |
 
 ## Quando si progetta una nuova lezione
 
