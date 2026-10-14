@@ -31,21 +31,23 @@
           "en": "Block A briefing"
         },
         "target": {
-          "it": "Dividi in gruppi da 2, 2 e 1. Mostra rematore, stacco monopodalico e pike hold; cambio stazione ogni 5′.",
-          "en": "Split into groups of 2, 2 and 1. Demonstrate ring rows, single-leg deadlift and pike hold; change stations every 5 min."
+          "it": "Dividi in gruppi da 2, 2 e 1. Mostra rematore, stacco monopodalico e pike hold; 2 serie sincronizzate per postazione: 90 s lavoro, 60 s recupero e 90 s cambio.",
+          "en": "Split into groups of 2, 2 and 1. Demonstrate ring rows, single-leg deadlift and pike hold; 2 synchronized sets per station: 90 sec work, 60 sec rest between sets and 90 sec to change stations."
         }
       },
       {
         "type": "groups",
-        "seconds": 900,
-        "swap_after": 300,
+        "sets": 2,
+        "work": 90,
+        "rest": 60,
+        "change_time": 90,
         "title": {
           "it": "Blocco A · tirata, anca, pike",
           "en": "Block A · pull, hinge, pike"
         },
         "target": {
-          "it": "Circa 2 serie tecniche per stazione, recupero libero. Controllo del movimento prima della difficoltà.",
-          "en": "About 2 controlled sets per station, rest as needed. Prioritize control over difficulty."
+          "it": "2 serie tecniche per postazione; esegui le ripetizioni o la tenuta previste entro il work, poi recupera fino al segnale. Controllo del movimento prima della difficoltà.",
+          "en": "2 controlled sets per station; complete the prescribed reps or hold within the work interval, then rest until the signal. Prioritize control over difficulty."
         },
         "groups": [
           {
@@ -79,21 +81,23 @@
           "en": "Block B briefing"
         },
         "target": {
-          "it": "Mostra piegamenti, pistol squat seated su box e hollow; riparti con gli stessi tre gruppi e cambi ogni 5′.",
-          "en": "Demonstrate push-ups, seated pistol squats to a box and hollow holds; keep the same three groups and rotate every 5 min."
+          "it": "Mostra piegamenti, pistol squat seated su box e hollow; riparti con gli stessi tre gruppi e 2 serie sincronizzate per postazione: 90 s lavoro, 60 s recupero e 90 s cambio.",
+          "en": "Demonstrate push-ups, seated pistol squats to a box and hollow holds; keep the same three groups and perform 2 synchronized sets per station: 90 sec work, 60 sec rest between sets and 90 sec to change stations."
         }
       },
       {
         "type": "groups",
-        "seconds": 900,
-        "swap_after": 300,
+        "sets": 2,
+        "work": 90,
+        "rest": 60,
+        "change_time": 90,
         "title": {
           "it": "Blocco B · spinta, squat, core",
           "en": "Block B · push, squat, core"
         },
         "target": {
-          "it": "Circa 2 serie tecniche per stazione, recupero libero. Riduci la difficoltà se perdi controllo o ampiezza.",
-          "en": "About 2 controlled sets per station, rest as needed. Scale down if control or range of motion drops."
+          "it": "2 serie tecniche per postazione; esegui le ripetizioni o la tenuta previste entro il work, poi recupera fino al segnale. Riduci la difficoltà se perdi controllo o ampiezza.",
+          "en": "2 controlled sets per station; complete the prescribed reps or hold within the work interval, then rest until the signal. Scale down if control or range of motion drops."
         },
         "groups": [
           {

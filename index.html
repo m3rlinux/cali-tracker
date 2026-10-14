@@ -2823,8 +2823,12 @@ function getClassLesson(value) {
     if (block.type === 'free') {
       if (!validSeconds(block.seconds)) return null;
     } else if (classLessonIsGroupBlock(block)) {
-      if (!validSeconds(block.seconds)) return null;
-      if (block.swap_after != null &&
+      if (block.sets != null) {
+        if (!validSeconds(block.sets) || !validSeconds(block.work) ||
+            !Number.isInteger(block.rest) || block.rest < 0 ||
+            !Number.isInteger(block.change_time) || block.change_time < 0) return null;
+      } else if (!validSeconds(block.seconds)) return null;
+      if (block.sets == null && block.swap_after != null &&
           (!validSeconds(block.swap_after) || block.swap_after >= block.seconds)) return null;
       if (!Array.isArray(block.groups) || block.groups.length < 1 || block.groups.length > 8) return null;
       if (block.groups.some(g => !g || !Number.isInteger(g.size) || g.size < 1 || !classLessonText(g.exercise, false))) return null;
@@ -2839,6 +2843,10 @@ function getClassLesson(value) {
 }
 
 function classLessonBlockSeconds(block) {
+  if (classLessonIsGroupBlock(block) && block.sets != null) {
+    return block.groups.length * (block.sets * block.work +
+      (block.sets - 1) * block.rest) + (block.groups.length - 1) * block.change_time;
+  }
   return block.type === 'interval'
     ? block.rounds * block.exercises.length * (block.work + block.rest)
     : block.seconds;
@@ -2851,6 +2859,22 @@ function buildClassLessonTimerPlan(lesson) {
   lesson.blocks.forEach((block, blockIdx) => {
     const common = { lessonBlockIdx: blockIdx };
     if (classLessonIsGroupBlock(block)) {
+      if (block.sets != null) {
+        for (let rotation = 0; rotation < block.groups.length; rotation++) {
+          for (let set = 1; set <= block.sets; set++) {
+            const meta = { ...common, lessonRotation: rotation, lessonSet: set };
+            phases.push({ ...meta, type: 'work', label: { it: 'Lavoro', en: 'Work' }, seconds: block.work });
+            if (set < block.sets && block.rest > 0) {
+              phases.push({ ...meta, type: 'rest', label: { it: 'Recupero', en: 'Rest' }, seconds: block.rest });
+            }
+          }
+          if (rotation < block.groups.length - 1 && block.change_time > 0) {
+            phases.push({ ...common, lessonRotation: rotation, type: 'change',
+              label: { it: 'Cambio postazione', en: 'Change stations' }, seconds: block.change_time });
+          }
+        }
+        return;
+      }
       const rotationSeconds = block.swap_after || block.seconds;
       for (let elapsed = 0, rotation = 0; elapsed < block.seconds; elapsed += rotationSeconds, rotation++) {
         phases.push({ ...common, type: 'lesson', label: block.title,
@@ -3354,6 +3378,9 @@ function renderTimerBar() {
     const block = lesson?.blocks[phase.lessonBlockIdx];
     prog.push(en ? `Block ${phase.lessonBlockIdx + 1}/${lesson?.blocks.length || 1}` : `Blocco ${phase.lessonBlockIdx + 1}/${lesson?.blocks.length || 1}`);
     if (phase.lessonRotation > 0) prog.push(en ? `Rotation ${phase.lessonRotation + 1}` : `Rotazione ${phase.lessonRotation + 1}`);
+    if (phase.lessonSet != null) {
+      prog.push(en ? `Set ${phase.lessonSet}/${block.sets}` : `Serie ${phase.lessonSet}/${block.sets}`);
+    }
     if (block?.type === 'interval') {
       prog.push(en ? `Round ${phase.round}/${block.rounds}` : `Giro ${phase.round}/${block.rounds}`);
       prog.push(`${phase.exerciseIdx + 1}/${block.exercises.length}`);
@@ -3657,7 +3684,9 @@ function classLessonCardHTML(block, index, activeIdx, en, canStart = false) {
       + block.groups.map((group, i) =>
         `<div class="coach-lesson-detail">${en ? 'Group' : 'Gruppo'} ${i + 1} (${group.size}): ${escapeHtml(classLessonText(group.exercise, en))}</div>`
       ).join('');
-    if (block.swap_after && block.groups.length > 1) {
+    if (block.sets != null) {
+      details += `<div class="coach-lesson-detail">${block.sets} ${en ? 'sets per station' : 'serie per postazione'} &middot; ${block.work}" ${en ? 'work' : 'lavoro'} / ${block.rest}" ${en ? 'rest' : 'recupero'} &middot; ${block.change_time}" ${en ? 'station change' : 'cambio postazione'}</div>`;
+    } else if (block.swap_after && block.groups.length > 1) {
       details += `<div class="coach-lesson-detail"><strong class="coach-lesson-change-label">${en ? 'Change stations' : 'Cambio postazioni'}</strong> ${en ? 'every' : 'ogni'} <span class="coach-lesson-change-time">${formatTimerDuration(block.swap_after)}</span></div>`;
     }
   } else if (block.type === 'interval') {

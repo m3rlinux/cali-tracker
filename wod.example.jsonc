@@ -50,6 +50,10 @@
   // ciclicamente agli esercizi successivi ogni N secondi (opzionale con 1 gruppo).
   // interval: ogni esercizio alterna work/rest per rounds giri.
   // Salva in Classe registra solo data e scaletta nello storico personale.
+  // Alternativa a seconds/swap_after nei blocchi groups:
+  // "sets": 2, "work": 90, "rest": 60, "change_time": 90
+  // Serie sincronizzate per postazione; rest tra serie, change_time tra postazioni.
+  // Dopo l'ultima serie dell'ultima postazione il blocco termina senza recupero extra.
   "class_lesson": {
     "participants": 5,
     "blocks": [

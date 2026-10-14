@@ -25,7 +25,32 @@ const modelSource = [
   'classLessonBlockSeconds', 'buildClassLessonTimerPlan'
 ].map(extractFn).join('\n');
 const model = runInNewContext(modelSource + '\n({ getClassLesson, buildClassLessonTimerPlan })');
-const lesson = wod.class_lesson;
+const synchronized = wod.class_lesson;
+assert.ok(model.getClassLesson(synchronized));
+const synchronizedPlan = model.buildClassLessonTimerPlan(synchronized);
+assert.equal(synchronizedPlan.totalSeconds, 3600);
+const groupPhases = synchronizedPlan.phases.filter(p => p.lessonBlockIdx === 2);
+assert.deepEqual(Array.from(groupPhases, p => p.type),
+  ['work', 'rest', 'work', 'change', 'work', 'rest', 'work', 'change', 'work', 'rest', 'work']);
+assert.deepEqual(Array.from(groupPhases, p => p.lessonRotation), [0,0,0,0,1,1,1,1,2,2,2]);
+assert.deepEqual(Array.from(groupPhases.filter(p => p.type === 'work'), p => p.lessonSet), [1,2,1,2,1,2]);
+assert.equal(groupPhases.reduce((n,p) => n + p.seconds, 0), 900);
+assert.equal(groupPhases.at(-1).type, 'work');
+for (const patch of [{sets:0}, {sets:1.5}, {work:0}, {rest:-1}, {change_time:-1}, {rest:undefined}]) {
+  const invalid = clone(synchronized);
+  Object.assign(invalid.blocks[2], patch);
+  assert.equal(model.getClassLesson(invalid), null);
+}
+const noRest = {participants:1, blocks:[{type:'groups', title:'Solo',
+  sets:2, work:20, rest:0, change_time:0, groups:[{size:1, exercise:'Squat'}]}]};
+assert.equal(model.buildClassLessonTimerPlan(noRest).totalSeconds, 40);
+assert.equal(model.buildClassLessonTimerPlan(noRest).phases.length, 2);
+// Legacy lessons remain compatible; exercise the existing timer and view checks.
+const lesson = clone(wod.class_lesson);
+for (const block of lesson.blocks.filter(b => b.type === 'groups')) {
+  delete block.sets; delete block.work; delete block.rest; delete block.change_time;
+  block.seconds = 900; block.swap_after = 300;
+}
 assert.ok(model.getClassLesson(lesson));
 const plan = model.buildClassLessonTimerPlan(lesson);
 assert.equal(plan.totalSeconds, 3600);
