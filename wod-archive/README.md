@@ -6,6 +6,7 @@ Questo archivio conserva le **scalette Classe** nell'ordine in cui sono state cr
 | --- | --- | --- | --- |
 | 1 | [Prima classe, 5 partecipanti](001-classe-5.json) | Svolta; data non comunicata | Due gruppi 3+2; rematore e goblet squat, piegamenti e stacco rumeno; finale affondi, mountain climber, bear crawl. L'istruttore ha riferito che è piaciuta. |
 | 2 | [Classe pianificata, 5 partecipanti](002-classe-5-2026-10-07.json) | Prevista per 2026-10-07; svolgimento e presenze da confermare | Tre gruppi 2+2+1; rematore, stacco monopodalico e pike, poi piegamenti, pistol squat su box e hollow. Timer sincronizzato: 2 serie per postazione, 90 s lavoro / 60 s recupero, 90 s cambio. Finale su tre giri. |
+| 3 | [Classe pianificata, 7 partecipanti](003-classe-7.json) | Pianificata; data da confermare | Gruppi 3+2+2; continuita su rematore, piegamenti e anca, variazione con split squat e core laterale. Tre serie per postazione, 40 s lavoro / 60 s recupero, 60 s cambio. Finale torsione in ginocchio + squat, passo sotto + ponte a un braccio, calcio frontale. Nessun progresso individuale presunto. |
 
 ## Quando si progetta una nuova lezione
 

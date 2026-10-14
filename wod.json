@@ -3,75 +3,343 @@
   "rest": 60,
   "change_time": 30,
   "mode": "alternato",
-  "modes": { "p0": "sequenziale" },
+  "modes": {
+    "p0": "sequenziale"
+  },
   "force_num_sets": true,
   "force_values": true,
   "circuit_rounds": 1,
   "class_lesson": {
-    "participants": 5,
+    "participants": 7,
     "blocks": [
       {
-        "type": "free", "seconds": 480,
-        "title": { "it": "Riscaldamento", "en": "Warm-up" },
-        "target": { "it": "Mobilità di polsi, spalle e anche → squat su box a due gambe → hip hinge monopodalico assistito → breve pike su box.", "en": "Wrist, shoulder and hip mobility → two-leg box squats → assisted single-leg hip hinges → short box pike hold." }
+        "type": "free",
+        "seconds": 480,
+        "title": {
+          "it": "Riscaldamento",
+          "en": "Warm-up"
+        },
+        "target": {
+          "it": "Mobilita di polsi, spalle e anche; squat, hip hinge, affondi indietro e scapular push-up.",
+          "en": "Wrist, shoulder and hip mobility; squats, hip hinges, reverse lunges and scapular push-ups."
+        }
       },
       {
-        "type": "free", "seconds": 120,
-        "title": { "it": "Spiegazione blocco A", "en": "Block A briefing" },
-        "target": { "it": "Dividi in gruppi da 2, 2 e 1. Mostra rematore, stacco monopodalico e pike hold; 2 serie sincronizzate per postazione: 90 s lavoro, 60 s recupero e 90 s cambio.", "en": "Split into groups of 2, 2 and 1. Demonstrate ring rows, single-leg deadlift and pike hold; 2 synchronized sets per station: 90 sec work, 60 sec rest between sets and 90 sec to change stations." }
+        "type": "free",
+        "seconds": 120,
+        "title": {
+          "it": "Spiegazione blocco A",
+          "en": "Block A briefing"
+        },
+        "target": {
+          "it": "Tre gruppi da 3, 2 e 2. Mostra rematore, split squat e hollow. Tre serie sincronizzate per postazione: 40 s lavoro, 60 s recupero tra serie, 60 s cambio. Predisponi attrezzi per tre persone contemporaneamente.",
+          "en": "Three groups of 3, 2 and 2. Demonstrate ring rows, split squats and hollow holds. Three synchronized sets per station: 40 sec work, 60 sec rest between sets, 60 sec station change. Provide equipment for three simultaneous users."
+        }
       },
       {
-        "type": "groups", "sets": 2, "work": 90, "rest": 60, "change_time": 90,
-        "title": { "it": "Blocco A · tirata, anca, pike", "en": "Block A · pull, hinge, pike" },
-        "target": { "it": "2 serie tecniche per postazione; esegui le ripetizioni o la tenuta previste entro il work, poi recupera fino al segnale. Controllo del movimento prima della difficoltà.", "en": "2 controlled sets per station; complete the prescribed reps or hold within the work interval, then rest until the signal. Prioritize control over difficulty." },
+        "type": "groups",
+        "sets": 3,
+        "work": 40,
+        "rest": 60,
+        "change_time": 60,
+        "title": {
+          "it": "Blocco A: tirata, split squat, core",
+          "en": "Block A: pull, split squat, core"
+        },
+        "target": {
+          "it": "Tre serie per postazione. Completa ripetizioni o tenuta entro 40 s, poi recupera; lascia circa 2 ripetizioni di margine. Riduci le ripetizioni se serve senza accelerare.",
+          "en": "Three sets per station. Complete reps or hold within 40 sec, then rest; leave about 2 reps in reserve. Reduce reps if needed without rushing."
+        },
         "groups": [
-          { "size": 2, "exercise": { "it": "Rematore agli anelli · 6–8 ripetizioni, discesa lenta 2″", "en": "Ring rows · 6–8 reps, 2-sec lowering" } },
-          { "size": 2, "exercise": { "it": "Stacco rumeno monopodalico con manubrio · 6–8 per lato, 3″ in discesa; mano libera alla parete se serve", "en": "Single-leg dumbbell Romanian deadlift · 6–8 each side, 3-sec lowering; free hand on wall if needed" } },
-          { "size": 1, "exercise": { "it": "Pike hold su box · 15–25″, spalle attive", "en": "Box pike hold · 15–25 sec, active shoulders" } }
+          {
+            "size": 3,
+            "exercise": {
+              "it": "Rematore agli anelli: 6-8 ripetizioni, discesa di 2 s e breve pausa in chiusura",
+              "en": "Ring rows: 6-8 reps, 2-sec lowering and a brief pause at the top"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Split squat assistito: 3-4 per lato in ogni serie; corpo libero o goblet secondo controllo",
+              "en": "Assisted split squat: 3-4 reps per side each set; bodyweight or goblet according to control"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Hollow hold raccolto: 15-25 s; alternativa dead bug, 3-4 per lato",
+              "en": "Tuck hollow hold: 15-25 sec; alternative dead bug, 3-4 per side"
+            }
+          }
         ]
       },
       {
-        "type": "free", "seconds": 120,
-        "title": { "it": "Spiegazione blocco B", "en": "Block B briefing" },
-        "target": { "it": "Mostra piegamenti, pistol squat seated su box e hollow; riparti con gli stessi tre gruppi e 2 serie sincronizzate per postazione: 90 s lavoro, 60 s recupero e 90 s cambio.", "en": "Demonstrate push-ups, seated pistol squats to a box and hollow holds; keep the same three groups and perform 2 synchronized sets per station: 90 sec work, 60 sec rest between sets and 90 sec to change stations." }
+        "type": "free",
+        "seconds": 120,
+        "title": {
+          "it": "Spiegazione blocco B",
+          "en": "Block B briefing"
+        },
+        "target": {
+          "it": "Stessi gruppi 3+2+2. Mostra piegamenti, stacco rumeno e side plank; tre serie per postazione, 40 s lavoro / 60 s recupero, 60 s cambio.",
+          "en": "Keep groups of 3, 2 and 2. Demonstrate push-ups, Romanian deadlifts and side planks; three sets per station, 40 sec work / 60 sec rest, 60 sec station change."
+        }
       },
       {
-        "type": "groups", "sets": 2, "work": 90, "rest": 60, "change_time": 90,
-        "title": { "it": "Blocco B · spinta, squat, core", "en": "Block B · push, squat, core" },
-        "target": { "it": "2 serie tecniche per postazione; esegui le ripetizioni o la tenuta previste entro il work, poi recupera fino al segnale. Riduci la difficoltà se perdi controllo o ampiezza.", "en": "2 controlled sets per station; complete the prescribed reps or hold within the work interval, then rest until the signal. Scale down if control or range of motion drops." },
+        "type": "groups",
+        "sets": 3,
+        "work": 40,
+        "rest": 60,
+        "change_time": 60,
+        "title": {
+          "it": "Blocco B: spinta, anca, core laterale",
+          "en": "Block B: push, hinge, lateral core"
+        },
+        "target": {
+          "it": "Tre serie per postazione. Completa ripetizioni o tenuta entro 40 s, poi recupera; lascia circa 2 ripetizioni di margine. Riduci le ripetizioni se serve senza accelerare.",
+          "en": "Three sets per station. Complete reps or hold within 40 sec, then rest; leave about 2 reps in reserve. Reduce reps if needed without rushing."
+        },
         "groups": [
-          { "size": 2, "exercise": { "it": "Piegamenti a terra o inclinati · 5–8 ripetizioni, pausa 1″ in basso", "en": "Floor or incline push-ups · 5–8 reps, 1-sec pause at the bottom" } },
-          { "size": 2, "exercise": { "it": "Pistol squat seated su box · 5–6 per lato, assistiti se serve", "en": "Seated pistol squat to box · 5–6 each side, assisted if needed" } },
-          { "size": 1, "exercise": { "it": "Hollow hold · 20–30″, gambe raccolte se serve", "en": "Hollow hold · 20–30 sec, tuck legs if needed" } }
+          {
+            "size": 3,
+            "exercise": {
+              "it": "Piegamenti inclinati o a terra: 5-8 ripetizioni, pausa di 1 s in basso",
+              "en": "Incline or floor push-ups: 5-8 reps, 1-sec pause at the bottom"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Stacco rumeno con manubri: 8-10 ripetizioni; monopodalico assistito solo se stabile, 3-4 per lato",
+              "en": "Dumbbell Romanian deadlift: 8-10 reps; assisted single-leg only if stable, 3-4 per side"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Side plank: 15 s per lato entro i 40 s; ginocchia appoggiate se serve",
+              "en": "Side plank: 15 sec per side within the 40-sec work interval; knees down if needed"
+            }
+          }
         ]
       },
       {
-        "type": "interval", "rounds": 3, "work": 40, "rest": 20,
-        "title": { "it": "Finale tutti insieme", "en": "Group finisher" },
-        "target": { "it": "Tre giri in sincrono: transizioni fluide e ritmo controllato; adatta push-up e hollow senza perdere la forma.", "en": "Three synchronized rounds: smooth transitions and a controlled pace; scale the push-up and hollow hold while keeping good form." },
+        "type": "interval",
+        "rounds": 3,
+        "work": 40,
+        "rest": 20,
+        "title": {
+          "it": "Finale tutti insieme",
+          "en": "Group finisher"
+        },
+        "target": {
+          "it": "Tre giri insieme, 40 s lavoro / 20 s recupero. Ritmo controllato e transizioni fluide.",
+          "en": "Three synchronized rounds, 40 sec work / 20 sec rest. Controlled pace and smooth transitions."
+        },
         "exercises": [
-          { "it": "Squat → Lunge Switch", "en": "Squat → Lunge Switch" },
-          { "it": "plank alto → push-up → ritorno in plank → shoulder tap dx/sx", "en": "High plank → push-up → high plank → shoulder taps (right/left)" },
-          { "it": "Table toe taps → Hollow", "en": "Tabletop toe taps → Hollow hold" }
+          {
+            "it": "Torsione in ginocchio + Squat",
+            "en": "Kneeling spine twist + Squat"
+          },
+          {
+            "it": "Passo sotto + ponte a un braccio",
+            "en": "Step under + one-arm bridge"
+          },
+          {
+            "it": "Calcio Frontale",
+            "en": "Front Kick"
+          }
         ]
       },
       {
-        "type": "free", "seconds": 540,
-        "title": { "it": "Defaticamento", "en": "Cool-down" },
-        "target": { "it": "Respirazione lenta, mobilità dorsale e delle anche, allungamento leggero di petto e spalle.", "en": "Slow breathing, thoracic and hip mobility, gentle chest and shoulder stretches." }
+        "type": "free",
+        "seconds": 540,
+        "title": {
+          "it": "Defaticamento",
+          "en": "Cool-down"
+        },
+        "target": {
+          "it": "Respirazione lenta, mobilità dorsale e delle anche, allungamento leggero di petto e spalle.",
+          "en": "Slow breathing, thoracic and hip mobility, gentle chest and shoulder stretches."
+        }
       }
     ]
   },
   "stations": {
-    "p0s1": { "variant": "Tenuta in pike su box", "set_time": 20, "rest": 60, "sets": [[20, null], [20, null], [20, null]] },
-    "p0s2": { "variant": "Kick-up al muro", "set_time": 30, "rest": 60, "sets": [[5, null], [5, null], [5, null]] },
-    "p1s1": { "variant": "Sospensione attiva", "sets": [[30, null], [30, null], [30, null]] },
-    "p1s2": { "variant": "Affondi", "sets": [[12, null], [12, null], [12, null]] },
-    "p2s1": { "variant": "Piegamento inclinato", "sets": [[8, null], [8, null], [8, null]] },
-    "p2s2": { "variant": "Hollow", "sets": [[30, null], [30, null], [30, null]] },
-    "p3s1": { "variant": "Rematore inclinato", "sets": [[8, null], [8, null], [8, null]] },
-    "p3s2": { "variant": "Stacco rumeno", "sets": [[8, null], [8, null], [8, null]] },
-    "p4s1": { "variant": "Piegamento in pike", "sets": [[6, null], [6, null], [6, null]] },
-    "p4s2": { "variant": "German hang", "sets": [[20, null], [20, null], [20, null]] }
+    "p0s1": {
+      "variant": "Tenuta in pike su box",
+      "set_time": 20,
+      "rest": 60,
+      "sets": [
+        [
+          20,
+          null
+        ],
+        [
+          20,
+          null
+        ],
+        [
+          20,
+          null
+        ]
+      ]
+    },
+    "p0s2": {
+      "variant": "Kick-up al muro",
+      "set_time": 30,
+      "rest": 60,
+      "sets": [
+        [
+          5,
+          null
+        ],
+        [
+          5,
+          null
+        ],
+        [
+          5,
+          null
+        ]
+      ]
+    },
+    "p1s1": {
+      "variant": "Sospensione attiva",
+      "sets": [
+        [
+          30,
+          null
+        ],
+        [
+          30,
+          null
+        ],
+        [
+          30,
+          null
+        ]
+      ]
+    },
+    "p1s2": {
+      "variant": "Affondi",
+      "sets": [
+        [
+          12,
+          null
+        ],
+        [
+          12,
+          null
+        ],
+        [
+          12,
+          null
+        ]
+      ]
+    },
+    "p2s1": {
+      "variant": "Piegamento inclinato",
+      "sets": [
+        [
+          8,
+          null
+        ],
+        [
+          8,
+          null
+        ],
+        [
+          8,
+          null
+        ]
+      ]
+    },
+    "p2s2": {
+      "variant": "Hollow",
+      "sets": [
+        [
+          30,
+          null
+        ],
+        [
+          30,
+          null
+        ],
+        [
+          30,
+          null
+        ]
+      ]
+    },
+    "p3s1": {
+      "variant": "Rematore inclinato",
+      "sets": [
+        [
+          8,
+          null
+        ],
+        [
+          8,
+          null
+        ],
+        [
+          8,
+          null
+        ]
+      ]
+    },
+    "p3s2": {
+      "variant": "Stacco rumeno",
+      "sets": [
+        [
+          8,
+          null
+        ],
+        [
+          8,
+          null
+        ],
+        [
+          8,
+          null
+        ]
+      ]
+    },
+    "p4s1": {
+      "variant": "Piegamento in pike",
+      "sets": [
+        [
+          6,
+          null
+        ],
+        [
+          6,
+          null
+        ],
+        [
+          6,
+          null
+        ]
+      ]
+    },
+    "p4s2": {
+      "variant": "German hang",
+      "sets": [
+        [
+          20,
+          null
+        ],
+        [
+          20,
+          null
+        ],
+        [
+          20,
+          null
+        ]
+      ]
+    }
   }
 }

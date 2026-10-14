@@ -1,0 +1,168 @@
+{
+  "metadata": {
+    "sequence": 3,
+    "status": "planned",
+    "planned_for": null,
+    "performed_on": null,
+    "date_note": "Data di svolgimento da confermare.",
+    "source": "wod.json",
+    "coach_feedback": null
+  },
+  "class_lesson": {
+    "participants": 7,
+    "blocks": [
+      {
+        "type": "free",
+        "seconds": 480,
+        "title": {
+          "it": "Riscaldamento",
+          "en": "Warm-up"
+        },
+        "target": {
+          "it": "Mobilita di polsi, spalle e anche; squat, hip hinge, affondi indietro e scapular push-up.",
+          "en": "Wrist, shoulder and hip mobility; squats, hip hinges, reverse lunges and scapular push-ups."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 120,
+        "title": {
+          "it": "Spiegazione blocco A",
+          "en": "Block A briefing"
+        },
+        "target": {
+          "it": "Tre gruppi da 3, 2 e 2. Mostra rematore, split squat e hollow. Tre serie sincronizzate per postazione: 40 s lavoro, 60 s recupero tra serie, 60 s cambio. Predisponi attrezzi per tre persone contemporaneamente.",
+          "en": "Three groups of 3, 2 and 2. Demonstrate ring rows, split squats and hollow holds. Three synchronized sets per station: 40 sec work, 60 sec rest between sets, 60 sec station change. Provide equipment for three simultaneous users."
+        }
+      },
+      {
+        "type": "groups",
+        "sets": 3,
+        "work": 40,
+        "rest": 60,
+        "change_time": 60,
+        "title": {
+          "it": "Blocco A: tirata, split squat, core",
+          "en": "Block A: pull, split squat, core"
+        },
+        "target": {
+          "it": "Tre serie per postazione. Completa ripetizioni o tenuta entro 40 s, poi recupera; lascia circa 2 ripetizioni di margine. Riduci le ripetizioni se serve senza accelerare.",
+          "en": "Three sets per station. Complete reps or hold within 40 sec, then rest; leave about 2 reps in reserve. Reduce reps if needed without rushing."
+        },
+        "groups": [
+          {
+            "size": 3,
+            "exercise": {
+              "it": "Rematore agli anelli: 6-8 ripetizioni, discesa di 2 s e breve pausa in chiusura",
+              "en": "Ring rows: 6-8 reps, 2-sec lowering and a brief pause at the top"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Split squat assistito: 3-4 per lato in ogni serie; corpo libero o goblet secondo controllo",
+              "en": "Assisted split squat: 3-4 reps per side each set; bodyweight or goblet according to control"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Hollow hold raccolto: 15-25 s; alternativa dead bug, 3-4 per lato",
+              "en": "Tuck hollow hold: 15-25 sec; alternative dead bug, 3-4 per side"
+            }
+          }
+        ]
+      },
+      {
+        "type": "free",
+        "seconds": 120,
+        "title": {
+          "it": "Spiegazione blocco B",
+          "en": "Block B briefing"
+        },
+        "target": {
+          "it": "Stessi gruppi 3+2+2. Mostra piegamenti, stacco rumeno e side plank; tre serie per postazione, 40 s lavoro / 60 s recupero, 60 s cambio.",
+          "en": "Keep groups of 3, 2 and 2. Demonstrate push-ups, Romanian deadlifts and side planks; three sets per station, 40 sec work / 60 sec rest, 60 sec station change."
+        }
+      },
+      {
+        "type": "groups",
+        "sets": 3,
+        "work": 40,
+        "rest": 60,
+        "change_time": 60,
+        "title": {
+          "it": "Blocco B: spinta, anca, core laterale",
+          "en": "Block B: push, hinge, lateral core"
+        },
+        "target": {
+          "it": "Tre serie per postazione. Completa ripetizioni o tenuta entro 40 s, poi recupera; lascia circa 2 ripetizioni di margine. Riduci le ripetizioni se serve senza accelerare.",
+          "en": "Three sets per station. Complete reps or hold within 40 sec, then rest; leave about 2 reps in reserve. Reduce reps if needed without rushing."
+        },
+        "groups": [
+          {
+            "size": 3,
+            "exercise": {
+              "it": "Piegamenti inclinati o a terra: 5-8 ripetizioni, pausa di 1 s in basso",
+              "en": "Incline or floor push-ups: 5-8 reps, 1-sec pause at the bottom"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Stacco rumeno con manubri: 8-10 ripetizioni; monopodalico assistito solo se stabile, 3-4 per lato",
+              "en": "Dumbbell Romanian deadlift: 8-10 reps; assisted single-leg only if stable, 3-4 per side"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Side plank: 15 s per lato entro i 40 s; ginocchia appoggiate se serve",
+              "en": "Side plank: 15 sec per side within the 40-sec work interval; knees down if needed"
+            }
+          }
+        ]
+      },
+      {
+        "type": "interval",
+        "rounds": 3,
+        "work": 40,
+        "rest": 20,
+        "title": {
+          "it": "Finale tutti insieme",
+          "en": "Group finisher"
+        },
+        "target": {
+          "it": "Tre giri insieme, 40 s lavoro / 20 s recupero. Ritmo controllato e transizioni fluide.",
+          "en": "Three synchronized rounds, 40 sec work / 20 sec rest. Controlled pace and smooth transitions."
+        },
+        "exercises": [
+          {
+            "it": "Torsione in ginocchio + Squat",
+            "en": "Kneeling spine twist + Squat"
+          },
+          {
+            "it": "Passo sotto + ponte a un braccio",
+            "en": "Step under + one-arm bridge"
+          },
+          {
+            "it": "Calcio Frontale",
+            "en": "Front Kick"
+          }
+        ]
+      },
+      {
+        "type": "free",
+        "seconds": 540,
+        "title": {
+          "it": "Defaticamento",
+          "en": "Cool-down"
+        },
+        "target": {
+          "it": "Respirazione lenta, mobilità dorsale e delle anche, allungamento leggero di petto e spalle.",
+          "en": "Slow breathing, thoracic and hip mobility, gentle chest and shoulder stretches."
+        }
+      }
+    ]
+  }
+}

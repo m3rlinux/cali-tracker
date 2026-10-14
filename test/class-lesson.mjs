@@ -7,7 +7,8 @@ import { runInNewContext } from 'node:vm';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const html = readFileSync(join(root, 'index.html'), 'utf8');
-const wod = JSON.parse(readFileSync(join(root, 'wod.json'), 'utf8'));
+const activeWod = JSON.parse(readFileSync(join(root, 'wod.json'), 'utf8'));
+const wod = JSON.parse(readFileSync(join(root, 'wod-archive/002-classe-5-2026-10-07.json'), 'utf8'));
 
 function extractFn(name) {
   const start = html.indexOf('function ' + name + '(');
@@ -25,6 +26,8 @@ const modelSource = [
   'classLessonBlockSeconds', 'buildClassLessonTimerPlan'
 ].map(extractFn).join('\n');
 const model = runInNewContext(modelSource + '\n({ getClassLesson, buildClassLessonTimerPlan })');
+assert.ok(model.getClassLesson(activeWod.class_lesson));
+assert.equal(model.buildClassLessonTimerPlan(activeWod.class_lesson).totalSeconds, 3480);
 const synchronized = wod.class_lesson;
 assert.ok(model.getClassLesson(synchronized));
 const synchronizedPlan = model.buildClassLessonTimerPlan(synchronized);
