@@ -103,8 +103,8 @@
           "en": "Strength — four-station briefing"
         },
         "target": {
-          "it": "Per i 3 partecipanti: una coppia e un singolo. La coppia parte in postazione 1, il singolo in postazione 3; le altre due restano libere. Entrambi ruotano 1-2-3-4-1 a ogni cambio e completano tutte e quattro le postazioni. Ogni postazione contiene esercizi X e Y: nei turni 1 e 3 persona 1 esegue X e persona 2 Y; nei turni 2 e 4 si scambiano. Il singolo segue X-Y-X-Y. Tutti completano due serie per esercizio. Quaranta secondi sono il limite per completare la dose, non un tempo da riempire. Seguono 40 s di recupero e scambio. Mantieni circa due ripetizioni di margine; nelle tenute fermati prima di perdere l'assetto. Mostra regolazione del rematore, pausa dei piegamenti e hip hinge. Prepara attrezzi e carichi prima del primo turno.",
-          "en": "For 3 participants: one pair and one solo participant. The pair starts at station 1 and the solo participant at station 3; the other two stations remain empty. Both rotate 1-2-3-4-1 at each change and complete all four stations. Each station has exercises X and Y. Person 1 performs X and person 2 Y on turns 1 and 3, then they swap on turns 2 and 4. Solo participants follow X-Y-X-Y. Each completes two sets per exercise. Complete the dose within 40 sec, followed by 40 sec recovery and swapping. Leave approximately two reps in reserve."
+          "it": "1: rematore agli anelli 6-8 rip.; split squat 3-4 per lato. 2: piegamenti 5-8 rip.; stacco rumeno con manubri 8-10 rip. 3: hollow hold 15-25 s; calf raise 10-12 rip. 4: side plank 15 s per lato; scapular pull-up 6-8 rip.",
+          "en": "1: ring rows 6-8 reps; split squats 3-4 per side. 2: push-ups 5-8 reps; dumbbell Romanian deadlifts 8-10 reps. 3: hollow hold 15-25 sec; calf raises 10-12 reps. 4: side plank 15 sec per side; scapular pull-ups 6-8 reps."
         }
       },
       {
@@ -117,8 +117,8 @@
           "en": "Strength — rotation 1"
         },
         "target": {
-          "it": "Partenza: coppia in postazione 1, singolo in postazione 3. Postazioni 2 e 4 libere. Il singolo segue X-Y-X-Y. Quattro turni simultanei, scambiando X e Y a ogni turno. Completa le ripetizioni e recupera per il tempo restante. Non accelerare per finire. Side plank: 15 s per lato, con cambio entro i 40 s. POSTAZIONE 1 — X: rematore anelli, 6-8 rip., discesa 2 s e breve pausa in chiusura; corpo fermo, niente slancio. Più facile: corpo verticale; più difficile: maggiore inclinazione. Y: split squat assistito, 3-4 per lato; discesa verticale, piede stabile, non tirarsi con il braccio. Più facile: escursione ridotta; più difficile: goblet. POSTAZIONE 2 — X: piegamenti inclinati o a terra, 5-8 rip., pausa 1 s in basso; corpo allineato, niente cedimento lombare. Regola l'altezza del supporto. Y: stacco rumeno con manubri, 8-10 rip.; bacino indietro, pesi vicini alle gambe, schiena controllata. Regola carico ed escursione. POSTAZIONE 3 — X: hollow raccolto, 15-25 s; respira e mantieni stabile la zona lombare. Più facile: dead bug 3-4 per lato; più difficile: una gamba più distesa. Y: calf raise con appoggio, 10-12 rip.; salita e discesa controllate, senza rimbalzi. Più facile: escursione ridotta; più difficile: leggero carico. POSTAZIONE 4 — X: side plank, 15 s per lato; gomito sotto la spalla, bacino allineato, niente rotazione. Più facile: ginocchia appoggiate; più difficile: gambe distese. Y: scapular pull-up con piedi assistiti, 6-8 rip.; gomiti distesi, piccolo movimento scapolare, senza trasformarlo in trazione. Regola l'assistenza dei piedi.",
-          "en": "Start the pair at station 1 and the solo participant at station 3. Stations 2 and 4 remain empty. The solo participant follows X-Y-X-Y. Perform four simultaneous turns, swapping X and Y each time. Finish the prescribed reps and rest for the remaining time. Side plank: 15 sec per side within the 40-sec window. STATION 1 — X: ring rows, 6-8 reps with 2-sec lowering and a brief top pause; Y: assisted split squats, 3-4 per side. STATION 2 — X: incline or floor push-ups, 5-8 reps with a 1-sec bottom pause; Y: dumbbell Romanian deadlifts, 8-10 reps. STATION 3 — X: tuck hollow hold, 15-25 sec, or dead bug, 3-4 per side; Y: supported calf raises, 10-12 reps. STATION 4 — X: side plank, 15 sec per side; Y: foot-assisted scapular pull-ups, 6-8 reps. Adjust leverage, support and load to maintain control and approximately two reps in reserve."
+          "it": "1: rematore agli anelli 6-8 rip.; split squat 3-4 per lato. 2: piegamenti 5-8 rip.; stacco rumeno con manubri 8-10 rip. 3: hollow hold 15-25 s; calf raise 10-12 rip. 4: side plank 15 s per lato; scapular pull-up 6-8 rip.",
+          "en": "1: ring rows 6-8 reps; split squats 3-4 per side. 2: push-ups 5-8 reps; dumbbell Romanian deadlifts 8-10 reps. 3: hollow hold 15-25 sec; calf raises 10-12 reps. 4: side plank 15 sec per side; scapular pull-ups 6-8 reps."
         },
         "exercises": [
           {
@@ -133,10 +133,6 @@
         "title": {
           "it": "Cambio postazione 1",
           "en": "Station change 1"
-        },
-        "target": {
-          "it": "Ruota 1→2, 2→3, 3→4, 4→1. Regola supporti e carichi, senza eseguire serie aggiuntive.",
-          "en": "Rotate 1→2, 2→3, 3→4, 4→1. Adjust supports and loads without adding sets."
         }
       },
       {
@@ -149,8 +145,8 @@
           "en": "Strength — rotation 2"
         },
         "target": {
-          "it": "Mantieni dosi, regressioni e indicazioni della prima rotazione. Persona 1 su X e persona 2 su Y nei turni dispari; scambio nei pari. Singolo: X-Y-X-Y. Due serie per esercizio, circa due ripetizioni di margine. Esegui la coppia di esercizi della tua nuova postazione. 1: X rematore anelli 6-8 rip.; Y split squat assistito 3-4 per lato. 2: X piegamenti 5-8 rip. con pausa 1 s; Y stacco rumeno manubri 8-10 rip. 3: X hollow raccolto 15-25 s; Y calf raise 10-12 rip. 4: X side plank 15 s per lato; Y scapular pull-up assistito 6-8 rip.",
-          "en": "Keep the prescriptions and adaptations from rotation 1. Person 1 performs X and person 2 Y on odd turns, swapping on even turns. Solo: X-Y-X-Y. Two sets per exercise, approximately two reps in reserve. Perform your new station's exercise pair. 1: X ring rows 6-8; Y assisted split squats 3-4 per side. 2: X paused push-ups 5-8; Y dumbbell Romanian deadlifts 8-10. 3: X tuck hollow hold 15-25 sec; Y calf raises 10-12. 4: X side plank 15 sec per side; Y assisted scapular pull-ups 6-8."
+          "it": "1: rematore agli anelli 6-8 rip.; split squat 3-4 per lato. 2: piegamenti 5-8 rip.; stacco rumeno con manubri 8-10 rip. 3: hollow hold 15-25 s; calf raise 10-12 rip. 4: side plank 15 s per lato; scapular pull-up 6-8 rip.",
+          "en": "1: ring rows 6-8 reps; split squats 3-4 per side. 2: push-ups 5-8 reps; dumbbell Romanian deadlifts 8-10 reps. 3: hollow hold 15-25 sec; calf raises 10-12 reps. 4: side plank 15 sec per side; scapular pull-ups 6-8 reps."
         },
         "exercises": [
           {
@@ -165,10 +161,6 @@
         "title": {
           "it": "Cambio postazione 2",
           "en": "Station change 2"
-        },
-        "target": {
-          "it": "Ruota 1→2, 2→3, 3→4, 4→1. Regola gli attrezzi e conferma la variante prima di partire.",
-          "en": "Rotate 1→2, 2→3, 3→4, 4→1. Adjust equipment and confirm your variation before starting."
         }
       },
       {
@@ -181,8 +173,8 @@
           "en": "Strength — rotation 3"
         },
         "target": {
-          "it": "Stesse dosi e indicazioni. Persona 1 su X e persona 2 su Y nei turni dispari; scambio nei pari. Singolo: X-Y-X-Y. Riduci le ripetizioni o facilita la variante se perdi controllo, senza accelerare. Esegui la coppia di esercizi della tua nuova postazione. 1: X rematore anelli 6-8 rip.; Y split squat assistito 3-4 per lato. 2: X piegamenti 5-8 rip. con pausa 1 s; Y stacco rumeno manubri 8-10 rip. 3: X hollow raccolto 15-25 s; Y calf raise 10-12 rip. 4: X side plank 15 s per lato; Y scapular pull-up assistito 6-8 rip.",
-          "en": "Keep the same prescriptions. Person 1 performs X and person 2 Y on odd turns, swapping on even turns. Solo: X-Y-X-Y. Reduce reps or use an easier variation if control deteriorates. Perform your new station's exercise pair. 1: X ring rows 6-8; Y assisted split squats 3-4 per side. 2: X paused push-ups 5-8; Y dumbbell Romanian deadlifts 8-10. 3: X tuck hollow hold 15-25 sec; Y calf raises 10-12. 4: X side plank 15 sec per side; Y assisted scapular pull-ups 6-8."
+          "it": "1: rematore agli anelli 6-8 rip.; split squat 3-4 per lato. 2: piegamenti 5-8 rip.; stacco rumeno con manubri 8-10 rip. 3: hollow hold 15-25 s; calf raise 10-12 rip. 4: side plank 15 s per lato; scapular pull-up 6-8 rip.",
+          "en": "1: ring rows 6-8 reps; split squats 3-4 per side. 2: push-ups 5-8 reps; dumbbell Romanian deadlifts 8-10 reps. 3: hollow hold 15-25 sec; calf raises 10-12 reps. 4: side plank 15 sec per side; scapular pull-ups 6-8 reps."
         },
         "exercises": [
           {
@@ -197,10 +189,6 @@
         "title": {
           "it": "Cambio postazione 3",
           "en": "Station change 3"
-        },
-        "target": {
-          "it": "Ruota 1→2, 2→3, 3→4, 4→1. Prepara l'ultima postazione.",
-          "en": "Rotate 1→2, 2→3, 3→4, 4→1. Prepare for the final station."
         }
       },
       {
@@ -213,8 +201,8 @@
           "en": "Strength — rotation 4"
         },
         "target": {
-          "it": "Ultima postazione, stesse dosi. Persona 1 su X e persona 2 su Y nei turni dispari; scambio nei pari. Singolo: X-Y-X-Y. Mantieni margine anche nelle ultime serie. Esegui la coppia di esercizi della tua ultima postazione. 1: X rematore anelli 6-8 rip.; Y split squat assistito 3-4 per lato. 2: X piegamenti 5-8 rip. con pausa 1 s; Y stacco rumeno manubri 8-10 rip. 3: X hollow raccolto 15-25 s; Y calf raise 10-12 rip. 4: X side plank 15 s per lato; Y scapular pull-up assistito 6-8 rip.",
-          "en": "Final station, same prescriptions. Person 1 performs X and person 2 Y on odd turns, swapping on even turns. Solo: X-Y-X-Y. Maintain reserve through the final sets. Perform your final station's exercise pair. 1: X ring rows 6-8; Y assisted split squats 3-4 per side. 2: X paused push-ups 5-8; Y dumbbell Romanian deadlifts 8-10. 3: X tuck hollow hold 15-25 sec; Y calf raises 10-12. 4: X side plank 15 sec per side; Y assisted scapular pull-ups 6-8."
+          "it": "1: rematore agli anelli 6-8 rip.; split squat 3-4 per lato. 2: piegamenti 5-8 rip.; stacco rumeno con manubri 8-10 rip. 3: hollow hold 15-25 s; calf raise 10-12 rip. 4: side plank 15 s per lato; scapular pull-up 6-8 rip.",
+          "en": "1: ring rows 6-8 reps; split squats 3-4 per side. 2: push-ups 5-8 reps; dumbbell Romanian deadlifts 8-10 reps. 3: hollow hold 15-25 sec; calf raises 10-12 reps. 4: side plank 15 sec per side; scapular pull-ups 6-8 reps."
         },
         "exercises": [
           {
