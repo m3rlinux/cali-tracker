@@ -25,29 +25,29 @@
           "en": "Warm-up — 5 minutes"
         },
         "target": {
-          "it": "Un esercizio diverso a ogni intervallo, nell'ordine indicato. Completa la dose senza riempire obbligatoriamente tutti i 40 s. I 20 s servono per recuperare, spiegare e cambiare posizione. 1: marcia attiva con movimento delle braccia, 40 s. 2: oscillazioni sui polsi in quadrupedia, 8-10 ripetizioni. 3: scapular push-up, 8 ripetizioni. 4: squat con braccia avanti, 8 ripetizioni. 5: hip hinge a corpo libero, 8 ripetizioni.",
-          "en": "Use a different exercise in each interval, following the stated order. Complete the prescribed dose without necessarily filling all 40 sec. Use the 20-sec breaks for recovery, instructions and transitions."
+          "it": "Un esercizio diverso a ogni intervallo, nell'ordine indicato. Completa la dose senza riempire obbligatoriamente tutti i 40 s. I 20 s servono per recuperare, spiegare e cambiare posizione. 1: marcia attiva con movimento delle braccia, 40 s. 2: oscillazioni sui polsi in quadrupedia, 8-10 ripetizioni. 3: scapular push-up, 8 ripetizioni. 4: squat con braccia avanti, 8 ripetizioni. 5: hip hinge a corpo libero, 8 ripetizioni. Marcia attiva con movimento delle braccia, 40 s; Oscillazioni sui polsi in quadrupedia, 8-10 rip.; palmo appoggiato, escursione comoda; mani su box per facilitare; Scapular push-up, 8 rip.; gomiti distesi; alla parete per facilitare, a terra per progredire; Squat con braccia avanti, 8 rip.; piede intero appoggiato; usa un box se necessario; Hip hinge a corpo libero, 8 rip.; bacino indietro e schiena controllata; parete come riferimento",
+          "en": "Use a different exercise in each interval, following the stated order. Complete the prescribed dose without necessarily filling all 40 sec. Use the 20-sec breaks for recovery, instructions and transitions. Active march with arm movements, 40 sec; Quadruped wrist rocks, 8-10 reps; palms down, comfortable range; hands on a box to regress; Scapular push-ups, 8 reps; straight elbows; use a wall to regress or the floor to progress; Squats with arms forward, 8 reps; whole foot grounded; use a box if needed; Bodyweight hip hinges, 8 reps; hips back and controlled spine; use a wall as a reference"
         },
         "exercises": [
           {
-            "it": "Marcia attiva con movimento delle braccia, 40 s",
-            "en": "Active march with arm movements, 40 sec"
+            "it": "Marcia attiva",
+            "en": "Active march"
           },
           {
-            "it": "Oscillazioni sui polsi in quadrupedia, 8-10 rip.; palmo appoggiato, escursione comoda; mani su box per facilitare",
-            "en": "Quadruped wrist rocks, 8-10 reps; palms down, comfortable range; hands on a box to regress"
+            "it": "Mobilità polsi",
+            "en": "Wrist mobility"
           },
           {
-            "it": "Scapular push-up, 8 rip.; gomiti distesi; alla parete per facilitare, a terra per progredire",
-            "en": "Scapular push-ups, 8 reps; straight elbows; use a wall to regress or the floor to progress"
+            "it": "Scapular push-up",
+            "en": "Scapular push-ups"
           },
           {
-            "it": "Squat con braccia avanti, 8 rip.; piede intero appoggiato; usa un box se necessario",
-            "en": "Squats with arms forward, 8 reps; whole foot grounded; use a box if needed"
+            "it": "Squat",
+            "en": "Squats"
           },
           {
-            "it": "Hip hinge a corpo libero, 8 rip.; bacino indietro e schiena controllata; parete come riferimento",
-            "en": "Bodyweight hip hinges, 8 reps; hips back and controlled spine; use a wall as a reference"
+            "it": "Hip hinge",
+            "en": "Hip hinges"
           }
         ]
       },
@@ -59,8 +59,8 @@
           "en": "Handstand — entering and exiting the elevated pike"
         },
         "target": {
-          "it": "Dimostra salita e discesa dal pike con piedi sul rialzo e mani a terra. Due prove controllate per persona, alternate con il compagno. Supporto stabile: salire e scendere un piede alla volta, senza saltare né cedere sui gomiti. Regressione: rialzo più basso o piedi a terra. Usa l'altezza abituale solo se entrata e uscita sono controllate. Questo esercizio non sostituisce l'insegnamento dell'uscita dalla verticale completa. Una coppia condivide un rialzo; il singolo usa un secondo supporto e mantiene gli stessi recuperi individuali.",
-          "en": "Demonstrate entering and exiting an elevated pike with hands on the floor. Perform two controlled attempts per person, alternating with the partner. Use a stable support and move one foot at a time. Regress to a lower support or feet on the floor. One pair shares a support; the solo participant uses a second support and keeps the same individual rest periods."
+          "it": "Tutti e tre insieme, ciascuno con un supporto stabile: due prove controllate di salita e discesa dal pike nei due minuti. Un piede alla volta, senza saltare, gomiti distesi. Rialzo basso o piedi a terra se necessario.",
+          "en": "All three together, each with a stable support: two controlled elevated-pike entries and exits within two minutes. One foot at a time, no jumping, straight elbows. Use a lower support or feet on the floor if needed."
         }
       },
       {
@@ -71,27 +71,27 @@
           "en": "Handstand — scapular elevation"
         },
         "target": {
-          "it": "Pike con piedi sul rialzo: 2 serie da 5 spinte scapolari per persona, recupero individuale circa 30 s. Alternatevi sul supporto e includete i cambi nei due minuti. Spingi il pavimento lontano mantenendo i gomiti distesi; evita di affondare tra le spalle o muovere solo il collo. Regressione: pike con piedi a terra. Progressione: maggiore allineamento spalle-bacino, senza aumentare contemporaneamente le ripetizioni. Una coppia condivide un rialzo; il singolo usa un secondo supporto e mantiene gli stessi recuperi individuali.",
-          "en": "Elevated pike: two sets of five scapular elevations per person, approximately 30 sec individual recovery. Alternate on the support. Push the floor away with straight elbows. Regress to feet on the floor; progress through better shoulder-to-hip alignment. One pair shares a support; the solo participant uses a second support and keeps the same individual rest periods."
+          "it": "Tutti e tre insieme: 2 serie da 5 spinte scapolari in pike, circa 30 s di recupero comune. Spingi il pavimento con gomiti distesi; piedi a terra per facilitare. Ciascuno usa il proprio supporto.",
+          "en": "All three together: 2 sets of 5 pike scapular elevations, approximately 30 sec shared rest. Push the floor away with straight elbows; feet on the floor to regress. Each uses their own support."
         }
       },
       {
         "type": "interval",
-        "rounds": 8,
+        "rounds": 4,
         "work": 25,
-        "rest": 20,
+        "rest": 65,
         "title": {
-          "it": "Handstand — pike hold a coppie",
-          "en": "Handstand — partner elevated pike holds"
+          "it": "Handstand - pike hold tutti insieme",
+          "en": "Handstand - group pike holds"
         },
         "target": {
-          "it": "Otto turni totali: persona 1 nei turni dispari, persona 2 nei turni pari. Ciascuno esegue quattro tenute da 20-25 s. Il compagno riposa e osserva, senza sostenere il corpo. Con una tenuta di 25 s, il recupero individuale è 65 s. Chi è singolo lavora nei turni dispari e riposa nei pari. I 20 s tra i turni comprendono il cambio sul supporto. Una coppia condivide un rialzo; il singolo usa un secondo supporto e mantiene gli stessi recuperi individuali.",
-          "en": "Eight total turns: person 1 works on odd turns and person 2 on even turns. Each performs four 20-25-sec holds. Individual recovery is 65 sec after a 25-sec hold. A solo participant works on odd turns and rests on even turns. One pair shares a support; the solo participant uses a second support and keeps the same individual rest periods."
+          "it": "Tutti e tre insieme, ciascuno sul proprio supporto: 4 tenute da 20-25 s, con 65 s di recupero comune. Nessuna alternanza o divisione in gruppi. Pike hold con piedi sul rialzo alto e mani a terra: spingi il pavimento, mantieni la testa libera e respira. Porta il bacino sopra le spalle solo quanto controllabile, senza inarcare la schiena. Regressione: rialzo basso o piedi a terra. Progressione: migliore allineamento alla stessa altezza; aumenta una sola variabile.",
+          "en": "All three together, each on their own support: 4 holds of 20-25 sec, with 65 sec shared rest. No alternating turns or groups. Elevated pike hold with hands on the floor: push the floor away, keep the head clear and breathe. Move the hips over the shoulders only as far as controlled. Regress to a lower support or feet on the floor; progress through improved alignment."
         },
         "exercises": [
           {
-            "it": "Pike hold con piedi sul rialzo alto e mani a terra: spingi il pavimento, mantieni la testa libera e respira. Porta il bacino sopra le spalle solo quanto controllabile, senza inarcare la schiena. Regressione: rialzo basso o piedi a terra. Progressione: migliore allineamento alla stessa altezza; aumenta una sola variabile.",
-            "en": "Elevated pike hold with hands on the floor: push the floor away, keep the head clear and breathe. Move the hips over the shoulders only as far as controlled. Regress to a lower support or feet on the floor; progress through improved alignment."
+            "it": "Pike hold su rialzo",
+            "en": "Elevated pike hold"
           }
         ]
       },
@@ -117,13 +117,13 @@
           "en": "Strength — rotation 1"
         },
         "target": {
-          "it": "Partenza: coppia in postazione 1, singolo in postazione 3. Postazioni 2 e 4 libere. Il singolo segue X-Y-X-Y. Quattro turni simultanei, scambiando X e Y a ogni turno. Completa le ripetizioni e recupera per il tempo restante. Non accelerare per finire. Side plank: 15 s per lato, con cambio entro i 40 s.",
-          "en": "Start the pair at station 1 and the solo participant at station 3. Stations 2 and 4 remain empty. The solo participant follows X-Y-X-Y. Perform four simultaneous turns, swapping X and Y each time. Finish the prescribed reps and rest for the remaining time. Side plank: 15 sec per side within the 40-sec window."
+          "it": "Partenza: coppia in postazione 1, singolo in postazione 3. Postazioni 2 e 4 libere. Il singolo segue X-Y-X-Y. Quattro turni simultanei, scambiando X e Y a ogni turno. Completa le ripetizioni e recupera per il tempo restante. Non accelerare per finire. Side plank: 15 s per lato, con cambio entro i 40 s. POSTAZIONE 1 — X: rematore anelli, 6-8 rip., discesa 2 s e breve pausa in chiusura; corpo fermo, niente slancio. Più facile: corpo verticale; più difficile: maggiore inclinazione. Y: split squat assistito, 3-4 per lato; discesa verticale, piede stabile, non tirarsi con il braccio. Più facile: escursione ridotta; più difficile: goblet. POSTAZIONE 2 — X: piegamenti inclinati o a terra, 5-8 rip., pausa 1 s in basso; corpo allineato, niente cedimento lombare. Regola l'altezza del supporto. Y: stacco rumeno con manubri, 8-10 rip.; bacino indietro, pesi vicini alle gambe, schiena controllata. Regola carico ed escursione. POSTAZIONE 3 — X: hollow raccolto, 15-25 s; respira e mantieni stabile la zona lombare. Più facile: dead bug 3-4 per lato; più difficile: una gamba più distesa. Y: calf raise con appoggio, 10-12 rip.; salita e discesa controllate, senza rimbalzi. Più facile: escursione ridotta; più difficile: leggero carico. POSTAZIONE 4 — X: side plank, 15 s per lato; gomito sotto la spalla, bacino allineato, niente rotazione. Più facile: ginocchia appoggiate; più difficile: gambe distese. Y: scapular pull-up con piedi assistiti, 6-8 rip.; gomiti distesi, piccolo movimento scapolare, senza trasformarlo in trazione. Regola l'assistenza dei piedi.",
+          "en": "Start the pair at station 1 and the solo participant at station 3. Stations 2 and 4 remain empty. The solo participant follows X-Y-X-Y. Perform four simultaneous turns, swapping X and Y each time. Finish the prescribed reps and rest for the remaining time. Side plank: 15 sec per side within the 40-sec window. STATION 1 — X: ring rows, 6-8 reps with 2-sec lowering and a brief top pause; Y: assisted split squats, 3-4 per side. STATION 2 — X: incline or floor push-ups, 5-8 reps with a 1-sec bottom pause; Y: dumbbell Romanian deadlifts, 8-10 reps. STATION 3 — X: tuck hollow hold, 15-25 sec, or dead bug, 3-4 per side; Y: supported calf raises, 10-12 reps. STATION 4 — X: side plank, 15 sec per side; Y: foot-assisted scapular pull-ups, 6-8 reps. Adjust leverage, support and load to maintain control and approximately two reps in reserve."
         },
         "exercises": [
           {
-            "it": "POSTAZIONE 1 — X: rematore anelli, 6-8 rip., discesa 2 s e breve pausa in chiusura; corpo fermo, niente slancio. Più facile: corpo verticale; più difficile: maggiore inclinazione. Y: split squat assistito, 3-4 per lato; discesa verticale, piede stabile, non tirarsi con il braccio. Più facile: escursione ridotta; più difficile: goblet. POSTAZIONE 2 — X: piegamenti inclinati o a terra, 5-8 rip., pausa 1 s in basso; corpo allineato, niente cedimento lombare. Regola l'altezza del supporto. Y: stacco rumeno con manubri, 8-10 rip.; bacino indietro, pesi vicini alle gambe, schiena controllata. Regola carico ed escursione. POSTAZIONE 3 — X: hollow raccolto, 15-25 s; respira e mantieni stabile la zona lombare. Più facile: dead bug 3-4 per lato; più difficile: una gamba più distesa. Y: calf raise con appoggio, 10-12 rip.; salita e discesa controllate, senza rimbalzi. Più facile: escursione ridotta; più difficile: leggero carico. POSTAZIONE 4 — X: side plank, 15 s per lato; gomito sotto la spalla, bacino allineato, niente rotazione. Più facile: ginocchia appoggiate; più difficile: gambe distese. Y: scapular pull-up con piedi assistiti, 6-8 rip.; gomiti distesi, piccolo movimento scapolare, senza trasformarlo in trazione. Regola l'assistenza dei piedi.",
-            "en": "STATION 1 — X: ring rows, 6-8 reps with 2-sec lowering and a brief top pause; Y: assisted split squats, 3-4 per side. STATION 2 — X: incline or floor push-ups, 5-8 reps with a 1-sec bottom pause; Y: dumbbell Romanian deadlifts, 8-10 reps. STATION 3 — X: tuck hollow hold, 15-25 sec, or dead bug, 3-4 per side; Y: supported calf raises, 10-12 reps. STATION 4 — X: side plank, 15 sec per side; Y: foot-assisted scapular pull-ups, 6-8 reps. Adjust leverage, support and load to maintain control and approximately two reps in reserve."
+            "it": "Esercizi della postazione",
+            "en": "Station exercises"
           }
         ]
       },
@@ -149,13 +149,13 @@
           "en": "Strength — rotation 2"
         },
         "target": {
-          "it": "Mantieni dosi, regressioni e indicazioni della prima rotazione. Persona 1 su X e persona 2 su Y nei turni dispari; scambio nei pari. Singolo: X-Y-X-Y. Due serie per esercizio, circa due ripetizioni di margine.",
-          "en": "Keep the prescriptions and adaptations from rotation 1. Person 1 performs X and person 2 Y on odd turns, swapping on even turns. Solo: X-Y-X-Y. Two sets per exercise, approximately two reps in reserve."
+          "it": "Mantieni dosi, regressioni e indicazioni della prima rotazione. Persona 1 su X e persona 2 su Y nei turni dispari; scambio nei pari. Singolo: X-Y-X-Y. Due serie per esercizio, circa due ripetizioni di margine. Esegui la coppia di esercizi della tua nuova postazione. 1: X rematore anelli 6-8 rip.; Y split squat assistito 3-4 per lato. 2: X piegamenti 5-8 rip. con pausa 1 s; Y stacco rumeno manubri 8-10 rip. 3: X hollow raccolto 15-25 s; Y calf raise 10-12 rip. 4: X side plank 15 s per lato; Y scapular pull-up assistito 6-8 rip.",
+          "en": "Keep the prescriptions and adaptations from rotation 1. Person 1 performs X and person 2 Y on odd turns, swapping on even turns. Solo: X-Y-X-Y. Two sets per exercise, approximately two reps in reserve. Perform your new station's exercise pair. 1: X ring rows 6-8; Y assisted split squats 3-4 per side. 2: X paused push-ups 5-8; Y dumbbell Romanian deadlifts 8-10. 3: X tuck hollow hold 15-25 sec; Y calf raises 10-12. 4: X side plank 15 sec per side; Y assisted scapular pull-ups 6-8."
         },
         "exercises": [
           {
-            "it": "Esegui la coppia di esercizi della tua nuova postazione. 1: X rematore anelli 6-8 rip.; Y split squat assistito 3-4 per lato. 2: X piegamenti 5-8 rip. con pausa 1 s; Y stacco rumeno manubri 8-10 rip. 3: X hollow raccolto 15-25 s; Y calf raise 10-12 rip. 4: X side plank 15 s per lato; Y scapular pull-up assistito 6-8 rip.",
-            "en": "Perform your new station's exercise pair. 1: X ring rows 6-8; Y assisted split squats 3-4 per side. 2: X paused push-ups 5-8; Y dumbbell Romanian deadlifts 8-10. 3: X tuck hollow hold 15-25 sec; Y calf raises 10-12. 4: X side plank 15 sec per side; Y assisted scapular pull-ups 6-8."
+            "it": "Esercizi della postazione",
+            "en": "Station exercises"
           }
         ]
       },
@@ -181,13 +181,13 @@
           "en": "Strength — rotation 3"
         },
         "target": {
-          "it": "Stesse dosi e indicazioni. Persona 1 su X e persona 2 su Y nei turni dispari; scambio nei pari. Singolo: X-Y-X-Y. Riduci le ripetizioni o facilita la variante se perdi controllo, senza accelerare.",
-          "en": "Keep the same prescriptions. Person 1 performs X and person 2 Y on odd turns, swapping on even turns. Solo: X-Y-X-Y. Reduce reps or use an easier variation if control deteriorates."
+          "it": "Stesse dosi e indicazioni. Persona 1 su X e persona 2 su Y nei turni dispari; scambio nei pari. Singolo: X-Y-X-Y. Riduci le ripetizioni o facilita la variante se perdi controllo, senza accelerare. Esegui la coppia di esercizi della tua nuova postazione. 1: X rematore anelli 6-8 rip.; Y split squat assistito 3-4 per lato. 2: X piegamenti 5-8 rip. con pausa 1 s; Y stacco rumeno manubri 8-10 rip. 3: X hollow raccolto 15-25 s; Y calf raise 10-12 rip. 4: X side plank 15 s per lato; Y scapular pull-up assistito 6-8 rip.",
+          "en": "Keep the same prescriptions. Person 1 performs X and person 2 Y on odd turns, swapping on even turns. Solo: X-Y-X-Y. Reduce reps or use an easier variation if control deteriorates. Perform your new station's exercise pair. 1: X ring rows 6-8; Y assisted split squats 3-4 per side. 2: X paused push-ups 5-8; Y dumbbell Romanian deadlifts 8-10. 3: X tuck hollow hold 15-25 sec; Y calf raises 10-12. 4: X side plank 15 sec per side; Y assisted scapular pull-ups 6-8."
         },
         "exercises": [
           {
-            "it": "Esegui la coppia di esercizi della tua nuova postazione. 1: X rematore anelli 6-8 rip.; Y split squat assistito 3-4 per lato. 2: X piegamenti 5-8 rip. con pausa 1 s; Y stacco rumeno manubri 8-10 rip. 3: X hollow raccolto 15-25 s; Y calf raise 10-12 rip. 4: X side plank 15 s per lato; Y scapular pull-up assistito 6-8 rip.",
-            "en": "Perform your new station's exercise pair. 1: X ring rows 6-8; Y assisted split squats 3-4 per side. 2: X paused push-ups 5-8; Y dumbbell Romanian deadlifts 8-10. 3: X tuck hollow hold 15-25 sec; Y calf raises 10-12. 4: X side plank 15 sec per side; Y assisted scapular pull-ups 6-8."
+            "it": "Esercizi della postazione",
+            "en": "Station exercises"
           }
         ]
       },
@@ -213,13 +213,13 @@
           "en": "Strength — rotation 4"
         },
         "target": {
-          "it": "Ultima postazione, stesse dosi. Persona 1 su X e persona 2 su Y nei turni dispari; scambio nei pari. Singolo: X-Y-X-Y. Mantieni margine anche nelle ultime serie.",
-          "en": "Final station, same prescriptions. Person 1 performs X and person 2 Y on odd turns, swapping on even turns. Solo: X-Y-X-Y. Maintain reserve through the final sets."
+          "it": "Ultima postazione, stesse dosi. Persona 1 su X e persona 2 su Y nei turni dispari; scambio nei pari. Singolo: X-Y-X-Y. Mantieni margine anche nelle ultime serie. Esegui la coppia di esercizi della tua ultima postazione. 1: X rematore anelli 6-8 rip.; Y split squat assistito 3-4 per lato. 2: X piegamenti 5-8 rip. con pausa 1 s; Y stacco rumeno manubri 8-10 rip. 3: X hollow raccolto 15-25 s; Y calf raise 10-12 rip. 4: X side plank 15 s per lato; Y scapular pull-up assistito 6-8 rip.",
+          "en": "Final station, same prescriptions. Person 1 performs X and person 2 Y on odd turns, swapping on even turns. Solo: X-Y-X-Y. Maintain reserve through the final sets. Perform your final station's exercise pair. 1: X ring rows 6-8; Y assisted split squats 3-4 per side. 2: X paused push-ups 5-8; Y dumbbell Romanian deadlifts 8-10. 3: X tuck hollow hold 15-25 sec; Y calf raises 10-12. 4: X side plank 15 sec per side; Y assisted scapular pull-ups 6-8."
         },
         "exercises": [
           {
-            "it": "Esegui la coppia di esercizi della tua ultima postazione. 1: X rematore anelli 6-8 rip.; Y split squat assistito 3-4 per lato. 2: X piegamenti 5-8 rip. con pausa 1 s; Y stacco rumeno manubri 8-10 rip. 3: X hollow raccolto 15-25 s; Y calf raise 10-12 rip. 4: X side plank 15 s per lato; Y scapular pull-up assistito 6-8 rip.",
-            "en": "Perform your final station's exercise pair. 1: X ring rows 6-8; Y assisted split squats 3-4 per side. 2: X paused push-ups 5-8; Y dumbbell Romanian deadlifts 8-10. 3: X tuck hollow hold 15-25 sec; Y calf raises 10-12. 4: X side plank 15 sec per side; Y assisted scapular pull-ups 6-8."
+            "it": "Esercizi della postazione",
+            "en": "Station exercises"
           }
         ]
       },
@@ -245,13 +245,13 @@
           "en": "Group leg finisher"
         },
         "target": {
-          "it": "Tre intervalli totali insieme, 40 s lavoro / 20 s recupero. Esegui 8-10 squat controllati per intervallo, poi recupera per il tempo restante. Non cercare il massimo numero di ripetizioni. Mantieni la stessa variante nei tre giri.",
-          "en": "Three total synchronized intervals, 40 sec work / 20 sec rest. Perform 8-10 controlled squats per interval, then rest for the remaining time. Keep the same variation throughout."
+          "it": "Tre intervalli totali insieme, 40 s lavoro / 20 s recupero. Esegui 8-10 squat controllati per intervallo, poi recupera per il tempo restante. Non cercare il massimo numero di ripetizioni. Mantieni la stessa variante nei tre giri. Squat a corpo libero: piede intero a terra, discesa controllata e risalita fluida. Evita rimbalzi e perdita di equilibrio. Usa il box se necessario; pausa di 1 s in basso solo se mantieni controllo e margine.",
+          "en": "Three total synchronized intervals, 40 sec work / 20 sec rest. Perform 8-10 controlled squats per interval, then rest for the remaining time. Keep the same variation throughout. Bodyweight squat: keep the whole foot grounded, lower under control and rise smoothly. Avoid bouncing or losing balance. Use a box if needed; add a 1-sec bottom pause only with control and reserve."
         },
         "exercises": [
           {
-            "it": "Squat a corpo libero: piede intero a terra, discesa controllata e risalita fluida. Evita rimbalzi e perdita di equilibrio. Usa il box se necessario; pausa di 1 s in basso solo se mantieni controllo e margine.",
-            "en": "Bodyweight squat: keep the whole foot grounded, lower under control and rise smoothly. Avoid bouncing or losing balance. Use a box if needed; add a 1-sec bottom pause only with control and reserve."
+            "it": "Squat",
+            "en": "Squats"
           }
         ]
       },
@@ -265,29 +265,29 @@
           "en": "Cool-down — 5 minutes"
         },
         "target": {
-          "it": "Un esercizio diverso a ogni intervallo, nell'ordine indicato. Usa i 20 s per cambiare posizione. 1: camminata lenta, 40 s. 2: aperture toraciche sul fianco, 3 per lato. 3: allungamento dorsali con mani su supporto, 30 s. 4: allungamento flessori dell'anca, 20 s per lato. 5: respirazione supina tranquilla, 40 s. Escursioni comode, senza forzare.",
-          "en": "Use a different exercise each interval in the stated order, with 20 sec for transitions. 1: slow walk, 40 sec. 2: side-lying thoracic rotations, 3 per side. 3: supported lat stretch, 30 sec. 4: hip-flexor stretch, 20 sec per side. 5: relaxed supine breathing, 40 sec. Stay within comfortable ranges."
+          "it": "Un esercizio diverso a ogni intervallo, nell'ordine indicato. Usa i 20 s per cambiare posizione. 1: camminata lenta, 40 s. 2: aperture toraciche sul fianco, 3 per lato. 3: allungamento dorsali con mani su supporto, 30 s. 4: allungamento flessori dell'anca, 20 s per lato. 5: respirazione supina tranquilla, 40 s. Escursioni comode, senza forzare. Camminata lenta, 40 s; Aperture toraciche sul fianco, 3 per lato; bacino fermo, escursione comoda; Allungamento dorsali con mani su supporto, 30 s; bacino indietro senza inarcare; alza il tronco per facilitare; Allungamento flessori dell'anca, 20 s per lato; mezzo inginocchio o in piedi; Respirazione supina tranquilla, 40 s; senza trattenere né forzare",
+          "en": "Use a different exercise each interval in the stated order, with 20 sec for transitions. 1: slow walk, 40 sec. 2: side-lying thoracic rotations, 3 per side. 3: supported lat stretch, 30 sec. 4: hip-flexor stretch, 20 sec per side. 5: relaxed supine breathing, 40 sec. Stay within comfortable ranges. Slow walk, 40 sec; Side-lying thoracic rotations, 3 per side; stable pelvis, comfortable range; Supported lat stretch, 30 sec; hips back without arching; raise the torso to regress; Hip-flexor stretch, 20 sec per side; half-kneeling or standing; Relaxed supine breathing, 40 sec; do not hold or force the breath"
         },
         "exercises": [
           {
-            "it": "Camminata lenta, 40 s",
-            "en": "Slow walk, 40 sec"
+            "it": "Camminata lenta",
+            "en": "Slow walk"
           },
           {
-            "it": "Aperture toraciche sul fianco, 3 per lato; bacino fermo, escursione comoda",
-            "en": "Side-lying thoracic rotations, 3 per side; stable pelvis, comfortable range"
+            "it": "Aperture toraciche",
+            "en": "Thoracic rotations"
           },
           {
-            "it": "Allungamento dorsali con mani su supporto, 30 s; bacino indietro senza inarcare; alza il tronco per facilitare",
-            "en": "Supported lat stretch, 30 sec; hips back without arching; raise the torso to regress"
+            "it": "Allungamento dorsali",
+            "en": "Lat stretch"
           },
           {
-            "it": "Allungamento flessori dell'anca, 20 s per lato; mezzo inginocchio o in piedi",
-            "en": "Hip-flexor stretch, 20 sec per side; half-kneeling or standing"
+            "it": "Allungamento flessori anca",
+            "en": "Hip-flexor stretch"
           },
           {
-            "it": "Respirazione supina tranquilla, 40 s; senza trattenere né forzare",
-            "en": "Relaxed supine breathing, 40 sec; do not hold or force the breath"
+            "it": "Respirazione supina",
+            "en": "Supine breathing"
           }
         ]
       }
