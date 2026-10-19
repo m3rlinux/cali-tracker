@@ -111,8 +111,8 @@
         "type": "groups",
         "sets": 2,
         "work": 40,
-        "rest": 60,
-        "change_time": 60,
+        "rest": 40,
+        "change_time": 40,
         "title": {
           "it": "Forza A: tirata, gambe, core",
           "en": "Strength A: pull, legs, core"
@@ -145,8 +145,8 @@
         "type": "groups",
         "sets": 2,
         "work": 40,
-        "rest": 60,
-        "change_time": 60,
+        "rest": 40,
+        "change_time": 40,
         "title": {
           "it": "Forza B: spinta, anca, core laterale",
           "en": "Strength B: push, hinge, lateral core"
