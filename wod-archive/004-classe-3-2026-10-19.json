@@ -7,7 +7,7 @@
     "date_note": "Lezione pianificata per oggi; svolgimento e presenze effettive da confermare.",
     "source": "JSON fornito dal coach, adattato a wod.json",
     "coach_feedback": null,
-    "progression_note": "Continuità con rematore, piegamenti, squat/anca e core delle proposte precedenti. Ripresa del pike della proposta 2 con entrata/uscita e spinta scapolare; forza a coppie con due serie per esercizio, aggiunta di calf raise e scapular pull-up assistito. Nessun progresso individuale dedotto; le proposte 2 e 3 non risultano confermate come svolte."
+    "progression_note": "Continuità con rematore, piegamenti, squat/anca e core delle proposte precedenti. Handstand tutti insieme; forza in due blocchi da tre postazioni con gruppi 1+1+1, due serie per esercizio. Calf raise e scapular pull-up nel blocco comune. Nessun progresso individuale dedotto."
   },
   "class_lesson": {
     "title": {
@@ -17,21 +17,21 @@
     "blocks": [
       {
         "type": "interval",
-        "rounds": 1,
-        "work": 40,
-        "rest": 20,
+        "rounds": 2,
+        "work": 30,
+        "rest": 10,
         "title": {
-          "it": "Riscaldamento — 5 minuti",
-          "en": "Warm-up — 5 minutes"
+          "it": "Riscaldamento — 7 minuti",
+          "en": "Warm-up — 7 minutes"
         },
         "target": {
-          "it": "Un esercizio diverso a ogni intervallo, nell'ordine indicato. Completa la dose senza riempire obbligatoriamente tutti i 40 s. I 20 s servono per recuperare, spiegare e cambiare posizione. 1: marcia attiva con movimento delle braccia, 40 s. 2: oscillazioni sui polsi in quadrupedia, 8-10 ripetizioni. 3: scapular push-up, 8 ripetizioni. 4: squat con braccia avanti, 8 ripetizioni. 5: hip hinge a corpo libero, 8 ripetizioni. Marcia attiva con movimento delle braccia, 40 s; Oscillazioni sui polsi in quadrupedia, 8-10 rip.; palmo appoggiato, escursione comoda; mani su box per facilitare; Scapular push-up, 8 rip.; gomiti distesi; alla parete per facilitare, a terra per progredire; Squat con braccia avanti, 8 rip.; piede intero appoggiato; usa un box se necessario; Hip hinge a corpo libero, 8 rip.; bacino indietro e schiena controllata; parete come riferimento",
-          "en": "Use a different exercise in each interval, following the stated order. Complete the prescribed dose without necessarily filling all 40 sec. Use the 20-sec breaks for recovery, instructions and transitions. Active march with arm movements, 40 sec; Quadruped wrist rocks, 8-10 reps; palms down, comfortable range; hands on a box to regress; Scapular push-ups, 8 reps; straight elbows; use a wall to regress or the floor to progress; Squats with arms forward, 8 reps; whole foot grounded; use a box if needed; Bodyweight hip hinges, 8 reps; hips back and controlled spine; use a wall as a reference"
+          "it": "",
+          "en": ""
         },
         "exercises": [
           {
-            "it": "Marcia attiva",
-            "en": "Active march"
+            "it": "Jumping Jack",
+            "en": "Jumping Jack"
           },
           {
             "it": "Mobilità polsi",
@@ -99,115 +99,103 @@
         "type": "free",
         "seconds": 180,
         "title": {
-          "it": "Forza — spiegazione delle quattro postazioni",
-          "en": "Strength — four-station briefing"
+          "it": "Spiegazione forza",
+          "en": "Strength briefing"
         },
         "target": {
-          "it": "1: rematore agli anelli 6-8 rip.; split squat 3-4 per lato. 2: piegamenti 5-8 rip.; stacco rumeno con manubri 8-10 rip. 3: hollow hold 15-25 s; calf raise 10-12 rip. 4: side plank 15 s per lato; scapular pull-up 6-8 rip.",
-          "en": "1: ring rows 6-8 reps; split squats 3-4 per side. 2: push-ups 5-8 reps; dumbbell Romanian deadlifts 8-10 reps. 3: hollow hold 15-25 sec; calf raises 10-12 reps. 4: side plank 15 sec per side; scapular pull-ups 6-8 reps."
+          "it": "Rematore 6-8 rip.; split squat 3-4 per lato; hollow 15-25 s; piegamenti 5-8 rip.; stacco rumeno 8-10 rip.; side plank 15 s per lato; calf raise 10-12 rip.; scapular pull-up 6-8 rip.",
+          "en": "Ring rows 6-8 reps; split squats 3-4 per side; hollow hold 15-25 sec; push-ups 5-8 reps; Romanian deadlifts 8-10 reps; side plank 15 sec per side; calf raises 10-12 reps; scapular pull-ups 6-8 reps."
         }
       },
       {
-        "type": "interval",
-        "rounds": 4,
+        "type": "groups",
+        "sets": 2,
         "work": 40,
-        "rest": 40,
+        "rest": 60,
+        "change_time": 60,
         "title": {
-          "it": "Forza — rotazione 1",
-          "en": "Strength — rotation 1"
+          "it": "Forza A: tirata, gambe, core",
+          "en": "Strength A: pull, legs, core"
         },
-        "target": {
-          "it": "1: rematore agli anelli 6-8 rip.; split squat 3-4 per lato. 2: piegamenti 5-8 rip.; stacco rumeno con manubri 8-10 rip. 3: hollow hold 15-25 s; calf raise 10-12 rip. 4: side plank 15 s per lato; scapular pull-up 6-8 rip.",
-          "en": "1: ring rows 6-8 reps; split squats 3-4 per side. 2: push-ups 5-8 reps; dumbbell Romanian deadlifts 8-10 reps. 3: hollow hold 15-25 sec; calf raises 10-12 reps. 4: side plank 15 sec per side; scapular pull-ups 6-8 reps."
-        },
-        "exercises": [
+        "groups": [
           {
-            "it": "Esercizi della postazione",
-            "en": "Station exercises"
+            "size": 1,
+            "exercise": {
+              "it": "Rematore agli anelli: 6-8 rip.",
+              "en": "Ring rows: 6-8 reps"
+            }
+          },
+          {
+            "size": 1,
+            "exercise": {
+              "it": "Split squat: 3-4 per lato",
+              "en": "Split squats: 3-4 per side"
+            }
+          },
+          {
+            "size": 1,
+            "exercise": {
+              "it": "Hollow hold: 15-25 s",
+              "en": "Hollow hold: 15-25 sec"
+            }
           }
         ]
       },
       {
-        "type": "free",
-        "seconds": 40,
-        "title": {
-          "it": "Cambio postazione 1",
-          "en": "Station change 1"
-        }
-      },
-      {
-        "type": "interval",
-        "rounds": 4,
+        "type": "groups",
+        "sets": 2,
         "work": 40,
-        "rest": 40,
+        "rest": 60,
+        "change_time": 60,
         "title": {
-          "it": "Forza — rotazione 2",
-          "en": "Strength — rotation 2"
+          "it": "Forza B: spinta, anca, core laterale",
+          "en": "Strength B: push, hinge, lateral core"
         },
-        "target": {
-          "it": "1: rematore agli anelli 6-8 rip.; split squat 3-4 per lato. 2: piegamenti 5-8 rip.; stacco rumeno con manubri 8-10 rip. 3: hollow hold 15-25 s; calf raise 10-12 rip. 4: side plank 15 s per lato; scapular pull-up 6-8 rip.",
-          "en": "1: ring rows 6-8 reps; split squats 3-4 per side. 2: push-ups 5-8 reps; dumbbell Romanian deadlifts 8-10 reps. 3: hollow hold 15-25 sec; calf raises 10-12 reps. 4: side plank 15 sec per side; scapular pull-ups 6-8 reps."
-        },
-        "exercises": [
+        "groups": [
           {
-            "it": "Esercizi della postazione",
-            "en": "Station exercises"
+            "size": 1,
+            "exercise": {
+              "it": "Piegamenti: 5-8 rip.",
+              "en": "Push-ups: 5-8 reps"
+            }
+          },
+          {
+            "size": 1,
+            "exercise": {
+              "it": "Stacco rumeno con manubri: 8-10 rip.",
+              "en": "Dumbbell Romanian deadlifts: 8-10 reps"
+            }
+          },
+          {
+            "size": 1,
+            "exercise": {
+              "it": "Side plank: 15 s per lato",
+              "en": "Side plank: 15 sec per side"
+            }
           }
         ]
       },
       {
-        "type": "free",
-        "seconds": 40,
-        "title": {
-          "it": "Cambio postazione 2",
-          "en": "Station change 2"
-        }
-      },
-      {
         "type": "interval",
-        "rounds": 4,
+        "rounds": 2,
         "work": 40,
         "rest": 40,
         "title": {
-          "it": "Forza — rotazione 3",
-          "en": "Strength — rotation 3"
+          "it": "Complementari tutti insieme",
+          "en": "Group accessories"
         },
         "target": {
-          "it": "1: rematore agli anelli 6-8 rip.; split squat 3-4 per lato. 2: piegamenti 5-8 rip.; stacco rumeno con manubri 8-10 rip. 3: hollow hold 15-25 s; calf raise 10-12 rip. 4: side plank 15 s per lato; scapular pull-up 6-8 rip.",
-          "en": "1: ring rows 6-8 reps; split squats 3-4 per side. 2: push-ups 5-8 reps; dumbbell Romanian deadlifts 8-10 reps. 3: hollow hold 15-25 sec; calf raises 10-12 reps. 4: side plank 15 sec per side; scapular pull-ups 6-8 reps."
+          "it": "Calf raise: 10-12 rip.; scapular pull-up: 6-8 rip.",
+          "en": "Calf raises: 10-12 reps; scapular pull-ups: 6-8 reps."
         },
         "exercises": [
           {
-            "it": "Esercizi della postazione",
-            "en": "Station exercises"
-          }
-        ]
-      },
-      {
-        "type": "free",
-        "seconds": 40,
-        "title": {
-          "it": "Cambio postazione 3",
-          "en": "Station change 3"
-        }
-      },
-      {
-        "type": "interval",
-        "rounds": 4,
-        "work": 40,
-        "rest": 40,
-        "title": {
-          "it": "Forza — rotazione 4",
-          "en": "Strength — rotation 4"
-        },
-        "target": {
-          "it": "1: rematore agli anelli 6-8 rip.; split squat 3-4 per lato. 2: piegamenti 5-8 rip.; stacco rumeno con manubri 8-10 rip. 3: hollow hold 15-25 s; calf raise 10-12 rip. 4: side plank 15 s per lato; scapular pull-up 6-8 rip.",
-          "en": "1: ring rows 6-8 reps; split squats 3-4 per side. 2: push-ups 5-8 reps; dumbbell Romanian deadlifts 8-10 reps. 3: hollow hold 15-25 sec; calf raises 10-12 reps. 4: side plank 15 sec per side; scapular pull-ups 6-8 reps."
-        },
-        "exercises": [
+            "it": "Calf raise",
+            "en": "Calf raises"
+          },
           {
-            "it": "Esercizi della postazione",
-            "en": "Station exercises"
+            "it": "Scapular pull-up",
+            "en": "Scapular pull-ups"
           }
         ]
       },
