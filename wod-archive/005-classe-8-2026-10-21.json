@@ -1,0 +1,295 @@
+{
+  "metadata": {
+    "sequence": 5,
+    "status": "planned",
+    "planned_for": "2026-10-21",
+    "performed_on": null,
+    "date_note": "Sei iscritti, attesi 7-8 partecipanti inclusa una persona alla prova. Configurazione base per 8; presenze effettive da confermare.",
+    "source": "Lezione concordata con il coach",
+    "coach_feedback": null,
+    "progression_note": "Continuita con rematore, piegamenti, squat/anca e core degli snapshot precedenti, senza dedurre progressi individuali. Handstand comune dinamico senza salti; compressioni al posto dello split squat; finale coordinativo approvato.",
+    "attendance_variants": {
+      "6": [
+        2,
+        2,
+        1,
+        1
+      ],
+      "7": [
+        2,
+        2,
+        2,
+        1
+      ],
+      "8": [
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    "coach_notes": [
+      "Quattro gruppi, rotazione 1-2-3-4-1. Due persone eseguono insieme lo stesso esercizio; completare tre serie prima di ruotare.",
+      "Con 6 o 7 presenti aggiornare participants e size nei due blocchi groups secondo attendance_variants.",
+      "Persona nuova con partecipante abituale. Due coppie anelli, manubri per due e supporti piegamenti.",
+      "Compressioni alternate da seduti su rialzo stabile, ginocchio piegato; distendere secondo controllo.",
+      "Finale: nuovo partecipante puo fare affondo e ginocchio alto senza calcio; appoggiare il bacino nel passo sotto se necessario.",
+      "Cambio lato affondo al segnale vocale del coach dopo 15 s; invertire lato iniziale nei giri successivi."
+    ]
+  },
+  "class_lesson": {
+    "participants": 8,
+    "title": {
+      "it": "Calisthenics - Lezione B",
+      "en": "Calisthenics - Lesson B"
+    },
+    "blocks": [
+      {
+        "type": "interval",
+        "rounds": 2,
+        "work": 20,
+        "rest": 10,
+        "title": {
+          "it": "Riscaldamento - 6 minuti",
+          "en": "Warm-up - 6 minutes"
+        },
+        "exercises": [
+          {
+            "it": "Marcia attiva / jumping jack",
+            "en": "Active march / jumping jacks"
+          },
+          {
+            "it": "Mobilita polsi",
+            "en": "Wrist mobility"
+          },
+          {
+            "it": "Scapular push-up in quadrupedia",
+            "en": "Quadruped scapular push-ups"
+          },
+          {
+            "it": "Squat",
+            "en": "Squats"
+          },
+          {
+            "it": "Hip hinge",
+            "en": "Hip hinges"
+          },
+          {
+            "it": "Affondi indietro",
+            "en": "Reverse lunges"
+          }
+        ]
+      },
+      {
+        "type": "free",
+        "seconds": 180,
+        "title": {
+          "it": "Handstand - dimostrazione",
+          "en": "Handstand - demonstration"
+        },
+        "target": {
+          "it": "Tutti insieme: camminata dei piedi verso il pike e sollevamento alternato di un piede. Mani ferme, gomiti distesi, spinta sul pavimento; ginocchia morbide. Nessun saltello.",
+          "en": "Together: walk the feet toward pike, then alternate single-foot lifts. Hands stay still, elbows straight, push the floor away; knees may bend. No hopping."
+        }
+      },
+      {
+        "type": "interval",
+        "rounds": 3,
+        "work": 30,
+        "rest": 30,
+        "title": {
+          "it": "Handstand - camminata verso il pike",
+          "en": "Handstand - pike walk-ins"
+        },
+        "exercises": [
+          {
+            "it": "Camminata dei piedi verso il pike",
+            "en": "Pike walk-ins"
+          }
+        ],
+        "target": {
+          "it": "2-3 salite per serie, fermo 2-3 s in alto.",
+          "en": "2-3 walk-ins per set, hold the top for 2-3 sec."
+        }
+      },
+      {
+        "type": "interval",
+        "rounds": 2,
+        "work": 30,
+        "rest": 30,
+        "title": {
+          "it": "Handstand - sollevamento del piede",
+          "en": "Handstand - single-foot lifts"
+        },
+        "exercises": [
+          {
+            "it": "Pike: sollevamento alternato piede",
+            "en": "Pike: alternating foot lifts"
+          }
+        ],
+        "target": {
+          "it": "3 sollevamenti per lato; piede appena staccato e ritorno controllato.",
+          "en": "3 lifts per side; lift the foot slightly and return under control."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 90,
+        "title": {
+          "it": "Spiegazione forza A",
+          "en": "Strength A briefing"
+        },
+        "target": {
+          "it": "Rematore agli anelli: 6-8 rip.; Squat: 8-10 rip.; Hollow raccolto: 15-20 s; Stacco rumeno manubri: 8-10 rip.",
+          "en": "Ring rows: 6-8 reps; Squats: 8-10 reps; Tuck hollow hold: 15-20 sec; Dumbbell Romanian deadlifts: 8-10 reps"
+        }
+      },
+      {
+        "type": "groups",
+        "sets": 3,
+        "work": 40,
+        "rest": 40,
+        "change_time": 40,
+        "title": {
+          "it": "Forza A: tirata, squat, core, anca",
+          "en": "Strength A: pull, squat, core, hinge"
+        },
+        "groups": [
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Rematore agli anelli: 6-8 rip.",
+              "en": "Ring rows: 6-8 reps"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Squat: 8-10 rip.",
+              "en": "Squats: 8-10 reps"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Hollow raccolto: 15-20 s",
+              "en": "Tuck hollow hold: 15-20 sec"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Stacco rumeno manubri: 8-10 rip.",
+              "en": "Dumbbell Romanian deadlifts: 8-10 reps"
+            }
+          }
+        ]
+      },
+      {
+        "type": "free",
+        "seconds": 90,
+        "title": {
+          "it": "Spiegazione forza B",
+          "en": "Strength B briefing"
+        },
+        "target": {
+          "it": "Piegamenti: 5-8 rip.; Compressioni da seduti: 4-6 per lato; Side plank: 15 s per lato; Ponte glutei: 10-12 rip.",
+          "en": "Push-ups: 5-8 reps; Seated compression lifts: 4-6 per side; Side plank: 15 sec per side; Glute bridges: 10-12 reps"
+        }
+      },
+      {
+        "type": "groups",
+        "sets": 3,
+        "work": 40,
+        "rest": 40,
+        "change_time": 40,
+        "title": {
+          "it": "Forza B: spinta, compressione, core",
+          "en": "Strength B: push, compression, core"
+        },
+        "groups": [
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Piegamenti: 5-8 rip.",
+              "en": "Push-ups: 5-8 reps"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Compressioni da seduti: 4-6 per lato",
+              "en": "Seated compression lifts: 4-6 per side"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Side plank: 15 s per lato",
+              "en": "Side plank: 15 sec per side"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Ponte glutei: 10-12 rip.",
+              "en": "Glute bridges: 10-12 reps"
+            }
+          }
+        ]
+      },
+      {
+        "type": "free",
+        "seconds": 90,
+        "title": {
+          "it": "Spiegazione finale",
+          "en": "Finisher briefing"
+        },
+        "target": {
+          "it": "Affondo e calcio: 15 s per lato, cambio al segnale del coach. Passi in mezzo squat: due passi laterali, risalita, poi direzione opposta; piedi sempre distanziati. Passo sotto alternato.",
+          "en": "Lunge and kick: 15 sec per side, switch on the coach signal. Half-squat steps: two lateral steps, stand up, then reverse direction; keep feet apart. Alternate kick-throughs."
+        }
+      },
+      {
+        "type": "interval",
+        "rounds": 3,
+        "work": 30,
+        "rest": 20,
+        "title": {
+          "it": "Finale tutti insieme",
+          "en": "Group finisher"
+        },
+        "exercises": [
+          {
+            "it": "Affondo indietro + calcio frontale",
+            "en": "Reverse lunge + front kick"
+          },
+          {
+            "it": "Due passi laterali squat + risalita",
+            "en": "Two lateral squat steps + stand"
+          },
+          {
+            "it": "Passo sotto laterale",
+            "en": "Side kick-through"
+          }
+        ],
+        "target": {
+          "it": "Affondo e calcio: 15 s per lato. Tre giri.",
+          "en": "Lunge and kick: 15 sec per side. Three rounds."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 200,
+        "title": {
+          "it": "Defaticamento - 3 minuti e 20",
+          "en": "Cool-down - 3 minutes 20"
+        },
+        "target": {
+          "it": "Camminata, mobilita toracica e anche, respirazione.",
+          "en": "Walking, thoracic and hip mobility, breathing."
+        }
+      }
+    ]
+  }
+}

@@ -10,36 +10,33 @@
   "force_values": true,
   "circuit_rounds": 1,
   "class_lesson": {
+    "participants": 8,
     "title": {
-      "it": "Calisthenics — Lezione A",
-      "en": "Calisthenics — Lesson A"
+      "it": "Calisthenics - Lezione B",
+      "en": "Calisthenics - Lesson B"
     },
     "blocks": [
       {
         "type": "interval",
         "rounds": 2,
-        "work": 30,
+        "work": 20,
         "rest": 10,
         "title": {
-          "it": "Riscaldamento — 7 minuti",
-          "en": "Warm-up — 7 minutes"
-        },
-        "target": {
-          "it": "",
-          "en": ""
+          "it": "Riscaldamento - 6 minuti",
+          "en": "Warm-up - 6 minutes"
         },
         "exercises": [
           {
-            "it": "Jumping Jack",
-            "en": "Jumping Jack"
+            "it": "Marcia attiva / jumping jack",
+            "en": "Active march / jumping jacks"
           },
           {
-            "it": "Mobilità polsi",
+            "it": "Mobilita polsi",
             "en": "Wrist mobility"
           },
           {
-            "it": "Scapular push-up",
-            "en": "Scapular push-ups"
+            "it": "Scapular push-up in quadrupedia",
+            "en": "Quadruped scapular push-ups"
           },
           {
             "it": "Squat",
@@ -48,50 +45,10 @@
           {
             "it": "Hip hinge",
             "en": "Hip hinges"
-          }
-        ]
-      },
-      {
-        "type": "free",
-        "seconds": 120,
-        "title": {
-          "it": "Handstand — salita e discesa dal rialzo",
-          "en": "Handstand — entering and exiting the elevated pike"
-        },
-        "target": {
-          "it": "Tutti e tre insieme, ciascuno con un supporto stabile: due prove controllate di salita e discesa dal pike nei due minuti. Un piede alla volta, senza saltare, gomiti distesi. Rialzo basso o piedi a terra se necessario.",
-          "en": "All three together, each with a stable support: two controlled elevated-pike entries and exits within two minutes. One foot at a time, no jumping, straight elbows. Use a lower support or feet on the floor if needed."
-        }
-      },
-      {
-        "type": "free",
-        "seconds": 120,
-        "title": {
-          "it": "Handstand — spinta scapolare",
-          "en": "Handstand — scapular elevation"
-        },
-        "target": {
-          "it": "Tutti e tre insieme: 2 serie da 5 spinte scapolari in pike, circa 30 s di recupero comune. Spingi il pavimento con gomiti distesi; piedi a terra per facilitare. Ciascuno usa il proprio supporto.",
-          "en": "All three together: 2 sets of 5 pike scapular elevations, approximately 30 sec shared rest. Push the floor away with straight elbows; feet on the floor to regress. Each uses their own support."
-        }
-      },
-      {
-        "type": "interval",
-        "rounds": 4,
-        "work": 25,
-        "rest": 65,
-        "title": {
-          "it": "Handstand - pike hold tutti insieme",
-          "en": "Handstand - group pike holds"
-        },
-        "target": {
-          "it": "Tutti e tre insieme, ciascuno sul proprio supporto: 4 tenute da 20-25 s, con 65 s di recupero comune. Nessuna alternanza o divisione in gruppi. Pike hold con piedi sul rialzo alto e mani a terra: spingi il pavimento, mantieni la testa libera e respira. Porta il bacino sopra le spalle solo quanto controllabile, senza inarcare la schiena. Regressione: rialzo basso o piedi a terra. Progressione: migliore allineamento alla stessa altezza; aumenta una sola variabile.",
-          "en": "All three together, each on their own support: 4 holds of 20-25 sec, with 65 sec shared rest. No alternating turns or groups. Elevated pike hold with hands on the floor: push the floor away, keep the head clear and breathe. Move the hips over the shoulders only as far as controlled. Regress to a lower support or feet on the floor; progress through improved alignment."
-        },
-        "exercises": [
+          },
           {
-            "it": "Pike hold su rialzo",
-            "en": "Elevated pike hold"
+            "it": "Affondi indietro",
+            "en": "Reverse lunges"
           }
         ]
       },
@@ -99,176 +56,213 @@
         "type": "free",
         "seconds": 180,
         "title": {
-          "it": "Spiegazione forza",
-          "en": "Strength briefing"
+          "it": "Handstand - dimostrazione",
+          "en": "Handstand - demonstration"
         },
         "target": {
-          "it": "Rematore 6-8 rip.; split squat 3-4 per lato; hollow 15-25 s; piegamenti 5-8 rip.; stacco rumeno 8-10 rip.; side plank 15 s per lato; tenuta in sospensione alle parallele 20 s; scapular pull-up agli anelli 6-8 rip.",
-          "en": "Ring rows 6-8 reps; split squats 3-4 per side; hollow hold 15-25 sec; push-ups 5-8 reps; Romanian deadlifts 8-10 reps; side plank 15 sec per side; parallel-bar suspension hold 20 sec; ring scapular pull-ups 6-8 reps."
+          "it": "Tutti insieme: camminata dei piedi verso il pike e sollevamento alternato di un piede. Mani ferme, gomiti distesi, spinta sul pavimento; ginocchia morbide. Nessun saltello.",
+          "en": "Together: walk the feet toward pike, then alternate single-foot lifts. Hands stay still, elbows straight, push the floor away; knees may bend. No hopping."
+        }
+      },
+      {
+        "type": "interval",
+        "rounds": 3,
+        "work": 30,
+        "rest": 30,
+        "title": {
+          "it": "Handstand - camminata verso il pike",
+          "en": "Handstand - pike walk-ins"
+        },
+        "exercises": [
+          {
+            "it": "Camminata dei piedi verso il pike",
+            "en": "Pike walk-ins"
+          }
+        ],
+        "target": {
+          "it": "2-3 salite per serie, fermo 2-3 s in alto.",
+          "en": "2-3 walk-ins per set, hold the top for 2-3 sec."
+        }
+      },
+      {
+        "type": "interval",
+        "rounds": 2,
+        "work": 30,
+        "rest": 30,
+        "title": {
+          "it": "Handstand - sollevamento del piede",
+          "en": "Handstand - single-foot lifts"
+        },
+        "exercises": [
+          {
+            "it": "Pike: sollevamento alternato piede",
+            "en": "Pike: alternating foot lifts"
+          }
+        ],
+        "target": {
+          "it": "3 sollevamenti per lato; piede appena staccato e ritorno controllato.",
+          "en": "3 lifts per side; lift the foot slightly and return under control."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 90,
+        "title": {
+          "it": "Spiegazione forza A",
+          "en": "Strength A briefing"
+        },
+        "target": {
+          "it": "Rematore agli anelli: 6-8 rip.; Squat: 8-10 rip.; Hollow raccolto: 15-20 s; Stacco rumeno manubri: 8-10 rip.",
+          "en": "Ring rows: 6-8 reps; Squats: 8-10 reps; Tuck hollow hold: 15-20 sec; Dumbbell Romanian deadlifts: 8-10 reps"
         }
       },
       {
         "type": "groups",
-        "sets": 2,
+        "sets": 3,
         "work": 40,
         "rest": 40,
         "change_time": 40,
         "title": {
-          "it": "Forza A: tirata, gambe, core",
-          "en": "Strength A: pull, legs, core"
+          "it": "Forza A: tirata, squat, core, anca",
+          "en": "Strength A: pull, squat, core, hinge"
         },
         "groups": [
           {
-            "size": 1,
+            "size": 2,
             "exercise": {
               "it": "Rematore agli anelli: 6-8 rip.",
               "en": "Ring rows: 6-8 reps"
             }
           },
           {
-            "size": 1,
+            "size": 2,
             "exercise": {
-              "it": "Split squat: 3-4 per lato",
-              "en": "Split squats: 3-4 per side"
+              "it": "Squat: 8-10 rip.",
+              "en": "Squats: 8-10 reps"
             }
           },
           {
-            "size": 1,
+            "size": 2,
             "exercise": {
-              "it": "Hollow hold: 15-25 s",
-              "en": "Hollow hold: 15-25 sec"
+              "it": "Hollow raccolto: 15-20 s",
+              "en": "Tuck hollow hold: 15-20 sec"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Stacco rumeno manubri: 8-10 rip.",
+              "en": "Dumbbell Romanian deadlifts: 8-10 reps"
             }
           }
         ]
       },
       {
+        "type": "free",
+        "seconds": 90,
+        "title": {
+          "it": "Spiegazione forza B",
+          "en": "Strength B briefing"
+        },
+        "target": {
+          "it": "Piegamenti: 5-8 rip.; Compressioni da seduti: 4-6 per lato; Side plank: 15 s per lato; Ponte glutei: 10-12 rip.",
+          "en": "Push-ups: 5-8 reps; Seated compression lifts: 4-6 per side; Side plank: 15 sec per side; Glute bridges: 10-12 reps"
+        }
+      },
+      {
         "type": "groups",
-        "sets": 2,
+        "sets": 3,
         "work": 40,
         "rest": 40,
         "change_time": 40,
         "title": {
-          "it": "Forza B: spinta, anca, core laterale",
-          "en": "Strength B: push, hinge, lateral core"
+          "it": "Forza B: spinta, compressione, core",
+          "en": "Strength B: push, compression, core"
         },
         "groups": [
           {
-            "size": 1,
+            "size": 2,
             "exercise": {
               "it": "Piegamenti: 5-8 rip.",
               "en": "Push-ups: 5-8 reps"
             }
           },
           {
-            "size": 1,
+            "size": 2,
             "exercise": {
-              "it": "Stacco rumeno con manubri: 8-10 rip.",
-              "en": "Dumbbell Romanian deadlifts: 8-10 reps"
+              "it": "Compressioni da seduti: 4-6 per lato",
+              "en": "Seated compression lifts: 4-6 per side"
             }
           },
           {
-            "size": 1,
+            "size": 2,
             "exercise": {
               "it": "Side plank: 15 s per lato",
               "en": "Side plank: 15 sec per side"
             }
-          }
-        ]
-      },
-      {
-        "type": "interval",
-        "rounds": 2,
-        "work": 40,
-        "rest": 40,
-        "title": {
-          "it": "Complementari tutti insieme",
-          "en": "Group accessories"
-        },
-        "target": {
-          "it": "Tenuta in sospensione alle parallele: 20 s; scapular pull-up agli anelli: 6-8 rip.",
-          "en": "Tenuta alle paralleles: 10-12 reps; ring scapular pull-ups: 6-8 reps."
-        },
-        "exercises": [
-          {
-            "it": "Tenuta alle parallele",
-            "en": "Tenuta alle paralleles"
           },
           {
-            "it": "Scapular pull-up agli anelli",
-            "en": "Ring scapular pull-ups"
+            "size": 2,
+            "exercise": {
+              "it": "Ponte glutei: 10-12 rip.",
+              "en": "Glute bridges: 10-12 reps"
+            }
           }
         ]
       },
       {
         "type": "free",
-        "seconds": 40,
+        "seconds": 90,
         "title": {
-          "it": "Preparazione finale gambe",
-          "en": "Leg finisher setup"
+          "it": "Spiegazione finale",
+          "en": "Finisher briefing"
         },
         "target": {
-          "it": "Lascia liberi gli attrezzi e disponi tutti in uno spazio individuale. Mostra lo squat del finale: 8-10 ripetizioni controllate entro 40 s. Piede intero a terra, ginocchia nella direzione dei piedi. Regressione: squat al box. Progressione: pausa 1 s in basso, senza aumentare contemporaneamente le ripetizioni.",
-          "en": "Clear equipment and give everyone individual space. Demonstrate the finisher squat: 8-10 controlled reps within 40 sec. Regress to a box squat; progress with a 1-sec bottom pause without simultaneously increasing reps."
+          "it": "Affondo e calcio: 15 s per lato, cambio al segnale del coach. Passi in mezzo squat: due passi laterali, risalita, poi direzione opposta; piedi sempre distanziati. Passo sotto alternato.",
+          "en": "Lunge and kick: 15 sec per side, switch on the coach signal. Half-squat steps: two lateral steps, stand up, then reverse direction; keep feet apart. Alternate kick-throughs."
         }
       },
       {
         "type": "interval",
         "rounds": 3,
-        "work": 40,
+        "work": 30,
         "rest": 20,
         "title": {
-          "it": "Finale gambe tutti insieme",
-          "en": "Group leg finisher"
-        },
-        "target": {
-          "it": "Tre intervalli totali insieme, 40 s lavoro / 20 s recupero. Esegui 8-10 squat controllati per intervallo, poi recupera per il tempo restante. Non cercare il massimo numero di ripetizioni. Mantieni la stessa variante nei tre giri. Squat a corpo libero: piede intero a terra, discesa controllata e risalita fluida. Evita rimbalzi e perdita di equilibrio. Usa il box se necessario; pausa di 1 s in basso solo se mantieni controllo e margine.",
-          "en": "Three total synchronized intervals, 40 sec work / 20 sec rest. Perform 8-10 controlled squats per interval, then rest for the remaining time. Keep the same variation throughout. Bodyweight squat: keep the whole foot grounded, lower under control and rise smoothly. Avoid bouncing or losing balance. Use a box if needed; add a 1-sec bottom pause only with control and reserve."
+          "it": "Finale tutti insieme",
+          "en": "Group finisher"
         },
         "exercises": [
           {
-            "it": "Squat",
-            "en": "Squats"
+            "it": "Affondo indietro + calcio frontale",
+            "en": "Reverse lunge + front kick"
+          },
+          {
+            "it": "Due passi laterali squat + risalita",
+            "en": "Two lateral squat steps + stand"
+          },
+          {
+            "it": "Passo sotto laterale",
+            "en": "Side kick-through"
           }
-        ]
+        ],
+        "target": {
+          "it": "Affondo e calcio: 15 s per lato. Tre giri.",
+          "en": "Lunge and kick: 15 sec per side. Three rounds."
+        }
       },
       {
-        "type": "interval",
-        "rounds": 1,
-        "work": 40,
-        "rest": 20,
+        "type": "free",
+        "seconds": 200,
         "title": {
-          "it": "Defaticamento — 5 minuti",
-          "en": "Cool-down — 5 minutes"
+          "it": "Defaticamento - 3 minuti e 20",
+          "en": "Cool-down - 3 minutes 20"
         },
         "target": {
-          "it": "Un esercizio diverso a ogni intervallo, nell'ordine indicato. Usa i 20 s per cambiare posizione. 1: camminata lenta, 40 s. 2: aperture toraciche sul fianco, 3 per lato. 3: allungamento dorsali con mani su supporto, 30 s. 4: allungamento flessori dell'anca, 20 s per lato. 5: respirazione supina tranquilla, 40 s. Escursioni comode, senza forzare. Camminata lenta, 40 s; Aperture toraciche sul fianco, 3 per lato; bacino fermo, escursione comoda; Allungamento dorsali con mani su supporto, 30 s; bacino indietro senza inarcare; alza il tronco per facilitare; Allungamento flessori dell'anca, 20 s per lato; mezzo inginocchio o in piedi; Respirazione supina tranquilla, 40 s; senza trattenere né forzare",
-          "en": "Use a different exercise each interval in the stated order, with 20 sec for transitions. 1: slow walk, 40 sec. 2: side-lying thoracic rotations, 3 per side. 3: supported lat stretch, 30 sec. 4: hip-flexor stretch, 20 sec per side. 5: relaxed supine breathing, 40 sec. Stay within comfortable ranges. Slow walk, 40 sec; Side-lying thoracic rotations, 3 per side; stable pelvis, comfortable range; Supported lat stretch, 30 sec; hips back without arching; raise the torso to regress; Hip-flexor stretch, 20 sec per side; half-kneeling or standing; Relaxed supine breathing, 40 sec; do not hold or force the breath"
-        },
-        "exercises": [
-          {
-            "it": "Camminata lenta",
-            "en": "Slow walk"
-          },
-          {
-            "it": "Aperture toraciche",
-            "en": "Thoracic rotations"
-          },
-          {
-            "it": "Allungamento dorsali",
-            "en": "Lat stretch"
-          },
-          {
-            "it": "Allungamento flessori anca",
-            "en": "Hip-flexor stretch"
-          },
-          {
-            "it": "Respirazione supina",
-            "en": "Supine breathing"
-          }
-        ]
+          "it": "Camminata, mobilita toracica e anche, respirazione.",
+          "en": "Walking, thoracic and hip mobility, breathing."
+        }
       }
-    ],
-    "participants": 3
+    ]
   },
   "stations": {
     "p0s1": {
