@@ -6,8 +6,8 @@
     "performed_on": null,
     "date_note": "Lezione pianificata per oggi; svolgimento e presenze effettive da confermare.",
     "source": "JSON fornito dal coach, adattato a wod.json",
-    "coach_feedback": null,
-    "progression_note": "Continuità con rematore, piegamenti, squat/anca e core delle proposte precedenti. Handstand tutti insieme; forza in due blocchi da tre postazioni con gruppi 1+1+1, due serie per esercizio. Calf raise e scapular pull-up agli anelli nel blocco comune. Nessun progresso individuale dedotto."
+    "coach_feedback": "Il coach riferisce di aver sostituito il calf raise con tenute in sospensione alle parallele da 20 s.",
+    "progression_note": "Continuità con rematore, piegamenti, squat/anca e core delle proposte precedenti. Handstand tutti insieme; forza in due blocchi da tre postazioni con gruppi 1+1+1, due serie per esercizio. Tenute in sospensione alle parallele da 20 s e scapular pull-up agli anelli nel blocco comune. Nessun progresso individuale dedotto."
   },
   "class_lesson": {
     "title": {
@@ -103,8 +103,8 @@
           "en": "Strength briefing"
         },
         "target": {
-          "it": "Rematore 6-8 rip.; split squat 3-4 per lato; hollow 15-25 s; piegamenti 5-8 rip.; stacco rumeno 8-10 rip.; side plank 15 s per lato; calf raise 10-12 rip.; scapular pull-up agli anelli 6-8 rip.",
-          "en": "Ring rows 6-8 reps; split squats 3-4 per side; hollow hold 15-25 sec; push-ups 5-8 reps; Romanian deadlifts 8-10 reps; side plank 15 sec per side; calf raises 10-12 reps; ring scapular pull-ups 6-8 reps."
+          "it": "Rematore 6-8 rip.; split squat 3-4 per lato; hollow 15-25 s; piegamenti 5-8 rip.; stacco rumeno 8-10 rip.; side plank 15 s per lato; tenuta in sospensione alle parallele 20 s; scapular pull-up agli anelli 6-8 rip.",
+          "en": "Ring rows 6-8 reps; split squats 3-4 per side; hollow hold 15-25 sec; push-ups 5-8 reps; Romanian deadlifts 8-10 reps; side plank 15 sec per side; parallel-bar suspension hold 20 sec; ring scapular pull-ups 6-8 reps."
         }
       },
       {
@@ -185,13 +185,13 @@
           "en": "Group accessories"
         },
         "target": {
-          "it": "Calf raise: 10-12 rip.; scapular pull-up agli anelli: 6-8 rip.",
-          "en": "Calf raises: 10-12 reps; ring scapular pull-ups: 6-8 reps."
+          "it": "Tenuta in sospensione alle parallele: 20 s; scapular pull-up agli anelli: 6-8 rip.",
+          "en": "Tenuta alle paralleles: 10-12 reps; ring scapular pull-ups: 6-8 reps."
         },
         "exercises": [
           {
-            "it": "Calf raise",
-            "en": "Calf raises"
+            "it": "Tenuta alle parallele",
+            "en": "Tenuta alle paralleles"
           },
           {
             "it": "Scapular pull-up agli anelli",
