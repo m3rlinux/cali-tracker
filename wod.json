@@ -103,8 +103,8 @@
           "en": "Strength briefing"
         },
         "target": {
-          "it": "Rematore 6-8 rip.; split squat 3-4 per lato; hollow 15-25 s; piegamenti 5-8 rip.; stacco rumeno 8-10 rip.; side plank 15 s per lato; calf raise 10-12 rip.; scapular pull-up 6-8 rip.",
-          "en": "Ring rows 6-8 reps; split squats 3-4 per side; hollow hold 15-25 sec; push-ups 5-8 reps; Romanian deadlifts 8-10 reps; side plank 15 sec per side; calf raises 10-12 reps; scapular pull-ups 6-8 reps."
+          "it": "Rematore 6-8 rip.; split squat 3-4 per lato; hollow 15-25 s; piegamenti 5-8 rip.; stacco rumeno 8-10 rip.; side plank 15 s per lato; calf raise 10-12 rip.; scapular pull-up agli anelli 6-8 rip.",
+          "en": "Ring rows 6-8 reps; split squats 3-4 per side; hollow hold 15-25 sec; push-ups 5-8 reps; Romanian deadlifts 8-10 reps; side plank 15 sec per side; calf raises 10-12 reps; ring scapular pull-ups 6-8 reps."
         }
       },
       {
@@ -185,8 +185,8 @@
           "en": "Group accessories"
         },
         "target": {
-          "it": "Calf raise: 10-12 rip.; scapular pull-up: 6-8 rip.",
-          "en": "Calf raises: 10-12 reps; scapular pull-ups: 6-8 reps."
+          "it": "Calf raise: 10-12 rip.; scapular pull-up agli anelli: 6-8 rip.",
+          "en": "Calf raises: 10-12 reps; ring scapular pull-ups: 6-8 reps."
         },
         "exercises": [
           {
@@ -194,8 +194,8 @@
             "en": "Calf raises"
           },
           {
-            "it": "Scapular pull-up",
-            "en": "Scapular pull-ups"
+            "it": "Scapular pull-up agli anelli",
+            "en": "Ring scapular pull-ups"
           }
         ]
       },
