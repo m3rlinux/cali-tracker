@@ -1,5 +1,5 @@
 <!--
-  Cali Tracker v4.2.9
+  Cali Tracker v4.2.10
   Copyright (c) 2026 Davide Gibilisco
   Released under the MIT License
   https://github.com/m3rlinux/cali-tracker
@@ -551,7 +551,7 @@ body.coach-mode { max-width: 960px; }
 </div>
 
 <div class="app-header">
-  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.2.9</span></div>
+  <div class="app-title">Cali Tracker <span id="version" style="color:var(--muted2);font-size:10px;letter-spacing:.04em">v4.2.10</span></div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
   <div class="header-seg header-seg-lang" id="lang-seg" role="group" title="Lingua esercizi / Exercise language">
     <button type="button" class="header-seg-opt" data-lang="it" onclick="setLang('it')">IT</button>
@@ -764,7 +764,7 @@ body.coach-mode { max-width: 960px; }
 <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
-const VERSION = '4.2.9';
+const VERSION = '4.2.10';
 const KEY_NAME = 'cali_name';
 const KEY_COACH = 'cali_coach';
 const KEY_SETTINGS = 'cali_settings';
@@ -2057,10 +2057,9 @@ function renderSessBar() {
   const guided = isCoachMode() && getClassLesson(s.class_lesson);
   if (guided) {
     document.getElementById('sess-num').textContent = '★';
-    const date = s.class_lesson_performed_at
-      ? new Date(s.class_lesson_performed_at)
-      : new Date();
-    document.getElementById('sess-date').textContent = date.toLocaleDateString('it-IT');
+    const iso = classLessonDate({ performed_date: s.class_lesson_date, performed_at: s.class_lesson_performed_at })
+      || localCalendarDate(new Date());
+    document.getElementById('sess-date').innerHTML = `<input type="date" class="sess-date-input" value="${escapeHtml(iso)}" onchange="onClassLessonDateChange(this)" aria-label="${getLang() === 'en' ? 'Class date' : 'Data lezione'}" required>`;
     document.getElementById('sess-bar').classList.remove('sess-bar-editing');
     const en = getLang() === 'en';
     document.getElementById('sess-bar-right').innerHTML =
@@ -3940,6 +3939,43 @@ function getClassLessonRecords(data) {
   return Array.isArray(data?.class_lessons) ? data.class_lessons : [];
 }
 
+// Calendar dates stay local: converting midnight to UTC can change the chosen day.
+function localCalendarDate(date) {
+  return `${String(date.getFullYear()).padStart(4, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function validCalendarDate(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(value + 'T12:00:00');
+  return Number.isFinite(date.getTime()) && localCalendarDate(date) === value;
+}
+
+function classLessonDate(record) {
+  if (validCalendarDate(record.performed_date)) return record.performed_date;
+  const date = new Date(record.performed_at);
+  return Number.isFinite(date.getTime()) ? localCalendarDate(date) : '';
+}
+
+function onClassLessonDateChange(el) {
+  if (!validCalendarDate(el.value)) { renderSessBar(); return; }
+  draftSession.class_lesson_date = el.value;
+  draftDirty = true;
+}
+
+function changeSavedClassLessonDate(index, el) {
+  if (!canUseClass()) return;
+  const data = getData();
+  const record = getClassLessonRecords(data)[index];
+  if (!record || !validCalendarDate(el.value)) { renderHistory(); return; }
+  record.performed_date = el.value;
+  saveData(data);
+  if (draftSession?.class_lesson_saved_id === record.id) {
+    draftSession.class_lesson_date = el.value;
+    renderSessBar();
+  }
+  renderHistory();
+}
+
 function saveClassLesson() {
   if (!canUseClass()) return;
   const lesson = getClassLesson(draftSession?.class_lesson);
@@ -3950,13 +3986,18 @@ function saveClassLesson() {
   const existingIndex = records.findIndex(r => r?.id === existingId);
   const id = existingIndex >= 0 ? existingId : `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const performedAt = existingIndex >= 0 ? records[existingIndex].performed_at : new Date().toISOString();
-  const record = { id, performed_at: performedAt, lesson: cloneObj(lesson) };
+  const performedDate = draftSession.class_lesson_date
+    || classLessonDate(existingIndex >= 0 ? records[existingIndex] : { performed_at: performedAt });
+  if (!validCalendarDate(performedDate)) return;
+  const record = { ...(existingIndex >= 0 ? records[existingIndex] : {}),
+    id, performed_at: performedAt, performed_date: performedDate, lesson: cloneObj(lesson) };
   if (existingIndex >= 0) records[existingIndex] = record;
   else records.push(record);
   data.class_lessons = records;
   saveData(data);
   draftSession.class_lesson_saved_id = id;
   draftSession.class_lesson_performed_at = performedAt;
+  draftSession.class_lesson_date = performedDate;
   draftDirty = false;
   stopTimer(false);
   renderSessBar();
@@ -3983,6 +4024,7 @@ function saveSession() {
   delete savedSession.class_lesson; // scaletta coach solo nel draft temporaneo
   delete savedSession.class_lesson_saved_id;
   delete savedSession.class_lesson_performed_at;
+  delete savedSession.class_lesson_date;
   data[currentSess] = savedSession;
   saveData(data);
   draftDirty = false;
@@ -4016,15 +4058,17 @@ function renderClassLessonHistory(data) {
   const en = getLang() === 'en';
   const records = getClassLessonRecords(data)
     .filter(r => r && getClassLesson(r.lesson) && Number.isFinite(Date.parse(r.performed_at)))
-    .sort((a, b) => b.performed_at.localeCompare(a.performed_at));
+    .sort((a, b) => classLessonDate(b).localeCompare(classLessonDate(a))
+      || Date.parse(b.performed_at) - Date.parse(a.performed_at));
   const items = records.map(record => {
     const lesson = record.lesson;
-    const date = new Date(record.performed_at).toLocaleString(en ? 'en-GB' : 'it-IT',
-      { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const date = new Date(classLessonDate(record) + 'T12:00:00').toLocaleDateString(en ? 'en-GB' : 'it-IT',
+      { day: '2-digit', month: '2-digit', year: 'numeric' });
     const total = buildClassLessonTimerPlan(lesson).totalSeconds;
     const cards = lesson.blocks.map((block, i) => classLessonCardHTML(block, i, null, en)).join('');
     return `<details class="class-history-entry">
       <summary>${escapeHtml(date)} · ${lesson.participants} ${en ? 'students' : 'allievi'} · ${formatTimerDuration(total)}</summary>
+      <label>${en ? 'Class date' : 'Data lezione'} <input type="date" class="sess-date-input" value="${escapeHtml(classLessonDate(record))}" onchange="changeSavedClassLessonDate(${getClassLessonRecords(data).indexOf(record)}, this)" required></label>
       <div class="coach-lesson-list">${cards}</div>
     </details>`;
   }).join('');

@@ -167,6 +167,7 @@ const saveContext = {
   document: { getElementById: () => toast }, setTimeout() {}
 };
 runInNewContext([
+  ...['localCalendarDate', 'validCalendarDate', 'classLessonDate'].map(extractFn),
   extractFn('getClassLessonRecords'), extractFn('saveClassLesson'),
   extractFn('saveSession'), 'saveSession()'
 ].join('\n'), saveContext);
