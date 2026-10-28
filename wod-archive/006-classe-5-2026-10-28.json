@@ -1,0 +1,379 @@
+{
+  "metadata": {
+    "sequence": 6,
+    "status": "planned",
+    "planned_for": "2026-10-28",
+    "performed_on": null,
+    "source": "Lezione concordata con il coach in chat",
+    "coach_feedback": null,
+    "progression_note": "Continuita con Lezione B: pike dinamico, spinta, anca e core. Split squat con carico come richiesto; trazioni libere o con elastico secondo le capacita riferite, rematore come alternativa. Nuovo finale flow squat-beast-crab. Nessun risultato individuale o svolgimento presunto.",
+    "coach_notes": [
+      "Gruppi fissi G1=2, G2=2, G3=1. Tre serie per postazione. Fuori dalla sbarra lavorano tutti insieme nei 40 s lavoro e recuperano nei 40 s recupero. Finite le ripetizioni, riposare; circa due ripetizioni di margine.",
+      "SOLO ALLA SBARRA: nei 40 s lavoro, A esegue entro 20 s e usa i successivi 20 s per scendere/cambiare; nei 40 s recupero, B esegue entro 20 s e usa i successivi 20 s per il cambio. Vale anche nell'ultimo recupero. Il coach chiama il cambio a 20 s: il timer suona a 40 s. Il singolo esegue nel turno A e recupera nel B. Se uno fa rematore, puo lavorare agli anelli nei 40 s lavoro mentre il compagno usa la sbarra; se entrambi fanno rematore usare le due postazioni anelli.",
+      "Per due persone insieme servono due coppie di parallettes. Con una sola coppia, l'altro fa piegamenti a terra o su supporto stabile; scambiarsi durante il recupero. Piedi rialzati solo se appropriato; non forzare la profondita.",
+      "Rotazioni esplicite interval 3 x 40/40: conservano il terzo recupero necessario alla terza serie di B. Due cambi da 40 s per blocco; ogni blocco forza dura 13 min 20 s.",
+      "I gruppi G1/G2/G3 restano gli stessi: cambiano gli esercizi assegnati nelle tre rotazioni. Durata totale 57 min 40 s."
+    ]
+  },
+  "class_lesson": {
+    "participants": 5,
+    "title": {
+      "it": "Calisthenics - Lezione C - 5 partecipanti",
+      "en": "Calisthenics - Lesson C - 5 participants"
+    },
+    "blocks": [
+      {
+        "type": "interval",
+        "rounds": 2,
+        "work": 20,
+        "rest": 10,
+        "title": {
+          "it": "Riscaldamento - 6 minuti",
+          "en": "Warm-up - 6 minutes"
+        },
+        "exercises": [
+          {
+            "it": "Marcia attiva / jumping jack",
+            "en": "Active march / jumping jacks"
+          },
+          {
+            "it": "Mobilita polsi",
+            "en": "Wrist mobility"
+          },
+          {
+            "it": "Scapular push-up in quadrupedia",
+            "en": "Quadruped scapular push-ups"
+          },
+          {
+            "it": "Squat",
+            "en": "Squats"
+          },
+          {
+            "it": "Hip hinge",
+            "en": "Hip hinges"
+          },
+          {
+            "it": "Affondi indietro",
+            "en": "Reverse lunges"
+          }
+        ]
+      },
+      {
+        "type": "free",
+        "seconds": 180,
+        "title": {
+          "it": "Handstand - dimostrazione",
+          "en": "Handstand - demonstration"
+        },
+        "target": {
+          "it": "Tutti e cinque insieme. Camminata verso il pike, mani ferme e gomiti distesi, poi piccolo sollevamento alternato del piede. Nessun salto; piedi a terra se si perde la posizione.",
+          "en": "All five together. Walk into pike with hands still and elbows straight, then small alternating foot lifts. No jumping; keep both feet down if alignment is lost."
+        }
+      },
+      {
+        "type": "interval",
+        "rounds": 3,
+        "work": 30,
+        "rest": 30,
+        "title": {
+          "it": "Handstand - camminata verso il pike",
+          "en": "Handstand - pike walk-ins"
+        },
+        "exercises": [
+          {
+            "it": "Camminata dei piedi verso il pike",
+            "en": "Pike walk-ins"
+          }
+        ],
+        "target": {
+          "it": "2-3 camminate per serie, fermo 3 s nella posizione controllabile.",
+          "en": "2-3 walk-ins per set, hold the controlled position for 3 sec."
+        }
+      },
+      {
+        "type": "interval",
+        "rounds": 2,
+        "work": 30,
+        "rest": 30,
+        "title": {
+          "it": "Handstand - sollevamento del piede",
+          "en": "Handstand - single-foot lifts"
+        },
+        "exercises": [
+          {
+            "it": "Pike: sollevamento alternato piede",
+            "en": "Pike: alternating foot lifts"
+          }
+        ],
+        "target": {
+          "it": "2-3 sollevamenti per lato, ritorno controllato; entrambi i piedi a terra come variante piu semplice.",
+          "en": "2-3 lifts per side, controlled return; keep both feet down to regress."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 120,
+        "title": {
+          "it": "Spiegazione forza A",
+          "en": "Strength A briefing"
+        },
+        "target": {
+          "it": "Gruppi fissi G1=2, G2=2, G3=1. Tre serie per postazione. Fuori dalla sbarra lavorano tutti insieme nei 40 s lavoro e recuperano nei 40 s recupero. Finite le ripetizioni, riposare; circa due ripetizioni di margine. SOLO ALLA SBARRA: nei 40 s lavoro, A esegue entro 20 s e usa i successivi 20 s per scendere/cambiare; nei 40 s recupero, B esegue entro 20 s e usa i successivi 20 s per il cambio. Vale anche nell'ultimo recupero. Il coach chiama il cambio a 20 s: il timer suona a 40 s. Il singolo esegue nel turno A e recupera nel B. Se uno fa rematore, puo lavorare agli anelli nei 40 s lavoro mentre il compagno usa la sbarra; se entrambi fanno rematore usare le due postazioni anelli.",
+          "en": "Fixed groups G1=2, G2=2, G3=1. Three sets per station. Except at the bar, everyone works together in the 40-sec work phase and rests in the 40-sec rest phase. Rest once reps are complete; leave about two reps in reserve. BAR ONLY: during the 40-sec work phase A performs within 20 sec, then uses 20 sec to dismount/change; during the 40-sec rest phase B performs within 20 sec, then uses 20 sec to change. Include the final rest phase. Coach calls the 20-sec change; timer beeps at 40 sec. A solo participant uses turn A and rests in B. A rower may use rings during the work phase while their partner uses the bar; two rowers use both ring stations."
+        }
+      },
+      {
+        "type": "interval",
+        "title": {
+          "it": "Forza A - rotazione 1 (G1:2, G2:2, G3:1)",
+          "en": "Strength A - rotation 1 (G1:2, G2:2, G3:1)"
+        },
+        "rounds": 3,
+        "work": 40,
+        "rest": 40,
+        "exercises": [
+          {
+            "it": "G1: Trazioni libere 2-5 rip. o con elastico 4-6, solo quelle pulite entro 20 s; alternativa rematore agli anelli 6-8 rip. | G2: Split squat CON CARICO: 4-6 rip. per lato entro 40 s, senza accelerare. | G3: Hollow raccolto: 15-25 s, poi recupero.",
+            "en": "G1: Strict pull-ups 2-5 reps or band-assisted 4-6, only clean reps within 20 sec; alternative ring rows 6-8 reps. | G2: WEIGHTED split squat: 4-6 reps each side within 40 sec, without rushing. | G3: Tuck hollow hold: 15-25 sec, then rest."
+          }
+        ],
+        "target": {
+          "it": "Gruppi fissi G1=2, G2=2, G3=1. Tre serie per postazione. Fuori dalla sbarra lavorano tutti insieme nei 40 s lavoro e recuperano nei 40 s recupero. Finite le ripetizioni, riposare; circa due ripetizioni di margine. SOLO ALLA SBARRA: nei 40 s lavoro, A esegue entro 20 s e usa i successivi 20 s per scendere/cambiare; nei 40 s recupero, B esegue entro 20 s e usa i successivi 20 s per il cambio. Vale anche nell'ultimo recupero. Il coach chiama il cambio a 20 s: il timer suona a 40 s. Il singolo esegue nel turno A e recupera nel B. Se uno fa rematore, puo lavorare agli anelli nei 40 s lavoro mentre il compagno usa la sbarra; se entrambi fanno rematore usare le due postazioni anelli.",
+          "en": "Fixed groups G1=2, G2=2, G3=1. Three sets per station. Except at the bar, everyone works together in the 40-sec work phase and rests in the 40-sec rest phase. Rest once reps are complete; leave about two reps in reserve. BAR ONLY: during the 40-sec work phase A performs within 20 sec, then uses 20 sec to dismount/change; during the 40-sec rest phase B performs within 20 sec, then uses 20 sec to change. Include the final rest phase. Coach calls the 20-sec change; timer beeps at 40 sec. A solo participant uses turn A and rests in B. A rower may use rings during the work phase while their partner uses the bar; two rowers use both ring stations."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 40,
+        "title": {
+          "it": "Cambio postazioni forza A",
+          "en": "Strength A station change"
+        },
+        "target": {
+          "it": "Tutti ruotano 1 -> 2 -> 3 -> 1. Ripartire solo dopo la conclusione del turno B alla sbarra.",
+          "en": "Everyone rotates 1 -> 2 -> 3 -> 1. Start changing only after bar turn B is complete."
+        }
+      },
+      {
+        "type": "interval",
+        "title": {
+          "it": "Forza A - rotazione 2 (G1:2, G2:2, G3:1)",
+          "en": "Strength A - rotation 2 (G1:2, G2:2, G3:1)"
+        },
+        "rounds": 3,
+        "work": 40,
+        "rest": 40,
+        "exercises": [
+          {
+            "it": "G1: Split squat CON CARICO: 4-6 rip. per lato entro 40 s, senza accelerare. | G2: Hollow raccolto: 15-25 s, poi recupero. | G3: Trazioni libere 2-5 rip. o con elastico 4-6, solo quelle pulite entro 20 s; alternativa rematore agli anelli 6-8 rip.",
+            "en": "G1: WEIGHTED split squat: 4-6 reps each side within 40 sec, without rushing. | G2: Tuck hollow hold: 15-25 sec, then rest. | G3: Strict pull-ups 2-5 reps or band-assisted 4-6, only clean reps within 20 sec; alternative ring rows 6-8 reps."
+          }
+        ],
+        "target": {
+          "it": "Gruppi fissi G1=2, G2=2, G3=1. Tre serie per postazione. Fuori dalla sbarra lavorano tutti insieme nei 40 s lavoro e recuperano nei 40 s recupero. Finite le ripetizioni, riposare; circa due ripetizioni di margine. SOLO ALLA SBARRA: nei 40 s lavoro, A esegue entro 20 s e usa i successivi 20 s per scendere/cambiare; nei 40 s recupero, B esegue entro 20 s e usa i successivi 20 s per il cambio. Vale anche nell'ultimo recupero. Il coach chiama il cambio a 20 s: il timer suona a 40 s. Il singolo esegue nel turno A e recupera nel B. Se uno fa rematore, puo lavorare agli anelli nei 40 s lavoro mentre il compagno usa la sbarra; se entrambi fanno rematore usare le due postazioni anelli.",
+          "en": "Fixed groups G1=2, G2=2, G3=1. Three sets per station. Except at the bar, everyone works together in the 40-sec work phase and rests in the 40-sec rest phase. Rest once reps are complete; leave about two reps in reserve. BAR ONLY: during the 40-sec work phase A performs within 20 sec, then uses 20 sec to dismount/change; during the 40-sec rest phase B performs within 20 sec, then uses 20 sec to change. Include the final rest phase. Coach calls the 20-sec change; timer beeps at 40 sec. A solo participant uses turn A and rests in B. A rower may use rings during the work phase while their partner uses the bar; two rowers use both ring stations."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 40,
+        "title": {
+          "it": "Cambio postazioni forza A",
+          "en": "Strength A station change"
+        },
+        "target": {
+          "it": "Tutti ruotano 1 -> 2 -> 3 -> 1. Ripartire solo dopo la conclusione del turno B alla sbarra.",
+          "en": "Everyone rotates 1 -> 2 -> 3 -> 1. Start changing only after bar turn B is complete."
+        }
+      },
+      {
+        "type": "interval",
+        "title": {
+          "it": "Forza A - rotazione 3 (G1:2, G2:2, G3:1)",
+          "en": "Strength A - rotation 3 (G1:2, G2:2, G3:1)"
+        },
+        "rounds": 3,
+        "work": 40,
+        "rest": 40,
+        "exercises": [
+          {
+            "it": "G1: Hollow raccolto: 15-25 s, poi recupero. | G2: Trazioni libere 2-5 rip. o con elastico 4-6, solo quelle pulite entro 20 s; alternativa rematore agli anelli 6-8 rip. | G3: Split squat CON CARICO: 4-6 rip. per lato entro 40 s, senza accelerare.",
+            "en": "G1: Tuck hollow hold: 15-25 sec, then rest. | G2: Strict pull-ups 2-5 reps or band-assisted 4-6, only clean reps within 20 sec; alternative ring rows 6-8 reps. | G3: WEIGHTED split squat: 4-6 reps each side within 40 sec, without rushing."
+          }
+        ],
+        "target": {
+          "it": "Gruppi fissi G1=2, G2=2, G3=1. Tre serie per postazione. Fuori dalla sbarra lavorano tutti insieme nei 40 s lavoro e recuperano nei 40 s recupero. Finite le ripetizioni, riposare; circa due ripetizioni di margine. SOLO ALLA SBARRA: nei 40 s lavoro, A esegue entro 20 s e usa i successivi 20 s per scendere/cambiare; nei 40 s recupero, B esegue entro 20 s e usa i successivi 20 s per il cambio. Vale anche nell'ultimo recupero. Il coach chiama il cambio a 20 s: il timer suona a 40 s. Il singolo esegue nel turno A e recupera nel B. Se uno fa rematore, puo lavorare agli anelli nei 40 s lavoro mentre il compagno usa la sbarra; se entrambi fanno rematore usare le due postazioni anelli.",
+          "en": "Fixed groups G1=2, G2=2, G3=1. Three sets per station. Except at the bar, everyone works together in the 40-sec work phase and rests in the 40-sec rest phase. Rest once reps are complete; leave about two reps in reserve. BAR ONLY: during the 40-sec work phase A performs within 20 sec, then uses 20 sec to dismount/change; during the 40-sec rest phase B performs within 20 sec, then uses 20 sec to change. Include the final rest phase. Coach calls the 20-sec change; timer beeps at 40 sec. A solo participant uses turn A and rests in B. A rower may use rings during the work phase while their partner uses the bar; two rowers use both ring stations."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 120,
+        "title": {
+          "it": "Spiegazione forza B",
+          "en": "Strength B briefing"
+        },
+        "target": {
+          "it": "Gruppi fissi G1=2, G2=2, G3=1. Tre serie per postazione. Fuori dalla sbarra lavorano tutti insieme nei 40 s lavoro e recuperano nei 40 s recupero. Finite le ripetizioni, riposare; circa due ripetizioni di margine. Per due persone insieme servono due coppie di parallettes. Con una sola coppia, l'altro fa piegamenti a terra o su supporto stabile; scambiarsi durante il recupero. Piedi rialzati solo se appropriato; non forzare la profondita.",
+          "en": "Fixed groups G1=2, G2=2, G3=1. Three sets per station. Except at the bar, everyone works together in the 40-sec work phase and rests in the 40-sec rest phase. Rest once reps are complete; leave about two reps in reserve. Two simultaneous users need two pairs of parallettes. With one pair, the partner does floor or stable incline push-ups; swap during rest. Elevate feet only when appropriate; do not force depth."
+        }
+      },
+      {
+        "type": "interval",
+        "title": {
+          "it": "Forza B - rotazione 1 (G1:2, G2:2, G3:1)",
+          "en": "Strength B - rotation 1 (G1:2, G2:2, G3:1)"
+        },
+        "rounds": 3,
+        "work": 40,
+        "rest": 40,
+        "exercises": [
+          {
+            "it": "G1: Piegamenti sulle parallettes basse (30 cm): 5-8 rip., profondita controllata. | G2: Stacco rumeno con manubri: 8-10 rip. | G3: Compressioni da seduti: 4-6 sollevamenti per lato; ginocchio piegato per facilitare.",
+            "en": "G1: Low-parallette push-ups (30 cm): 5-8 reps, controlled depth. | G2: Dumbbell Romanian deadlift: 8-10 reps. | G3: Seated compression lifts: 4-6 each side; bend the knee to regress."
+          }
+        ],
+        "target": {
+          "it": "Gruppi fissi G1=2, G2=2, G3=1. Tre serie per postazione. Fuori dalla sbarra lavorano tutti insieme nei 40 s lavoro e recuperano nei 40 s recupero. Finite le ripetizioni, riposare; circa due ripetizioni di margine. Per due persone insieme servono due coppie di parallettes. Con una sola coppia, l'altro fa piegamenti a terra o su supporto stabile; scambiarsi durante il recupero. Piedi rialzati solo se appropriato; non forzare la profondita.",
+          "en": "Fixed groups G1=2, G2=2, G3=1. Three sets per station. Except at the bar, everyone works together in the 40-sec work phase and rests in the 40-sec rest phase. Rest once reps are complete; leave about two reps in reserve. Two simultaneous users need two pairs of parallettes. With one pair, the partner does floor or stable incline push-ups; swap during rest. Elevate feet only when appropriate; do not force depth."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 40,
+        "title": {
+          "it": "Cambio postazioni forza B",
+          "en": "Strength B station change"
+        },
+        "target": {
+          "it": "Tutti ruotano 1 -> 2 -> 3 -> 1. Ripartire solo dopo la conclusione del turno B alla sbarra.",
+          "en": "Everyone rotates 1 -> 2 -> 3 -> 1. Start changing only after bar turn B is complete."
+        }
+      },
+      {
+        "type": "interval",
+        "title": {
+          "it": "Forza B - rotazione 2 (G1:2, G2:2, G3:1)",
+          "en": "Strength B - rotation 2 (G1:2, G2:2, G3:1)"
+        },
+        "rounds": 3,
+        "work": 40,
+        "rest": 40,
+        "exercises": [
+          {
+            "it": "G1: Stacco rumeno con manubri: 8-10 rip. | G2: Compressioni da seduti: 4-6 sollevamenti per lato; ginocchio piegato per facilitare. | G3: Piegamenti sulle parallettes basse (30 cm): 5-8 rip., profondita controllata.",
+            "en": "G1: Dumbbell Romanian deadlift: 8-10 reps. | G2: Seated compression lifts: 4-6 each side; bend the knee to regress. | G3: Low-parallette push-ups (30 cm): 5-8 reps, controlled depth."
+          }
+        ],
+        "target": {
+          "it": "Gruppi fissi G1=2, G2=2, G3=1. Tre serie per postazione. Fuori dalla sbarra lavorano tutti insieme nei 40 s lavoro e recuperano nei 40 s recupero. Finite le ripetizioni, riposare; circa due ripetizioni di margine. Per due persone insieme servono due coppie di parallettes. Con una sola coppia, l'altro fa piegamenti a terra o su supporto stabile; scambiarsi durante il recupero. Piedi rialzati solo se appropriato; non forzare la profondita.",
+          "en": "Fixed groups G1=2, G2=2, G3=1. Three sets per station. Except at the bar, everyone works together in the 40-sec work phase and rests in the 40-sec rest phase. Rest once reps are complete; leave about two reps in reserve. Two simultaneous users need two pairs of parallettes. With one pair, the partner does floor or stable incline push-ups; swap during rest. Elevate feet only when appropriate; do not force depth."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 40,
+        "title": {
+          "it": "Cambio postazioni forza B",
+          "en": "Strength B station change"
+        },
+        "target": {
+          "it": "Tutti ruotano 1 -> 2 -> 3 -> 1. Ripartire solo dopo la conclusione del turno B alla sbarra.",
+          "en": "Everyone rotates 1 -> 2 -> 3 -> 1. Start changing only after bar turn B is complete."
+        }
+      },
+      {
+        "type": "interval",
+        "title": {
+          "it": "Forza B - rotazione 3 (G1:2, G2:2, G3:1)",
+          "en": "Strength B - rotation 3 (G1:2, G2:2, G3:1)"
+        },
+        "rounds": 3,
+        "work": 40,
+        "rest": 40,
+        "exercises": [
+          {
+            "it": "G1: Compressioni da seduti: 4-6 sollevamenti per lato; ginocchio piegato per facilitare. | G2: Piegamenti sulle parallettes basse (30 cm): 5-8 rip., profondita controllata. | G3: Stacco rumeno con manubri: 8-10 rip.",
+            "en": "G1: Seated compression lifts: 4-6 each side; bend the knee to regress. | G2: Low-parallette push-ups (30 cm): 5-8 reps, controlled depth. | G3: Dumbbell Romanian deadlift: 8-10 reps."
+          }
+        ],
+        "target": {
+          "it": "Gruppi fissi G1=2, G2=2, G3=1. Tre serie per postazione. Fuori dalla sbarra lavorano tutti insieme nei 40 s lavoro e recuperano nei 40 s recupero. Finite le ripetizioni, riposare; circa due ripetizioni di margine. Per due persone insieme servono due coppie di parallettes. Con una sola coppia, l'altro fa piegamenti a terra o su supporto stabile; scambiarsi durante il recupero. Piedi rialzati solo se appropriato; non forzare la profondita.",
+          "en": "Fixed groups G1=2, G2=2, G3=1. Three sets per station. Except at the bar, everyone works together in the 40-sec work phase and rests in the 40-sec rest phase. Rest once reps are complete; leave about two reps in reserve. Two simultaneous users need two pairs of parallettes. With one pair, the partner does floor or stable incline push-ups; swap during rest. Elevate feet only when appropriate; do not force depth."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 120,
+        "title": {
+          "it": "Flow movement - dimostrazione e prove",
+          "en": "Movement flow - demo and practice"
+        },
+        "target": {
+          "it": "Deep squat -> mani a terra -> beast (ginocchia appena sollevate) -> passo sotto e apertura in crab -> ritorno in beast -> deep squat. Alternare destra e sinistra. Collegare i movimenti lentamente, senza cercare il numero massimo. Ginocchia o bacino appoggiati per facilitare; nessuna rotazione forzata di polso o spalla.",
+          "en": "Deep squat -> hands down -> beast (knees hovering) -> step under and open into crab -> return to beast -> deep squat. Alternate right and left. Connect slowly, without chasing reps. Set knees or hips down to regress; do not force wrist or shoulder rotation."
+        }
+      },
+      {
+        "type": "interval",
+        "title": {
+          "it": "Flow - costruzione dei passaggi",
+          "en": "Flow - build the transitions"
+        },
+        "rounds": 1,
+        "work": 40,
+        "rest": 20,
+        "exercises": [
+          {
+            "it": "Deep squat <-> beast",
+            "en": "Deep squat <-> beast"
+          },
+          {
+            "it": "Beast <-> crab, alternare lato",
+            "en": "Beast <-> crab, alternate sides"
+          },
+          {
+            "it": "Sequenza completa, lenta",
+            "en": "Full sequence, slowly"
+          }
+        ],
+        "target": {
+          "it": "Deep squat -> mani a terra -> beast (ginocchia appena sollevate) -> passo sotto e apertura in crab -> ritorno in beast -> deep squat. Alternare destra e sinistra. Collegare i movimenti lentamente, senza cercare il numero massimo. Ginocchia o bacino appoggiati per facilitare; nessuna rotazione forzata di polso o spalla.",
+          "en": "Deep squat -> hands down -> beast (knees hovering) -> step under and open into crab -> return to beast -> deep squat. Alternate right and left. Connect slowly, without chasing reps. Set knees or hips down to regress; do not force wrist or shoulder rotation."
+        }
+      },
+      {
+        "type": "interval",
+        "title": {
+          "it": "Flow completo tutti insieme",
+          "en": "Full group flow"
+        },
+        "rounds": 3,
+        "work": 40,
+        "rest": 20,
+        "exercises": [
+          {
+            "it": "Deep squat -> beast -> crab -> beast -> deep squat",
+            "en": "Deep squat -> beast -> crab -> beast -> deep squat"
+          }
+        ],
+        "target": {
+          "it": "Deep squat -> mani a terra -> beast (ginocchia appena sollevate) -> passo sotto e apertura in crab -> ritorno in beast -> deep squat. Alternare destra e sinistra. Collegare i movimenti lentamente, senza cercare il numero massimo. Ginocchia o bacino appoggiati per facilitare; nessuna rotazione forzata di polso o spalla.",
+          "en": "Deep squat -> hands down -> beast (knees hovering) -> step under and open into crab -> return to beast -> deep squat. Alternate right and left. Connect slowly, without chasing reps. Set knees or hips down to regress; do not force wrist or shoulder rotation."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 300,
+        "title": {
+          "it": "Defaticamento - 5 minuti",
+          "en": "Cool-down - 5 minutes"
+        },
+        "target": {
+          "it": "Camminata lenta, mobilita toracica, allungamento comodo di anche e dorsali, respirazione.",
+          "en": "Slow walk, thoracic mobility, comfortable hip and lat stretches, breathing."
+        }
+      }
+    ]
+  }
+}

@@ -11,6 +11,8 @@ Questo archivio conserva le **scalette Classe** nell'ordine in cui sono state cr
 
 | 5 | [Lezione B, 6-8 partecipanti](005-classe-8-2026-10-21.json) | Prevista per 2026-10-21; presenze e svolgimento da confermare | Base 8 presenti: quattro coppie; varianti 6/7 nei metadata. Handstand comune con camminata verso pike e sollevamento piede; due blocchi forza groups, tre serie 40/40/40. Compressioni da seduti; finale tre esercizi per tre giri 30/20. Una persona alla prova prevista. Durata 60 minuti. |
 
+| 6 | [Lezione C, 5 partecipanti](006-classe-5-2026-10-28.json) | Prevista per 2026-10-28; svolgimento da confermare | Gruppi 2+2+1. Pike dinamico; trazioni libere/elastico con turni 20 s + 20 s cambio nel timer unico 40/40, rematore alternativo agli anelli. Split squat con carico, piegamenti sulle parallettes basse, stacco e core. Rotazioni esplicite per conservare la terza serie di B; finale flow squat-beast-crab. Durata 57 min 40 s. |
+
 ## Quando si progetta una nuova lezione
 
 1. Leggere questo indice e le scalette JSON nell'ordine indicato. Confrontare schemi motori, difficoltà, esercizi, tempi, gruppi e finale; proporre continuità e una variazione gestibile.
