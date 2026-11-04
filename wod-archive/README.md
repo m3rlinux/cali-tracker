@@ -13,6 +13,8 @@ Questo archivio conserva le **scalette Classe** nell'ordine in cui sono state cr
 
 | 6 | [Lezione C, 5 partecipanti](006-classe-5-2026-10-28.json) | Prevista per 2026-10-28; svolgimento da confermare | Gruppi 2+2+1. Pike dinamico; trazioni libere/elastico con turni 20 s + 20 s cambio nel timer unico 40/40, rematore alternativo agli anelli. Split squat con carico, piegamenti sulle parallettes basse, stacco e core. Rotazioni esplicite per conservare la terza serie di B; finale flow squat-beast-crab. Durata 57 min 40 s. |
 
+| 7 | [Classe, 5 partecipanti](007-classe-5-2026-11-04.json) | Prevista per 2026-11-04; svolgimento da confermare | Kick-up al muro e pike su rialzo; gruppi 2+2+1. A: rematore, split squat, planche lean. B: dip assistiti, stacco rumeno, compressioni. Tre serie 40/40, rotazione nel recupero finale senza tempo aggiuntivo; pausa 2 minuti tra A e B. Durata 53 minuti e 20 secondi. Nessun risultato individuale presunto. |
+
 ## Quando si progetta una nuova lezione
 
 1. Leggere questo indice e le scalette JSON nell'ordine indicato. Confrontare schemi motori, difficoltà, esercizi, tempi, gruppi e finale; proporre continuità e una variazione gestibile.
