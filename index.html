@@ -3692,7 +3692,7 @@ function classLessonCardHTML(block, index, activeIdx, en, canStart = false) {
     details = `<div class="coach-lesson-detail">${block.rounds} ${en ? 'rounds' : 'giri'} · ${block.work}" ${en ? 'work' : 'lavoro'} / ${block.rest}" ${en ? 'rest' : 'recupero'}</div>
       <ol class="coach-lesson-exercises">${block.exercises.map(ex => `<li>${escapeHtml(classLessonText(ex, en))}</li>`).join('')}</ol>`;
   }
-  if (block.target) details += `<div class="coach-lesson-detail">${escapeHtml(classLessonText(block.target, en))}</div>`;
+  if (block.target) details += `<div class="coach-lesson-detail">${escapeHtml(classLessonText(block.target, en)).replace(/\n/g, '<br>')}</div>`;
   const startButton = canStart
     ? `<button type="button" class="coach-lesson-start" onclick="startClassLessonTimer(${index})">${en ? '▶ Start here' : '▶ Avvia da qui'}</button>`
     : '';

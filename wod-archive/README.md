@@ -15,6 +15,8 @@ Questo archivio conserva le **scalette Classe** nell'ordine in cui sono state cr
 
 | 7 | [Classe, 5 partecipanti](007-classe-5-2026-11-04.json) | Prevista per 2026-11-04; svolgimento da confermare | Kick-up al muro e pike su rialzo; gruppi 2+2+1. A: rematore, split squat, planche lean. B: dip assistiti, stacco rumeno, compressioni. Tre serie 40/40, rotazione nel recupero finale senza tempo aggiuntivo; pausa 2 minuti tra A e B. Durata 53 minuti e 20 secondi. Nessun risultato individuale presunto. |
 
+| 8 | [Skill foundations, 7–8 partecipanti](008-classe-8-2026-11-16.json) | Prevista per 2026-11-16; svolgimento da confermare | Verticale scalabile; quattro postazioni: tirata, appoggio/L-sit, planche lean, pistol assistito. Briefing unico 8 minuti, 10 s preparati; tre serie 40/40 e terzo recupero sostituito da cambio 60 s. Blocco centrale 25′30″; prove personali e flow finale. Totale 54′30″. Nessun progresso individuale presunto. |
+
 ## Quando si progetta una nuova lezione
 
 1. Leggere questo indice e le scalette JSON nell'ordine indicato. Confrontare schemi motori, difficoltà, esercizi, tempi, gruppi e finale; proporre continuità e una variazione gestibile.
