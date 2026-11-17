@@ -1,0 +1,291 @@
+{
+  "metadata": {
+    "sequence": 6,
+    "status": "planned",
+    "planned_for": "2026-11-04",
+    "performed_on": null,
+    "source": "Lezione concordata con il coach",
+    "coach_feedback": null,
+    "progression_note": "Continuita con rematore, split squat, anca e compressioni delle proposte precedenti. Planche lean al posto di hollow e dip al posto dei piegamenti; kick-up al muro con discesa controllata e pike su rialzo. Nessun progresso individuale presunto.",
+    "coach_notes": [
+      "Gruppi 2+2+1, tre serie per postazione, coppie contemporanee.",
+      "Il cambio di 40 s sostituisce il recupero dopo la terza serie, senza aggiunta. Recupero finale di 40 s esplicito per ciascun blocco.",
+      "Pausa aggiuntiva di 120 s tra A e B, usata anche per spiegare B.",
+      "Durata totale 53 minuti e 20 secondi.",
+      "Organizzare due postazioni per rematore e dip, manubri per due; tre rialzi con alternanza nelle coppie per pike."
+    ]
+  },
+  "class_lesson": {
+    "participants": 5,
+    "title": {
+      "it": "Calisthenics - 4 novembre 2026",
+      "en": "Calisthenics - November 4, 2026"
+    },
+    "blocks": [
+      {
+        "type": "interval",
+        "rounds": 2,
+        "work": 20,
+        "rest": 10,
+        "title": {
+          "it": "Riscaldamento - 6 minuti",
+          "en": "Warm-up - 6 minutes"
+        },
+        "exercises": [
+          {
+            "it": "Marcia attiva / jumping jack",
+            "en": "Active march / jumping jacks"
+          },
+          {
+            "it": "Mobilita polsi",
+            "en": "Wrist mobility"
+          },
+          {
+            "it": "Scapular push-up in quadrupedia",
+            "en": "Quadruped scapular push-ups"
+          },
+          {
+            "it": "Squat",
+            "en": "Squats"
+          },
+          {
+            "it": "Hip hinge",
+            "en": "Hip hinges"
+          },
+          {
+            "it": "Affondi indietro",
+            "en": "Reverse lunges"
+          }
+        ]
+      },
+      {
+        "type": "free",
+        "seconds": 90,
+        "title": {
+          "it": "Handstand - spiegazione",
+          "en": "Handstand - briefing"
+        },
+        "target": {
+          "it": "Mostra kick-up al muro e discesa controllata, poi pike con piedi su rialzo. Organizza turni e supporti stabili.",
+          "en": "Demonstrate wall kick-ups with controlled exits, then elevated pike holds. Arrange turns and stable supports."
+        }
+      },
+      {
+        "type": "interval",
+        "rounds": 3,
+        "work": 30,
+        "rest": 60,
+        "title": {
+          "it": "Handstand - kick-up al muro",
+          "en": "Handstand - wall kick-ups"
+        },
+        "exercises": [
+          {
+            "it": "Kick-up al muro e discesa controllata: 2-3 tentativi",
+            "en": "Wall kick-up and controlled exit: 2-3 attempts"
+          }
+        ],
+        "target": {
+          "it": "Tentativi singoli con controllo; assistenza del coach secondo necessita. Alternarsi se lo spazio al muro non basta.",
+          "en": "Controlled single attempts; coach assistance as needed. Take turns if wall space is limited."
+        }
+      },
+      {
+        "type": "interval",
+        "rounds": 3,
+        "work": 20,
+        "rest": 60,
+        "title": {
+          "it": "Handstand - pike hold",
+          "en": "Handstand - pike hold"
+        },
+        "exercises": [
+          {
+            "it": "Pike hold con piedi su rialzo: 15-20 s",
+            "en": "Elevated pike hold: 15-20 sec"
+          }
+        ],
+        "target": {
+          "it": "Gomiti distesi, spingi il pavimento. Due coppie si alternano tra lavoro e recupero usando due rialzi; il singolo usa il terzo. Rialzo basso o piedi a terra se necessario.",
+          "en": "Straight elbows, push the floor away. Two pairs alternate work and rest using two supports; the solo participant uses the third. Use a lower support or feet on the floor as needed."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 120,
+        "title": {
+          "it": "Spiegazione forza A",
+          "en": "Strength A briefing"
+        },
+        "target": {
+          "it": "Gruppi 2+2+1. Rematore, split squat e planche lean. Predisponi due postazioni anelli/TRX; coppie al lavoro contemporaneamente.",
+          "en": "Groups 2+2+1. Rows, split squats and planche leans. Set up two ring/TRX stations; partners work simultaneously."
+        }
+      },
+      {
+        "type": "groups",
+        "sets": 3,
+        "work": 40,
+        "rest": 40,
+        "change_time": 40,
+        "title": {
+          "it": "Forza A",
+          "en": "Strength A"
+        },
+        "target": {
+          "it": "Tre serie prima di ruotare. Completa le ripetizioni o la tenuta entro 40 s, poi recupera. Il cambio sostituisce il recupero dopo la terza serie: nessun tempo aggiuntivo. Coppie in contemporanea; circa due ripetizioni di margine.",
+          "en": "Complete three sets before rotating. Finish reps or hold within 40 sec, then rest. Station change replaces the rest after set three; no extra transition. Partners work simultaneously; leave about two reps in reserve."
+        },
+        "groups": [
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Rematore agli anelli/TRX: 6-8 rip., fermo 1 s in chiusura",
+              "en": "Ring/TRX rows: 6-8 reps, 1-sec top pause"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Split squat assistito: 3-4 per lato",
+              "en": "Assisted split squats: 3-4 per side"
+            }
+          },
+          {
+            "size": 1,
+            "exercise": {
+              "it": "Planche lean: 10-20 s, gomiti distesi e scapole protratte",
+              "en": "Planche lean: 10-20 sec, straight elbows and protracted shoulder blades"
+            }
+          }
+        ]
+      },
+      {
+        "type": "free",
+        "seconds": 40,
+        "title": {
+          "it": "Recupero ultima serie A",
+          "en": "Final set A rest"
+        },
+        "target": {
+          "it": "Recupero conclusivo del blocco A.",
+          "en": "Final recovery for strength A."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 120,
+        "title": {
+          "it": "Pausa e spiegazione forza B",
+          "en": "Break and strength B briefing"
+        },
+        "target": {
+          "it": "Due minuti tra A e B. Mostra dip assistiti, stacco rumeno e compressioni. Dip con assistenza sufficiente e discesa controllata; organizza due postazioni per le coppie.",
+          "en": "Two minutes between A and B. Demonstrate assisted dips, Romanian deadlifts and seated compression lifts. Use sufficient dip assistance and controlled lowering; arrange two stations for partners."
+        }
+      },
+      {
+        "type": "groups",
+        "sets": 3,
+        "work": 40,
+        "rest": 40,
+        "change_time": 40,
+        "title": {
+          "it": "Forza B",
+          "en": "Strength B"
+        },
+        "target": {
+          "it": "Tre serie prima di ruotare. Completa le ripetizioni o la tenuta entro 40 s, poi recupera. Il cambio sostituisce il recupero dopo la terza serie: nessun tempo aggiuntivo. Coppie in contemporanea; circa due ripetizioni di margine.",
+          "en": "Complete three sets before rotating. Finish reps or hold within 40 sec, then rest. Station change replaces the rest after set three; no extra transition. Partners work simultaneously; leave about two reps in reserve."
+        },
+        "groups": [
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Dip, eventualmente assistiti: 4-6 rip.",
+              "en": "Dips, assisted as needed: 4-6 reps"
+            }
+          },
+          {
+            "size": 2,
+            "exercise": {
+              "it": "Stacco rumeno con manubri: 8-10 rip.",
+              "en": "Dumbbell Romanian deadlifts: 8-10 reps"
+            }
+          },
+          {
+            "size": 1,
+            "exercise": {
+              "it": "Compressioni da seduti: 4-6 per lato, ginocchio piegato",
+              "en": "Seated compression lifts: 4-6 per side, bent knee"
+            }
+          }
+        ]
+      },
+      {
+        "type": "free",
+        "seconds": 40,
+        "title": {
+          "it": "Recupero ultima serie B",
+          "en": "Final set B rest"
+        },
+        "target": {
+          "it": "Recupero conclusivo del blocco B.",
+          "en": "Final recovery for strength B."
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 80,
+        "title": {
+          "it": "Spiegazione finale",
+          "en": "Finisher briefing"
+        },
+        "target": {
+          "it": "Mostra i tre esercizi. Ritmo controllato, nessuna ricerca del massimo numero di ripetizioni.",
+          "en": "Demonstrate the three exercises. Controlled pace; do not chase maximum repetitions."
+        }
+      },
+      {
+        "type": "interval",
+        "rounds": 2,
+        "work": 30,
+        "rest": 20,
+        "title": {
+          "it": "Finale tutti insieme",
+          "en": "Group finisher"
+        },
+        "exercises": [
+          {
+            "it": "Squat + sollevamento sui polpacci",
+            "en": "Squat + calf raise"
+          },
+          {
+            "it": "Affondo indietro + ginocchio alto alternato",
+            "en": "Alternating reverse lunge + knee drive"
+          },
+          {
+            "it": "Due passi laterali in mezzo squat + risalita",
+            "en": "Two lateral half-squat steps + stand"
+          }
+        ],
+        "target": {
+          "it": "",
+          "en": ""
+        }
+      },
+      {
+        "type": "free",
+        "seconds": 180,
+        "title": {
+          "it": "Defaticamento - 3 minuti",
+          "en": "Cool-down - 3 minutes"
+        },
+        "target": {
+          "it": "Camminata, mobilita toracica e delle anche, respirazione.",
+          "en": "Walking, thoracic and hip mobility, breathing."
+        }
+      }
+    ]
+  }
+}
