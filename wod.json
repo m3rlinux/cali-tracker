@@ -35,6 +35,11 @@
         "target": "Pike a terra per il primo approccio; piedi su rialzo se la posizione è controllabile. Chi ha esperienza può lavorare in pike più verticale o fare 1–2 kick-up al muro con discesa controllata. Gomiti distesi e spinta sul pavimento. Assegna supporti e turni."
       },
       {
+        "type": "free",
+        "seconds": 10,
+        "title": "Preparati"
+      },
+      {
         "type": "interval",
         "rounds": 4,
         "work": 30,
@@ -49,7 +54,7 @@
         "type": "free",
         "seconds": 480,
         "title": "Forza — spiegazione e prove, 8′",
-        "target": "Quattro coppie. Assegna la variante dopo le prime prove, secondo controllo e capacità. Tre serie sulla stessa postazione prima di ruotare; completate ripetizioni o tenuta, recupera fino al segnale.\n• P1 — Ring row: 6–8 ripetizioni, discesa controllata di 3 s. Più verticali per facilitare, più orizzontali per aumentare la difficoltà. Breve fermo in chiusura; circa due ripetizioni di margine.\n• P2 — Piegamenti: 5–8 ripetizioni su rialzo stabile oppure a terra. Discesa controllata, corpo allineato; altezza del rialzo adeguata alla persona.\n• P3 — Appoggio e compressione: appoggio alle parallele 10–20 s, piedi assistiti se necessario; tuck L-sit 10–15 s per chi lo controlla. Gomiti distesi e spinta verso il basso.\n• P4 — Gambe: squat al box 6–8 ripetizioni; split squat 3–5 per lato oppure pistol al box assistito 3–5 per lato, secondo controllo. Non accelerare per completare le ripetizioni.\nTimer: 10 s preparati una sola volta; per postazione 40 s lavoro / 40 s recupero due volte, poi 40 s lavoro / 60 s cambio. Anche dopo la quarta postazione sono previsti 60 s. Predisponi due postazioni di rematore (anelli/TRX) e supporti per le coppie. Se le parallele sono condivise, alternarsi nei 40 s di lavoro: primi 20 s e secondi 20 s; poi entrambi recuperano."
+        "target": "Quattro coppie. Assegna la variante dopo le prime prove, secondo controllo e capacità. Tre serie sulla stessa postazione prima di ruotare; completate ripetizioni o tenuta, recupera fino al segnale.\n• P1 — Ring row: 6–8 ripetizioni, discesa controllata di 3 s. Più verticali per facilitare, più orizzontali per aumentare la difficoltà. Breve fermo in chiusura; circa due ripetizioni di margine.\n• P2 — Piegamenti: 5–8 ripetizioni su rialzo stabile oppure a terra. Discesa controllata, corpo allineato; altezza del rialzo adeguata alla persona.\n• P3 — Appoggio e compressione: appoggio alle parallele 10–20 s, piedi assistiti se necessario; tuck L-sit 15–20 s per chi lo controlla. Gomiti distesi e spinta verso il basso.\n• P4 — Gambe: squat al box 6–8 ripetizioni; split squat 3–5 per lato oppure pistol al box assistito 3–5 per lato, secondo controllo. Non accelerare per completare le ripetizioni.\nTimer: 10 s preparati una sola volta; per postazione 40 s lavoro / 40 s recupero due volte, poi 40 s lavoro / 60 s cambio. Anche dopo la quarta postazione sono previsti 60 s. Predisponi due postazioni di rematore (anelli/TRX) e supporti per le coppie. Se le parallele sono condivise, alternarsi nei 40 s di lavoro: primi 20 s e secondi 20 s; poi entrambi recuperano."
       },
       {
         "type": "free",
@@ -97,16 +102,19 @@
         "type": "free",
         "seconds": 120,
         "title": "Finale — dimostrazione e prove del flow",
-        "target": "Mostra una sequenza breve: squat → mani a terra → camminata delle mani fino al plank alto → ritorno con le mani verso i piedi → risalita. Principianti: ginocchia appoggiate nella posizione di plank, se serve, e squat alla profondità comoda. Ripetere lentamente, senza cercare il massimo numero di ripetizioni."
+        "target": "Mostra una sequenza breve: Dalla quadrupedia, porta il bacino verso i talloni mantenendo le mani ferme e il dorso dei piedi appoggiato, ritorna, appoggia l'anvapiede e vai a cane a faccia in giù. Da inpiedi, affondo dietro, stendi la gamba avanti e con le mani premi sulla coscia, torna su e cambia gamba. Da quadrupedia sui pugni, stendi il dorso della mano e fletti il gomito il necessario per sentire lo stretch dell'avambraccio, ritorna e una mano dietro l'altra scivoli giù fino a toccare con la spalla. Ritorna e ripeti tutto dall'altro lato. Due table taps seguiti da un active table: spalle retratte. "
       },
       {
         "type": "interval",
         "rounds": 3,
-        "work": 40,
-        "rest": 20,
+        "work": 20,
+        "rest": 10,
         "title": "Flow tutti insieme",
         "exercises": [
-          "Squat → camminata in plank → ritorno → risalita"
+          "1. Bacino ai talloni + cane a faccia in giù",
+          "2. Affondo dietro + stretch gamba avanti",
+          "3. Piegamento sui polsi + Rotazione toracica (braccio sotto)",
+          "4. Table taps + Tavolino attivo (bacino su e spalle extra-ruotate)"
         ]
       },
       {
