@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 const read = path => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
-const wod = JSON.parse(read('wod.json'));
+// The October 28 class is no longer the active WOD: validate the archived snapshot.
 const archived = JSON.parse(read('wod-archive/006-classe-5-2026-10-28.json'));
 const html = read('index.html');
 function extract(name) {
@@ -18,8 +18,7 @@ function extract(name) {
 const model = runInNewContext(['classLessonText', 'classLessonIsGroupBlock', 'getClassLesson',
   'classLessonBlockSeconds', 'buildClassLessonTimerPlan'].map(extract).join('\n')
   + '\n({ getClassLesson, buildClassLessonTimerPlan })');
-const lesson = wod.class_lesson;
-assert.deepEqual(lesson, archived.class_lesson);
+const lesson = archived.class_lesson;
 assert.equal(archived.metadata.status, 'planned');
 assert.equal(archived.metadata.performed_on, null);
 assert.equal(lesson.participants, 5);
@@ -58,4 +57,4 @@ assert.match(JSON.stringify(lesson), /20 s per scendere/);
 const flow = lesson.blocks.filter(b => b.title.it.startsWith('Flow'));
 assert.equal(flow.reduce((n, b) => n + (b.seconds || b.rounds * b.exercises.length * (b.work + b.rest)), 0), 480);
 assert.match(JSON.stringify(flow), /beast.*crab/);
-console.log('ok: class WOD 2026-10-28, 5 participants, all rotations and final B turns, 57:40, archive matches');
+console.log('ok: class WOD 2026-10-28, 5 participants, all rotations and final B turns, 57:40, archived snapshot');

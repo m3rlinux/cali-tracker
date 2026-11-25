@@ -27,7 +27,7 @@ const modelSource = [
 ].map(extractFn).join('\n');
 const model = runInNewContext(modelSource + '\n({ getClassLesson, buildClassLessonTimerPlan })');
 assert.ok(model.getClassLesson(activeWod.class_lesson));
-assert.equal(model.buildClassLessonTimerPlan(activeWod.class_lesson).totalSeconds, 3340);
+assert.equal(model.buildClassLessonTimerPlan(activeWod.class_lesson).totalSeconds, 3350);
 const synchronized = wod.class_lesson;
 assert.ok(model.getClassLesson(synchronized));
 const synchronizedPlan = model.buildClassLessonTimerPlan(synchronized);
@@ -251,7 +251,8 @@ const historyContext = {
   escapeHtml: x => String(x),
   document: { getElementById: () => ({ set innerHTML(value) { historyHtml = value; } }) }
 };
-runInNewContext(extractFn('renderClassLessonHistory') +
+runInNewContext(['localCalendarDate', 'validCalendarDate', 'classLessonDate',
+  'renderClassLessonHistory'].map(extractFn).join('\n') +
   '\nrenderClassLessonHistory(data)', { ...historyContext, data });
 assert.match(historyHtml, /Lezioni svolte/);
 assert.match(historyHtml, /Blocco/);

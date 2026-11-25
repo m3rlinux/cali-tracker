@@ -10,10 +10,10 @@
     "coach_notes": [
       "Otto partecipanti, quattro coppie, tre serie per postazione.",
       "Blocco centrale 25 minuti e 30 secondi: 8 minuti di spiegazione, 10 s preparati, 12 serie da 40 s, 8 recuperi da 40 s, 4 cambi da 60 s.",
-      "Totale 55 minuti e 40 secondi.",
+      "Totale 55 minuti e 50 secondi.",
       "Testi in italiano come stringhe: traduzioni facoltative già supportate dall'app.",
       "Ring row confermato; tirate a Y scartate dal coach.",
-      "Aggiornamento del coach: 10 s preparati prima della verticale, tuck L-sit 15–20 s, flow finale sostituito da sequenza di mobilità in quattro movimenti, 3 giri 20/10. Testo del coach conservato."
+      "Aggiornamento del coach: 10 s preparati prima della verticale e prima del flow, tuck L-sit 15–20 s, flow finale sostituito da sequenza di mobilità in quattro movimenti, 3 giri 20/10. Testo del coach conservato."
     ]
   },
   "class_lesson": {
@@ -109,7 +109,12 @@
         "type": "free",
         "seconds": 120,
         "title": "Finale — dimostrazione e prove del flow",
-        "target": "Mostra una sequenza breve: Dalla quadrupedia, porta il bacino verso i talloni mantenendo le mani ferme e il dorso dei piedi appoggiato, ritorna, appoggia l'anvapiede e vai a cane a faccia in giù. Da inpiedi, affondo dietro, stendi la gamba avanti e con le mani premi sulla coscia, torna su e cambia gamba. Da quadrupedia sui pugni, stendi il dorso della mano e fletti il gomito il necessario per sentire lo stretch dell'avambraccio, ritorna e una mano dietro l'altra scivoli giù fino a toccare con la spalla. Ritorna e ripeti tutto dall'altro lato. Due table taps seguiti da un active table: spalle retratte. "
+        "target": "Mostra una sequenza breve: Dalla quadrupedia, porta il bacino verso i talloni mantenendo le mani ferme e il dorso dei piedi appoggiato, ritorna, appoggia l'avampiede e vai a cane a faccia in giù. Da in piedi, affondo dietro, stendi la gamba avanti e con le mani premi sulla coscia, torna su e cambia gamba. Da quadrupedia sui pugni, stendi il dorso della mano e fletti il gomito il necessario per sentire lo stretch dell'avambraccio, ritorna e una mano dietro l'altra scivoli giù fino a toccare con la spalla. Ritorna e ripeti tutto dall'altro lato. Due table taps seguiti da un active table: spalle retratte."
+      },
+      {
+        "type": "free",
+        "seconds": 10,
+        "title": "Preparati"
       },
       {
         "type": "interval",
