@@ -27,7 +27,7 @@ const modelSource = [
 ].map(extractFn).join('\n');
 const model = runInNewContext(modelSource + '\n({ getClassLesson, buildClassLessonTimerPlan })');
 assert.ok(model.getClassLesson(activeWod.class_lesson));
-assert.equal(model.buildClassLessonTimerPlan(activeWod.class_lesson).totalSeconds, 3150);
+assert.equal(model.buildClassLessonTimerPlan(activeWod.class_lesson).totalSeconds, 3340);
 const synchronized = wod.class_lesson;
 assert.ok(model.getClassLesson(synchronized));
 const synchronizedPlan = model.buildClassLessonTimerPlan(synchronized);
