@@ -1,0 +1,126 @@
+{
+  "metadata": {
+    "sequence": 9,
+    "status": "planned",
+    "planned_for": "2026-11-25",
+    "performed_on": null,
+    "source": "Scheda confermata dal coach",
+    "coach_feedback": null,
+    "progression_note": "Continuità con verticale/pike, ring row, appoggi e squat delle proposte precedenti. Per la classe eterogenea si introduce la spinta dinamica al posto della planche lean, con varianti assegnate dal coach. Nessuna capacità individuale o presenza precedente presunta.",
+    "coach_notes": [
+      "Otto partecipanti, quattro coppie, tre serie per postazione.",
+      "Blocco centrale 25 minuti e 30 secondi: 8 minuti di spiegazione, 10 s preparati, 12 serie da 40 s, 8 recuperi da 40 s, 4 cambi da 60 s.",
+      "Totale 52 minuti e 30 secondi.",
+      "Testi in italiano come stringhe: traduzioni facoltative già supportate dall'app.",
+      "Ring row confermato; tirate a Y scartate dal coach."
+    ]
+  },
+  "class_lesson": {
+    "participants": 8,
+    "title": "Calisthenics — forza e controllo — 25 novembre 2026",
+    "blocks": [
+      {
+        "type": "interval",
+        "rounds": 2,
+        "work": 20,
+        "rest": 10,
+        "title": "Riscaldamento — 6′",
+        "exercises": [
+          "Mobilità polsi",
+          "Mobilità spalle",
+          "Scapular push-up",
+          "Squat",
+          "Affondi alternati",
+          "Quadrupedia ↔ pike"
+        ]
+      },
+      {
+        "type": "free",
+        "seconds": 120,
+        "title": "Verticale — spiegazione e prove",
+        "target": "Pike a terra per il primo approccio; piedi su rialzo se la posizione è controllabile. Chi ha esperienza può lavorare in pike più verticale o fare 1–2 kick-up al muro con discesa controllata. Gomiti distesi e spinta sul pavimento. Assegna supporti e turni."
+      },
+      {
+        "type": "interval",
+        "rounds": 4,
+        "work": 30,
+        "rest": 60,
+        "title": "Verticale — quattro prove",
+        "exercises": [
+          "Pike 15–25 s oppure 1–2 kick-up controllati"
+        ],
+        "target": "Una prova breve nei 30 s disponibili: non serve mantenere la posizione per tutto il tempo. Recupero di 60 s. Con rialzo condiviso, il secondo componente lavora nei primi 30 s del recupero: ciascuno ha poi 60 s tra fine del proprio turno e inizio del successivo."
+      },
+      {
+        "type": "free",
+        "seconds": 480,
+        "title": "Forza — spiegazione e prove, 8′",
+        "target": "Quattro coppie. Assegna la variante dopo le prime prove, secondo controllo e capacità. Tre serie sulla stessa postazione prima di ruotare; completate ripetizioni o tenuta, recupera fino al segnale.\n• P1 — Ring row: 6–8 ripetizioni, discesa controllata di 3 s. Più verticali per facilitare, più orizzontali per aumentare la difficoltà. Breve fermo in chiusura; circa due ripetizioni di margine.\n• P2 — Piegamenti: 5–8 ripetizioni su rialzo stabile oppure a terra. Discesa controllata, corpo allineato; altezza del rialzo adeguata alla persona.\n• P3 — Appoggio e compressione: appoggio alle parallele 10–20 s, piedi assistiti se necessario; tuck L-sit 10–15 s per chi lo controlla. Gomiti distesi e spinta verso il basso.\n• P4 — Gambe: squat al box 6–8 ripetizioni; split squat 3–5 per lato oppure pistol al box assistito 3–5 per lato, secondo controllo. Non accelerare per completare le ripetizioni.\nTimer: 10 s preparati una sola volta; per postazione 40 s lavoro / 40 s recupero due volte, poi 40 s lavoro / 60 s cambio. Anche dopo la quarta postazione sono previsti 60 s. Predisponi due postazioni di rematore (anelli/TRX) e supporti per le coppie. Se le parallele sono condivise, alternarsi nei 40 s di lavoro: primi 20 s e secondi 20 s; poi entrambi recuperano."
+      },
+      {
+        "type": "free",
+        "seconds": 10,
+        "title": "Preparati"
+      },
+      {
+        "type": "groups",
+        "sets": 3,
+        "work": 40,
+        "rest": 40,
+        "change_time": 60,
+        "title": "Forza — 4 postazioni × 3 serie",
+        "groups": [
+          {
+            "size": 2,
+            "exercise": "Ring row"
+          },
+          {
+            "size": 2,
+            "exercise": "Piegamenti su rialzo / a terra"
+          },
+          {
+            "size": 2,
+            "exercise": "Appoggio parallele / tuck L-sit"
+          },
+          {
+            "size": 2,
+            "exercise": "Squat al box / split squat / pistol assistito"
+          }
+        ]
+      },
+      {
+        "type": "free",
+        "seconds": 60,
+        "title": "Cambio finale — prepara le prove personali"
+      },
+      {
+        "type": "free",
+        "seconds": 300,
+        "title": "Una piccola conquista — prove personali",
+        "target": "Due prove brevi di una delle prime tre postazioni, con recupero tra i tentativi. Il coach assegna una sola correzione concreta: chiusura nel rematore, corpo allineato nel piegamento o appoggio più stabile. Distribuisci le persone secondo gli attrezzi disponibili. Cerca più controllo nella stessa variante."
+      },
+      {
+        "type": "free",
+        "seconds": 120,
+        "title": "Finale — dimostrazione e prove del flow",
+        "target": "Mostra una sequenza breve: squat → mani a terra → camminata delle mani fino al plank alto → ritorno con le mani verso i piedi → risalita. Principianti: ginocchia appoggiate nella posizione di plank, se serve, e squat alla profondità comoda. Ripetere lentamente, senza cercare il massimo numero di ripetizioni."
+      },
+      {
+        "type": "interval",
+        "rounds": 3,
+        "work": 40,
+        "rest": 20,
+        "title": "Flow tutti insieme",
+        "exercises": [
+          "Squat → camminata in plank → ritorno → risalita"
+        ]
+      },
+      {
+        "type": "free",
+        "seconds": 180,
+        "title": "Defaticamento — 3′",
+        "target": "Camminata, mobilità toracica e delle anche, respirazione tranquilla."
+      }
+    ]
+  }
+}

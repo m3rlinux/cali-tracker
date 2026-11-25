@@ -17,6 +17,8 @@ Questo archivio conserva le **scalette Classe** nell'ordine in cui sono state cr
 
 | 8 | [Skill foundations, 7–8 partecipanti](008-classe-8-2026-11-16.json) | Prevista per 2026-11-16; svolgimento da confermare | Verticale scalabile; quattro postazioni: tirata, appoggio/L-sit, planche lean, pistol assistito. Briefing unico 8 minuti, 10 s preparati; tre serie 40/40 e terzo recupero sostituito da cambio 60 s. Blocco centrale 25′30″; prove personali e flow finale. Totale 52′30″. Nessun progresso individuale presunto. |
 
+| 9 | [Forza e controllo, 8 partecipanti](009-classe-8-2026-11-25.json) | Prevista per 2026-11-25; svolgimento da confermare | Classe eterogenea: verticale scalabile, ring row confermato, piegamenti, appoggi/tuck L-sit e gambe con varianti. Descrizione unica in italiano; tre serie 40/40 e cambio finale 60 s. Blocco centrale 25′30″; totale 52′30″. Nessun progresso individuale presunto. |
+
 ## Quando si progetta una nuova lezione
 
 1. Leggere questo indice e le scalette JSON nell'ordine indicato. Confrontare schemi motori, difficoltà, esercizi, tempi, gruppi e finale; proporre continuità e una variazione gestibile.
